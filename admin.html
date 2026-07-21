@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | ThaiNXT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+            mono: ['Orbitron', 'monospace'],
+          },
+          colors: {
+            bgDark: '#090E18',
+            cardDark: '#111827',
+            primary: '#00FF88',
+            gold: '#FFD400',
+            cyanLight: '#00D4FF',
+            purpleDark: '#8B5CF6',
+            danger: '#FF4D4F',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #090E18; color: white; margin: 0; font-family: 'Inter', sans-serif; }
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 8px; }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-bgDark relative text-gray-300">
+
+  <!-- SIDEBAR -->
+  <aside class="w-[280px] bg-cardDark/90 border-r border-white/5 flex flex-col z-40">
+    <div class="h-[90px] flex items-center gap-4 px-8 border-b border-white/5 cursor-pointer" onclick="window.location.href='index.html'">
+      <i class="fa-solid fa-arrow-left text-gray-500 hover:text-white"></i>
+      <div class="flex flex-col">
+        <h1 class="text-xl font-display font-black text-danger">ADMIN<span class="text-white">PANEL</span></h1>
+        <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">ThaiNXT System</span>
+      </div>
+    </div>
+    
+    <div class="flex-1 py-8 px-5 flex flex-col gap-2">
+      <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 px-4">Core Settings</div>
+      <button class="w-full px-5 py-3.5 bg-white/5 rounded-xl text-white font-bold border border-white/10 flex items-center gap-4 border-l-2 border-l-danger">
+        <i class="fa-solid fa-chart-pie text-danger"></i> Revenue & Analytics
+      </button>
+      <button class="w-full px-5 py-3.5 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors">
+        <i class="fa-solid fa-users text-cyanLight"></i> User Management
+      </button>
+      <button class="w-full px-5 py-3.5 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors">
+        <i class="fa-solid fa-money-bill-transfer text-primary"></i> Deposits / Withdrawals
+      </button>
+      
+      <div class="w-full h-px bg-white/5 my-2"></div>
+      <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 px-4">Game Control</div>
+      
+      <button class="w-full px-5 py-3.5 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors">
+        <i class="fa-solid fa-sliders text-gold"></i> RNG & House Edge
+      </button>
+      <button class="w-full px-5 py-3.5 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors">
+        <i class="fa-solid fa-bullhorn text-purpleDark"></i> Announcement System
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto custom-scrollbar p-10 relative bg-[#090E18]">
+    <div class="max-w-6xl mx-auto flex flex-col gap-8">
+      
+      <div class="flex items-center justify-between">
+        <h2 class="text-3xl font-display font-black text-white">System Overview</h2>
+        <div class="flex items-center gap-3 bg-danger/10 border border-danger/30 text-danger px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest animate-pulse">
+          <div class="w-2 h-2 rounded-full bg-danger shadow-[0_0_8px_rgba(255,77,79,0.8)]"></div>
+          Live Mode Active
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-4 gap-6">
+        <div class="glass-panel p-5 flex flex-col border-t-2 border-t-primary">
+          <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Total Revenue (24h)</span>
+          <span class="text-2xl font-mono font-black text-white mt-1">฿ 1.42M</span>
+          <span class="text-primary text-[10px] font-bold mt-2"><i class="fa-solid fa-arrow-up"></i> 4.2%</span>
+        </div>
+        <div class="glass-panel p-5 flex flex-col border-t-2 border-t-cyanLight">
+          <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Active Users</span>
+          <span class="text-2xl font-mono font-black text-white mt-1">8,492</span>
+          <span class="text-cyanLight text-[10px] font-bold mt-2"><i class="fa-solid fa-arrow-up"></i> 124 new signups</span>
+        </div>
+        <div class="glass-panel p-5 flex flex-col border-t-2 border-t-danger">
+          <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Pending Withdrawals</span>
+          <span class="text-2xl font-mono font-black text-white mt-1">14</span>
+          <span class="text-danger text-[10px] font-bold mt-2">Requires Approval</span>
+        </div>
+        <div class="glass-panel p-5 flex flex-col border-t-2 border-t-gold">
+          <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">House Edge Profit</span>
+          <span class="text-2xl font-mono font-black text-white mt-1">฿ 84K</span>
+          <span class="text-gray-500 text-[10px] font-bold mt-2">Calculated at 2.5%</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-8 mt-2">
+        
+        <!-- Live Bet Monitoring -->
+        <div class="col-span-2 glass-panel p-6 flex flex-col h-[500px]">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-display font-bold text-white"><i class="fa-solid fa-satellite-dish text-primary mr-2 animate-pulse"></i> Live Bet Monitoring</h3>
+          </div>
+          
+          <div class="flex-1 overflow-auto custom-scrollbar border border-white/5 rounded-xl bg-bgDark">
+            <table class="w-full text-left text-xs whitespace-nowrap">
+              <thead class="bg-cardDark border-b border-white/5 sticky top-0">
+                <tr class="text-gray-500 uppercase text-[9px] tracking-widest">
+                  <th class="p-4 font-bold">Time</th>
+                  <th class="p-4 font-bold">User</th>
+                  <th class="p-4 font-bold">Target</th>
+                  <th class="p-4 font-bold text-right">Amount</th>
+                  <th class="p-4 font-bold text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-300 font-bold">
+                <tr class="border-b border-white/5 hover:bg-white/5">
+                  <td class="p-4 text-gray-500">14:32:01</td>
+                  <td class="p-4 text-cyanLight">Alex_Winner</td>
+                  <td class="p-4 font-mono text-white">8888</td>
+                  <td class="p-4 font-mono text-right">฿ 500.00</td>
+                  <td class="p-4 text-center"><span class="bg-gold/20 text-gold px-2 py-1 rounded text-[9px] uppercase tracking-wider">Pending</span></td>
+                </tr>
+                <tr class="border-b border-white/5 hover:bg-white/5">
+                  <td class="p-4 text-gray-500">14:31:45</td>
+                  <td class="p-4 text-white">CryptoKing</td>
+                  <td class="p-4 font-mono text-white">12</td>
+                  <td class="p-4 font-mono text-right">฿ 1,000.00</td>
+                  <td class="p-4 text-center"><span class="bg-danger/20 text-danger px-2 py-1 rounded text-[9px] uppercase tracking-wider">Lost</span></td>
+                </tr>
+                <tr class="border-b border-white/5 hover:bg-white/5">
+                  <td class="p-4 text-gray-500">14:31:10</td>
+                  <td class="p-4 text-white">Whale99</td>
+                  <td class="p-4 font-mono text-white">4</td>
+                  <td class="p-4 font-mono text-right">฿ 10,000.00</td>
+                  <td class="p-4 text-center"><span class="bg-primary/20 text-primary px-2 py-1 rounded text-[9px] uppercase tracking-wider">Won</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Game Controls & Jackpot -->
+        <div class="glass-panel p-6 flex flex-col gap-6">
+          <h3 class="text-xl font-display font-bold text-white border-b border-white/5 pb-4"><i class="fa-solid fa-gamepad text-gold mr-2"></i> Game Settings</h3>
+          
+          <div class="flex flex-col gap-2">
+            <label class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Mega Jackpot Size</label>
+            <div class="flex items-center gap-2 bg-bgDark rounded-lg border border-white/5 p-2">
+              <input type="text" value="5100000" class="bg-transparent text-white font-mono font-bold w-full outline-none text-sm px-2">
+              <button class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded text-xs text-white font-bold transition-colors">Update</button>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">House Edge %</label>
+            <div class="flex items-center gap-2 bg-bgDark rounded-lg border border-white/5 p-2">
+              <input type="number" value="2.5" class="bg-transparent text-white font-mono font-bold w-full outline-none text-sm px-2">
+              <button class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded text-xs text-white font-bold transition-colors">Update</button>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2 mt-4 pt-4 border-t border-white/5">
+            <label class="text-gray-500 text-[10px] uppercase tracking-widest font-bold text-danger">Emergency Controls</label>
+            <button class="w-full bg-danger/20 hover:bg-danger/30 text-danger border border-danger/50 py-3 rounded-lg font-bold text-xs uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
+              <i class="fa-solid fa-power-off"></i> Pause All Betting
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</body>
+</html>

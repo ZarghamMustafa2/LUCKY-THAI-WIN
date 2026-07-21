@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard | ThaiNXT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+            mono: ['Orbitron', 'monospace'],
+          },
+          colors: {
+            bgDark: '#090E18',
+            cardDark: '#111827',
+            primary: '#00FF88',
+            gold: '#FFD400',
+            cyanLight: '#00D4FF',
+            purpleDark: '#8B5CF6',
+            danger: '#FF4D4F',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #090E18; color: white; margin: 0; font-family: 'Inter', sans-serif; }
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 8px; }
+    .nav-btn.active { background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-bgDark relative text-gray-300">
+
+  <!-- Ambient Background -->
+  <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-purpleDark opacity-[0.03] rounded-full blur-[150px] pointer-events-none"></div>
+  <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-cyanLight opacity-[0.03] rounded-full blur-[150px] pointer-events-none"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="w-[280px] bg-cardDark/80 border-r border-white/5 flex flex-col z-40">
+    <div class="h-[90px] flex items-center gap-4 px-8 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors" onclick="window.location.href='index.html'">
+      <i class="fa-solid fa-arrow-left text-gray-500"></i>
+      <h1 class="text-xl font-display font-black text-white">Back to Game</h1>
+    </div>
+    
+    <div class="flex-1 py-8 px-5 flex flex-col gap-2">
+      <button data-target="panel-profile" class="nav-btn active w-full px-5 py-4 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors border border-transparent">
+        <i class="fa-solid fa-user text-cyanLight"></i> Profile
+      </button>
+      <button data-target="panel-wallet" class="nav-btn w-full px-5 py-4 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors border border-transparent">
+        <i class="fa-solid fa-wallet text-primary"></i> Wallet & History
+      </button>
+      <button data-target="panel-vip" class="nav-btn w-full px-5 py-4 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors border border-transparent">
+        <i class="fa-solid fa-crown text-gold"></i> VIP System
+      </button>
+      <button data-target="panel-security" class="nav-btn w-full px-5 py-4 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors border border-transparent">
+        <i class="fa-solid fa-shield-halved text-danger"></i> Security (2FA)
+      </button>
+      <button data-target="panel-rewards" class="nav-btn w-full px-5 py-4 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors border border-transparent">
+        <i class="fa-solid fa-gift text-purpleDark"></i> Rewards
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto custom-scrollbar p-10 relative">
+    <div class="max-w-5xl mx-auto flex flex-col gap-8">
+      
+      <!-- Header common to all tabs -->
+      <div class="flex items-center justify-between">
+        <h2 id="pageTitle" class="text-3xl font-display font-black text-white">My Profile</h2>
+        <div class="flex items-center gap-4 glass-panel px-6 py-3">
+          <img src="https://i.pravatar.cc/150?img=11" alt="User" class="w-10 h-10 rounded-full border-2 border-gold">
+          <div class="flex flex-col">
+            <span class="font-bold text-white text-sm">Alex_Winner</span>
+            <span class="text-[10px] text-gold uppercase tracking-widest font-black">VIP Platinum</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE PANEL -->
+      <div id="panel-profile" class="tab-panel flex flex-col gap-8 animate-[fadeIn_0.3s_ease-in-out]">
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-3 gap-6">
+          <div class="glass-panel p-6 flex flex-col gap-2 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-xl"></div>
+            <span class="text-gray-400 text-xs font-bold uppercase tracking-widest">Total Winnings</span>
+            <span class="text-3xl font-mono font-black text-white">฿ 45,290.00</span>
+            <span class="text-primary text-xs font-bold"><i class="fa-solid fa-arrow-trend-up"></i> +12% this week</span>
+          </div>
+          <div class="glass-panel p-6 flex flex-col gap-2 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-cyanLight/10 rounded-full blur-xl"></div>
+            <span class="text-gray-400 text-xs font-bold uppercase tracking-widest">Win Rate</span>
+            <span class="text-3xl font-mono font-black text-white">68.4%</span>
+            <span class="text-cyanLight text-xs font-bold"><i class="fa-solid fa-crosshairs"></i> High Accuracy</span>
+          </div>
+          <div class="glass-panel p-6 flex flex-col gap-2 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-purpleDark/10 rounded-full blur-xl"></div>
+            <span class="text-gray-400 text-xs font-bold uppercase tracking-widest">Total Bets Placed</span>
+            <span class="text-3xl font-mono font-black text-white">1,492</span>
+            <span class="text-purpleDark text-xs font-bold">Active Player</span>
+          </div>
+        </div>
+
+        <div class="glass-panel p-8 flex flex-col gap-4">
+           <h3 class="text-xl font-display font-bold text-white border-b border-white/5 pb-4"><i class="fa-solid fa-user-pen text-cyanLight mr-2"></i> Account Details</h3>
+           <div class="grid grid-cols-2 gap-6 mt-2">
+             <div>
+                <label class="text-xs text-gray-500 font-bold uppercase block mb-2">Username</label>
+                <input type="text" value="Alex_Winner" readonly class="w-full bg-bgDark border border-white/10 rounded-xl p-3 text-white font-bold outline-none">
+             </div>
+             <div>
+                <label class="text-xs text-gray-500 font-bold uppercase block mb-2">Email Address</label>
+                <input type="email" value="alex****@gmail.com" readonly class="w-full bg-bgDark border border-white/10 rounded-xl p-3 text-white font-bold outline-none">
+             </div>
+             <div>
+                <label class="text-xs text-gray-500 font-bold uppercase block mb-2">Joined Date</label>
+                <input type="text" value="March 12, 2026" readonly class="w-full bg-bgDark border border-white/10 rounded-xl p-3 text-gray-400 font-bold outline-none">
+             </div>
+           </div>
+        </div>
+      </div>
+
+      <!-- WALLET PANEL -->
+      <div id="panel-wallet" class="tab-panel hidden flex flex-col gap-8 animate-[fadeIn_0.3s_ease-in-out]">
+        <div class="glass-panel p-8 flex flex-col gap-6">
+          <div class="flex items-center justify-between border-b border-white/5 pb-4">
+            <h3 class="text-xl font-display font-bold text-white"><i class="fa-solid fa-wallet text-primary mr-2"></i> Wallet Management</h3>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-bgDark rounded-xl p-4 border border-white/5">
+              <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Available Balance</span>
+              <div class="text-3xl font-mono font-black text-white mt-1">฿ 10,450.00</div>
+            </div>
+            <div class="bg-bgDark rounded-xl p-4 border border-white/5">
+              <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Locked Bonus</span>
+              <div class="text-3xl font-mono font-black text-gray-400 mt-1">฿ 500.00</div>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <button class="flex-1 bg-primary hover:bg-[#00e67a] text-bgDark py-4 rounded-xl font-bold uppercase tracking-wider transition-colors shadow-[0_0_20px_rgba(0,255,136,0.2)]" onclick="alert('Open Deposit Modal')">Deposit</button>
+            <button class="flex-1 bg-white/5 hover:bg-white/10 text-white py-4 rounded-xl font-bold uppercase tracking-wider transition-colors border border-white/10" onclick="alert('Open Withdraw Modal')">Withdraw</button>
+          </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="glass-panel p-8">
+          <h3 class="text-xl font-display font-bold text-white border-b border-white/5 pb-4 mb-4"><i class="fa-solid fa-clock-rotate-left text-gray-400 mr-2"></i> Transaction History</h3>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between bg-bgDark/50 p-4 rounded-lg border border-white/5">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center"><i class="fa-solid fa-arrow-down"></i></div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white">Deposit (BTC)</span>
+                  <span class="text-[10px] text-gray-500">Today, 14:30</span>
+                </div>
+              </div>
+              <div class="flex flex-col items-end">
+                  <span class="text-primary font-mono font-bold text-lg">+ ฿ 5,000.00</span>
+                  <span class="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded uppercase">Completed</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between bg-bgDark/50 p-4 rounded-lg border border-white/5">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-danger/20 text-danger flex items-center justify-center"><i class="fa-solid fa-arrow-up"></i></div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white">Withdrawal (USDT)</span>
+                  <span class="text-[10px] text-gray-500">Yesterday, 09:15</span>
+                </div>
+              </div>
+              <div class="flex flex-col items-end">
+                  <span class="text-danger font-mono font-bold text-lg">- ฿ 2,500.00</span>
+                  <span class="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded uppercase">Completed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIP PANEL -->
+      <div id="panel-vip" class="tab-panel hidden flex flex-col gap-8 animate-[fadeIn_0.3s_ease-in-out]">
+        <div class="glass-panel p-10 flex flex-col gap-4 relative overflow-hidden border border-gold/30">
+          <div class="absolute -right-10 -top-10 w-64 h-64 bg-gold/10 rounded-full blur-3xl"></div>
+          <div class="flex justify-between items-center relative z-10">
+            <h3 class="text-3xl font-display font-black text-white"><i class="fa-solid fa-crown text-gold mr-2"></i> VIP Platinum</h3>
+            <span class="bg-gold/20 text-gold px-4 py-2 rounded-full text-xs font-black uppercase border border-gold/30">Level 4</span>
+          </div>
+          
+          <div class="relative z-10 mt-6">
+            <div class="flex justify-between text-sm font-bold text-gray-400 mb-3">
+              <span>Progress to Diamond Tier</span>
+              <span class="text-gold text-xl">85%</span>
+            </div>
+            <div class="w-full h-4 bg-bgDark rounded-full overflow-hidden border border-white/5 shadow-inner">
+              <div class="h-full bg-gradient-to-r from-gold to-[#fff5cc] w-[85%] rounded-full shadow-[0_0_15px_rgba(255,212,0,0.8)] relative">
+                 <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+              </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-4">Wager <strong class="text-white">฿ 15,000</strong> more to unlock Diamond tier and get <strong class="text-gold">15% Cashback</strong>.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+           <div class="glass-panel p-6 border border-white/5">
+              <h4 class="font-bold text-white mb-2"><i class="fa-solid fa-hand-holding-dollar text-primary"></i> Current Perks</h4>
+              <ul class="text-sm text-gray-400 space-y-2 mt-4">
+                 <li><i class="fa-solid fa-check text-primary mr-2"></i> 10% Weekly Cashback</li>
+                 <li><i class="fa-solid fa-check text-primary mr-2"></i> Dedicated VIP Host</li>
+                 <li><i class="fa-solid fa-check text-primary mr-2"></i> Instant Withdrawals</li>
+              </ul>
+           </div>
+           <div class="glass-panel p-6 border border-gold/20 bg-gold/5">
+              <h4 class="font-bold text-gold mb-2"><i class="fa-solid fa-lock text-gold"></i> Next Tier (Diamond)</h4>
+              <ul class="text-sm text-gray-300 space-y-2 mt-4">
+                 <li><i class="fa-solid fa-arrow-up text-gold mr-2"></i> 15% Weekly Cashback</li>
+                 <li><i class="fa-solid fa-arrow-up text-gold mr-2"></i> Luxury Giveaways</li>
+                 <li><i class="fa-solid fa-arrow-up text-gold mr-2"></i> Higher Betting Limits</li>
+              </ul>
+           </div>
+        </div>
+      </div>
+
+      <!-- SECURITY PANEL -->
+      <div id="panel-security" class="tab-panel hidden flex flex-col gap-8 animate-[fadeIn_0.3s_ease-in-out]">
+        <div class="glass-panel p-8 flex flex-col gap-4">
+          <h3 class="text-xl font-display font-bold text-white border-b border-white/5 pb-4"><i class="fa-solid fa-shield-halved text-danger mr-2"></i> Two-Factor Authentication</h3>
+          
+          <div class="flex items-center justify-between mt-4 bg-bgDark p-6 rounded-2xl border border-white/5 shadow-inner">
+            <div class="flex flex-col gap-2 w-2/3">
+              <span class="text-lg font-bold text-white">Protect your account</span>
+              <span class="text-sm text-gray-500">Add an extra layer of security to your account by enabling 2FA. You will need to enter a code from Google Authenticator every time you log in or withdraw funds.</span>
+            </div>
+            <button class="bg-danger hover:bg-[#ff3355] px-6 py-3 rounded-xl text-sm font-bold text-white shadow-[0_0_15px_rgba(255,77,79,0.3)] transition-colors">Enable 2FA</button>
+          </div>
+        </div>
+
+        <div class="glass-panel p-8 flex flex-col gap-4">
+           <h3 class="text-xl font-display font-bold text-white border-b border-white/5 pb-4"><i class="fa-solid fa-desktop text-cyanLight mr-2"></i> Active Sessions</h3>
+           
+           <div class="flex items-center justify-between bg-bgDark p-5 rounded-2xl border border-primary/20">
+             <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl"><i class="fa-brands fa-windows"></i></div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-sm font-bold text-white">Windows - Chrome <span class="bg-primary/20 text-primary text-[10px] px-2 py-0.5 rounded ml-2">Current</span></span>
+                  <span class="text-[10px] text-gray-500">IP: 192.168.1.1 • Location: Bangkok, Thailand</span>
+                </div>
+             </div>
+           </div>
+
+           <div class="flex items-center justify-between bg-bgDark p-5 rounded-2xl border border-white/5">
+             <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-white/5 text-gray-400 flex items-center justify-center text-xl"><i class="fa-brands fa-apple"></i></div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-sm font-bold text-gray-300">iOS - Safari</span>
+                  <span class="text-[10px] text-gray-500">IP: 10.0.0.45 • Last active: 2 hours ago</span>
+                </div>
+             </div>
+             <button class="text-danger hover:text-white hover:bg-danger px-4 py-2 rounded-lg text-xs font-bold transition-colors border border-danger/30">Revoke</button>
+           </div>
+        </div>
+      </div>
+
+      <!-- REWARDS PANEL -->
+      <div id="panel-rewards" class="tab-panel hidden flex flex-col gap-8 animate-[fadeIn_0.3s_ease-in-out]">
+        <div class="glass-panel p-8 flex flex-col gap-4 border border-purpleDark/30 relative overflow-hidden">
+           <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-purpleDark/10 rounded-full blur-3xl"></div>
+           <h3 class="text-2xl font-display font-black text-white relative z-10"><i class="fa-solid fa-gift text-purpleDark mr-2"></i> Daily Rewards</h3>
+           <p class="text-gray-400 text-sm relative z-10">Claim your daily bonus and unlock special rewards just for playing!</p>
+           
+           <div class="mt-6 bg-bgDark border border-white/10 rounded-2xl p-6 flex items-center justify-between relative z-10 shadow-inner">
+              <div class="flex items-center gap-6">
+                 <div class="w-16 h-16 bg-gradient-to-br from-gold to-[#ffaa00] rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(255,212,0,0.5)]">
+                    <i class="fa-solid fa-coins text-3xl text-bgDark"></i>
+                 </div>
+                 <div class="flex flex-col">
+                    <span class="text-gray-500 font-bold uppercase tracking-widest text-[10px]">Ready to claim</span>
+                    <span class="text-3xl font-black font-mono text-white">฿ 500.00</span>
+                 </div>
+              </div>
+              <button class="bg-primary hover:bg-[#00e67a] text-bgDark px-8 py-4 rounded-xl font-black uppercase tracking-widest transition-transform hover:scale-105 shadow-[0_0_20px_rgba(0,255,136,0.3)]" onclick="alert('Claimed 500 THB!')">Claim Now</button>
+           </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+           <div class="glass-panel p-6 border border-white/5 opacity-50 relative">
+              <div class="absolute inset-0 z-20 flex items-center justify-center">
+                 <div class="bg-bgDark/80 px-4 py-2 rounded-lg font-bold text-white backdrop-blur-md border border-white/10"><i class="fa-solid fa-lock mr-2"></i> Unlocks in 4h 20m</div>
+              </div>
+              <h4 class="font-bold text-white mb-2 opacity-30"><i class="fa-solid fa-gem text-cyanLight"></i> Weekly Bonus</h4>
+              <p class="text-sm text-gray-500 opacity-30">Based on your recent wager activity, a special bonus will be credited to your account.</p>
+           </div>
+           
+           <div class="glass-panel p-6 border border-white/5">
+              <h4 class="font-bold text-white mb-2"><i class="fa-solid fa-users text-primary"></i> Referral Program</h4>
+              <p class="text-sm text-gray-400 mb-4">Invite friends and earn up to 5% of their house edge.</p>
+              <div class="flex items-center bg-bgDark rounded-lg border border-white/5 p-1">
+                 <input type="text" readonly value="thainxt.com/r/alex99" class="bg-transparent border-none outline-none text-xs text-gray-300 w-full pl-3 font-mono">
+                 <button class="bg-cardDark hover:bg-white/10 text-white p-2 rounded-md transition-colors" onclick="alert('Copied!')"><i class="fa-regular fa-copy"></i></button>
+              </div>
+           </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navButtons = document.querySelectorAll('.nav-btn');
+      const panels = document.querySelectorAll('.tab-panel');
+      const pageTitle = document.getElementById('pageTitle');
+
+      const titles = {
+        'panel-profile': 'My Profile',
+        'panel-wallet': 'Wallet & History',
+        'panel-vip': 'VIP System',
+        'panel-security': 'Security Settings',
+        'panel-rewards': 'Rewards Hub'
+      };
+
+      navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Remove active class from all
+          navButtons.forEach(b => {
+             b.classList.remove('active', 'text-white');
+             b.classList.add('text-gray-400');
+          });
+          
+          // Add active class to clicked
+          btn.classList.add('active', 'text-white');
+          btn.classList.remove('text-gray-400');
+
+          // Hide all panels
+          panels.forEach(p => p.classList.add('hidden'));
+
+          // Show target panel
+          const targetId = btn.getAttribute('data-target');
+          const targetPanel = document.getElementById(targetId);
+          if (targetPanel) {
+            targetPanel.classList.remove('hidden');
+          }
+
+          // Update Title
+          pageTitle.innerText = titles[targetId];
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Leaderboards | ThaiNXT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+            mono: ['Orbitron', 'monospace'],
+          },
+          colors: {
+            bgDark: '#090E18',
+            cardDark: '#111827',
+            primary: '#00FF88',
+            gold: '#FFD400',
+            cyanLight: '#00D4FF',
+            purpleDark: '#8B5CF6',
+            danger: '#FF4D4F',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #090E18; color: white; margin: 0; font-family: 'Inter', sans-serif; }
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+    }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-bgDark relative text-gray-300">
+  <!-- SIDEBAR -->
+  <aside class="w-[280px] bg-cardDark/80 border-r border-white/5 flex flex-col z-40">
+    <div class="h-[90px] flex items-center gap-4 px-8 border-b border-white/5 cursor-pointer" onclick="window.location.href='index.html'">
+      <i class="fa-solid fa-arrow-left text-gray-500 hover:text-white"></i>
+      <h1 class="text-xl font-display font-black text-white">Back to Game</h1>
+    </div>
+    
+    <div class="flex-1 py-8 px-5 flex flex-col gap-2">
+      <button class="w-full px-5 py-4 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors">
+        <i class="fa-solid fa-calendar-day text-primary"></i> Daily Race
+      </button>
+      <button class="w-full px-5 py-4 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors">
+        <i class="fa-solid fa-calendar-week text-cyanLight"></i> Weekly Race
+      </button>
+      <button class="w-full px-5 py-4 bg-white/5 rounded-2xl text-white font-bold border border-white/10 flex items-center gap-4">
+        <i class="fa-solid fa-trophy text-gold"></i> Global Rankings
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto p-10 relative">
+    <div class="max-w-4xl mx-auto flex flex-col gap-8">
+      
+      <div class="flex items-center justify-between">
+        <h2 class="text-3xl font-display font-black text-white">Global Leaderboards</h2>
+        <div class="bg-cardDark px-4 py-2 rounded-lg border border-white/5 font-mono text-sm font-bold">
+          Ends in: <span class="text-primary">14h 22m 10s</span>
+        </div>
+      </div>
+
+      <!-- Top 3 Podium -->
+      <div class="flex items-end justify-center gap-6 mt-10 mb-8 h-64">
+        <!-- Rank 2 -->
+        <div class="flex flex-col items-center gap-3">
+          <img src="https://i.pravatar.cc/150?img=12" class="w-16 h-16 rounded-full border-2 border-gray-300 shadow-[0_0_15px_rgba(209,213,219,0.5)]">
+          <span class="font-bold text-white text-sm">CryptoWhale</span>
+          <div class="w-32 h-32 bg-gradient-to-t from-gray-300/20 to-gray-300/5 rounded-t-xl border border-gray-300/30 flex items-center justify-center relative">
+            <span class="text-4xl font-black text-gray-300 opacity-50">2</span>
+            <div class="absolute bottom-4 font-mono font-bold text-white">฿ 45,210</div>
+          </div>
+        </div>
+
+        <!-- Rank 1 -->
+        <div class="flex flex-col items-center gap-3">
+          <i class="fa-solid fa-crown text-gold text-2xl animate-bounce"></i>
+          <img src="https://i.pravatar.cc/150?img=11" class="w-20 h-20 rounded-full border-4 border-gold shadow-[0_0_20px_rgba(255,212,0,0.6)]">
+          <span class="font-bold text-gold text-lg drop-shadow-[0_0_5px_rgba(255,212,0,0.5)]">Alex_Winner</span>
+          <div class="w-36 h-40 bg-gradient-to-t from-gold/20 to-gold/5 rounded-t-xl border border-gold/30 flex items-center justify-center relative shadow-[0_-10px_30px_rgba(255,212,0,0.1)]">
+            <span class="text-6xl font-black text-gold opacity-50">1</span>
+            <div class="absolute bottom-6 font-mono font-black text-white text-lg">฿ 92,400</div>
+          </div>
+        </div>
+
+        <!-- Rank 3 -->
+        <div class="flex flex-col items-center gap-3">
+          <img src="https://i.pravatar.cc/150?img=15" class="w-16 h-16 rounded-full border-2 border-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.5)]">
+          <span class="font-bold text-white text-sm">Luna99</span>
+          <div class="w-32 h-24 bg-gradient-to-t from-orange-500/20 to-orange-500/5 rounded-t-xl border border-orange-500/30 flex items-center justify-center relative">
+            <span class="text-4xl font-black text-orange-500 opacity-50">3</span>
+            <div class="absolute bottom-4 font-mono font-bold text-white">฿ 38,150</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaderboard Table -->
+      <div class="glass-panel overflow-hidden">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-cardDark border-b border-white/5">
+            <tr class="text-gray-500 uppercase text-[10px] tracking-widest">
+              <th class="p-4 font-bold w-16 text-center">Rank</th>
+              <th class="p-4 font-bold">Player</th>
+              <th class="p-4 font-bold text-right">Total Wagered</th>
+              <th class="p-4 font-bold text-right">Prize Pool Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-4 text-center font-bold text-gray-400">4</td>
+              <td class="p-4 text-white font-bold">Satoshi_N</td>
+              <td class="p-4 font-mono text-right text-white">฿ 28,450.00</td>
+              <td class="p-4 font-mono text-right text-primary">+ ฿ 500.00</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-4 text-center font-bold text-gray-400">5</td>
+              <td class="p-4 text-white font-bold">ThaiRoller</td>
+              <td class="p-4 font-mono text-right text-white">฿ 24,100.00</td>
+              <td class="p-4 font-mono text-right text-primary">+ ฿ 250.00</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-4 text-center font-bold text-gray-400">6</td>
+              <td class="p-4 text-white font-bold">DegenKing</td>
+              <td class="p-4 font-mono text-right text-white">฿ 19,800.00</td>
+              <td class="p-4 font-mono text-right text-primary">+ ฿ 100.00</td>
+            </tr>
+            <!-- User Rank Indicator -->
+            <tr class="bg-primary/5 border border-primary/20">
+              <td class="p-4 text-center font-bold text-primary">82</td>
+              <td class="p-4 text-white font-bold flex items-center gap-2"><img src="https://i.pravatar.cc/150?img=11" class="w-6 h-6 rounded-full border border-gold"> You (Alex_Winner)</td>
+              <td class="p-4 font-mono text-right text-white">฿ 1,240.00</td>
+              <td class="p-4 font-mono text-right text-gray-500">Unranked</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

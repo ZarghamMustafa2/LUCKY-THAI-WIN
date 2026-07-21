@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  phone        String        @unique
+  password     String
+  wallet       Float         @default(0)
+  role         String        @default("user") // "admin" or "user"
+  bets         Bet[]
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Round {
+  id             Int      @id @default(autoincrement())
+  round_number   String   @unique
+  start_time     DateTime
+  end_time       DateTime
+  winning_number String?
+  status         String   @default("active") // active, completed
+  bets           Bet[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Bet {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  round_id    Int
+  bet_number  String
+  amount      Float
+  prize       Float    @default(0)
+  status      String   @default("pending") // pending, won, lost
+  user        User     @relation(fields: [user_id], references: [id])
+  round       Round    @relation(fields: [round_id], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  type      String   // deposit, withdraw, bet, win
+  amount    Float
+  status    String   @default("pending") // pending, approved, rejected
+  user      User     @relation(fields: [user_id], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  id             Int      @id @default(autoincrement())
+  prize_1_digit  Float    @default(9)
+  prize_2_digit  Float    @default(90)
+  prize_3_digit  Float    @default(900)
+  prize_4_digit  Float    @default(9000)
+  prize_5_digit  Float    @default(90000)
+  prize_6_digit  Float    @default(900000)
+  round_time     Int      @default(5) // in minutes
+  min_bet        Float    @default(10)
+  max_bet        Float    @default(10000)
+  updatedAt      DateTime @updatedAt
+}
