@@ -347,8 +347,11 @@
       
       <div class="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-10">
         
-        <!-- Premium Live Stats -->
-        <div class="xl:col-span-8 order-3 xl:order-1 w-full grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <!-- LEFT COLUMN -->
+        <div class="contents xl:flex xl:flex-col xl:col-span-8 gap-6 lg:gap-10">
+          
+          <!-- Premium Live Stats -->
+          <div class="order-3 xl:order-none w-full grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             <div class="glass-panel p-5 flex items-center gap-4 group">
               <div class="w-12 h-12 rounded-2xl bg-cyanLight/10 flex items-center justify-center border border-cyanLight/20 group-hover:scale-110 group-hover:bg-cyanLight/20 transition-all shadow-[inset_0_0_15px_rgba(0,212,255,0.1)]">
                 <i class="fa-solid fa-users text-cyanLight text-xl drop-shadow-[0_0_8px_rgba(0,212,255,0.6)]"></i>
@@ -389,11 +392,9 @@
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- THE 3D WHEEL STAGE -->
-        <div class="xl:col-span-8 order-1 xl:order-2 w-full">
-          <div id="gameContainer" class="glass-panel relative flex flex-col items-center justify-center overflow-hidden min-h-[500px] md:min-h-[600px] lg:min-h-[700px] transition-transform duration-500">
+          <!-- THE 3D WHEEL STAGE -->
+          <div id="gameContainer" class="order-1 xl:order-none glass-panel relative flex flex-col items-center justify-center overflow-hidden min-h-[500px] md:min-h-[600px] lg:min-h-[700px] transition-transform duration-500">
             <!-- Background effects -->
             <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvc3ZnPg==')] opacity-50 mix-blend-overlay"></div>
             
@@ -471,10 +472,9 @@
             </div>
             
           </div>
-        </div>
 
-        <!-- RECENT WINNERS (Horizontal Scroll) -->
-        <div class="xl:col-span-8 order-4 xl:order-4 w-full flex flex-col gap-3 mt-2">
+          <!-- RECENT WINNERS (Horizontal Scroll) -->
+          <div class="order-4 xl:order-none w-full flex flex-col gap-3 mt-2">
             <div class="flex items-center justify-between px-2">
               <span class="text-sm font-bold text-gray-400 uppercase tracking-widest"><i class="fa-solid fa-clock-rotate-left mr-2"></i> Recent Draws</span>
             </div>
@@ -500,10 +500,9 @@
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- LIVE ACTIVITY TABLE -->
-        <div class="xl:col-span-8 order-5 xl:order-5 w-full glass-panel p-6 overflow-hidden flex flex-col gap-4 mb-10">
+          <!-- LIVE ACTIVITY TABLE -->
+          <div class="order-5 xl:order-none w-full glass-panel p-6 overflow-hidden flex flex-col gap-4 mb-10">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-lg font-display font-black text-white"><i class="fa-solid fa-chart-bar text-primary mr-2"></i> Live Bets</h3>
               <button class="bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl text-xs font-bold transition-colors">View All</button>
@@ -525,11 +524,12 @@
                 </tbody>
               </table>
             </div>
+          </div>
         </div>
 
         <!-- RIGHT SIDEBAR (Betting Panel) -->
-        <div class="xl:col-span-4 order-2 xl:order-3 xl:row-span-4 w-full z-20">
-          <div class="glass-panel p-6 lg:p-8 flex flex-col relative overflow-hidden border-t-2 border-t-primary shadow-[0_30px_60px_rgba(0,0,0,0.6)] sticky top-24">
+        <div class="contents xl:flex xl:flex-col xl:col-span-4 gap-6 lg:gap-10">
+          <div class="order-2 xl:order-none glass-panel p-6 lg:p-8 flex flex-col relative overflow-hidden border-t-2 border-t-primary shadow-[0_30px_60px_rgba(0,0,0,0.6)] sticky top-24 z-20">
             
             <!-- Ambient Panel Glow -->
             <div class="absolute -top-20 -right-20 w-48 h-48 bg-primary/20 rounded-full blur-[80px] pointer-events-none"></div>
