@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>ThaiNXT | Premium Crypto Casino</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -750,7 +750,7 @@
     <div id="particleContainer" class="absolute inset-0 z-0 pointer-events-none overflow-hidden"></div>
 
     <!-- HUD Container -->
-    <div id="resultModalContent" class="relative z-10 w-full h-full max-w-[1400px] mx-auto p-4 md:p-10 flex flex-col items-center justify-center transform scale-110 opacity-0 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-y-auto overflow-x-hidden pt-16 md:pt-10 pb-32 md:pb-10">
+    <div id="resultModalContent" class="relative z-10 w-full h-full max-w-[1400px] mx-auto p-4 md:p-10 flex flex-col items-center justify-center transform scale-110 opacity-0 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden">
       
       <!-- Top Left: Round Info (Floats in) -->
       <div class="absolute top-4 left-4 md:top-10 md:left-10 hud-element flex flex-col gap-1 border-l-2 border-primary pl-4 transition-colors duration-1000 z-20" id="hudBorderTop" style="--delay: 0.2s">
@@ -808,7 +808,7 @@
       </div>
 
       <!-- Bottom: Controls & History -->
-      <div class="absolute bottom-4 md:bottom-10 w-full px-4 md:px-10 flex flex-col md:flex-row justify-between items-center md:items-end hud-element gap-4 md:gap-6 z-20" style="--delay: 0.8s">
+      <div class="absolute bottom-8 md:bottom-10 w-full px-4 md:px-10 flex flex-col md:flex-row justify-between items-center md:items-end hud-element gap-4 md:gap-6 z-20 pb-safe" style="--delay: 0.8s">
         
         <!-- Recent Numbers -->
         <div class="flex flex-col gap-2 md:gap-3 w-full md:w-auto">
