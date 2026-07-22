@@ -276,6 +276,10 @@
       
       <div class="flex items-center gap-4 lg:gap-8">
         
+        <button onclick="window.location.reload()" class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-cardDark border border-white/5 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/50 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.5)]" title="Refresh Page">
+          <i class="fa-solid fa-rotate-right text-base md:text-lg hover:animate-spin"></i>
+        </button>
+
         <!-- Wallet & Deposit -->
         <div class="flex items-center bg-cardDark rounded-2xl border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden">
           <div class="px-6 py-3 flex items-center gap-3 border-r border-white/5 bg-gradient-to-r from-bgDark to-transparent">
@@ -1454,7 +1458,7 @@
       wheelGlow.classList.remove('opacity-[0.15]');
       wheelGlow.classList.add('opacity-40', 'animate-pulse');
       
-      spinWheelElement.style.transition = 'transform 1.5s cubic-bezier(0.1, 1, 0.1, 1)';
+      spinWheelElement.style.transition = 'transform 3.5s cubic-bezier(0.1, 1, 0.1, 1)';
       spinWheelElement.style.filter = 'blur(2px)';
       
       let index = 0;
@@ -1469,8 +1473,8 @@
         const currentAngle = currentRotation % 360;
         const targetAngle = 360 - (targetDigit * 36);
         
-        let addedRotation = 1080 + (targetAngle - currentAngle);
-        if (addedRotation < 1080) addedRotation += 360;
+        let addedRotation = 2520 + (targetAngle - currentAngle);
+        if (addedRotation < 2520) addedRotation += 360;
         
         currentRotation += addedRotation;
         spinWheelElement.style.transform = `rotate(${currentRotation}deg)`;
@@ -1482,7 +1486,7 @@
           
           index++;
           setTimeout(spinDigit, 200);
-        }, 1500);
+        }, 3500);
       }
       
       spinDigit();
