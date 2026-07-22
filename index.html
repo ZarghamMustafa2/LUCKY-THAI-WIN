@@ -1378,7 +1378,7 @@
     setInterval(addMockActivity, 1500);
 
     // --- Game Logic ---
-    let countdown = 5;
+    let countdown = 1800;
     let isDrawing = false;
     let currentRotation = 0;
     const spinWheelElement = document.getElementById('spinWheelElement');
@@ -1404,14 +1404,27 @@
       if(isDrawing) return;
       countdown--;
       
-      const percent = (countdown / 5) * 100;
+      const percent = (countdown / 1800) * 100;
       setProgress(percent);
+      
+      if (countdown <= 60 && !isDrawing && !currentBet) {
+        placeBetBtn.disabled = true;
+        placeBetBtn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+        placeBetBtn.innerHTML = '<span class="relative z-10"><i class="fa-solid fa-lock mr-2"></i>Locked (Drawing Soon)</span>';
+      } else if (countdown > 60 && !isDrawing && !currentBet) {
+        placeBetBtn.disabled = false;
+        placeBetBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+        if (placeBetBtn.innerHTML.indexOf('Place Bet') === -1) {
+          placeBetBtn.innerHTML = '<span class="relative z-10 font-display">Place Bet <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i></span>';
+        }
+      }
       
       if(countdown <= 0) {
         startDraw();
       } else {
-        const secs = countdown.toString().padStart(2, '0');
-        wheelText.innerText = secs;
+        const mins = Math.floor(countdown / 60).toString().padStart(2, '0');
+        const secs = (countdown % 60).toString().padStart(2, '0');
+        wheelText.innerText = `${mins}:${secs}`;
         
         for(let i=0; i<4; i++) {
           const d = document.getElementById(`digit-${i}`);
@@ -1519,9 +1532,9 @@
 
       setTimeout(() => {
         isDrawing = false;
-        countdown = 5;
+        countdown = 1800;
         placeBetBtn.disabled = false;
-        placeBetBtn.querySelector('span').innerText = 'Place Bet';
+        placeBetBtn.innerHTML = '<span class="relative z-10 font-display">Place Bet <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i></span>';
         placeBetBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
         placeBetBtn.classList.add('hover:scale-[1.02]');
         statusText.innerText = 'Accepting Bets';
