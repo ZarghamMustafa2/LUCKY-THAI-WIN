@@ -163,7 +163,8 @@
   <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-purpleDark opacity-[0.02] rounded-full blur-[150px] pointer-events-none z-0"></div>
 
   <!-- LEFT SIDEBAR -->
-  <aside class="w-[280px] bg-cardDark/80 backdrop-blur-2xl border-r border-white/5 hidden xl:flex flex-col flex-shrink-0 z-40 shadow-2xl transition-all duration-300 relative">
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] hidden xl:hidden transition-opacity duration-300 opacity-0"></div>
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-[100] transform -translate-x-full xl:relative xl:translate-x-0 w-[280px] bg-cardDark/95 xl:bg-cardDark/80 backdrop-blur-3xl border-r border-white/5 flex flex-col flex-shrink-0 shadow-2xl transition-transform duration-300">
     
     <!-- Logo Area -->
     <div class="h-[90px] flex items-center gap-4 px-8 border-b border-white/5 relative group cursor-pointer">
@@ -256,7 +257,7 @@
     <!-- TOP HEADER -->
     <header class="h-[70px] md:h-[90px] bg-bgDark/60 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 lg:px-10 z-30 flex-shrink-0 sticky top-0">
       <div class="flex items-center gap-6">
-        <button class="xl:hidden text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-bars text-2xl"></i></button>
+        <button id="mobileMenuBtn" class="xl:hidden text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-bars text-2xl"></i></button>
         <div class="xl:hidden flex items-center gap-3">
           <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-cyanLight flex items-center justify-center shadow-[0_0_15px_rgba(0,255,136,0.4)]">
             <i class="fa-solid fa-dice-d20 text-bgDark text-sm"></i>
@@ -613,28 +614,28 @@
 
     <!-- MOBILE BOTTOM NAV -->
     <div class="xl:hidden fixed bottom-0 left-0 right-0 h-[80px] bg-bgDark/90 backdrop-blur-xl border-t border-white/5 z-50 flex items-center justify-around px-2 pb-safe">
-      <button class="flex flex-col items-center gap-1.5 text-primary">
+      <a href="index.html" class="flex flex-col items-center gap-1.5 text-primary">
         <i class="fa-solid fa-gamepad text-xl drop-shadow-[0_0_8px_rgba(0,255,136,0.5)]"></i>
         <span class="text-[9px] font-bold uppercase tracking-widest">Casino</span>
-      </button>
-      <button class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
+      </a>
+      <a href="leaderboard.html" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
         <i class="fa-solid fa-trophy text-xl"></i>
         <span class="text-[9px] font-bold uppercase tracking-widest">Ranks</span>
-      </button>
-      <button class="flex flex-col items-center justify-center -mt-10 relative group">
+      </a>
+      <a href="dashboard.html" class="flex flex-col items-center justify-center -mt-10 relative group">
         <div class="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:bg-primary/50 transition-colors"></div>
         <div class="w-16 h-16 bg-gradient-to-tr from-primary to-cyanLight rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,255,136,0.4)] border-4 border-bgDark relative z-10 transform group-hover:scale-105 transition-transform">
           <i class="fa-solid fa-wallet text-bgDark text-xl"></i>
         </div>
-      </button>
-      <button class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
+      </a>
+      <button id="mobileChatBtn" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
         <i class="fa-solid fa-comments text-xl"></i>
         <span class="text-[9px] font-bold uppercase tracking-widest">Chat</span>
       </button>
-      <button class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
+      <a href="dashboard.html" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
         <i class="fa-solid fa-user text-xl"></i>
         <span class="text-[9px] font-bold uppercase tracking-widest">Profile</span>
-      </button>
+      </a>
     </div>
   </div>
 
@@ -947,6 +948,29 @@
     const resultPayout = document.getElementById('resultPayout');
     const resultPayoutText = document.getElementById('resultPayoutText');
     const resultIcon = document.getElementById('resultIcon');
+    
+    // Chat toggle logic
+    const headerChatToggleBtn = document.getElementById('headerChatToggleBtn');
+    const mobileChatBtn = document.getElementById('mobileChatBtn');
+    const floatingChatSidebar = document.getElementById('floatingChatSidebar');
+    const closeChatBtn = document.getElementById('closeChatBtn');
+
+    function toggleChat() {
+        floatingChatSidebar.classList.toggle('translate-x-full');
+        floatingChatSidebar.classList.toggle('opacity-0');
+        floatingChatSidebar.classList.toggle('pointer-events-none');
+    }
+
+    if(headerChatToggleBtn) {
+        headerChatToggleBtn.addEventListener('click', toggleChat);
+    }
+    if(mobileChatBtn) {
+        mobileChatBtn.addEventListener('click', toggleChat);
+    }
+    if(closeChatBtn) {
+        closeChatBtn.addEventListener('click', toggleChat);
+    }
+    
     const closeModalBtn = document.getElementById('closeModalBtn');
     const modalGlow = document.getElementById('modalGlow');
     const toast = document.getElementById('toast');
@@ -1664,6 +1688,28 @@
         historyBtn.addEventListener('click', () => {
             window.location.href = 'dashboard.html';
         });
+    }
+
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    if (mobileMenuBtn && sidebar && sidebarOverlay) {
+      function toggleMenu() {
+        const isClosed = sidebar.classList.contains('-translate-x-full');
+        if (isClosed) {
+          sidebar.classList.remove('-translate-x-full');
+          sidebarOverlay.classList.remove('hidden');
+          setTimeout(() => sidebarOverlay.classList.remove('opacity-0'), 10);
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          sidebarOverlay.classList.add('opacity-0');
+          setTimeout(() => sidebarOverlay.classList.add('hidden'), 300);
+        }
+      }
+      mobileMenuBtn.addEventListener('click', toggleMenu);
+      sidebarOverlay.addEventListener('click', toggleMenu);
     }
 
     // Ripple Effect Logic
