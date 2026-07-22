@@ -1378,7 +1378,15 @@
     setInterval(addMockActivity, 1500);
 
     // --- Game Logic ---
-    let countdown = 1800;
+    function getRemainingSeconds() {
+      const ms = Date.now();
+      const interval = 30 * 60 * 1000;
+      let nextDrawTime = Math.ceil(ms / interval) * interval;
+      if (nextDrawTime === ms) nextDrawTime += interval;
+      return Math.max(0, Math.floor((nextDrawTime - ms) / 1000));
+    }
+    
+    let countdown = getRemainingSeconds();
     let isDrawing = false;
     let currentRotation = 0;
     const spinWheelElement = document.getElementById('spinWheelElement');
@@ -1402,7 +1410,7 @@
 
     function gameLoop() {
       if(isDrawing) return;
-      countdown--;
+      countdown = getRemainingSeconds();
       
       const percent = (countdown / 1800) * 100;
       setProgress(percent);
@@ -1532,7 +1540,7 @@
 
       setTimeout(() => {
         isDrawing = false;
-        countdown = 1800;
+        countdown = getRemainingSeconds();
         placeBetBtn.disabled = false;
         placeBetBtn.innerHTML = '<span class="relative z-10 font-display">Place Bet <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i></span>';
         placeBetBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
