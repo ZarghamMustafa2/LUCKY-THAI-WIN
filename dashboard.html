@@ -44,40 +44,40 @@
     .nav-btn.active { background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
   </style>
 </head>
-<body class="flex h-screen overflow-hidden bg-bgDark relative text-gray-300">
+<body class="flex flex-col md:flex-row h-screen overflow-hidden bg-bgDark relative text-gray-300">
 
   <!-- Ambient Background -->
   <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-purpleDark opacity-[0.03] rounded-full blur-[150px] pointer-events-none"></div>
   <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-cyanLight opacity-[0.03] rounded-full blur-[150px] pointer-events-none"></div>
 
   <!-- SIDEBAR -->
-  <aside class="w-[280px] bg-cardDark/80 border-r border-white/5 flex flex-col z-40">
-    <div class="h-[90px] flex items-center gap-4 px-8 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors" onclick="window.location.href='index.html'">
+  <aside class="w-full md:w-[280px] bg-cardDark/80 border-b md:border-r border-white/5 flex flex-col z-40 flex-shrink-0">
+    <div class="h-[70px] md:h-[90px] flex items-center gap-4 px-4 md:px-8 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-colors" onclick="window.location.href='index.html'">
       <i class="fa-solid fa-arrow-left text-gray-500"></i>
-      <h1 class="text-xl font-display font-black text-white">Back to Game</h1>
+      <h1 class="text-lg md:text-xl font-display font-black text-white">Back to Game</h1>
     </div>
     
-    <div class="flex-1 py-8 px-5 flex flex-col gap-2">
-      <button data-target="panel-profile" class="nav-btn active w-full px-5 py-4 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors border border-transparent">
+    <div class="flex-row md:flex-col flex overflow-x-auto md:overflow-y-auto py-4 md:py-8 px-4 md:px-5 gap-2 custom-scrollbar">
+      <button data-target="panel-profile" class="nav-btn active flex-shrink-0 md:w-full px-4 md:px-5 py-3 md:py-4 rounded-xl md:rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-2 md:gap-4 transition-colors border border-transparent">
         <i class="fa-solid fa-user text-cyanLight"></i> Profile
       </button>
-      <button data-target="panel-wallet" class="nav-btn w-full px-5 py-4 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors border border-transparent">
+      <button data-target="panel-wallet" class="nav-btn flex-shrink-0 md:w-full px-4 md:px-5 py-3 md:py-4 rounded-xl md:rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-2 md:gap-4 transition-colors border border-transparent">
         <i class="fa-solid fa-wallet text-primary"></i> Wallet & History
       </button>
-      <button data-target="panel-vip" class="nav-btn w-full px-5 py-4 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors border border-transparent">
+      <button data-target="panel-vip" class="nav-btn flex-shrink-0 md:w-full px-4 md:px-5 py-3 md:py-4 rounded-xl md:rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-2 md:gap-4 transition-colors border border-transparent">
         <i class="fa-solid fa-crown text-gold"></i> VIP System
       </button>
-      <button data-target="panel-security" class="nav-btn w-full px-5 py-4 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors border border-transparent">
+      <button data-target="panel-security" class="nav-btn flex-shrink-0 md:w-full px-4 md:px-5 py-3 md:py-4 rounded-xl md:rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-2 md:gap-4 transition-colors border border-transparent">
         <i class="fa-solid fa-shield-halved text-danger"></i> Security (2FA)
       </button>
-      <button data-target="panel-rewards" class="nav-btn w-full px-5 py-4 rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-4 transition-colors border border-transparent">
+      <button data-target="panel-rewards" class="nav-btn flex-shrink-0 md:w-full px-4 md:px-5 py-3 md:py-4 rounded-xl md:rounded-2xl text-gray-400 hover:text-white font-bold flex items-center gap-2 md:gap-4 transition-colors border border-transparent">
         <i class="fa-solid fa-gift text-purpleDark"></i> Rewards
       </button>
     </div>
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="flex-1 overflow-y-auto custom-scrollbar p-10 relative">
+  <main class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-10 relative">
     <div class="max-w-5xl mx-auto flex flex-col gap-8">
       
       <!-- Header common to all tabs -->
