@@ -1454,8 +1454,8 @@
       wheelGlow.classList.remove('opacity-[0.15]');
       wheelGlow.classList.add('opacity-40', 'animate-pulse');
       
-      spinWheelElement.style.transition = 'transform 3.5s cubic-bezier(0.1, 1, 0.1, 1)';
-      spinWheelElement.style.filter = 'blur(2px)';
+      spinWheelElement.style.transition = 'transform 5s cubic-bezier(0.1, 1, 0.1, 1)';
+      // Removed blur to keep numbers clear
       
       let index = 0;
       
@@ -1469,8 +1469,8 @@
         const currentAngle = currentRotation % 360;
         const targetAngle = 360 - (targetDigit * 36);
         
-        let addedRotation = 2520 + (targetAngle - currentAngle);
-        if (addedRotation < 2520) addedRotation += 360;
+        let addedRotation = 5400 + (targetAngle - currentAngle); // 15 spins for high speed
+        if (addedRotation < 5400) addedRotation += 360;
         
         currentRotation += addedRotation;
         spinWheelElement.style.transform = `rotate(${currentRotation}deg)`;
@@ -1482,14 +1482,13 @@
           
           index++;
           setTimeout(spinDigit, 200);
-        }, 3500);
+        }, 5000);
       }
       
       spinDigit();
     }
 
     function finishDraw(winningNumStr) {
-      spinWheelElement.style.filter = 'none';
       wheelGlow.classList.remove('opacity-40', 'animate-pulse');
       wheelGlow.classList.add('opacity-[0.15]');
       
