@@ -293,7 +293,7 @@ export default function Home() {
         {/* TOP HEADER */}
         <header className="h-20 bg-[#0D0D0D]/90 backdrop-blur-lg border-b border-[rgba(255,255,255,0.05)] flex items-center justify-between px-4 lg:px-8 z-20 flex-shrink-0 sticky top-0 shadow-sm">
           <div className="flex items-center gap-4">
-            <button onClick={() => setIsMobileMenuOpen(true)} className="xl:hidden text-gray-400 hover:text-white"><Menu /></button>
+            <button onClick={() => setIsMobileMenuOpen(prev => !prev)} className="xl:hidden p-2 text-gray-400 hover:text-white cursor-pointer relative z-50"><Menu className="w-7 h-7" /></button>
             <div className="xl:hidden flex items-center gap-2">
               <span className="text-[#FFD700] font-black text-xl">THAINXT</span>
             </div>
