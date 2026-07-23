@@ -16,10 +16,11 @@
             mono: ['Orbitron', 'monospace'],
           },
           colors: {
-            bgDark: '#0f212e',
-            cardDark: '#1a2c38',
-            primary: '#00e701',
-            gold: '#FFD400',
+            primary: '#FFD700',
+            secondary: '#121B2F',
+            bgDark: '#0D0D0D',
+            cardDark: '#121B2F',
+            gold: '#FFD700',
             cyanLight: '#00D4FF',
             purpleDark: '#8B5CF6',
             danger: '#FF4D4F',
@@ -264,14 +265,20 @@
           </div>
         </div>
         
-        <!-- Premium Search Bar -->
-        <div class="hidden lg:flex items-center bg-cardDark rounded-2xl px-5 py-3 border border-white/5 hover:border-white/10 focus-within:border-primary/50 focus-within:shadow-[0_0_15px_rgba(0,255,136,0.1)] transition-all w-[360px] group">
-          <i class="fa-solid fa-search text-gray-500 group-focus-within:text-primary transition-colors text-lg"></i>
-          <input type="text" placeholder="Search games, providers..." class="bg-transparent border-none outline-none text-sm text-white w-full font-bold placeholder:text-gray-600 ml-4">
-          <div class="flex items-center gap-1 bg-white/5 px-2 py-1 rounded text-[10px] text-gray-500 font-bold border border-white/5">
-            <span>Ctrl</span><span>K</span>
+        <!-- Active Users Indicator -->
+        <div class="hidden md:flex items-center gap-3 bg-cardDark rounded-2xl px-4 py-2 border border-white/5">
+          <div class="w-3 h-3 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.8)] animate-pulse"></div>
+          <div class="flex flex-col">
+            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Active Users</span>
+            <span class="text-sm font-mono font-bold text-white" id="activeUsersCount">12,458</span>
           </div>
         </div>
+      </div>
+
+      <!-- Center: Current Bet -->
+      <div class="hidden lg:flex items-center flex-col absolute left-1/2 -translate-x-1/2">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Current Bet</span>
+        <span class="text-xl font-mono font-black text-gold" id="headerCurrentBet">₹0</span>
       </div>
       
       <div class="flex items-center gap-4 lg:gap-8">
@@ -324,7 +331,7 @@
               <span class="text-[10px] font-black text-gold uppercase tracking-widest">VIP Platinum</span>
             </div>
             <div class="relative">
-              <img src="https://i.pravatar.cc/150?img=11" alt="User" class="w-12 h-12 rounded-2xl border-2 border-gold object-cover shadow-[0_0_15px_rgba(255,212,0,0.3)]">
+              <img src="https://i.pravatar.cc/150?img=11" alt="User" class="w-12 h-12 rounded-full border-2 border-gold object-cover shadow-[0_0_15px_rgba(255,212,0,0.3)]">
               <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-gold rounded-full flex items-center justify-center border-2 border-bgDark text-bgDark text-[8px] font-black">
                 <i class="fa-solid fa-crown"></i>
               </div>
@@ -333,8 +340,14 @@
           
           <!-- Profile Dropdown -->
           <div id="profileDropdown" class="hidden absolute top-14 right-0 w-56 bg-cardDark border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 flex flex-col overflow-hidden py-2">
-            <a href="dashboard.html" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-white flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-user w-4 text-gray-500"></i> Profile</a>
-            <a href="dashboard.html" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-white flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-wallet w-4 text-gray-500"></i> Wallet</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-user w-4 text-gray-500"></i> Profile</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-wallet w-4 text-gray-500"></i> Wallet</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-arrow-down w-4 text-gray-500"></i> Deposit</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-arrow-up w-4 text-gray-500"></i> Withdraw</a>
+            <div class="h-px bg-white/5 my-1"></div>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-history w-4 text-gray-500"></i> Bet History</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-file-invoice w-4 text-gray-500"></i> Transaction History</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-cog w-4 text-gray-500"></i> Settings</a>
             <div class="h-px bg-white/5 my-1"></div>
             <a href="#" class="px-4 py-2 hover:bg-white/5 text-danger hover:text-danger flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-sign-out-alt w-4"></i> Logout</a>
           </div>
@@ -455,11 +468,11 @@
                     <circle id="timerCircle" class="progress-ring__circle" cx="60" cy="60" r="54" fill="transparent" stroke="#00FF88" stroke-width="12" stroke-dasharray="339.292" stroke-dashoffset="0" stroke-linecap="round" />
                   </svg>
                   
-                  <!-- Inner Hub Metal -->
-                  <div class="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-full border-4 md:border-8 border-bgDark shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] flex flex-col items-center justify-center relative z-10 bg-gradient-to-b from-[#1A2536] to-[#111827]">
-                    <span class="text-[8px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5 md:mb-1 hidden md:block">Spinning In</span>
-                    <span id="wheelText" class="font-mono text-xl md:text-3xl font-black text-primary drop-shadow-[0_0_15px_rgba(0,255,136,0.6)] tracking-wider">15</span>
-                  </div>
+                  <!-- Glowing SPIN Button Center -->
+                  <button id="centerSpinBtn" class="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-full border-4 md:border-8 border-gold shadow-[0_0_30px_rgba(255,212,0,0.5),inset_0_0_20px_rgba(0,0,0,0.8)] flex flex-col items-center justify-center relative z-10 bg-gradient-to-b from-[#121B2F] to-[#0D0D0D] cursor-pointer hover:scale-105 transition-transform animate-[pulse_2s_infinite]">
+                    <span class="font-display text-xl md:text-3xl font-black text-gold drop-shadow-[0_0_15px_rgba(255,212,0,0.8)] tracking-widest">SPIN</span>
+                    <span id="wheelText" class="text-[10px] font-mono text-gray-400 mt-1">15:00</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -531,95 +544,116 @@
           </div>
         </div>
 
-        <!-- RIGHT SIDEBAR (Betting Panel) -->
+        <!-- RIGHT SIDEBAR (Number Grid) -->
         <div class="contents xl:flex xl:flex-col xl:col-span-4 gap-6 lg:gap-10">
-          <div class="order-2 xl:order-none glass-panel p-6 lg:p-8 flex flex-col relative overflow-hidden border-t-2 border-t-primary shadow-[0_30px_60px_rgba(0,0,0,0.6)] xl:sticky xl:top-24 z-20">
+          <div class="order-2 xl:order-none glass-panel p-6 lg:p-8 flex flex-col relative overflow-hidden border-t-2 border-t-gold shadow-[0_30px_60px_rgba(0,0,0,0.6)] xl:sticky xl:top-24 z-20">
             
             <!-- Ambient Panel Glow -->
-            <div class="absolute -top-20 -right-20 w-48 h-48 bg-primary/20 rounded-full blur-[80px] pointer-events-none"></div>
+            <div class="absolute -top-20 -right-20 w-48 h-48 bg-gold/10 rounded-full blur-[80px] pointer-events-none"></div>
 
-            <!-- Bet Type Toggle -->
-            <div class="flex bg-bgDark p-1.5 rounded-2xl mb-8 border border-white/5 shadow-inner relative z-10">
-              <button id="manualTabBtn" class="flex-1 bg-cardDark text-white py-3.5 rounded-xl font-black text-xs uppercase tracking-widest shadow-md border border-white/10">Manual</button>
-              <button id="autoTabBtn" class="flex-1 text-gray-500 hover:text-gray-300 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest transition-colors">Auto</button>
-            </div>
+            <h3 class="text-2xl font-display font-black text-white text-center mb-8"><i class="fa-solid fa-gem text-gold mr-2"></i> Select Number</h3>
             
-            <div class="flex flex-col gap-6 flex-grow relative z-10">
+            <div class="grid grid-cols-5 gap-3 sm:gap-4 relative z-10">
+              <!-- First Row -->
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">1</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">2</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">3</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">4</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">5</button>
               
-              <!-- Bet Type Selector -->
-              <div class="flex items-center justify-between bg-cardDark rounded-xl p-1 border border-white/5 shadow-inner">
-                <button type="button" class="bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg bg-primary/20 text-primary transition-colors" data-digits="1">1 Digit</button>
-                <button type="button" class="bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg text-gray-500 hover:text-white transition-colors" data-digits="2">2 Digits</button>
-                <button type="button" class="bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg text-gray-500 hover:text-white transition-colors" data-digits="3">3 Digits</button>
-                <button type="button" class="bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg text-gray-500 hover:text-white transition-colors" data-digits="4">4 Digits</button>
-              </div>
-
-              <!-- Target Input -->
-              <div class="flex flex-col gap-2 group">
-                <label class="text-gray-400 text-[10px] font-bold uppercase tracking-widest flex justify-between group-focus-within:text-cyanLight transition-colors">
-                  <span>Target Sequence</span>
-                  <span class="text-cyanLight">1-4 Digits</span>
-                </label>
-                <div class="bg-bgDark rounded-2xl p-2 border border-white/5 group-focus-within:border-cyanLight/50 shadow-inner transition-colors">
-                  <input type="text" id="targetInput" class="w-full bg-transparent text-white font-mono text-3xl sm:text-4xl p-2 sm:p-4 text-center tracking-widest sm:tracking-[0.4em] outline-none placeholder:text-gray-800 font-black" placeholder="8">
-                </div>
-              </div>
-
-              <!-- Amount Input & Quick Chips -->
-              <div class="flex flex-col gap-2 mt-2 group">
-                <label class="text-gray-400 text-[10px] font-bold uppercase tracking-widest flex justify-between group-focus-within:text-gold transition-colors">
-                  <span>Bet Amount</span>
-                  <span class="text-gold">฿</span>
-                </label>
-                <div class="bg-bgDark rounded-2xl flex items-center p-2 relative overflow-hidden border border-white/5 group-focus-within:border-gold/50 shadow-inner transition-colors">
-                  <input type="number" id="amountInput" class="w-full bg-transparent text-white font-mono font-black text-3xl p-4 text-center outline-none placeholder:text-gray-800" placeholder="100">
-                </div>
-                
-                <div class="grid grid-cols-5 gap-2 mt-4" id="quickChips">
-                  <button data-action="half" class="bg-white/5 py-3 rounded-xl text-[10px] font-black text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">1/2</button>
-                  <button data-action="2x" class="bg-white/5 py-3 rounded-xl text-[10px] font-black text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">2x</button>
-                  <button data-action="+100" class="bg-white/5 py-3 rounded-xl text-[10px] font-black text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">+100</button>
-                  <button data-action="+1K" class="bg-white/5 py-3 rounded-xl text-[10px] font-black text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">+1K</button>
-                  <button data-action="max" class="bg-gold/10 py-3 rounded-xl text-[10px] font-black text-gold hover:bg-gold/20 border border-gold/20 transition-all shadow-[0_0_10px_rgba(255,212,0,0.1)]">MAX</button>
-                </div>
-              </div>
-              
-              <!-- Stats Divider -->
-              <div class="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-2"></div>
-              
-              <!-- Betting Stats -->
-              <div class="grid grid-cols-2 gap-4">
-                <div class="bg-bgDark rounded-2xl p-4 border border-white/5 shadow-inner flex flex-col gap-1 items-center justify-center">
-                  <span class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Multiplier</span>
-                  <span id="multiplierText" class="text-white font-mono font-black text-xl">x0.00</span>
-                </div>
-                <div class="bg-bgDark rounded-2xl p-4 border border-white/5 shadow-inner flex flex-col gap-1 items-center justify-center">
-                  <span class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Win Chance</span>
-                  <span id="chanceText" class="text-white font-mono font-black text-xl">0.00%</span>
-                </div>
-              </div>
-              
-              <!-- Payout Info -->
-              <div class="bg-gradient-to-br from-primary/10 to-transparent rounded-2xl p-5 border border-primary/30 flex justify-between items-center shadow-[inset_0_0_30px_rgba(0,255,136,0.05)] mt-2 group relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-[40px] pointer-events-none group-hover:bg-primary/30 transition-colors"></div>
-                <span class="text-primary text-xs font-bold uppercase tracking-widest relative z-10">Est. Payout</span>
-                <span id="payoutText" class="text-white font-mono font-black text-2xl flex items-center gap-2 drop-shadow-[0_0_10px_rgba(0,255,136,0.5)] relative z-10">
-                  ฿ 0
-                </span>
-              </div>
-
-              <!-- Place Bet Button -->
-              <button id="placeBetBtn" class="w-full bg-primary hover:bg-[#00e67a] text-bgDark py-6 rounded-2xl font-display font-black uppercase tracking-[0.2em] text-lg shadow-[0_0_30px_rgba(0,255,136,0.4)] mt-4 hover:shadow-[0_0_40px_rgba(0,255,136,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden group">
-                <div class="absolute inset-0 bg-white/20 -skew-x-12 -translate-x-full group-hover:animate-[shimmer_1s_forwards]"></div>
-                <span class="relative z-10">Place Bet</span>
-              </button>
-              <button id="cancelBetBtn" class="w-full bg-danger/10 text-danger hover:bg-danger/20 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all hidden mt-2 border border-danger/30">
-                Cancel Bet
-              </button>
+              <!-- Second Row -->
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">6</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">7</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">8</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">9</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">0</button>
             </div>
+
+            <!-- Small Instruction -->
+            <p class="text-center text-gray-500 text-xs mt-6 font-bold tracking-widest uppercase">Click any number to place bet</p>
           </div>
           
         </div>
+      </div>
+
+      <!-- BOTTOM SECTIONS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 mt-10">
+        
+        <!-- Active Bets -->
+        <div class="glass-panel p-6 lg:p-8 rounded-[32px] border-t-2 border-t-primary shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+          <h3 class="text-lg font-display font-black text-white mb-6"><i class="fa-solid fa-bolt text-primary mr-2"></i> My Active Bets</h3>
+          <div class="space-y-4" id="activeBetsList">
+            <div class="text-center text-gray-500 py-10 text-sm font-bold tracking-widest uppercase">
+              <i class="fa-solid fa-inbox text-3xl mb-3 opacity-50 block"></i>
+              No Active Bets
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Draws -->
+        <div class="glass-panel p-6 lg:p-8 rounded-[32px] border-t-2 border-t-gold shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+          <h3 class="text-lg font-display font-black text-white mb-6"><i class="fa-solid fa-calendar-alt text-gold mr-2"></i> Upcoming Draws</h3>
+          <div class="space-y-4">
+            <div class="bg-bgDark p-4 rounded-2xl border border-white/5 flex justify-between items-center group hover:border-gold/30 transition-colors">
+              <div>
+                <div class="text-sm font-bold text-white tracking-widest">Draw #4829</div>
+                <div class="text-[10px] text-primary uppercase tracking-widest mt-1 font-bold animate-pulse">Starting soon</div>
+              </div>
+              <div class="text-gold font-mono font-black text-xl drop-shadow-[0_0_8px_rgba(255,212,0,0.4)]">2m 30s</div>
+            </div>
+            <div class="bg-bgDark p-4 rounded-2xl border border-white/5 flex justify-between items-center opacity-60 group hover:opacity-100 transition-all">
+              <div>
+                <div class="text-sm font-bold text-white tracking-widest">Draw #4830</div>
+                <div class="text-[10px] text-gray-500 uppercase tracking-widest mt-1 font-bold">Next Phase</div>
+              </div>
+              <div class="text-gray-400 font-mono font-black text-xl">32m 00s</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Game Rules -->
+        <div class="glass-panel p-6 lg:p-8 rounded-[32px] border-t-2 border-t-cyanLight shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+          <h3 class="text-lg font-display font-black text-white mb-6"><i class="fa-solid fa-book text-cyanLight mr-2"></i> How To Play</h3>
+          <div class="space-y-3">
+            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
+              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
+                Figure (1x8)
+                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
+              </summary>
+              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
+                Select a single digit. If your number appears anywhere in the winning sequence, you win 8x your bet amount.
+              </div>
+            </details>
+            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
+              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
+                Akada (1x80)
+                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
+              </summary>
+              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
+                Select two digits. If both numbers appear in the winning sequence, you win 80x your bet amount.
+              </div>
+            </details>
+            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
+              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
+                Ring (1x800)
+                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
+              </summary>
+              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
+                Select three digits. If all three numbers appear in the winning sequence, you win 800x your bet amount.
+              </div>
+            </details>
+            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
+              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
+                Packet (1x6000)
+                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
+              </summary>
+              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
+                Select the complete combination. If your combination perfectly matches the winning sequence, you win 6000x your bet amount.
+              </div>
+            </details>
+          </div>
+        </div>
+
       </div>
     </main>
 
@@ -936,13 +970,27 @@
 
   <script>
     // --- UI Elements ---
-    const targetInput = document.getElementById('targetInput');
-    const amountInput = document.getElementById('amountInput');
-    const payoutText = document.getElementById('payoutText');
-    const multiplierText = document.getElementById('multiplierText');
-    const chanceText = document.getElementById('chanceText');
-    const quickChips = document.getElementById('quickChips');
-    const placeBetBtn = document.getElementById('placeBetBtn');
+    const gridNumBtns = document.querySelectorAll('.grid-num-btn');
+    const betBottomSheet = document.getElementById('betBottomSheet');
+    const betBottomSheetBackdrop = document.getElementById('betBottomSheetBackdrop');
+    const betBottomSheetContent = document.getElementById('betBottomSheetContent');
+    const closeSheetBtn = document.getElementById('closeSheetBtn');
+    const sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
+    const roundSelectionBtns = document.querySelectorAll('.round-btn');
+    const betTypeSelectionBtns = document.querySelectorAll('.bet-type-card');
+    const dynamicInputSection = document.getElementById('dynamicInputSection');
+    const sheetExtraInput = document.getElementById('sheetExtraInput');
+    const sheetQuickChips = document.getElementById('sheetQuickChips');
+    const sheetAmountInput = document.getElementById('sheetAmountInput');
+    const summarySequence = document.getElementById('summarySequence');
+    const summaryRound = document.getElementById('summaryRound');
+    const summaryMult = document.getElementById('summaryMult');
+    const summaryPayout = document.getElementById('summaryPayout');
+    const confirmBetBtn = document.getElementById('confirmBetBtn');
+    
+    const centerSpinBtn = document.getElementById('centerSpinBtn');
+    const activeUsersCount = document.getElementById('activeUsersCount');
+    const headerCurrentBet = document.getElementById('headerCurrentBet');
     const wheelText = document.getElementById('wheelText');
     const timerCircle = document.getElementById('timerCircle');
     const statusText = document.getElementById('statusText');
@@ -1305,117 +1353,160 @@
       walletBalanceEl.innerText = `฿ ${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
     }
 
-    let currentBetDigits = 1;
-    document.querySelectorAll('.bet-type-btn').forEach(btn => {
+    let sheetState = {
+      number: '',
+      round: '',
+      type: '',
+      extraDigits: '',
+      multiplier: 0,
+      amount: 0
+    };
+
+    function updateSummary() {
+      let fullSeq = sheetState.number;
+      if (sheetState.type === 'akada' || sheetState.type === 'ring') {
+         fullSeq += sheetState.extraDigits;
+      } else if (sheetState.type === 'packet') {
+         fullSeq += ' (Packet)';
+      }
+      summarySequence.innerText = fullSeq || '-';
+      
+      let roundMap = {'1':'First', '2':'Second', '3':'Third', '4':'Fourth'};
+      summaryRound.innerText = roundMap[sheetState.round] || '-';
+      
+      summaryMult.innerText = sheetState.multiplier > 0 ? `1x${sheetState.multiplier}` : '1x0';
+      
+      const payout = sheetState.amount * sheetState.multiplier;
+      summaryPayout.innerText = `₹${payout.toLocaleString()}`;
+      
+      // Validate Bet
+      let isValid = false;
+      if (sheetState.number && sheetState.round && sheetState.type && sheetState.amount > 0) {
+        if (sheetState.type === 'figure') isValid = true;
+        if (sheetState.type === 'akada' && sheetState.extraDigits.length === 1) isValid = true;
+        if (sheetState.type === 'ring' && sheetState.extraDigits.length === 2) isValid = true;
+        if (sheetState.type === 'packet') isValid = true;
+      }
+      confirmBetBtn.disabled = !isValid;
+    }
+
+    // Number Grid Click
+    gridNumBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.bet-type-btn').forEach(b => {
-          b.className = 'bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg text-gray-500 hover:text-white transition-colors';
+        sheetState.number = e.target.innerText;
+        sheetSelectedNumber.innerText = sheetState.number;
+        
+        // Reset state
+        sheetState.type = '';
+        sheetState.extraDigits = '';
+        sheetState.multiplier = 0;
+        sheetExtraInput.value = '';
+        dynamicInputSection.classList.add('hidden');
+        betTypeSelectionBtns.forEach(b => {
+          b.classList.remove('border-gold');
+          b.classList.add('border-white/10');
         });
-        const clicked = e.currentTarget;
-        clicked.className = 'bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg bg-primary/20 text-primary transition-colors';
-        currentBetDigits = parseInt(clicked.dataset.digits);
-        targetInput.placeholder = '8'.repeat(currentBetDigits);
-        if (targetInput.value.length > currentBetDigits) {
-          targetInput.value = targetInput.value.slice(0, currentBetDigits);
-        }
-        updateCalculations();
+        
+        updateSummary();
+        openBottomSheet();
       });
     });
 
-    function updateCalculations() {
-      let rawTarget = targetInput.value.replace(/\D/g, '');
-      let uniqueTarget = '';
-      for(let char of rawTarget) {
-         if(!uniqueTarget.includes(char)) {
-            uniqueTarget += char;
-         }
-      }
-      const targetStr = uniqueTarget.slice(0, currentBetDigits);
-      targetInput.value = targetStr;
-      
-      const amount = Number(amountInput.value) || 0;
-      
-      let mult = 0;
-      let chance = 0;
-      
-      if(targetStr.length === currentBetDigits) {
-        mult = (Math.pow(10, targetStr.length) * 0.9) / 4;
-        chance = (100 / Math.pow(10, targetStr.length)) * 4;
-      }
-      
-      multiplierText.innerText = `x${mult.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-      chanceText.innerText = `${chance.toLocaleString(undefined, {maximumFractionDigits: 2})}%`;
-      
-      const payout = amount * mult;
-      payoutText.innerHTML = `฿ ${payout.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    function openBottomSheet() {
+      betBottomSheet.classList.remove('hidden');
+      setTimeout(() => {
+        betBottomSheetBackdrop.classList.remove('opacity-0');
+        betBottomSheetContent.classList.remove('translate-y-full');
+      }, 10);
     }
 
-    targetInput.addEventListener('input', updateCalculations);
-    amountInput.addEventListener('input', updateCalculations);
+    function closeBottomSheet() {
+      betBottomSheetBackdrop.classList.add('opacity-0');
+      betBottomSheetContent.classList.add('translate-y-full');
+      setTimeout(() => {
+        betBottomSheet.classList.add('hidden');
+      }, 300);
+    }
 
-    quickChips.addEventListener('click', (e) => {
-      const btn = e.target.closest('button');
-      if(!btn) return;
-      const action = btn.getAttribute('data-action');
-      let current = Number(amountInput.value) || 0;
-      
-      if(action === 'half') current = Math.floor(current / 2);
-      if(action === '2x') current = current * 2;
-      if(action === '+100') current += 100;
-      if(action === '+1K') current += 1000;
-      if(action === 'max') current = currentBalance;
-      
-      amountInput.value = current;
-      updateCalculations();
+    closeSheetBtn.addEventListener('click', closeBottomSheet);
+    betBottomSheetBackdrop.addEventListener('click', closeBottomSheet);
+
+    // Round Selection
+    roundSelectionBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const clicked = e.currentTarget;
+        roundSelectionBtns.forEach(b => {
+          b.classList.remove('border-gold', 'text-gold');
+          b.classList.add('border-white/10', 'text-gray-300');
+          b.querySelector('i').classList.replace('fa-check-square', 'fa-square');
+        });
+        clicked.classList.remove('border-white/10', 'text-gray-300');
+        clicked.classList.add('border-gold', 'text-gold');
+        clicked.querySelector('i').classList.replace('fa-square', 'fa-check-square');
+        sheetState.round = clicked.dataset.round;
+        updateSummary();
+      });
     });
 
-    // Auto Bet & Cancel Bet Logic
-    let isAutoBet = false;
-    let autoBetConfig = null;
-    
-    document.getElementById('manualTabBtn').addEventListener('click', () => {
-        isAutoBet = false;
-        const m = document.getElementById('manualTabBtn');
-        const a = document.getElementById('autoTabBtn');
-        m.classList.replace('text-gray-500', 'text-white');
-        m.classList.replace('hover:text-gray-300', 'bg-cardDark');
-        m.classList.add('shadow-md', 'border', 'border-white/10');
+    // Bet Type Selection
+    betTypeSelectionBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const clicked = e.currentTarget;
+        betTypeSelectionBtns.forEach(b => {
+          b.classList.remove('border-gold');
+          b.classList.add('border-white/10');
+        });
+        clicked.classList.remove('border-white/10');
+        clicked.classList.add('border-gold');
         
-        a.classList.replace('text-white', 'text-gray-500');
-        a.classList.replace('bg-cardDark', 'hover:text-gray-300');
-        a.classList.remove('shadow-md', 'border', 'border-white/10');
-        autoBetConfig = null;
-        showToast('Switched to Manual Bet', 'info');
-    });
-
-    document.getElementById('autoTabBtn').addEventListener('click', () => {
-        isAutoBet = true;
-        const m = document.getElementById('manualTabBtn');
-        const a = document.getElementById('autoTabBtn');
-        a.classList.replace('text-gray-500', 'text-white');
-        a.classList.replace('hover:text-gray-300', 'bg-cardDark');
-        a.classList.add('shadow-md', 'border', 'border-white/10');
+        sheetState.type = clicked.dataset.type;
+        sheetState.multiplier = parseInt(clicked.dataset.mult);
+        sheetState.extraDigits = '';
+        sheetExtraInput.value = '';
         
-        m.classList.replace('text-white', 'text-gray-500');
-        m.classList.replace('bg-cardDark', 'hover:text-gray-300');
-        m.classList.remove('shadow-md', 'border', 'border-white/10');
-        showToast('Switched to Auto Bet mode', 'info');
-    });
-
-    document.getElementById('cancelBetBtn').addEventListener('click', () => {
-        if(currentBet && countdown > 3) {
-            currentBalance += currentBet.amount;
-            updateWalletUI();
-            showToast(`Bet Cancelled. ฿${currentBet.amount} refunded.`, 'error');
-            currentBet = null;
-            placeBetBtn.disabled = false;
-            placeBetBtn.innerHTML = `<div class="absolute inset-0 bg-white/20 -skew-x-12 -translate-x-full group-hover:animate-[shimmer_1s_forwards]"></div><span class="relative z-10">Place Bet</span>`;
-            placeBetBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
-            document.getElementById('cancelBetBtn').classList.add('hidden');
-            autoBetConfig = null;
+        if (sheetState.type === 'akada' || sheetState.type === 'ring') {
+          dynamicInputSection.classList.remove('hidden');
         } else {
-            showToast('Cannot cancel bet now!', 'error');
+          dynamicInputSection.classList.add('hidden');
         }
+        updateSummary();
+      });
+    });
+
+    // Extra Input for Akada/Ring
+    sheetExtraInput.addEventListener('input', (e) => {
+      let raw = e.target.value.replace(/\D/g, '');
+      let allowedLen = sheetState.type === 'akada' ? 1 : (sheetState.type === 'ring' ? 2 : 0);
+      let unique = '';
+      // Filter duplicates including the already selected first number
+      let allChars = sheetState.number;
+      for(let char of raw) {
+         if(!allChars.includes(char)) {
+            unique += char;
+            allChars += char;
+         }
+      }
+      raw = unique.slice(0, allowedLen);
+      e.target.value = raw;
+      sheetState.extraDigits = raw;
+      updateSummary();
+    });
+
+    // Amount Selection
+    sheetQuickChips.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') return;
+      const text = e.target.innerText.replace('₹', '');
+      let amount = parseInt(text);
+      let current = sheetState.amount || 0;
+      current += amount;
+      sheetAmountInput.value = current;
+      sheetState.amount = current;
+      updateSummary();
+    });
+
+    sheetAmountInput.addEventListener('input', (e) => {
+      sheetState.amount = parseInt(e.target.value) || 0;
+      updateSummary();
     });
 
     // --- Mock Activity Feed ---
@@ -1495,15 +1586,15 @@
       setProgress(percent);
       
       if (countdown <= 60 && !isDrawing && !currentBet) {
-        placeBetBtn.disabled = true;
-        placeBetBtn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
-        placeBetBtn.innerHTML = '<span class="relative z-10"><i class="fa-solid fa-lock mr-2"></i>Locked (Drawing Soon)</span>';
+        gridNumBtns.forEach(btn => {
+           btn.disabled = true;
+           btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+        });
       } else if (countdown > 60 && !isDrawing && !currentBet) {
-        placeBetBtn.disabled = false;
-        placeBetBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
-        if (placeBetBtn.innerHTML.indexOf('Place Bet') === -1) {
-          placeBetBtn.innerHTML = '<span class="relative z-10 font-display">Place Bet <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i></span>';
-        }
+        gridNumBtns.forEach(btn => {
+           btn.disabled = false;
+           btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+        });
       }
       
       if(countdown <= 0) {
@@ -1523,15 +1614,12 @@
 
     function startDraw() {
       isDrawing = true;
-      const amount = Number(amountInput.value);
-      const target = targetInput.value;
-      
-      placeBetBtn.disabled = true;
-      placeBetBtn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
-      placeBetBtn.innerHTML = '<span class="relative z-10">Bet Placed!</span>';
-      document.getElementById('cancelBetBtn').classList.remove('hidden');
+      gridNumBtns.forEach(btn => {
+         btn.disabled = true;
+         btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+      });
 
-      if (isAutoBet) { autoBetConfig = { amount, target }; }
+      if (isAutoBet && currentBet) { autoBetConfig = { ...currentBet }; }
 
       statusText.innerText = 'DRAWING';
       statusText.style.color = '#FFD400';
@@ -1686,27 +1774,26 @@
       setTimeout(() => {
         isDrawing = false;
         countdown = getRemainingSeconds();
-        placeBetBtn.disabled = false;
-        placeBetBtn.innerHTML = '<span class="relative z-10 font-display">Place Bet <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i></span>';
-        placeBetBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
-        placeBetBtn.classList.add('hover:scale-[1.02]');
+        gridNumBtns.forEach(btn => {
+           btn.disabled = false;
+           btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+        });
         statusText.innerText = 'Accepting Bets';
 
         if (isAutoBet && autoBetConfig) {
            if (currentBalance >= autoBetConfig.amount) {
                currentBalance -= autoBetConfig.amount;
                updateWalletUI();
-               currentBet = { amount: autoBetConfig.amount, target: autoBetConfig.target };
-               showToast(`Auto Bet Placed: ฿${autoBetConfig.amount}`, 'success');
+               currentBet = { ...autoBetConfig };
+               showToast(`Auto Bet Placed: ₹${autoBetConfig.amount}`, 'success');
                
-               placeBetBtn.disabled = true;
-               placeBetBtn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
-               placeBetBtn.innerHTML = '<span class="relative z-10">Auto Bet Active!</span>';
-               document.getElementById('cancelBetBtn').classList.remove('hidden');
+               gridNumBtns.forEach(btn => {
+                  btn.disabled = true;
+                  btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+               });
            } else {
                showToast('Auto Bet Stopped: Insufficient Balance', 'error');
                isAutoBet = false;
-               document.getElementById('manualTabBtn').click();
            }
         }
       }, 3500);
@@ -1714,18 +1801,21 @@
 
     setInterval(gameLoop, 1000);
 
-    placeBetBtn.addEventListener('click', () => {
+    confirmBetBtn.addEventListener('click', () => {
       if(isDrawing) return;
-      const amount = Number(amountInput.value);
-      const target = targetInput.value;
+      const amount = sheetState.amount;
+      let target = sheetState.number;
+      if (sheetState.type === 'akada' || sheetState.type === 'ring') target += sheetState.extraDigits;
+      else if (sheetState.type === 'packet') target = sheetState.number; // Just an example for packet
+      
       if(!amount || amount <= 0) return showToast('Enter a valid amount!', 'error');
-      if(target.length === 0) return showToast('Enter a target sequence!', 'error');
       if(amount > currentBalance) return showToast('Insufficient balance!', 'error');
       
       currentBalance -= amount;
       updateWalletUI();
-      currentBet = { amount, target };
-      showToast(`Bet Placed: ฿${amount} on sequence ${target}`, 'success');
+      currentBet = { amount, target, type: sheetState.type, round: sheetState.round, mult: sheetState.multiplier };
+      showToast(`Bet Placed: ₹${amount} on sequence ${target}`, 'success');
+      closeBottomSheet();
     });
 
     // Initialize UI
@@ -1899,6 +1989,111 @@
     });
 
   </script>
-  <script src="pull-to-refresh.js"></script>
+  <!-- BOTTOM SHEET (Bet Popup) -->
+  <div id="betBottomSheet" class="fixed inset-0 z-[100] hidden flex items-end justify-center">
+    <!-- Backdrop -->
+    <div id="betBottomSheetBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+    
+    <!-- Sheet Content -->
+    <div id="betBottomSheetContent" class="relative w-full max-w-[600px] bg-cardDark rounded-t-[32px] border-t border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.8)] transform translate-y-full transition-transform duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col">
+      <div class="p-6 md:p-8 flex flex-col gap-6">
+         <!-- Title & Selected Number -->
+         <div class="flex justify-between items-center">
+           <h2 class="text-2xl font-display font-black text-white">Place Your Bet</h2>
+           <button id="closeSheetBtn" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-times"></i></button>
+         </div>
+         
+         <div class="bg-bgDark rounded-2xl p-4 flex items-center justify-between border border-white/5">
+           <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">Selected Number</span>
+           <span id="sheetSelectedNumber" class="text-4xl font-mono font-black text-gold drop-shadow-[0_0_10px_rgba(255,212,0,0.5)]">7</span>
+         </div>
+         
+         <!-- Choose Betting Round -->
+         <div>
+           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Choose Betting Round</h3>
+           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="roundSelection">
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="1"><i class="fa-regular fa-square"></i> First</button>
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="2"><i class="fa-regular fa-square"></i> Second</button>
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="3"><i class="fa-regular fa-square"></i> Third</button>
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="4"><i class="fa-regular fa-square"></i> Fourth</button>
+           </div>
+         </div>
+         
+         <!-- Bet Type -->
+         <div>
+           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Type</h3>
+           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="betTypeSelection">
+             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="figure" data-mult="8">
+               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span><span class="text-gold font-mono font-bold">1x8</span></div>
+               <span class="text-xs text-gray-500">Single Digit Bet</span>
+             </button>
+             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="akada" data-mult="80">
+               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span><span class="text-gold font-mono font-bold">1x80</span></div>
+               <span class="text-xs text-gray-500">Two Digit Bet</span>
+             </button>
+             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="ring" data-mult="800">
+               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">RING</span><span class="text-gold font-mono font-bold">1x800</span></div>
+               <span class="text-xs text-gray-500">Three Digit Bet</span>
+             </button>
+             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="packet" data-mult="6000">
+               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span><span class="text-gold font-mono font-bold">1x6000</span></div>
+               <span class="text-xs text-gray-500">Complete Combination</span>
+             </button>
+           </div>
+         </div>
+         
+         <!-- Dynamic Input for Akada/Ring -->
+         <div id="dynamicInputSection" class="hidden">
+           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Enter Remaining Digits</h3>
+           <input type="text" id="sheetExtraInput" class="w-full bg-bgDark text-white font-mono text-2xl p-4 text-center outline-none border border-white/10 focus:border-gold rounded-2xl transition-colors placeholder:text-gray-700" placeholder="e.g. 4">
+         </div>
+         
+         <!-- Bet Amount -->
+         <div>
+           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Amount</h3>
+           <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3" id="sheetQuickChips">
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹10</button>
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹20</button>
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹50</button>
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹100</button>
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹500</button>
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹1000</button>
+           </div>
+           <div class="relative">
+             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gold font-bold">₹</span>
+             <input type="number" id="sheetAmountInput" class="w-full bg-bgDark text-white font-mono text-2xl p-4 pl-8 text-center outline-none border border-white/10 focus:border-gold rounded-2xl transition-colors placeholder:text-gray-700" placeholder="Custom Amount">
+           </div>
+         </div>
+         
+         <!-- Bet Summary -->
+         <div class="bg-gradient-to-br from-gold/10 to-transparent rounded-2xl p-5 border border-gold/30">
+           <div class="flex justify-between items-center mb-1">
+             <span class="text-xs font-bold text-gray-400">Total Sequence</span>
+             <span id="summarySequence" class="font-mono text-white font-bold tracking-widest">-</span>
+           </div>
+           <div class="flex justify-between items-center mb-1">
+             <span class="text-xs font-bold text-gray-400">Round</span>
+             <span id="summaryRound" class="text-white font-bold">-</span>
+           </div>
+           <div class="flex justify-between items-center mb-1">
+             <span class="text-xs font-bold text-gray-400">Winning Multiplier</span>
+             <span id="summaryMult" class="font-mono text-gold font-bold">1x0</span>
+           </div>
+           <div class="h-px bg-white/10 my-3"></div>
+           <div class="flex justify-between items-center">
+             <span class="text-sm font-bold text-gold uppercase tracking-widest">Potential Winning</span>
+             <span id="summaryPayout" class="font-mono text-2xl font-black text-gold drop-shadow-[0_0_8px_rgba(255,212,0,0.5)]">₹0</span>
+           </div>
+         </div>
+         
+         <!-- Confirm Button -->
+         <button id="confirmBetBtn" class="w-full bg-gold hover:bg-yellow-400 text-bgDark py-5 rounded-2xl font-display font-black uppercase tracking-[0.2em] text-lg shadow-[0_0_30px_rgba(255,212,0,0.4)] hover:shadow-[0_0_40px_rgba(255,212,0,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+           PLACE BET
+         </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
 </body>
 </html>
