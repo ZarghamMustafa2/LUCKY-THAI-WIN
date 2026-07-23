@@ -1548,70 +1548,82 @@
          window.generatedResults[winIndex] = currentBet.target + randomSuffix;
       }
       
-      const winningNumStr = window.generatedResults[0];
-      const targetDigits = winningNumStr.split('');
+      let prizeIndex = 0;
       
-      wheelText.innerText = '!!';
-      wheelGlow.classList.remove('opacity-[0.15]');
-      wheelGlow.classList.add('opacity-40', 'animate-pulse');
-      
-      spinWheelElement.style.transition = 'transform 5s cubic-bezier(0.1, 1, 0.1, 1)';
-      // Removed blur to keep numbers clear
-      
-      let index = 0;
-      
-      function spinDigit() {
-        if(index >= 4) {
-          setTimeout(() => finishDraw(winningNumStr), 600);
+      function drawPrize() {
+        if(prizeIndex >= 4) {
+          setTimeout(() => finishDraw(), 1000);
           return;
         }
         
-        const targetDigit = parseInt(targetDigits[index]);
-        const currentAngle = currentRotation % 360;
-        const targetAngle = 360 - (targetDigit * 36);
+        const winningNumStr = window.generatedResults[prizeIndex];
+        const targetDigits = winningNumStr.split('');
         
-        let addedRotation = 5400 + (targetAngle - currentAngle); // 15 spins for high speed
-        if (addedRotation < 5400) addedRotation += 360;
+        for(let i=0; i<4; i++) {
+          const d = document.getElementById(`digit-${i}`);
+          d.innerText = '?';
+          d.className = 'w-20 h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
+        }
         
-        currentRotation += addedRotation;
-        spinWheelElement.style.transform = `rotate(${currentRotation}deg)`;
+        wheelText.innerText = prizeIndex === 0 ? '!!' : `DRAW ${prizeIndex + 1}`;
+        wheelGlow.classList.remove('opacity-[0.15]');
+        wheelGlow.classList.add('opacity-40', 'animate-pulse');
         
-        setTimeout(() => {
-          const d = document.getElementById(`digit-${index}`);
-          d.innerText = targetDigit;
-          d.className = 'w-20 h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_40px_rgba(0,255,136,0.3),inset_0_0_20px_rgba(0,255,136,0.1)] flex items-center justify-center font-mono text-6xl md:text-7xl font-black transition-all duration-300 transform scale-110 -rotateX-0';
+        let digitIndex = 0;
+        
+        function spinDigit() {
+          if(digitIndex >= 4) {
+             setTimeout(() => {
+               const titles = ['1ST', '2ND', '3RD', '4TH'];
+               const multiContainer = document.getElementById('multiResultsContainer');
+               if (multiContainer) {
+                 if (prizeIndex === 0) multiContainer.classList.remove('opacity-0', 'translate-y-4');
+                 const colorClass = prizeIndex === 0 ? 'border-primary shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'border-white/10 shadow-lg';
+                 const textClass = prizeIndex === 0 ? 'text-primary' : 'text-white';
+                 multiContainer.innerHTML += `
+                    <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border ${colorClass} text-center animate-bounce">
+                       <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">${titles[prizeIndex]} PRIZE</div>
+                       <div class="text-lg md:text-2xl font-mono font-black ${textClass}">${winningNumStr}</div>
+                    </div>
+                 `;
+               }
+               prizeIndex++;
+               setTimeout(drawPrize, 1200);
+             }, 800);
+             return;
+          }
           
-          index++;
-          setTimeout(spinDigit, 200);
-        }, 5000);
+          const targetDigit = parseInt(targetDigits[digitIndex]);
+          const currentAngle = currentRotation % 360;
+          const targetAngle = 360 - (targetDigit * 36);
+          
+          let addedRotation = 5400 + (targetAngle - currentAngle);
+          if (addedRotation < 5400) addedRotation += 360;
+          currentRotation += addedRotation;
+          
+          const spinDuration = prizeIndex === 0 ? 4.5 : 2.0;
+          spinWheelElement.style.transition = `transform ${spinDuration}s cubic-bezier(0.1, 1, 0.1, 1)`;
+          spinWheelElement.style.transform = `rotate(${currentRotation}deg)`;
+          
+          setTimeout(() => {
+            const d = document.getElementById(`digit-${digitIndex}`);
+            d.innerText = targetDigit;
+            d.className = 'w-20 h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_40px_rgba(0,255,136,0.3),inset_0_0_20px_rgba(0,255,136,0.1)] flex items-center justify-center font-mono text-6xl md:text-7xl font-black transition-all duration-300 transform scale-110 -rotateX-0';
+            
+            digitIndex++;
+            setTimeout(spinDigit, prizeIndex === 0 ? 200 : 100);
+          }, spinDuration * 1000);
+        }
+        
+        spinDigit();
       }
       
-      spinDigit();
+      drawPrize();
     }
 
-    function finishDraw(winningNumStr) {
+    function finishDraw() {
       wheelGlow.classList.remove('opacity-40', 'animate-pulse');
       wheelGlow.classList.add('opacity-[0.15]');
-
-      // Display the extra 3 results
-      const multiResultsContainer = document.getElementById('multiResultsContainer');
-      if(multiResultsContainer) {
-        multiResultsContainer.innerHTML = `
-          <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border border-white/10 shadow-lg text-center">
-             <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">2ND PRIZE</div>
-             <div class="text-lg md:text-2xl font-mono font-black text-white">${window.generatedResults[1]}</div>
-          </div>
-          <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border border-white/10 shadow-lg text-center">
-             <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">3RD PRIZE</div>
-             <div class="text-lg md:text-2xl font-mono font-black text-white">${window.generatedResults[2]}</div>
-          </div>
-          <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border border-white/10 shadow-lg text-center">
-             <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">4TH PRIZE</div>
-             <div class="text-lg md:text-2xl font-mono font-black text-white">${window.generatedResults[3]}</div>
-          </div>
-        `;
-        setTimeout(() => multiResultsContainer.classList.remove('opacity-0', 'translate-y-4'), 100);
-      }
       
       let isWin = false;
       if (currentBet) {
