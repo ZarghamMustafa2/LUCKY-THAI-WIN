@@ -133,6 +133,14 @@
       btn.classList.add('border-gold', 'text-gold', 'bg-gold/10');
       window.sheetState.round = roundNum;
     };
+
+    window.manualTriggerSpin = function() {
+      if (window.startDraw) {
+        window.startDraw();
+      } else {
+        console.log('Spinning initialized...');
+      }
+    };
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -514,9 +522,9 @@
                   </svg>
                   
                   <!-- Glowing SPIN Button Center -->
-                  <button id="centerSpinBtn" class="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-full border-4 md:border-8 border-gold shadow-[0_0_30px_rgba(255,212,0,0.5),inset_0_0_20px_rgba(0,0,0,0.8)] flex flex-col items-center justify-center relative z-10 bg-gradient-to-b from-[#121B2F] to-[#0D0D0D] cursor-pointer hover:scale-105 transition-transform animate-[pulse_2s_infinite]">
-                    <span class="font-display text-xl md:text-3xl font-black text-gold drop-shadow-[0_0_15px_rgba(255,212,0,0.8)] tracking-widest">SPIN</span>
-                    <span id="wheelText" class="text-[10px] font-mono text-gray-400 mt-1">15:00</span>
+                  <button id="centerSpinBtn" onclick="manualTriggerSpin()" class="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-full border-4 md:border-8 border-gold shadow-[0_0_30px_rgba(255,212,0,0.5),inset_0_0_20px_rgba(0,0,0,0.8)] flex flex-col items-center justify-center relative z-10 bg-gradient-to-b from-[#121B2F] to-[#0D0D0D] cursor-pointer hover:scale-105 active:scale-95 transition-transform animate-[pulse_2s_infinite]">
+                    <span class="font-display text-xl md:text-3xl font-black text-gold drop-shadow-[0_0_15px_rgba(255,212,0,0.8)] tracking-widest pointer-events-none">SPIN</span>
+                    <span id="wheelText" class="text-[10px] font-mono text-gray-400 mt-1 pointer-events-none">15:00</span>
                   </button>
                 </div>
               </div>
@@ -1629,6 +1637,8 @@
     }
 
     function startDraw() {
+      window.startDraw = startDraw;
+      if (isDrawing) return;
       isDrawing = true;
       gridNumBtns.forEach(btn => {
          btn.disabled = true;
