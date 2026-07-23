@@ -240,10 +240,10 @@ export default function Home() {
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onLoginSuccess={handleLoginSuccess} />
 
       {/* MOBILE OVERLAY */}
-      <div className={`fixed inset-0 bg-black/60 z-30 transition-opacity xl:hidden ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMobileMenuOpen(false)}></div>
+      <div className={`fixed inset-0 bg-black/60 z-[998] transition-opacity xl:hidden ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMobileMenuOpen(false)}></div>
 
       {/* LEFT SIDEBAR */}
-      <aside className={`fixed xl:static inset-y-0 left-0 w-64 bg-[#121B2F] border-r border-[rgba(255,255,255,0.05)] flex flex-col flex-shrink-0 z-40 transition-transform duration-300 shadow-2xl ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}`}>
+      <aside className={`fixed xl:static inset-y-0 left-0 w-64 bg-[#121B2F] border-r border-[rgba(255,255,255,0.05)] flex flex-col flex-shrink-0 z-[999] transition-transform duration-300 shadow-2xl ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}`}>
         <div className="h-20 flex items-center gap-3 px-6 border-b border-[rgba(255,255,255,0.05)]">
           <div className="w-8 h-8 rounded-lg bg-[#FFD700] flex items-center justify-center shadow-[0_0_15px_rgba(0,255,102,0.4)]">
             <span className="font-black text-xl text-[#0B1220]">T</span>

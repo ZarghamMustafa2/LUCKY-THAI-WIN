@@ -168,13 +168,16 @@
   <aside id="sidebar" class="fixed inset-y-0 left-0 z-[100] transform -translate-x-full xl:relative xl:translate-x-0 w-[280px] bg-cardDark/95 xl:bg-cardDark/80 backdrop-blur-3xl border-r border-white/5 flex flex-col flex-shrink-0 shadow-2xl transition-transform duration-300">
     
     <!-- Logo Area -->
-    <div class="h-[90px] flex items-center gap-4 px-8 border-b border-white/5 relative group cursor-pointer">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-cyanLight flex items-center justify-center shadow-[0_0_20px_rgba(0,255,136,0.3)] group-hover:shadow-[0_0_30px_rgba(0,255,136,0.6)] transition-all duration-300 transform group-hover:scale-105">
-        <i class="fa-solid fa-dice-d20 text-bgDark text-xl"></i>
+    <div class="h-[90px] flex items-center gap-4 px-8 border-b border-white/5 relative group cursor-pointer justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-cyanLight flex items-center justify-center shadow-[0_0_20px_rgba(0,255,136,0.3)] group-hover:shadow-[0_0_30px_rgba(0,255,136,0.6)] transition-all duration-300 transform group-hover:scale-105">
+          <i class="fa-solid fa-dice-d20 text-bgDark text-xl"></i>
+        </div>
+        <h1 class="text-2xl font-display font-extrabold tracking-wider uppercase text-white">
+          THAI<span class="text-primary font-black">NXT</span>
+        </h1>
       </div>
-      <h1 class="text-2xl font-display font-extrabold tracking-wider uppercase text-white">
-        Thai<span class="text-primary">NXT</span>
-      </h1>
+      <button onclick="toggleMobileSidebar()" class="xl:hidden text-gray-400 hover:text-white p-2 text-xl"><i class="fa-solid fa-xmark"></i></button>
     </div>
     
     <!-- Nav Links -->
@@ -1880,15 +1883,17 @@
       const sidebar = document.getElementById('sidebar');
       const sidebarOverlay = document.getElementById('sidebarOverlay');
       if (!sidebar || !sidebarOverlay) return;
-      const isClosed = sidebar.classList.contains('-translate-x-full');
-      if (isClosed) {
-        sidebar.classList.remove('-translate-x-full');
-        sidebarOverlay.classList.remove('hidden');
-        setTimeout(() => sidebarOverlay.classList.remove('opacity-0'), 10);
-      } else {
+      const isOpen = sidebar.classList.contains('translate-x-0');
+      if (isOpen) {
+        sidebar.classList.remove('translate-x-0');
         sidebar.classList.add('-translate-x-full');
         sidebarOverlay.classList.add('opacity-0');
         setTimeout(() => sidebarOverlay.classList.add('hidden'), 300);
+      } else {
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+        sidebarOverlay.classList.remove('hidden');
+        setTimeout(() => sidebarOverlay.classList.remove('opacity-0'), 10);
       }
     };
     const sidebarOverlay = document.getElementById('sidebarOverlay');
