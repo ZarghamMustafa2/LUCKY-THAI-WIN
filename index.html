@@ -1323,7 +1323,14 @@
     });
 
     function updateCalculations() {
-      const targetStr = targetInput.value.replace(/\D/g, '').slice(0, currentBetDigits);
+      let rawTarget = targetInput.value.replace(/\D/g, '');
+      let uniqueTarget = '';
+      for(let char of rawTarget) {
+         if(!uniqueTarget.includes(char)) {
+            uniqueTarget += char;
+         }
+      }
+      const targetStr = uniqueTarget.slice(0, currentBetDigits);
       targetInput.value = targetStr;
       
       const amount = Number(amountInput.value) || 0;
@@ -1537,16 +1544,31 @@
          multiResultsContainer.innerHTML = '';
       }
 
+      function generateUniqueDigitString(length, excludeDigits = []) {
+        let available = ['0','1','2','3','4','5','6','7','8','9'].filter(d => !excludeDigits.includes(d));
+        let result = '';
+        for(let i=0; i<length; i++) {
+          if(available.length === 0) break;
+          const randomIndex = Math.floor(Math.random() * available.length);
+          result += available[randomIndex];
+          available.splice(randomIndex, 1);
+        }
+        return result;
+      }
+
       window.generatedResults = [];
-      for(let i=0; i<4; i++) {
-        window.generatedResults.push(Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+      while(window.generatedResults.length < 4) {
+        let numStr = generateUniqueDigitString(4);
+        if(!window.generatedResults.includes(numStr)) {
+          window.generatedResults.push(numStr);
+        }
       }
       
       // Demo Cheat: 50% win rate if bet placed
       if (currentBet && Math.random() > 0.5) {
          let missingLen = 4 - currentBet.target.length;
-         let randomSuffix = '';
-         for(let i=0; i<missingLen; i++) randomSuffix += Math.floor(Math.random()*10);
+         let excludeDigits = currentBet.target.split('');
+         let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
          const winIndex = Math.floor(Math.random() * 4);
          window.generatedResults[winIndex] = currentBet.target + randomSuffix;
       }
