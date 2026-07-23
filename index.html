@@ -51,6 +51,29 @@
       }
     }
   </script>
+  <script>
+    window.toggleMobileSidebar = function() {
+      var sidebar = document.getElementById('sidebar');
+      var sidebarOverlay = document.getElementById('sidebarOverlay');
+      if (!sidebar || !sidebarOverlay) return;
+      
+      var isHidden = sidebarOverlay.style.display === 'none' || sidebarOverlay.style.display === '' || sidebar.style.transform === 'translateX(-100%)' || !sidebar.classList.contains('mobile-active');
+      
+      if (isHidden) {
+        sidebar.classList.add('mobile-active');
+        sidebarOverlay.style.display = 'block';
+        sidebarOverlay.style.opacity = '1';
+        sidebar.style.transform = 'translateX(0px)';
+        sidebar.style.zIndex = '9999';
+        sidebarOverlay.style.zIndex = '9998';
+      } else {
+        sidebar.classList.remove('mobile-active');
+        sidebar.style.transform = 'translateX(-100%)';
+        sidebarOverlay.style.opacity = '0';
+        setTimeout(function() { sidebarOverlay.style.display = 'none'; }, 300);
+      }
+    };
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
