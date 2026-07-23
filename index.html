@@ -1371,7 +1371,7 @@
       }
       summarySequence.innerText = fullSeq || '-';
       
-      let roundMap = {'1':'First', '2':'Second', '3':'Third', '4':'Fourth'};
+      let roundMap = {'1':'1st Spin', '2':'2nd Spin', '3':'3rd Spin', '4':'4th Spin'};
       summaryRound.innerText = roundMap[sheetState.round] || '-';
       
       summaryMult.innerText = sheetState.multiplier > 0 ? `1x${sheetState.multiplier}` : '1x0';
@@ -2010,12 +2010,12 @@
          
          <!-- Choose Betting Round -->
          <div>
-           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Choose Betting Round</h3>
+           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Select Spin</h3>
            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="roundSelection">
-             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="1"><i class="fa-regular fa-square"></i> First</button>
-             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="2"><i class="fa-regular fa-square"></i> Second</button>
-             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="3"><i class="fa-regular fa-square"></i> Third</button>
-             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="4"><i class="fa-regular fa-square"></i> Fourth</button>
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="1"><i class="fa-regular fa-square"></i> 1st Spin</button>
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="2"><i class="fa-regular fa-square"></i> 2nd Spin</button>
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="3"><i class="fa-regular fa-square"></i> 3rd Spin</button>
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="4"><i class="fa-regular fa-square"></i> 4th Spin</button>
            </div>
          </div>
          
