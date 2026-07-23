@@ -343,13 +343,7 @@ export default function Home() {
             {/* CENTER STAGE (Left 8 cols on desktop) */}
             <div className="xl:col-span-8 flex flex-col gap-8">
               
-              {/* Premium Live Stats */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up">
-                <StatCard title="Players Online" value={onlinePlayers.toLocaleString()} icon={<User className="w-4 h-4 text-[#FFD700]"/>} />
-                <StatCard title="Total Wagered" value={`฿ ${(totalWagered / 1000000).toFixed(1)}M`} icon={<TrendingUp className="w-4 h-4 text-[#FFD700]"/>} />
-                <StatCard title="Biggest Win" value="฿ 842K" icon={<Trophy className="w-4 h-4 text-[#FFD700]"/>} />
-                <StatCard title="Jackpot Pool" value={`฿ ${(jackpotPool / 1000000).toFixed(2)}M`} icon={<Flame className="w-4 h-4 text-[#FFD700]"/>} />
-              </div>
+
 
               {/* Recent Drops Horizontal Bar */}
               <div className="glass-panel p-3 flex items-center gap-4 overflow-hidden animate-slide-up" style={{ animationDelay: '0.1s' }}>
