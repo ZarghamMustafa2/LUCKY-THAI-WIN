@@ -15,6 +15,10 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [betNumber, setBetNumber] = useState('');
   const [betAmount, setBetAmount] = useState('');
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [selectedRound, setSelectedRound] = useState<number>(1);
+  const [betType, setBetType] = useState<string>('figure');
+  const [extraDigits, setExtraDigits] = useState('');
   
   // Existing state
   const [remainingMs, setRemainingMs] = useState(0);
@@ -147,7 +151,10 @@ export default function Home() {
         body: JSON.stringify({
           round_id: currentRoundId,
           bet_number: betNumber,
-          amount: Number(betAmount)
+          amount: Number(betAmount),
+          round_selection: selectedRound,
+          bet_type: betType,
+          extra_digits: extraDigits
         })
       });
       
@@ -156,6 +163,7 @@ export default function Home() {
       
       setBetNumber('');
       setBetAmount('');
+      setIsBottomSheetOpen(false);
       fetchWallet(token);
     } catch (e: any) {
       alert(`Error: ${e.message}`);
@@ -175,8 +183,8 @@ export default function Home() {
 
   // New UI Components inline
   const StatCard = ({ title, value, icon }: any) => (
-    <div className="bg-[#131C2A] border border-[rgba(255,255,255,0.05)] rounded-xl p-4 flex items-center gap-4 hover:bg-[#1A2536] transition-colors shadow-lg">
-      <div className="w-10 h-10 rounded-full bg-[#0B1220] flex items-center justify-center shadow-inner border border-[rgba(255,255,255,0.02)]">
+    <div className="bg-[#121B2F] border border-[rgba(255,255,255,0.05)] rounded-xl p-4 flex items-center gap-4 hover:bg-[#1E293B] transition-colors shadow-lg">
+      <div className="w-10 h-10 rounded-full bg-[#0D0D0D] flex items-center justify-center shadow-inner border border-[rgba(255,255,255,0.02)]">
         {icon}
       </div>
       <div className="flex flex-col">
@@ -187,7 +195,7 @@ export default function Home() {
   );
 
   return (
-    <div className="flex h-screen bg-[#0B1220] text-white overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#0D0D0D] text-white overflow-hidden font-sans">
       
       {finalWinner && (
         <div className="fixed inset-0 z-[100] pointer-events-none">
@@ -201,45 +209,45 @@ export default function Home() {
       <div className={`fixed inset-0 bg-black/60 z-30 transition-opacity xl:hidden ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={() => setIsMobileMenuOpen(false)}></div>
 
       {/* LEFT SIDEBAR */}
-      <aside className={`fixed xl:static inset-y-0 left-0 w-64 bg-[#131C2A] border-r border-[rgba(255,255,255,0.05)] flex flex-col flex-shrink-0 z-40 transition-transform duration-300 shadow-2xl ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}`}>
+      <aside className={`fixed xl:static inset-y-0 left-0 w-64 bg-[#121B2F] border-r border-[rgba(255,255,255,0.05)] flex flex-col flex-shrink-0 z-40 transition-transform duration-300 shadow-2xl ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}`}>
         <div className="h-20 flex items-center gap-3 px-6 border-b border-[rgba(255,255,255,0.05)]">
-          <div className="w-8 h-8 rounded-lg bg-[#00FF66] flex items-center justify-center shadow-[0_0_15px_rgba(0,255,102,0.4)]">
+          <div className="w-8 h-8 rounded-lg bg-[#FFD700] flex items-center justify-center shadow-[0_0_15px_rgba(0,255,102,0.4)]">
             <span className="font-black text-xl text-[#0B1220]">T</span>
           </div>
           <h1 className="text-xl font-black tracking-widest uppercase">
-            <span className="text-white">THAI</span><span className="text-[#00FF66]">NXT</span>
+            <span className="text-white">THAI</span><span className="text-[#FFD700]">NXT</span>
           </h1>
         </div>
         
         <div className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-1 custom-scrollbar">
           <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 px-3">Casino</div>
-          <button onClick={() => setActiveTab('lottery')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'lottery' ? 'bg-[#1A2536] text-white border-l-2 border-[#00FF66] shadow-[inset_0_0_20px_rgba(0,255,102,0.05)]' : 'text-gray-400 hover:bg-[#1A2536] hover:text-white group hover:translate-x-1'}`}>
-            <Hash className={`w-5 h-5 ${activeTab === 'lottery' ? 'text-[#00FF66]' : 'group-hover:text-[#00FF66] transition-colors'}`} /> Thai Lottery
+          <button onClick={() => setActiveTab('lottery')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'lottery' ? 'bg-[#1E293B] text-white border-l-2 border-[#FFD700] shadow-[inset_0_0_20px_rgba(255,215,0,0.05)]' : 'text-gray-400 hover:bg-[#1E293B] hover:text-white group hover:translate-x-1'}`}>
+            <Hash className={`w-5 h-5 ${activeTab === 'lottery' ? 'text-[#FFD700]' : 'group-hover:text-[#FFD700] transition-colors'}`} /> Thai Lottery
           </button>
-          <button onClick={() => setActiveTab('popular')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'popular' ? 'bg-[#1A2536] text-white border-l-2 border-[#00FF66] shadow-[inset_0_0_20px_rgba(0,255,102,0.05)]' : 'text-gray-400 hover:bg-[#1A2536] hover:text-white group hover:translate-x-1'}`}>
-            <Flame className={`w-5 h-5 ${activeTab === 'popular' ? 'text-[#FF4D6D]' : 'group-hover:text-[#FF4D6D] transition-colors'}`} /> Popular
+          <button onClick={() => setActiveTab('popular')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'popular' ? 'bg-[#1E293B] text-white border-l-2 border-[#FFD700] shadow-[inset_0_0_20px_rgba(255,215,0,0.05)]' : 'text-gray-400 hover:bg-[#1E293B] hover:text-white group hover:translate-x-1'}`}>
+            <Flame className={`w-5 h-5 ${activeTab === 'popular' ? 'text-[#FFD700]' : 'group-hover:text-[#FFD700] transition-colors'}`} /> Popular
           </button>
-          <button onClick={() => setActiveTab('slots')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'slots' ? 'bg-[#1A2536] text-white border-l-2 border-[#00FF66] shadow-[inset_0_0_20px_rgba(0,255,102,0.05)]' : 'text-gray-400 hover:bg-[#1A2536] hover:text-white group hover:translate-x-1'}`}>
-            <Gamepad2 className={`w-5 h-5 ${activeTab === 'slots' ? 'text-[#00D9FF]' : 'group-hover:text-[#00D9FF] transition-colors'}`} /> Slots
+          <button onClick={() => setActiveTab('slots')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'slots' ? 'bg-[#1E293B] text-white border-l-2 border-[#FFD700] shadow-[inset_0_0_20px_rgba(255,215,0,0.05)]' : 'text-gray-400 hover:bg-[#1E293B] hover:text-white group hover:translate-x-1'}`}>
+            <Gamepad2 className={`w-5 h-5 ${activeTab === 'slots' ? 'text-[#FFD700]' : 'group-hover:text-[#FFD700] transition-colors'}`} /> Slots
           </button>
-          <button onClick={() => setActiveTab('roulette')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'roulette' ? 'bg-[#1A2536] text-white border-l-2 border-[#00FF66] shadow-[inset_0_0_20px_rgba(0,255,102,0.05)]' : 'text-gray-400 hover:bg-[#1A2536] hover:text-white group hover:translate-x-1'}`}>
+          <button onClick={() => setActiveTab('roulette')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'roulette' ? 'bg-[#1E293B] text-white border-l-2 border-[#FFD700] shadow-[inset_0_0_20px_rgba(255,215,0,0.05)]' : 'text-gray-400 hover:bg-[#1E293B] hover:text-white group hover:translate-x-1'}`}>
             <PlayCircle className={`w-5 h-5 ${activeTab === 'roulette' ? 'text-[#FFD700]' : 'group-hover:text-[#FFD700] transition-colors'}`} /> Roulette
           </button>
           
           <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-6 mb-2 px-3">Rewards & Stats</div>
-          <button onClick={() => setActiveTab('promotions')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'promotions' ? 'bg-[#1A2536] text-white border-l-2 border-[#00FF66] shadow-[inset_0_0_20px_rgba(0,255,102,0.05)]' : 'text-gray-400 hover:bg-[#1A2536] hover:text-white group hover:translate-x-1'}`}>
-            <Gift className={`w-5 h-5 ${activeTab === 'promotions' ? 'text-[#00FF66]' : 'group-hover:text-[#00FF66] transition-colors'}`} /> Promotions
+          <button onClick={() => setActiveTab('promotions')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'promotions' ? 'bg-[#1E293B] text-white border-l-2 border-[#FFD700] shadow-[inset_0_0_20px_rgba(255,215,0,0.05)]' : 'text-gray-400 hover:bg-[#1E293B] hover:text-white group hover:translate-x-1'}`}>
+            <Gift className={`w-5 h-5 ${activeTab === 'promotions' ? 'text-[#FFD700]' : 'group-hover:text-[#FFD700] transition-colors'}`} /> Promotions
           </button>
-          <button onClick={() => setActiveTab('vip')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'vip' ? 'bg-[#1A2536] text-white border-l-2 border-[#00FF66] shadow-[inset_0_0_20px_rgba(0,255,102,0.05)]' : 'text-gray-400 hover:bg-[#1A2536] hover:text-white group hover:translate-x-1'}`}>
+          <button onClick={() => setActiveTab('vip')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'vip' ? 'bg-[#1E293B] text-white border-l-2 border-[#FFD700] shadow-[inset_0_0_20px_rgba(255,215,0,0.05)]' : 'text-gray-400 hover:bg-[#1E293B] hover:text-white group hover:translate-x-1'}`}>
             <Star className={`w-5 h-5 ${activeTab === 'vip' ? 'text-[#FFD700]' : 'group-hover:text-[#FFD700] transition-colors'}`} /> VIP Club
           </button>
-          <button onClick={() => setActiveTab('leaderboard')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'leaderboard' ? 'bg-[#1A2536] text-white border-l-2 border-[#00FF66] shadow-[inset_0_0_20px_rgba(0,255,102,0.05)]' : 'text-gray-400 hover:bg-[#1A2536] hover:text-white group hover:translate-x-1'}`}>
-            <Trophy className={`w-5 h-5 ${activeTab === 'leaderboard' ? 'text-[#00D9FF]' : 'group-hover:text-[#00D9FF] transition-colors'}`} /> Leaderboard
+          <button onClick={() => setActiveTab('leaderboard')} className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl font-bold transition-all ${activeTab === 'leaderboard' ? 'bg-[#1E293B] text-white border-l-2 border-[#FFD700] shadow-[inset_0_0_20px_rgba(255,215,0,0.05)]' : 'text-gray-400 hover:bg-[#1E293B] hover:text-white group hover:translate-x-1'}`}>
+            <Trophy className={`w-5 h-5 ${activeTab === 'leaderboard' ? 'text-[#FFD700]' : 'group-hover:text-[#FFD700] transition-colors'}`} /> Leaderboard
           </button>
         </div>
         
-        <div className="p-4 border-t border-[rgba(255,255,255,0.05)] bg-[#0B1220]/50">
-          <button className="flex items-center justify-center gap-2 w-full py-3 bg-[#1A2536] hover:bg-[rgba(0,255,102,0.1)] hover:text-[#00FF66] text-gray-400 rounded-xl font-bold transition-all border border-[rgba(255,255,255,0.02)]">
+        <div className="p-4 border-t border-[rgba(255,255,255,0.05)] bg-[#0D0D0D]/50">
+          <button className="flex items-center justify-center gap-2 w-full py-3 bg-[#1E293B] hover:bg-[rgba(0,255,102,0.1)] hover:text-[#FFD700] text-gray-400 rounded-xl font-bold transition-all border border-[rgba(255,255,255,0.02)]">
             <Headset className="w-4 h-4" /> Live Support
           </button>
         </div>
@@ -249,14 +257,14 @@ export default function Home() {
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
         
         {/* TOP HEADER */}
-        <header className="h-20 bg-[#0B1220]/90 backdrop-blur-lg border-b border-[rgba(255,255,255,0.05)] flex items-center justify-between px-4 lg:px-8 z-20 flex-shrink-0 sticky top-0 shadow-sm">
+        <header className="h-20 bg-[#0D0D0D]/90 backdrop-blur-lg border-b border-[rgba(255,255,255,0.05)] flex items-center justify-between px-4 lg:px-8 z-20 flex-shrink-0 sticky top-0 shadow-sm">
           <div className="flex items-center gap-4">
             <button onClick={() => setIsMobileMenuOpen(true)} className="xl:hidden text-gray-400 hover:text-white"><Menu /></button>
             <div className="xl:hidden flex items-center gap-2">
-              <span className="text-[#00FF66] font-black text-xl">THAINXT</span>
+              <span className="text-[#FFD700] font-black text-xl">THAINXT</span>
             </div>
             
-            <div className="hidden lg:flex items-center bg-[#131C2A] rounded-full px-4 py-2.5 border border-[rgba(255,255,255,0.05)] focus-within:border-[#00FF66] transition-colors w-[300px]">
+            <div className="hidden lg:flex items-center bg-[#121B2F] rounded-full px-4 py-2.5 border border-[rgba(255,255,255,0.05)] focus-within:border-[#FFD700] transition-colors w-[300px]">
               <Search className="w-4 h-4 text-gray-500 mr-3" />
               <input type="text" placeholder="Search games, slots..." className="bg-transparent border-none outline-none text-sm text-white placeholder:text-gray-600 w-full font-bold" />
             </div>
@@ -265,15 +273,15 @@ export default function Home() {
           <div className="flex items-center gap-3 lg:gap-6">
             {user ? (
               <>
-                <div className="flex items-center bg-[#131C2A] rounded-xl border border-[rgba(255,255,255,0.05)] shadow-inner overflow-hidden">
-                  <div className="px-5 py-2.5 flex items-center gap-2 border-r border-[rgba(255,255,255,0.05)] bg-[#0B1220]/50">
-                    <span className="text-[#00FF66] font-black text-sm md:text-base tracking-widest">฿ {user.wallet?.toLocaleString()}</span>
+                <div className="flex items-center bg-[#121B2F] rounded-xl border border-[rgba(255,255,255,0.05)] shadow-inner overflow-hidden">
+                  <div className="px-5 py-2.5 flex items-center gap-2 border-r border-[rgba(255,255,255,0.05)] bg-[#0D0D0D]/50">
+                    <span className="text-[#FFD700] font-black text-sm md:text-base tracking-widest">฿ {user.wallet?.toLocaleString()}</span>
                   </div>
-                  <button className="bg-[#00D9FF] hover:bg-[#00b8e6] text-[#0B1220] font-black px-5 py-2.5 text-sm uppercase tracking-widest transition-colors flex items-center gap-2">
+                  <button className="bg-[#FFD700] hover:bg-[#00b8e6] text-[#0B1220] font-black px-5 py-2.5 text-sm uppercase tracking-widest transition-colors flex items-center gap-2">
                     <Wallet className="w-4 h-4" /> <span className="hidden md:inline">Deposit</span>
                   </button>
                 </div>
-                <div className="flex items-center gap-3 cursor-pointer hover:bg-[#131C2A] p-1.5 pr-4 rounded-full transition-colors border border-transparent hover:border-[rgba(255,255,255,0.05)]">
+                <div className="flex items-center gap-3 cursor-pointer hover:bg-[#121B2F] p-1.5 pr-4 rounded-full transition-colors border border-transparent hover:border-[rgba(255,255,255,0.05)]">
                   <div className="w-10 h-10 bg-gradient-to-tr from-[#FF4D6D] to-[#b026ff] rounded-full flex items-center justify-center shadow-lg">
                     <User className="w-5 h-5 text-white" />
                   </div>
@@ -282,8 +290,8 @@ export default function Home() {
               </>
             ) : (
               <div className="flex gap-3">
-                <button onClick={() => setIsAuthModalOpen(true)} className="text-white hover:text-[#00FF66] font-bold text-sm px-4 py-2 transition-colors uppercase tracking-widest">Sign In</button>
-                <button onClick={() => setIsAuthModalOpen(true)} className="bg-[#00FF66] hover:bg-[#00e65c] text-[#0B1220] px-6 py-2.5 rounded-xl font-black uppercase tracking-widest text-sm transition-all shadow-[0_0_15px_rgba(0,255,102,0.2)]">Register</button>
+                <button onClick={() => setIsAuthModalOpen(true)} className="text-white hover:text-[#FFD700] font-bold text-sm px-4 py-2 transition-colors uppercase tracking-widest">Sign In</button>
+                <button onClick={() => setIsAuthModalOpen(true)} className="bg-[#FFD700] hover:bg-[#00e65c] text-[#0B1220] px-6 py-2.5 rounded-xl font-black uppercase tracking-widest text-sm transition-all shadow-[0_0_15px_rgba(255,215,0,0.2)]">Register</button>
               </div>
             )}
           </div>
@@ -292,8 +300,8 @@ export default function Home() {
         {/* SCROLLABLE MAIN AREA */}
         <main className="flex-1 overflow-y-auto custom-scrollbar p-4 pb-28 lg:p-8 lg:pb-8 relative bg-gradient-to-b from-[#0B1220] to-[#05080F]">
           {/* Background Ambient Glows */}
-          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#00FF66] opacity-[0.02] rounded-full blur-[150px] pointer-events-none"></div>
-          <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-[#00D9FF] opacity-[0.02] rounded-full blur-[150px] pointer-events-none"></div>
+          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#FFD700] opacity-[0.02] rounded-full blur-[150px] pointer-events-none"></div>
+          <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-[#FFD700] opacity-[0.02] rounded-full blur-[150px] pointer-events-none"></div>
 
           <div className="w-full grid grid-cols-1 xl:grid-cols-12 gap-8 relative z-10">
             {activeTab === 'lottery' ? (
@@ -303,10 +311,10 @@ export default function Home() {
               
               {/* Premium Live Stats */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up">
-                <StatCard title="Players Online" value={onlinePlayers.toLocaleString()} icon={<User className="w-4 h-4 text-[#00D9FF]"/>} />
+                <StatCard title="Players Online" value={onlinePlayers.toLocaleString()} icon={<User className="w-4 h-4 text-[#FFD700]"/>} />
                 <StatCard title="Total Wagered" value={`฿ ${(totalWagered / 1000000).toFixed(1)}M`} icon={<TrendingUp className="w-4 h-4 text-[#FFD700]"/>} />
-                <StatCard title="Biggest Win" value="฿ 842K" icon={<Trophy className="w-4 h-4 text-[#00FF66]"/>} />
-                <StatCard title="Jackpot Pool" value={`฿ ${(jackpotPool / 1000000).toFixed(2)}M`} icon={<Flame className="w-4 h-4 text-[#FF4D6D]"/>} />
+                <StatCard title="Biggest Win" value="฿ 842K" icon={<Trophy className="w-4 h-4 text-[#FFD700]"/>} />
+                <StatCard title="Jackpot Pool" value={`฿ ${(jackpotPool / 1000000).toFixed(2)}M`} icon={<Flame className="w-4 h-4 text-[#FFD700]"/>} />
               </div>
 
               {/* Recent Drops Horizontal Bar */}
@@ -317,7 +325,7 @@ export default function Home() {
                 <div className="flex items-center gap-3 overflow-x-auto custom-scrollbar pb-1 flex-1">
                   {recentResults.map((res, i) => (
                     <div key={i} className={`px-5 py-2 rounded-lg font-mono text-sm font-black border flex-shrink-0 transition-all ${
-                      i === 0 ? 'border-[#00FF66] bg-[#00FF66]/10 text-[#00FF66] shadow-[0_0_15px_rgba(0,255,102,0.2)] scale-105' : 'border-[rgba(255,255,255,0.05)] bg-[#0B1220] text-gray-400 hover:text-white hover:bg-[#131C2A]'
+                      i === 0 ? 'border-[#FFD700] bg-[#FFD700]/10 text-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.2)] scale-105' : 'border-[rgba(255,255,255,0.05)] bg-[#0D0D0D] text-gray-400 hover:text-white hover:bg-[#121B2F]'
                     }`}>
                       {res.winning_number || 'WAIT'}
                     </div>
@@ -331,14 +339,14 @@ export default function Home() {
                 
                 {/* Round Info & Status */}
                 <div className="absolute top-6 left-6 right-6 flex justify-between items-start z-10">
-                  <div className="bg-[#0B1220]/80 backdrop-blur-md border border-[rgba(255,255,255,0.05)] px-4 py-2.5 rounded-xl flex items-center gap-3 shadow-lg">
-                    <div className={`w-2.5 h-2.5 rounded-full ${isDrawing ? 'bg-[#FF4D6D] animate-pulse shadow-[0_0_10px_rgba(255,77,109,0.8)]' : 'bg-[#00FF66] shadow-[0_0_10px_rgba(0,255,102,0.8)]'}`}></div>
-                    <span className={`font-black uppercase tracking-widest text-[11px] ${isDrawing ? 'text-[#FF4D6D]' : 'text-[#00FF66]'}`}>
+                  <div className="bg-[#0D0D0D]/80 backdrop-blur-md border border-[rgba(255,255,255,0.05)] px-4 py-2.5 rounded-xl flex items-center gap-3 shadow-lg">
+                    <div className={`w-2.5 h-2.5 rounded-full ${isDrawing ? 'bg-[#FFD700] animate-pulse shadow-[0_0_10px_rgba(255,77,109,0.8)]' : 'bg-[#FFD700] shadow-[0_0_10px_rgba(0,255,102,0.8)]'}`}></div>
+                    <span className={`font-black uppercase tracking-widest text-[11px] ${isDrawing ? 'text-[#FFD700]' : 'text-[#FFD700]'}`}>
                       {isDrawing ? 'Drawing Live' : 'Accepting Bets'}
                     </span>
                   </div>
                   
-                  <div className="flex flex-col items-end bg-[#0B1220]/80 backdrop-blur-md border border-[rgba(255,255,255,0.05)] px-5 py-2 rounded-xl shadow-lg">
+                  <div className="flex flex-col items-end bg-[#0D0D0D]/80 backdrop-blur-md border border-[rgba(255,255,255,0.05)] px-5 py-2 rounded-xl shadow-lg">
                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Round</span>
                     <span className="font-mono text-xl font-black text-white">#{roundNumberStr.split('-')[1] || roundNumberStr}</span>
                   </div>
@@ -363,7 +371,7 @@ export default function Home() {
               <div className="glass-panel p-8 flex flex-col min-h-[400px] mb-10 animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-3">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#00D9FF] animate-pulse shadow-[0_0_10px_rgba(0,217,255,0.8)]"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#FFD700] animate-pulse shadow-[0_0_10px_rgba(0,217,255,0.8)]"></div>
                     <h3 className="text-white font-black text-xl uppercase tracking-widest">Live Action</h3>
                   </div>
                 </div>
@@ -381,22 +389,22 @@ export default function Home() {
                     <tbody>
                       {liveBets.length === 0 ? (
                         <tr>
-                          <td colSpan={4} className="text-center py-16 text-gray-600 text-sm font-bold uppercase tracking-widest bg-[#0B1220]/30 rounded-xl mt-4 block">No bets placed in this round</td>
+                          <td colSpan={4} className="text-center py-16 text-gray-600 text-sm font-bold uppercase tracking-widest bg-[#0D0D0D]/30 rounded-xl mt-4 block">No bets placed in this round</td>
                         </tr>
                       ) : (
                         liveBets.map((bet, i) => (
-                          <tr key={i} className="hover:bg-[#1A2536]/50 transition-colors border-b border-[rgba(255,255,255,0.02)] last:border-0 group animate-fade-in-down">
+                          <tr key={i} className="hover:bg-[#1E293B]/50 transition-colors border-b border-[rgba(255,255,255,0.02)] last:border-0 group animate-fade-in-down">
                             <td className="py-4 px-4 text-gray-300 font-bold text-sm">
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-[#131C2A] flex justify-center items-center text-xs text-white border border-[rgba(255,255,255,0.05)] group-hover:border-[#00D9FF]/30 transition-colors">
-                                  <User className="w-4 h-4 text-gray-500 group-hover:text-[#00D9FF] transition-colors" />
+                                <div className="w-8 h-8 rounded-full bg-[#121B2F] flex justify-center items-center text-xs text-white border border-[rgba(255,255,255,0.05)] group-hover:border-[#00D9FF]/30 transition-colors">
+                                  <User className="w-4 h-4 text-gray-500 group-hover:text-[#FFD700] transition-colors" />
                                 </div>
                                 {bet.user_name}
                               </div>
                             </td>
                             <td className="py-4 px-4 text-white font-black tracking-widest text-center">{bet.bet_number}</td>
-                            <td className="py-4 px-4 text-[#00D9FF] font-black text-sm text-center">x{(10 ** (bet.bet_number.length - 1)) * 9}</td>
-                            <td className="py-4 px-4 text-right font-black text-[#00FF66] tracking-wider">฿ {bet.amount.toLocaleString()}</td>
+                            <td className="py-4 px-4 text-[#FFD700] font-black text-sm text-center">x{(10 ** (bet.bet_number.length - 1)) * 9}</td>
+                            <td className="py-4 px-4 text-right font-black text-[#FFD700] tracking-wider">฿ {bet.amount.toLocaleString()}</td>
                           </tr>
                         ))
                       )}
@@ -411,11 +419,11 @@ export default function Home() {
             <div className="xl:col-span-4 flex flex-col gap-8 animate-slide-up">
               
               {/* THE ADVANCED BET PANEL */}
-              <div className="glass-panel p-8 flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-t border-[#00FF66]/20">
+              <div className="glass-panel p-8 flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-t border-[#FFD700]/20">
                 
                 {/* Tabs */}
-                <div className="flex bg-[#0B1220] p-1.5 rounded-xl mb-8 border border-[rgba(255,255,255,0.05)] shadow-inner">
-                  <button className="flex-1 bg-[#1A2536] text-white py-3 rounded-lg font-black text-[11px] uppercase tracking-widest shadow-md">Manual</button>
+                <div className="flex bg-[#0D0D0D] p-1.5 rounded-xl mb-8 border border-[rgba(255,255,255,0.05)] shadow-inner">
+                  <button className="flex-1 bg-[#1E293B] text-white py-3 rounded-lg font-black text-[11px] uppercase tracking-widest shadow-md">Manual</button>
                   <button className="flex-1 text-gray-500 hover:text-white py-3 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-colors">Auto Bet</button>
                 </div>
 
@@ -426,9 +434,9 @@ export default function Home() {
                   <div className="flex flex-col gap-2">
                     <label className="text-gray-400 text-[10px] font-bold uppercase tracking-widest flex justify-between">
                       <span>Target Sequence</span>
-                      <span className="text-[#00D9FF]">1-4 Digits</span>
+                      <span className="text-[#FFD700]">1-4 Digits</span>
                     </label>
-                    <div className="casino-input rounded-xl p-2 focus-within:bg-[#0B1220] transition-colors">
+                    <div className="casino-input rounded-xl p-2 focus-within:bg-[#0D0D0D] transition-colors">
                       <input 
                         type="text" 
                         value={betNumber}
@@ -445,8 +453,8 @@ export default function Home() {
                       <span>Bet Amount</span>
                       <span className="text-[#FFD700]">฿</span>
                     </label>
-                    <div className="casino-input rounded-xl flex items-center p-2 relative overflow-hidden focus-within:bg-[#0B1220] transition-colors">
-                      <div className="absolute inset-y-0 left-0 bg-[#1A2536] border-r border-[rgba(255,255,255,0.05)] px-4 flex items-center justify-center z-10">
+                    <div className="casino-input rounded-xl flex items-center p-2 relative overflow-hidden focus-within:bg-[#0D0D0D] transition-colors">
+                      <div className="absolute inset-y-0 left-0 bg-[#1E293B] border-r border-[rgba(255,255,255,0.05)] px-4 flex items-center justify-center z-10">
                         <img src="/coin.png" className="w-5 h-5" alt="coin" />
                       </div>
                       <input 
@@ -470,7 +478,7 @@ export default function Home() {
                           if(btn === 'MAX' && user?.wallet) setBetAmount(user.wallet.toString());
                         };
                         return (
-                          <button key={btn} onClick={handleClick} className="bg-[#1A2536] hover:bg-[#2A3B52] py-2.5 rounded-lg text-[10px] font-black text-gray-300 transition-colors border border-[rgba(255,255,255,0.05)] uppercase tracking-wider hover:text-white">
+                          <button key={btn} onClick={handleClick} className="bg-[#1E293B] hover:bg-[#2A3B52] py-2.5 rounded-lg text-[10px] font-black text-gray-300 transition-colors border border-[rgba(255,255,255,0.05)] uppercase tracking-wider hover:text-white">
                             {btn}
                           </button>
                         );
@@ -482,27 +490,27 @@ export default function Home() {
                   <div className="flex items-center justify-between border-y border-[rgba(255,255,255,0.05)] py-4 mt-2">
                     <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Risk Level</span>
                     <div className="flex gap-2">
-                      <button className="px-3 py-1 bg-[#00FF66]/20 text-[#00FF66] text-[10px] font-bold rounded uppercase tracking-wider border border-[#00FF66]/30">Low</button>
-                      <button className="px-3 py-1 bg-[#1A2536] text-gray-500 text-[10px] font-bold rounded uppercase tracking-wider border border-[rgba(255,255,255,0.05)]">High</button>
+                      <button className="px-3 py-1 bg-[#FFD700]/20 text-[#FFD700] text-[10px] font-bold rounded uppercase tracking-wider border border-[#FFD700]/30">Low</button>
+                      <button className="px-3 py-1 bg-[#1E293B] text-gray-500 text-[10px] font-bold rounded uppercase tracking-wider border border-[rgba(255,255,255,0.05)]">High</button>
                     </div>
                   </div>
 
                   {/* Statistics Modifiers */}
                   <div className="grid grid-cols-2 gap-4 mt-2">
-                    <div className="bg-[#0B1220] rounded-xl p-4 border border-[rgba(255,255,255,0.05)] flex flex-col items-center justify-center gap-1">
+                    <div className="bg-[#0D0D0D] rounded-xl p-4 border border-[rgba(255,255,255,0.05)] flex flex-col items-center justify-center gap-1">
                       <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Win Chance</span>
                       <span className="text-white font-black text-xl">{winChance.toFixed(2)}%</span>
                     </div>
-                    <div className="bg-[#0B1220] rounded-xl p-4 border border-[rgba(255,255,255,0.05)] flex flex-col items-center justify-center gap-1">
+                    <div className="bg-[#0D0D0D] rounded-xl p-4 border border-[rgba(255,255,255,0.05)] flex flex-col items-center justify-center gap-1">
                       <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Multiplier</span>
-                      <span className="text-[#00D9FF] font-black text-xl">x{betNumber ? (10 ** (betNumber.length - 1)) * 9 : 0}</span>
+                      <span className="text-[#FFD700] font-black text-xl">x{betNumber ? (10 ** (betNumber.length - 1)) * 9 : 0}</span>
                     </div>
                   </div>
 
                   {/* Payout Info */}
-                  <div className="mt-4 bg-[#0B1220] rounded-xl p-5 border border-[#00FF66]/30 flex justify-between items-center shadow-[inset_0_0_20px_rgba(0,255,102,0.05)]">
+                  <div className="mt-4 bg-[#0D0D0D] rounded-xl p-5 border border-[#FFD700]/30 flex justify-between items-center shadow-[inset_0_0_20px_rgba(255,215,0,0.05)]">
                     <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Estimated Payout</span>
-                    <span className="text-[#00FF66] font-black text-2xl flex items-center gap-2 tracking-wider">
+                    <span className="text-[#FFD700] font-black text-2xl flex items-center gap-2 tracking-wider">
                       ฿ {possiblePrize.toLocaleString()}
                     </span>
                   </div>
@@ -510,7 +518,7 @@ export default function Home() {
                   <button 
                     onClick={handlePlaceBet}
                     disabled={!betNumber || !betAmount || totalSeconds === 0}
-                    className="w-full bg-[#00FF66] hover:bg-[#00e65c] disabled:bg-[#1A2536] disabled:text-gray-600 text-[#0B1220] py-6 rounded-xl font-black uppercase tracking-widest text-lg transition-all transform active:scale-[0.98] shadow-[0_0_20px_rgba(0,255,102,0.3)] disabled:shadow-none mt-2 relative overflow-hidden group"
+                    className="w-full bg-[#FFD700] hover:bg-[#00e65c] disabled:bg-[#1E293B] disabled:text-gray-600 text-[#0B1220] py-6 rounded-xl font-black uppercase tracking-widest text-lg transition-all transform active:scale-[0.98] shadow-[0_0_20px_rgba(0,255,102,0.3)] disabled:shadow-none mt-2 relative overflow-hidden group"
                   >
                     <span className="relative z-10">{totalSeconds === 0 ? 'Wait for Next Round' : 'Place Bet'}</span>
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
@@ -533,16 +541,16 @@ export default function Home() {
                     {name: 'NeonNinja', win: '8,200', target: '912'},
                     {name: 'StakeMaster', win: '5,100', target: '3'},
                   ].map((legend, i) => (
-                    <div key={i} className="flex justify-between items-center bg-[#0B1220] p-4 rounded-xl border border-[rgba(255,255,255,0.02)] hover:border-[#FFD700]/30 transition-colors group">
+                    <div key={i} className="flex justify-between items-center bg-[#0D0D0D] p-4 rounded-xl border border-[rgba(255,255,255,0.02)] hover:border-[#FFD700]/30 transition-colors group">
                       <div className="flex items-center gap-3">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black ${
-                          i === 0 ? 'bg-[#FFD700] text-[#0B1220]' : i === 1 ? 'bg-gray-300 text-[#0B1220]' : i === 2 ? 'bg-amber-700 text-white' : 'bg-[#1A2536] text-gray-400 border border-[rgba(255,255,255,0.05)]'
+                          i === 0 ? 'bg-[#FFD700] text-[#0B1220]' : i === 1 ? 'bg-gray-300 text-[#0B1220]' : i === 2 ? 'bg-amber-700 text-white' : 'bg-[#1E293B] text-gray-400 border border-[rgba(255,255,255,0.05)]'
                         }`}>
                           {i+1}
                         </div>
                         <span className="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">{legend.name}</span>
                       </div>
-                      <span className="text-[#00FF66] font-black text-sm tracking-wider">฿ {legend.win}</span>
+                      <span className="text-[#FFD700] font-black text-sm tracking-wider">฿ {legend.win}</span>
                     </div>
                   ))}
                 </div>
@@ -552,12 +560,12 @@ export default function Home() {
               </>
             ) : (
               <div className="xl:col-span-12 flex flex-col items-center justify-center min-h-[600px] glass-panel animate-slide-up">
-                <div className="w-24 h-24 bg-[#1A2536] rounded-full flex items-center justify-center mb-6 shadow-inner border border-[rgba(255,255,255,0.05)]">
-                  <Gamepad2 className="w-12 h-12 text-[#00D9FF] animate-pulse" />
+                <div className="w-24 h-24 bg-[#1E293B] rounded-full flex items-center justify-center mb-6 shadow-inner border border-[rgba(255,255,255,0.05)]">
+                  <Gamepad2 className="w-12 h-12 text-[#FFD700] animate-pulse" />
                 </div>
                 <h2 className="text-5xl font-black text-white tracking-widest uppercase mb-4 text-center">Coming Soon</h2>
-                <p className="text-gray-400 font-bold max-w-lg text-center text-lg">We are currently building the ultimate <span className="text-[#00FF66]">{activeTab.toUpperCase()}</span> experience. Stay tuned for massive updates and new games!</p>
-                <button onClick={() => setActiveTab('lottery')} className="mt-10 px-10 py-4 bg-[#00FF66] text-[#0B1220] font-black uppercase tracking-widest rounded-xl hover:bg-[#00e65c] transition-transform active:scale-95 shadow-[0_0_20px_rgba(0,255,102,0.3)]">
+                <p className="text-gray-400 font-bold max-w-lg text-center text-lg">We are currently building the ultimate <span className="text-[#FFD700]">{activeTab.toUpperCase()}</span> experience. Stay tuned for massive updates and new games!</p>
+                <button onClick={() => setActiveTab('lottery')} className="mt-10 px-10 py-4 bg-[#FFD700] text-[#0B1220] font-black uppercase tracking-widest rounded-xl hover:bg-[#00e65c] transition-transform active:scale-95 shadow-[0_0_20px_rgba(0,255,102,0.3)]">
                   Back to Lottery
                 </button>
               </div>
@@ -568,7 +576,7 @@ export default function Home() {
           <footer className="mt-24 mb-8 pt-8 border-t border-[rgba(255,255,255,0.05)] flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
             <div className="flex items-center gap-6">
               <span className="text-gray-500 font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:text-white transition-colors cursor-pointer">
-                <ShieldCheck className="w-4 h-4 text-[#00FF66]" /> Provably Fair
+                <ShieldCheck className="w-4 h-4 text-[#FFD700]" /> Provably Fair
               </span>
               <span className="text-gray-500 font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:text-white transition-colors cursor-pointer">
                 <Clover className="w-4 h-4 text-[#FFD700]" /> 18+ Responsible Gaming
@@ -583,12 +591,12 @@ export default function Home() {
         </main>
 
         {/* MOBILE BOTTOM NAV */}
-        <div className="xl:hidden fixed bottom-0 left-0 right-0 h-20 bg-[#0B1220]/95 backdrop-blur-lg border-t border-[rgba(255,255,255,0.05)] z-40 flex items-center justify-around px-2 pb-2">
+        <div className="xl:hidden fixed bottom-0 left-0 right-0 h-20 bg-[#0D0D0D]/95 backdrop-blur-lg border-t border-[rgba(255,255,255,0.05)] z-40 flex items-center justify-around px-2 pb-2">
           <button onClick={() => setIsMobileMenuOpen(true)} className="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors">
             <Menu className="w-6 h-6" />
             <span className="text-[10px] font-bold uppercase tracking-widest">Menu</span>
           </button>
-          <button onClick={() => setActiveTab('lottery')} className={`flex flex-col items-center gap-1 transition-colors ${activeTab === 'lottery' ? 'text-[#00FF66]' : 'text-gray-500 hover:text-white'}`}>
+          <button onClick={() => setActiveTab('lottery')} className={`flex flex-col items-center gap-1 transition-colors ${activeTab === 'lottery' ? 'text-[#FFD700]' : 'text-gray-500 hover:text-white'}`}>
             <Gamepad2 className="w-6 h-6" />
             <span className="text-[10px] font-bold uppercase tracking-widest">Casino</span>
           </button>
@@ -605,6 +613,53 @@ export default function Home() {
             <User className="w-6 h-6" />
             <span className="text-[10px] font-bold uppercase tracking-widest">Profile</span>
           </button>
+        </div>
+      
+      {/* BOTTOM SHEET (Bet Popup) */}
+      <div className={`fixed inset-0 z-[100] flex items-end justify-center ${isBottomSheetOpen ? '' : 'hidden'}`}>
+        <div className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isBottomSheetOpen ? 'opacity-100' : 'opacity-0'}`} onClick={() => setIsBottomSheetOpen(false)}></div>
+        
+        <div className={`relative w-full max-w-[600px] bg-[#121B2F] rounded-t-[32px] border-t border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.8)] transition-transform duration-300 max-h-[90vh] overflow-y-auto flex flex-col ${isBottomSheetOpen ? 'translate-y-0' : 'translate-y-full'}`}>
+          <div className="p-6 md:p-8 flex flex-col gap-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-black text-white">Place Your Bet</h2>
+              <button onClick={() => setIsBottomSheetOpen(false)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white"><i className="fa-solid fa-times"></i>X</button>
+            </div>
+            
+            <div className="bg-[#0D0D0D] rounded-2xl p-4 flex items-center justify-between border border-white/5">
+              <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">Selected Number</span>
+              <span className="text-4xl font-mono font-black text-[#FFD700]">{betNumber}</span>
+            </div>
+            
+            <div>
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Select Spin</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[1,2,3,4].map(r => (
+                  <button key={r} onClick={() => setSelectedRound(r)} className={`p-3 rounded-xl border font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 ${selectedRound === r ? 'border-[#FFD700] bg-[#FFD700]/10 text-[#FFD700]' : 'border-white/10 bg-white/5 text-gray-300 hover:border-[#FFD700] hover:text-[#FFD700]'}`}>
+                    {r}{r===1?'st':r===2?'nd':r===3?'rd':'th'} Spin
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Amount</h3>
+              <div className="flex flex-col gap-3">
+                <input type="number" value={betAmount} onChange={(e) => setBetAmount(e.target.value)} className="w-full bg-[#0D0D0D] text-white font-mono text-2xl p-4 text-center outline-none border border-white/10 focus:border-[#FFD700] rounded-2xl" placeholder="Custom Amount" />
+                <div className="grid grid-cols-5 gap-2">
+                   {['100', '500', '1000', '5000', 'MAX'].map(amt => (
+                     <button key={amt} onClick={() => setBetAmount(amt === 'MAX' ? (user?.wallet || 0).toString() : amt)} className="py-2 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 font-bold text-sm border border-white/10">
+                       {amt}
+                     </button>
+                   ))}
+                </div>
+              </div>
+            </div>
+            
+            <button onClick={handlePlaceBet} disabled={!betAmount || !betNumber} className="w-full bg-gradient-to-r from-[#FFD700] to-[#F59E0B] text-black py-5 rounded-2xl font-black text-xl uppercase tracking-widest shadow-[0_10px_30px_rgba(255,215,0,0.3)] disabled:opacity-50 disabled:cursor-not-allowed">
+              Confirm Bet
+            </button>
+          </div>
         </div>
       </div>
     </div>
