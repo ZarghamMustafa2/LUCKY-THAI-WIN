@@ -418,111 +418,19 @@ export default function Home() {
             {/* RIGHT SIDEBAR (Bet Panel + Mini Leaderboard) (4 cols) */}
             <div className="xl:col-span-4 flex flex-col gap-8 animate-slide-up">
               
-              {/* THE ADVANCED BET PANEL */}
-              <div className="glass-panel p-8 flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-t border-[#FFD700]/20">
+              {/* THE ADVANCED BET PANEL (NUMBER GRID) */}
+              <div className="glass-panel p-6 lg:p-8 flex flex-col relative overflow-hidden border-t-2 border-t-[#FFD700] shadow-[0_30px_60px_rgba(0,0,0,0.6)] xl:sticky xl:top-24 z-20">
+                <h3 className="text-2xl font-display font-black text-white text-center mb-8"><i className="fa-solid fa-gem text-[#FFD700] mr-2"></i> Select Number</h3>
                 
-                {/* Tabs */}
-                <div className="flex bg-[#0D0D0D] p-1.5 rounded-xl mb-8 border border-[rgba(255,255,255,0.05)] shadow-inner">
-                  <button className="flex-1 bg-[#1E293B] text-white py-3 rounded-lg font-black text-[11px] uppercase tracking-widest shadow-md">Manual</button>
-                  <button className="flex-1 text-gray-500 hover:text-white py-3 rounded-lg font-bold text-[11px] uppercase tracking-widest transition-colors">Auto Bet</button>
-                </div>
-
-                {/* Input Form */}
-                <div className="flex flex-col gap-6 flex-grow">
-                  
-                  {/* Target Input */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-gray-400 text-[10px] font-bold uppercase tracking-widest flex justify-between">
-                      <span>Target Sequence</span>
-                      <span className="text-[#FFD700]">1-4 Digits</span>
-                    </label>
-                    <div className="casino-input rounded-xl p-2 focus-within:bg-[#0D0D0D] transition-colors">
-                      <input 
-                        type="text" 
-                        value={betNumber}
-                        onChange={(e) => setBetNumber(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                        className="w-full bg-transparent text-white font-mono text-4xl p-4 text-center tracking-[0.4em] outline-none placeholder:text-[#1A2536] font-black"
-                        placeholder="0000"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Stake Input */}
-                  <div className="flex flex-col gap-2 mt-2">
-                    <label className="text-gray-400 text-[10px] font-bold uppercase tracking-widest flex justify-between">
-                      <span>Bet Amount</span>
-                      <span className="text-[#FFD700]">฿</span>
-                    </label>
-                    <div className="casino-input rounded-xl flex items-center p-2 relative overflow-hidden focus-within:bg-[#0D0D0D] transition-colors">
-                      <div className="absolute inset-y-0 left-0 bg-[#1E293B] border-r border-[rgba(255,255,255,0.05)] px-4 flex items-center justify-center z-10">
-                        <img src="/coin.png" className="w-5 h-5" alt="coin" />
-                      </div>
-                      <input 
-                        type="number" 
-                        value={betAmount}
-                        onChange={(e) => setBetAmount(e.target.value)}
-                        className="w-full bg-transparent text-white font-black text-2xl p-4 pl-20 outline-none placeholder:text-[#1A2536] relative z-0"
-                        placeholder="0.00"
-                      />
-                    </div>
-                    
-                    {/* Quick Chips */}
-                    <div className="grid grid-cols-5 gap-2 mt-3">
-                      {['1/2', '2x', '+100', '+1K', 'MAX'].map(btn => {
-                        const handleClick = () => {
-                          const current = Number(betAmount) || 0;
-                          if(btn === '1/2') setBetAmount(Math.floor(current / 2).toString());
-                          if(btn === '2x') setBetAmount((current * 2).toString());
-                          if(btn === '+100') setBetAmount((current + 100).toString());
-                          if(btn === '+1K') setBetAmount((current + 1000).toString());
-                          if(btn === 'MAX' && user?.wallet) setBetAmount(user.wallet.toString());
-                        };
-                        return (
-                          <button key={btn} onClick={handleClick} className="bg-[#1E293B] hover:bg-[#2A3B52] py-2.5 rounded-lg text-[10px] font-black text-gray-300 transition-colors border border-[rgba(255,255,255,0.05)] uppercase tracking-wider hover:text-white">
-                            {btn}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Advanced Toggles (Visual only) */}
-                  <div className="flex items-center justify-between border-y border-[rgba(255,255,255,0.05)] py-4 mt-2">
-                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Risk Level</span>
-                    <div className="flex gap-2">
-                      <button className="px-3 py-1 bg-[#FFD700]/20 text-[#FFD700] text-[10px] font-bold rounded uppercase tracking-wider border border-[#FFD700]/30">Low</button>
-                      <button className="px-3 py-1 bg-[#1E293B] text-gray-500 text-[10px] font-bold rounded uppercase tracking-wider border border-[rgba(255,255,255,0.05)]">High</button>
-                    </div>
-                  </div>
-
-                  {/* Statistics Modifiers */}
-                  <div className="grid grid-cols-2 gap-4 mt-2">
-                    <div className="bg-[#0D0D0D] rounded-xl p-4 border border-[rgba(255,255,255,0.05)] flex flex-col items-center justify-center gap-1">
-                      <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Win Chance</span>
-                      <span className="text-white font-black text-xl">{winChance.toFixed(2)}%</span>
-                    </div>
-                    <div className="bg-[#0D0D0D] rounded-xl p-4 border border-[rgba(255,255,255,0.05)] flex flex-col items-center justify-center gap-1">
-                      <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Multiplier</span>
-                      <span className="text-[#FFD700] font-black text-xl">x{betNumber ? (10 ** (betNumber.length - 1)) * 9 : 0}</span>
-                    </div>
-                  </div>
-
-                  {/* Payout Info */}
-                  <div className="mt-4 bg-[#0D0D0D] rounded-xl p-5 border border-[#FFD700]/30 flex justify-between items-center shadow-[inset_0_0_20px_rgba(255,215,0,0.05)]">
-                    <span className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Estimated Payout</span>
-                    <span className="text-[#FFD700] font-black text-2xl flex items-center gap-2 tracking-wider">
-                      ฿ {possiblePrize.toLocaleString()}
-                    </span>
-                  </div>
-
-                  <button 
-                    onClick={handlePlaceBet}
-                    disabled={!betNumber || !betAmount || totalSeconds === 0}
-                    className="w-full bg-[#FFD700] hover:bg-[#00e65c] disabled:bg-[#1E293B] disabled:text-gray-600 text-[#0B1220] py-6 rounded-xl font-black uppercase tracking-widest text-lg transition-all transform active:scale-[0.98] shadow-[0_0_20px_rgba(0,255,102,0.3)] disabled:shadow-none mt-2 relative overflow-hidden group"
-                  >
-                    <span className="relative z-10">{totalSeconds === 0 ? 'Wait for Next Round' : 'Place Bet'}</span>
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                  </button>
+                <div className="grid grid-cols-5 gap-3 sm:gap-4 relative z-10">
+                  {[1,2,3,4,5,6,7,8,9,0].map(num => (
+                    <button 
+                      key={num}
+                      onClick={() => { setBetNumber(num.toString()); setIsBottomSheetOpen(true); }}
+                      className="aspect-square rounded-2xl bg-[#0D0D0D] border border-white/10 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-[#FFD700] hover:text-[#FFD700] hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all">
+                      {num}
+                    </button>
+                  ))}
                 </div>
               </div>
 
