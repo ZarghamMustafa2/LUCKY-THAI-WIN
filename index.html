@@ -543,6 +543,14 @@
             
             <div class="flex flex-col gap-6 flex-grow relative z-10">
               
+              <!-- Bet Type Selector -->
+              <div class="flex items-center justify-between bg-cardDark rounded-xl p-1 border border-white/5 shadow-inner">
+                <button type="button" class="bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg bg-primary/20 text-primary transition-colors" data-digits="1">1 Digit</button>
+                <button type="button" class="bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg text-gray-500 hover:text-white transition-colors" data-digits="2">2 Digits</button>
+                <button type="button" class="bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg text-gray-500 hover:text-white transition-colors" data-digits="3">3 Digits</button>
+                <button type="button" class="bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg text-gray-500 hover:text-white transition-colors" data-digits="4">4 Digits</button>
+              </div>
+
               <!-- Target Input -->
               <div class="flex flex-col gap-2 group">
                 <label class="text-gray-400 text-[10px] font-bold uppercase tracking-widest flex justify-between group-focus-within:text-cyanLight transition-colors">
@@ -550,7 +558,7 @@
                   <span class="text-cyanLight">1-4 Digits</span>
                 </label>
                 <div class="bg-bgDark rounded-2xl p-2 border border-white/5 group-focus-within:border-cyanLight/50 shadow-inner transition-colors">
-                  <input type="text" id="targetInput" class="w-full bg-transparent text-white font-mono text-3xl sm:text-4xl p-2 sm:p-4 text-center tracking-widest sm:tracking-[0.4em] outline-none placeholder:text-gray-800 font-black" placeholder="8888">
+                  <input type="text" id="targetInput" class="w-full bg-transparent text-white font-mono text-3xl sm:text-4xl p-2 sm:p-4 text-center tracking-widest sm:tracking-[0.4em] outline-none placeholder:text-gray-800 font-black" placeholder="8">
                 </div>
               </div>
 
@@ -1063,15 +1071,21 @@
       }
     }
 
-    function updateRecentDrops(newNum) {
-      if (newNum) {
-        recentWinningNumbers.unshift(newNum);
-        if (recentWinningNumbers.length > 5) recentWinningNumbers.pop();
+    function updateRecentDrops(newNums) {
+      if (newNums) {
+        if (Array.isArray(newNums)) {
+           recentWinningNumbers = [...newNums, ...recentWinningNumbers];
+        } else {
+           recentWinningNumbers.unshift(newNums);
+        }
+        if (recentWinningNumbers.length > 8) recentWinningNumbers.length = 8;
       }
       const container = document.getElementById('recentDropsContainer');
       container.innerHTML = '';
-      recentWinningNumbers.forEach(num => {
-        container.innerHTML += `<div class="recent-win-item bg-bgDark border border-white/10 px-2 py-1 rounded text-xs font-mono font-bold text-white shadow-inner">${num}</div>`;
+      recentWinningNumbers.forEach((num, idx) => {
+        const isPrimary = idx % 4 === 0; // highlight every 1st prize in the history
+        const colorClass = isPrimary ? 'border-primary text-primary shadow-[0_0_10px_rgba(0,231,1,0.2)]' : 'border-white/10 text-gray-400 shadow-inner opacity-70';
+        container.innerHTML += `<div class="recent-win-item bg-bgDark border px-2 py-1 rounded text-xs font-mono font-bold ${colorClass}">${num}</div>`;
       });
     }
 
@@ -1113,13 +1127,13 @@
 
       document.getElementById('modalTimestamp').innerText = new Date().toLocaleTimeString();
       
-      const numStr = number.toString().padStart(4, '0');
+      const numStr = Array.isArray(number) ? number[0] : number.toString().padStart(4, '0');
       for(let i=0; i<4; i++) { 
          rollDigit(`modalDigit${i}`, numStr[i]); 
          document.getElementById(`modalDigit${i}`).style.color = ''; // reset color
       }
       
-      updateRecentDrops(numStr);
+      updateRecentDrops(Array.isArray(number) ? number : [numStr]);
       spawnParticles();
       startModalCountdown();
 
@@ -1261,8 +1275,25 @@
       walletBalanceEl.innerText = `฿ ${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
     }
 
+    let currentBetDigits = 1;
+    document.querySelectorAll('.bet-type-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.bet-type-btn').forEach(b => {
+          b.className = 'bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg text-gray-500 hover:text-white transition-colors';
+        });
+        const clicked = e.currentTarget;
+        clicked.className = 'bet-type-btn flex-1 py-2 text-xs md:text-sm font-bold rounded-lg bg-primary/20 text-primary transition-colors';
+        currentBetDigits = parseInt(clicked.dataset.digits);
+        targetInput.placeholder = '8'.repeat(currentBetDigits);
+        if (targetInput.value.length > currentBetDigits) {
+          targetInput.value = targetInput.value.slice(0, currentBetDigits);
+        }
+        updateCalculations();
+      });
+    });
+
     function updateCalculations() {
-      const targetStr = targetInput.value.replace(/\D/g, '').slice(0, 4);
+      const targetStr = targetInput.value.replace(/\D/g, '').slice(0, currentBetDigits);
       targetInput.value = targetStr;
       
       const amount = Number(amountInput.value) || 0;
@@ -1270,9 +1301,9 @@
       let mult = 0;
       let chance = 0;
       
-      if(targetStr.length > 0) {
-        mult = Math.pow(10, targetStr.length - 1) * 9;
-        chance = 100 / Math.pow(10, targetStr.length);
+      if(targetStr.length === currentBetDigits) {
+        mult = (Math.pow(10, targetStr.length) * 0.9) / 4;
+        chance = (100 / Math.pow(10, targetStr.length)) * 4;
       }
       
       multiplierText.innerText = `x${mult.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
@@ -1459,16 +1490,27 @@
       statusDot.style.backgroundColor = '#FFD400';
       statusDot.style.boxShadow = '0 0 12px rgba(255,212,0,0.8)';
       
-      let winningNumStr = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+      const multiResultsContainer = document.getElementById('multiResultsContainer');
+      if(multiResultsContainer) {
+         multiResultsContainer.classList.add('opacity-0', 'translate-y-4');
+         multiResultsContainer.innerHTML = '';
+      }
+
+      window.generatedResults = [];
+      for(let i=0; i<4; i++) {
+        window.generatedResults.push(Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+      }
       
       // Demo Cheat: 50% win rate if bet placed
       if (currentBet && Math.random() > 0.5) {
          let missingLen = 4 - currentBet.target.length;
          let randomSuffix = '';
          for(let i=0; i<missingLen; i++) randomSuffix += Math.floor(Math.random()*10);
-         winningNumStr = currentBet.target + randomSuffix;
+         const winIndex = Math.floor(Math.random() * 4);
+         window.generatedResults[winIndex] = currentBet.target + randomSuffix;
       }
       
+      const winningNumStr = window.generatedResults[0];
       const targetDigits = winningNumStr.split('');
       
       wheelText.innerText = '!!';
@@ -1512,10 +1554,38 @@
     function finishDraw(winningNumStr) {
       wheelGlow.classList.remove('opacity-40', 'animate-pulse');
       wheelGlow.classList.add('opacity-[0.15]');
+
+      // Display the extra 3 results
+      const multiResultsContainer = document.getElementById('multiResultsContainer');
+      if(multiResultsContainer) {
+        multiResultsContainer.innerHTML = `
+          <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border border-white/10 shadow-lg text-center">
+             <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">2ND PRIZE</div>
+             <div class="text-lg md:text-2xl font-mono font-black text-white">${window.generatedResults[1]}</div>
+          </div>
+          <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border border-white/10 shadow-lg text-center">
+             <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">3RD PRIZE</div>
+             <div class="text-lg md:text-2xl font-mono font-black text-white">${window.generatedResults[2]}</div>
+          </div>
+          <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border border-white/10 shadow-lg text-center">
+             <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">4TH PRIZE</div>
+             <div class="text-lg md:text-2xl font-mono font-black text-white">${window.generatedResults[3]}</div>
+          </div>
+        `;
+        setTimeout(() => multiResultsContainer.classList.remove('opacity-0', 'translate-y-4'), 100);
+      }
       
+      let isWin = false;
       if (currentBet) {
-        if (winningNumStr.startsWith(currentBet.target)) {
-          let multiplier = Math.pow(10, currentBet.target.length - 1) * 9;
+        for(let i=0; i<4; i++) {
+          if (window.generatedResults[i].startsWith(currentBet.target)) {
+            isWin = true;
+            break;
+          }
+        }
+
+        if (isWin) {
+          let multiplier = (Math.pow(10, currentBet.target.length) * 0.9) / 4;
           let payout = currentBet.amount * multiplier;
           currentBalance += payout;
           updateWalletUI();
@@ -1525,17 +1595,17 @@
               particleCount: 200,
               spread: 90,
               origin: { y: 0.6 },
-              colors: ['#00FF88', '#FFD400', '#00D4FF', '#8B5CF6'],
+              colors: ['#00e701', '#FFD400', '#00D4FF', '#8B5CF6'],
               disableForReducedMotion: true
             });
           }
-          setTimeout(() => showModal(true, winningNumStr, payout), 600);
+          setTimeout(() => showModal(true, window.generatedResults, payout), 600);
         } else {
-          setTimeout(() => showModal(false, winningNumStr, 0, currentBet.amount), 600);
+          setTimeout(() => showModal(false, window.generatedResults, 0, currentBet.amount), 600);
         }
         currentBet = null;
       } else {
-        setTimeout(() => showModal(null, winningNumStr), 600);
+        setTimeout(() => showModal(null, window.generatedResults), 600);
       }
 
       setTimeout(() => {
