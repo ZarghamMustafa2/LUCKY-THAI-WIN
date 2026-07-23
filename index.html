@@ -52,6 +52,15 @@
     }
   </script>
   <script>
+    window.sheetState = {
+      number: '0',
+      round: 1,
+      type: 'figure',
+      extraDigits: '',
+      multiplier: 8,
+      amount: 0
+    };
+
     window.toggleMobileSidebar = function() {
       var sidebar = document.getElementById('sidebar');
       var sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -72,6 +81,57 @@
         sidebarOverlay.style.opacity = '0';
         setTimeout(function() { sidebarOverlay.style.display = 'none'; }, 300);
       }
+    };
+
+    window.openNumberBetSheet = function(btn) {
+      var num = btn.getAttribute('data-num') || btn.innerText.trim();
+      var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
+      var betBottomSheet = document.getElementById('betBottomSheet');
+      var betBottomSheetBackdrop = document.getElementById('betBottomSheetBackdrop');
+      var betBottomSheetContent = document.getElementById('betBottomSheetContent');
+
+      if (sheetSelectedNumber) sheetSelectedNumber.innerText = num;
+      window.sheetState.number = num;
+
+      if (betBottomSheet && betBottomSheetBackdrop && betBottomSheetContent) {
+        betBottomSheet.style.display = 'flex';
+        betBottomSheet.classList.remove('hidden');
+        betBottomSheet.style.zIndex = '99999';
+        setTimeout(function() {
+          betBottomSheetBackdrop.style.opacity = '1';
+          betBottomSheetBackdrop.classList.remove('opacity-0');
+          betBottomSheetContent.style.transform = 'translateY(0px)';
+          betBottomSheetContent.classList.remove('translate-y-full');
+        }, 10);
+      }
+    };
+
+    window.closeNumberBetSheet = function() {
+      var betBottomSheet = document.getElementById('betBottomSheet');
+      var betBottomSheetBackdrop = document.getElementById('betBottomSheetBackdrop');
+      var betBottomSheetContent = document.getElementById('betBottomSheetContent');
+
+      if (betBottomSheet && betBottomSheetBackdrop && betBottomSheetContent) {
+        betBottomSheetBackdrop.style.opacity = '0';
+        betBottomSheetBackdrop.classList.add('opacity-0');
+        betBottomSheetContent.style.transform = 'translateY(100%)';
+        betBottomSheetContent.classList.add('translate-y-full');
+        setTimeout(function() {
+          betBottomSheet.style.display = 'none';
+          betBottomSheet.classList.add('hidden');
+        }, 300);
+      }
+    };
+
+    window.selectBetRound = function(btn, roundNum) {
+      var btns = document.querySelectorAll('.round-btn');
+      btns.forEach(function(b) {
+        b.classList.remove('border-gold', 'text-gold', 'bg-gold/10');
+        b.classList.add('border-white/10', 'text-gray-300', 'bg-white/5');
+      });
+      btn.classList.remove('border-white/10', 'text-gray-300', 'bg-white/5');
+      btn.classList.add('border-gold', 'text-gold', 'bg-gold/10');
+      window.sheetState.round = roundNum;
     };
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -540,18 +600,18 @@
             
             <div class="grid grid-cols-5 gap-3 sm:gap-4 relative z-10">
               <!-- First Row -->
-              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">1</button>
-              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">2</button>
-              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">3</button>
-              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">4</button>
-              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">5</button>
+              <button onclick="openNumberBetSheet(this)" data-num="1" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">1</button>
+              <button onclick="openNumberBetSheet(this)" data-num="2" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">2</button>
+              <button onclick="openNumberBetSheet(this)" data-num="3" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">3</button>
+              <button onclick="openNumberBetSheet(this)" data-num="4" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">4</button>
+              <button onclick="openNumberBetSheet(this)" data-num="5" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">5</button>
               
               <!-- Second Row -->
-              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">6</button>
-              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">7</button>
-              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">8</button>
-              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">9</button>
-              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">0</button>
+              <button onclick="openNumberBetSheet(this)" data-num="6" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">6</button>
+              <button onclick="openNumberBetSheet(this)" data-num="7" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">7</button>
+              <button onclick="openNumberBetSheet(this)" data-num="8" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">8</button>
+              <button onclick="openNumberBetSheet(this)" data-num="9" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">9</button>
+              <button onclick="openNumberBetSheet(this)" data-num="0" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">0</button>
             </div>
 
             <!-- Small Instruction -->
@@ -1949,7 +2009,7 @@
   <!-- BOTTOM SHEET (Bet Popup) -->
   <div id="betBottomSheet" class="fixed inset-0 z-[100] hidden flex items-end justify-center">
     <!-- Backdrop -->
-    <div id="betBottomSheetBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+    <div id="betBottomSheetBackdrop" onclick="closeNumberBetSheet()" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
     
     <!-- Sheet Content -->
     <div id="betBottomSheetContent" class="relative w-full max-w-[600px] bg-cardDark rounded-t-[32px] border-t border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.8)] transform translate-y-full transition-transform duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col">
@@ -1957,7 +2017,7 @@
          <!-- Title & Selected Number -->
          <div class="flex justify-between items-center">
            <h2 class="text-2xl font-display font-black text-white">Place Your Bet</h2>
-           <button id="closeSheetBtn" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-times"></i></button>
+           <button id="closeSheetBtn" onclick="closeNumberBetSheet()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-times"></i></button>
          </div>
          
          <div class="bg-bgDark rounded-2xl p-4 flex items-center justify-between border border-white/5">
@@ -1969,10 +2029,10 @@
          <div>
            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Select Spin</h3>
            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="roundSelection">
-             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="1"><i class="fa-regular fa-square"></i> 1st Spin</button>
-             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="2"><i class="fa-regular fa-square"></i> 2nd Spin</button>
-             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="3"><i class="fa-regular fa-square"></i> 3rd Spin</button>
-             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="4"><i class="fa-regular fa-square"></i> 4th Spin</button>
+             <button onclick="selectBetRound(this, 1)" class="round-btn p-3 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer" data-round="1"><i class="fa-regular fa-check-square"></i> 1st Spin</button>
+             <button onclick="selectBetRound(this, 2)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2 cursor-pointer" data-round="2"><i class="fa-regular fa-square"></i> 2nd Spin</button>
+             <button onclick="selectBetRound(this, 3)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2 cursor-pointer" data-round="3"><i class="fa-regular fa-square"></i> 3rd Spin</button>
+             <button onclick="selectBetRound(this, 4)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2 cursor-pointer" data-round="4"><i class="fa-regular fa-square"></i> 4th Spin</button>
            </div>
          </div>
          
