@@ -526,30 +526,7 @@ export default function Home() {
           </footer>
         </main>
 
-        {/* MOBILE BOTTOM NAV */}
-        <div className="xl:hidden fixed bottom-0 left-0 right-0 h-20 bg-[#0D0D0D]/95 backdrop-blur-lg border-t border-[rgba(255,255,255,0.05)] z-40 flex items-center justify-around px-2 pb-2">
-          <button onClick={() => setIsMobileMenuOpen(true)} className="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors">
-            <Menu className="w-6 h-6" />
-            <span className="text-[10px] font-bold uppercase tracking-widest">Menu</span>
-          </button>
-          <button onClick={() => setActiveTab('lottery')} className={`flex flex-col items-center gap-1 transition-colors ${activeTab === 'lottery' ? 'text-[#FFD700]' : 'text-gray-500 hover:text-white'}`}>
-            <Gamepad2 className="w-6 h-6" />
-            <span className="text-[10px] font-bold uppercase tracking-widest">Casino</span>
-          </button>
-          <button onClick={() => setIsAuthModalOpen(true)} className="flex flex-col items-center justify-center -mt-8 relative group">
-            <div className="w-16 h-16 bg-gradient-to-tr from-[#FF4D6D] to-[#b026ff] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,77,109,0.4)] border-4 border-[#0B1220] group-hover:scale-105 transition-transform">
-              <Wallet className="w-6 h-6 text-white" />
-            </div>
-          </button>
-          <button className="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors">
-            <MessageSquare className="w-6 h-6" />
-            <span className="text-[10px] font-bold uppercase tracking-widest">Chat</span>
-          </button>
-          <button className="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-colors">
-            <User className="w-6 h-6" />
-            <span className="text-[10px] font-bold uppercase tracking-widest">Profile</span>
-          </button>
-        </div>
+
       
       {/* BOTTOM SHEET (Bet Popup) */}
       <div className={`fixed inset-0 z-[100] flex items-end justify-center ${isBottomSheetOpen ? '' : 'hidden'}`}>
