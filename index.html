@@ -1393,8 +1393,9 @@
     // Number Grid Click
     gridNumBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
-        sheetState.number = e.target.innerText;
-        sheetSelectedNumber.innerText = sheetState.number;
+        const num = (e.currentTarget.getAttribute('data-num') || e.currentTarget.innerText || e.target.innerText).trim();
+        sheetState.number = num;
+        sheetSelectedNumber.innerText = num;
         
         // Reset state
         sheetState.type = '';
@@ -1540,7 +1541,7 @@
     let timeOffset = 0;
     function getRemainingSeconds() {
       const ms = Date.now() + timeOffset;
-      const interval = 30 * 60 * 1000;
+      const interval = 45 * 1000; // 45 Seconds Fast Draw Cycle
       let nextDrawTime = Math.ceil(ms / interval) * interval;
       if (nextDrawTime === ms) nextDrawTime += interval;
       return Math.max(0, Math.floor((nextDrawTime - ms) / 1000));
@@ -1548,7 +1549,7 @@
 
     wheelText.addEventListener('click', () => {
        const ms = Date.now() + timeOffset;
-       const interval = 30 * 60 * 1000;
+       const interval = 45 * 1000;
        let nextDrawTime = Math.ceil(ms / interval) * interval;
        if (nextDrawTime === ms) nextDrawTime += interval;
        const remainingMs = nextDrawTime - ms;
@@ -1582,20 +1583,14 @@
       if(isDrawing) return;
       countdown = getRemainingSeconds();
       
-      const percent = (countdown / 1800) * 100;
+      const percent = (countdown / 45) * 100;
       setProgress(percent);
       
-      if (countdown <= 60 && !isDrawing && !currentBet) {
-        gridNumBtns.forEach(btn => {
-           btn.disabled = true;
-           btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
-        });
-      } else if (countdown > 60 && !isDrawing && !currentBet) {
-        gridNumBtns.forEach(btn => {
-           btn.disabled = false;
-           btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
-        });
-      }
+      // Always keep buttons enabled so users can open popup anytime
+      gridNumBtns.forEach(btn => {
+         btn.disabled = false;
+         btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+      });
       
       if(countdown <= 0) {
         startDraw();
