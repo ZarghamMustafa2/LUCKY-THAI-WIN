@@ -414,7 +414,7 @@
             <div class="w-full flex justify-center items-center py-10 mt-16 mb-24 relative z-10">
               
               <!-- Ambient Back Glow -->
-              <div id="wheelGlow" class="absolute inset-0 bg-primary opacity-[0.15] rounded-full blur-[100px] pointer-events-none w-96 h-96 mx-auto transition-colors duration-500"></div>
+              <div id="wheelGlow" class="absolute inset-0 bg-primary opacity-[0.15] rounded-full blur-[100px] pointer-events-none w-72 h-72 md:w-80 md:h-80 mx-auto transition-colors duration-500"></div>
               
               <!-- Pointer -->
               <div class="absolute top-[-10px] left-1/2 -translate-x-1/2 z-30 drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
@@ -424,7 +424,7 @@
               </div>
               
               <!-- Wheel Frame (3D Depth) -->
-              <div class="w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] md:w-[500px] md:h-[500px] rounded-full border-[16px] border-cardDark wheel-shadow overflow-hidden relative bg-bgDark" style="transform: perspective(1000px) rotateX(10deg);">
+              <div class="w-[220px] h-[220px] sm:w-[300px] sm:h-[300px] md:w-[380px] md:h-[380px] rounded-full border-[10px] md:border-[14px] border-cardDark wheel-shadow overflow-hidden relative bg-bgDark" style="transform: perspective(1000px) rotateX(10deg);">
                 
                 <!-- Inner Shadow Overlay -->
                 <div class="absolute inset-0 rounded-full shadow-[inset_0_0_60px_rgba(0,0,0,0.9)] z-20 pointer-events-none"></div>
@@ -435,30 +435,30 @@
                   <div class="absolute -inset-10" style="background: conic-gradient(from -18deg, #2A3B54 0deg 36deg, #151E2E 36deg 72deg, #2A3B54 72deg 108deg, #151E2E 108deg 144deg, #2A3B54 144deg 180deg, #151E2E 180deg 216deg, #2A3B54 216deg 252deg, #151E2E 252deg 288deg, #2A3B54 288deg 324deg, #151E2E 324deg 360deg)"></div>
                   
                   <!-- Slice Texts -->
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(0deg);"><div class="pt-4 md:pt-8 text-3xl md:text-5xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">0</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(36deg);"><div class="pt-4 md:pt-8 text-3xl md:text-5xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">1</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(72deg);"><div class="pt-4 md:pt-8 text-3xl md:text-5xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">2</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(108deg);"><div class="pt-4 md:pt-8 text-3xl md:text-5xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">3</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(144deg);"><div class="pt-4 md:pt-8 text-3xl md:text-5xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">4</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(180deg);"><div class="pt-4 md:pt-8 text-3xl md:text-5xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">5</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(216deg);"><div class="pt-4 md:pt-8 text-3xl md:text-5xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">6</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(252deg);"><div class="pt-4 md:pt-8 text-3xl md:text-5xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">7</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(288deg);"><div class="pt-4 md:pt-8 text-3xl md:text-5xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">8</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(324deg);"><div class="pt-4 md:pt-8 text-3xl md:text-5xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">9</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(0deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">0</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(36deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">1</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(72deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">2</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(108deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">3</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(144deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">4</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(180deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">5</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(216deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">6</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(252deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">7</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(288deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">8</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(324deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">9</div></div>
                 </div>
                 
                 <!-- Central Hub & Circular Countdown -->
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center">
                   <!-- SVG Progress -->
-                  <svg class="absolute w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 drop-shadow-[0_0_15px_rgba(0,0,0,1)]" viewBox="0 0 120 120">
+                  <svg class="absolute w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 drop-shadow-[0_0_15px_rgba(0,0,0,1)]" viewBox="0 0 120 120">
                     <circle cx="60" cy="60" r="54" fill="#0B1220" stroke="rgba(255,255,255,0.05)" stroke-width="12" />
                     <circle id="timerCircle" class="progress-ring__circle" cx="60" cy="60" r="54" fill="transparent" stroke="#00FF88" stroke-width="12" stroke-dasharray="339.292" stroke-dashoffset="0" stroke-linecap="round" />
                   </svg>
                   
                   <!-- Inner Hub Metal -->
-                  <div class="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full border-8 border-bgDark shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] flex flex-col items-center justify-center relative z-10 bg-gradient-to-b from-[#1A2536] to-[#111827]">
-                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1 hidden md:block">Spinning In</span>
-                    <span id="wheelText" class="font-mono text-3xl md:text-5xl font-black text-primary drop-shadow-[0_0_15px_rgba(0,255,136,0.6)] tracking-wider">15</span>
+                  <div class="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-full border-4 md:border-8 border-bgDark shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] flex flex-col items-center justify-center relative z-10 bg-gradient-to-b from-[#1A2536] to-[#111827]">
+                    <span class="text-[8px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5 md:mb-1 hidden md:block">Spinning In</span>
+                    <span id="wheelText" class="font-mono text-xl md:text-3xl font-black text-primary drop-shadow-[0_0_15px_rgba(0,255,136,0.6)] tracking-wider">15</span>
                   </div>
                 </div>
               </div>
