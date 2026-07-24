@@ -539,9 +539,19 @@ export default function Home() {
               <button onClick={() => setIsBottomSheetOpen(false)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white"><i className="fa-solid fa-times"></i>X</button>
             </div>
             
-            <div className="bg-[#0D0D0D] rounded-2xl p-4 flex items-center justify-between border border-white/5">
-              <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">Selected Number</span>
-              <span className="text-4xl font-mono font-black text-[#FFD700]">{betNumber}</span>
+            <div className="bg-[#0D0D0D] rounded-2xl p-4 flex items-center justify-between border border-white/10 focus-within:border-[#FFD700] transition-colors shadow-inner">
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Selected Number</span>
+                <span className="text-[10px] text-gray-500">1 to 4 Digits</span>
+              </div>
+              <input 
+                type="text" 
+                value={betNumber} 
+                onChange={(e) => setBetNumber(e.target.value.replace(/\D/g, '').slice(0, 4))} 
+                maxLength={4} 
+                className="w-36 bg-white/5 text-[#FFD700] font-mono font-black text-3xl p-2 text-center outline-none border border-white/10 focus:border-[#FFD700] rounded-xl tracking-widest shadow-inner" 
+                placeholder="0000"
+              />
             </div>
             
             <div>

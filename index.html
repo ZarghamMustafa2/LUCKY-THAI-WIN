@@ -86,11 +86,13 @@
     window.openNumberBetSheet = function(btn) {
       var num = btn.getAttribute('data-num') || btn.innerText.trim();
       var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
+      var sheetNumberInput = document.getElementById('sheetNumberInput');
       var betBottomSheet = document.getElementById('betBottomSheet');
       var betBottomSheetBackdrop = document.getElementById('betBottomSheetBackdrop');
       var betBottomSheetContent = document.getElementById('betBottomSheetContent');
 
       if (sheetSelectedNumber) sheetSelectedNumber.innerText = num;
+      if (sheetNumberInput) sheetNumberInput.value = num;
       window.sheetState.number = num;
 
       if (betBottomSheet && betBottomSheetBackdrop && betBottomSheetContent) {
@@ -104,6 +106,15 @@
           betBottomSheetContent.classList.remove('translate-y-full');
         }, 10);
       }
+    };
+
+    window.updateBetNumberFromInput = function(val) {
+      var cleanVal = val.replace(/\D/g, '').slice(0, 4);
+      var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
+      var sheetNumberInput = document.getElementById('sheetNumberInput');
+      if (sheetNumberInput) sheetNumberInput.value = cleanVal;
+      if (sheetSelectedNumber) sheetSelectedNumber.innerText = cleanVal || '-';
+      window.sheetState.number = cleanVal;
     };
 
     window.closeNumberBetSheet = function() {
@@ -2030,9 +2041,15 @@
            <button id="closeSheetBtn" onclick="closeNumberBetSheet()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-times"></i></button>
          </div>
          
-         <div class="bg-bgDark rounded-2xl p-4 flex items-center justify-between border border-white/5">
-           <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">Selected Number</span>
-           <span id="sheetSelectedNumber" class="text-4xl font-mono font-black text-gold drop-shadow-[0_0_10px_rgba(255,212,0,0.5)]">7</span>
+         <div class="bg-bgDark rounded-2xl p-4 flex items-center justify-between border border-white/10 focus-within:border-gold transition-colors shadow-inner">
+           <div class="flex flex-col">
+             <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Selected Number</span>
+             <span class="text-[10px] text-gray-500">1 to 4 Digits</span>
+           </div>
+           <div class="flex items-center gap-2">
+             <input type="text" id="sheetNumberInput" oninput="updateBetNumberFromInput(this.value)" maxlength="4" class="w-36 bg-white/5 text-gold font-mono font-black text-3xl p-2 text-center outline-none border border-white/10 focus:border-gold rounded-xl tracking-widest shadow-inner" placeholder="0000" />
+             <span id="sheetSelectedNumber" class="hidden">7</span>
+           </div>
          </div>
          
          <!-- Choose Betting Round -->
