@@ -252,7 +252,32 @@
       if (window.updateSummary) window.updateSummary();
     };
 
+    window.isWheelHidden = false;
+
+    window.toggleWheelStage = function() {
+      var gameContainer = document.getElementById('gameContainer');
+      var nextSpinBanner = document.getElementById('nextSpinBanner');
+      var headerChevronIcon = document.getElementById('headerChevronIcon');
+
+      if (!gameContainer || !nextSpinBanner) return;
+
+      if (window.isWheelHidden) {
+        window.isWheelHidden = false;
+        gameContainer.classList.remove('hidden');
+        nextSpinBanner.classList.add('hidden');
+        if (headerChevronIcon) headerChevronIcon.style.transform = 'rotate(0deg)';
+      } else {
+        window.isWheelHidden = true;
+        gameContainer.classList.add('hidden');
+        nextSpinBanner.classList.remove('hidden');
+        if (headerChevronIcon) headerChevronIcon.style.transform = 'rotate(180deg)';
+      }
+    };
+
     window.manualTriggerSpin = function() {
+      if (window.isWheelHidden && window.toggleWheelStage) {
+        window.toggleWheelStage();
+      }
       if (typeof window.startDraw === 'function') {
         window.startDraw();
       }
@@ -483,6 +508,16 @@
             <span class="text-sm font-mono font-bold text-white" id="activeUsersCount">12,458</span>
           </div>
         </div>
+
+        <!-- Next Spin Countdown Header Button -->
+        <button id="headerTimerBtn" onclick="toggleWheelStage()" class="flex items-center gap-2.5 bg-cardDark/90 hover:bg-cardDark border border-gold/40 hover:border-gold px-3.5 py-2 rounded-2xl cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,212,0,0.2)]">
+          <i class="fa-solid fa-stopwatch text-gold animate-pulse text-base sm:text-lg"></i>
+          <div class="flex flex-col text-left">
+            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Next Spin</span>
+            <span id="headerTimerText" class="font-mono text-xs sm:text-sm font-black text-gold leading-none">00:15</span>
+          </div>
+          <i id="headerChevronIcon" class="fa-solid fa-chevron-down text-xs text-gray-400 ml-0.5 transition-transform duration-300"></i>
+        </button>
       </div>
 
       <!-- Center: Current Bet -->
@@ -575,6 +610,24 @@
         <div class="contents xl:flex xl:flex-col xl:col-span-8 gap-6 lg:gap-10">
           
 
+
+          <!-- NEXT SPIN COUNTDOWN BANNER (Shown when Spinner Stage is hidden) -->
+          <div id="nextSpinBanner" onclick="toggleWheelStage()" class="order-1 xl:order-none glass-panel p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-2 border-gold/40 hover:border-gold cursor-pointer transition-all shadow-[0_10px_30px_rgba(255,212,0,0.15)] group hidden">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gold/10 border border-gold/40 flex items-center justify-center text-gold text-2xl sm:text-3xl group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-stopwatch animate-pulse"></i>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Next Spin Scheduled</span>
+                <span class="text-xl sm:text-2xl font-mono font-black text-white">Next Draw in <span id="bannerCountdownText" class="text-gold">00:15</span></span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 bg-gold/20 text-gold font-bold px-5 py-3 rounded-2xl border border-gold/40 text-sm group-hover:bg-gold group-hover:text-black transition-all">
+              <i class="fa-solid fa-gamepad"></i>
+              <span>Show Wheel Stage</span>
+              <i class="fa-solid fa-angle-right"></i>
+            </div>
+          </div>
 
           <!-- THE 3D WHEEL STAGE -->
           <div id="gameContainer" class="order-1 xl:order-none glass-panel relative flex flex-col items-center justify-center overflow-hidden min-h-[500px] md:min-h-[600px] lg:min-h-[700px] transition-transform duration-500">
@@ -1758,18 +1811,25 @@
       } else {
         const mins = Math.floor(countdown / 60).toString().padStart(2, '0');
         const secs = (countdown % 60).toString().padStart(2, '0');
-        wheelText.innerText = `${mins}:${secs}`;
-        
-        for(let i=0; i<4; i++) {
-          const d = document.getElementById(`digit-${i}`);
-          d.innerText = '?';
-          d.className = 'w-20 h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
-        }
+        const timeStr = `${mins}:${secs}`;
+        wheelText.innerText = timeStr;
+
+        const headerTimerText = document.getElementById('headerTimerText');
+        if (headerTimerText) headerTimerText.innerText = timeStr;
+
+        const bannerCountdownText = document.getElementById('bannerCountdownText');
+        if (bannerCountdownText) bannerCountdownText.innerText = timeStr;
       }
     }
 
     function startDraw() {
       if (isDrawing && (Date.now() - lastDrawStartTime < 12000)) return;
+      
+      // Auto expand wheel stage if hidden when spin begins
+      if (window.isWheelHidden && window.toggleWheelStage) {
+        window.toggleWheelStage();
+      }
+
       isDrawing = true;
       lastDrawStartTime = Date.now();
       gridNumBtns.forEach(btn => {
@@ -1937,6 +1997,11 @@
            btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
         });
         statusText.innerText = 'Accepting Bets';
+
+        // Auto collapse wheel stage after winning draw completes
+        if (window.toggleWheelStage && !window.isWheelHidden) {
+          window.toggleWheelStage();
+        }
 
         if (isAutoBet && autoBetConfig) {
            if (currentBalance >= autoBetConfig.amount) {
