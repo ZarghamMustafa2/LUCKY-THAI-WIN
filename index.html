@@ -1770,12 +1770,7 @@
     }
 
     wheelText.addEventListener('click', () => {
-       const ms = Date.now() + timeOffset;
-       const interval = 15 * 1000;
-       let nextDrawTime = Math.ceil(ms / interval) * interval;
-       if (nextDrawTime === ms) nextDrawTime += interval;
-       const remainingMs = nextDrawTime - ms;
-       timeOffset += (remainingMs - 3000);
+       window.targetDrawEndTime = Date.now() + 3000;
        showToast('Fast Forward: 3 Seconds Remaining', 'info');
     });
     
@@ -1830,14 +1825,6 @@
 
       if(countdown <= 0 && !isDrawing) {
         startDraw();
-      } else if (!isDrawing) {
-        // Slow ambient rotation while waiting for next draw so wheel is never frozen
-        currentRotation += 1.5;
-        const spinWheel = document.getElementById('spinWheelElement') || spinWheelElement;
-        if (spinWheel) {
-          spinWheel.style.setProperty('transition', 'transform 1s linear', 'important');
-          spinWheel.style.setProperty('transform', `rotate(${currentRotation}deg)`, 'important');
-        }
       }
     }
 
