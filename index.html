@@ -286,6 +286,10 @@
       if (window.isWheelHidden && window.toggleWheelStage) {
         window.toggleWheelStage();
       }
+      var spinWheel = document.getElementById('spinWheelElement');
+      if (spinWheel) {
+        void spinWheel.offsetWidth;
+      }
       if (typeof window.startDraw === 'function') {
         window.startDraw(true);
       }
@@ -1913,8 +1917,15 @@
         currentRotation += addedRotation;
         
         const spinDuration = 3.5;
-        spinWheelElement.style.setProperty('transition', `transform ${spinDuration}s cubic-bezier(0.15, 0.85, 0.35, 1.2)`, 'important');
-        spinWheelElement.style.transform = `rotate(${currentRotation}deg)`;
+        const spinWheel = document.getElementById('spinWheelElement') || spinWheelElement;
+        if (spinWheel) {
+          spinWheel.style.setProperty('transition', `transform ${spinDuration}s cubic-bezier(0.15, 0.85, 0.35, 1.2)`, 'important');
+          spinWheel.style.setProperty('transition-duration', `${spinDuration}s`, 'important');
+          void spinWheel.offsetWidth; // Force DOM reflow
+          requestAnimationFrame(() => {
+            spinWheel.style.setProperty('transform', `rotate(${currentRotation}deg)`, 'important');
+          });
+        }
         
         // After wheel decelerates and stops on target digit
         setTimeout(() => {
