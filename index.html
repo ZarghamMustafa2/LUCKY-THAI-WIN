@@ -263,12 +263,16 @@
 
       if (window.isWheelHidden) {
         window.isWheelHidden = false;
+        gameContainer.style.display = 'flex';
         gameContainer.classList.remove('hidden');
+        nextSpinBanner.style.display = 'none';
         nextSpinBanner.classList.add('hidden');
         if (headerChevronIcon) headerChevronIcon.style.transform = 'rotate(0deg)';
       } else {
         window.isWheelHidden = true;
+        gameContainer.style.display = 'none';
         gameContainer.classList.add('hidden');
+        nextSpinBanner.style.display = 'flex';
         nextSpinBanner.classList.remove('hidden');
         if (headerChevronIcon) headerChevronIcon.style.transform = 'rotate(180deg)';
       }
