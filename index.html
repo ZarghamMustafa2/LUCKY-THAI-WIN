@@ -2132,8 +2132,27 @@
            <h2 class="text-2xl font-display font-black text-white">Place Your Bet</h2>
            <button id="closeSheetBtn" onclick="closeNumberBetSheet()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-times"></i></button>
          </div>
-         
-         <!-- Quick Select Number Buttons -->
+         <!-- Type / Enter Bet Number Input Box -->
+         <div class="bg-bgDark rounded-2xl p-4 sm:p-5 border-2 border-gold/40 focus-within:border-gold transition-all shadow-[0_0_25px_rgba(255,212,0,0.15)] flex flex-col gap-2">
+           <div class="flex justify-between items-center">
+             <label for="sheetNumberInput" class="text-xs font-bold text-gold uppercase tracking-widest flex items-center gap-2">
+               <i class="fa-solid fa-pen-to-square"></i> Enter Bet Number
+             </label>
+             <span id="inputHelperText" class="text-xs font-mono text-gray-400 font-bold bg-white/5 px-3 py-1 rounded-full border border-white/10">1 Digit Allowed</span>
+           </div>
+           
+           <div class="flex items-center justify-between gap-3">
+             <input 
+               type="text" 
+               id="sheetNumberInput" 
+               oninput="updateBetNumberFromInput(this.value)" 
+               maxlength="1" 
+               class="w-full bg-white/5 text-gold font-mono font-black text-3xl sm:text-4xl py-3 px-4 text-center outline-none border border-gold/30 focus:border-gold focus:bg-white/10 rounded-2xl tracking-[0.2em] shadow-inner transition-all placeholder:text-gray-600 placeholder:tracking-normal placeholder:text-xl" 
+               placeholder="Type number..." 
+             />
+             <span id="sheetSelectedNumber" class="hidden">7</span>
+           </div>
+         </div>
          <div>
            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Quick Select Number</h3>
            <div class="grid grid-cols-5 sm:grid-cols-10 gap-2">
