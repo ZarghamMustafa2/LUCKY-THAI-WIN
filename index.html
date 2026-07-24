@@ -1726,8 +1726,8 @@
       isDrawing = true;
       lastDrawStartTime = Date.now();
       gridNumBtns.forEach(btn => {
-         btn.disabled = true;
-         btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+         btn.disabled = false;
+         btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
       });
 
       if (isAutoBet && currentBet) { autoBetConfig = { ...currentBet }; }
@@ -1900,8 +1900,8 @@
                showToast(`Auto Bet Placed: ₹${autoBetConfig.amount}`, 'success');
                
                gridNumBtns.forEach(btn => {
-                  btn.disabled = true;
-                  btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+                  btn.disabled = false;
+                  btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
                });
            } else {
                showToast('Auto Bet Stopped: Insufficient Balance', 'error');
