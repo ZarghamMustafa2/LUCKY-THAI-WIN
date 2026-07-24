@@ -116,7 +116,21 @@
     };
 
     window.openNumberBetSheet = function(btn) {
-      var num = (btn.getAttribute('data-num') || btn.innerText.trim()).replace(/\D/g, '').slice(0, 1);
+      var num = typeof btn === 'string' ? btn : ((btn && btn.getAttribute ? btn.getAttribute('data-num') : '') || (btn && btn.innerText ? btn.innerText.trim() : '')).replace(/\D/g, '').slice(0, 1);
+      if (!num) num = '1';
+
+      // Highlight selected button on main grid
+      var allNumBtns = document.querySelectorAll('.grid-num-btn');
+      allNumBtns.forEach(function(b) {
+        if (b.getAttribute('data-num') === num) {
+          b.classList.remove('bg-bgDark', 'border-white/5', 'text-white');
+          b.classList.add('bg-gold/20', 'border-gold', 'text-gold', 'shadow-[0_0_20px_rgba(255,212,0,0.8)]');
+        } else {
+          b.classList.remove('bg-gold/20', 'border-gold', 'text-gold', 'shadow-[0_0_20px_rgba(255,212,0,0.8)]');
+          b.classList.add('bg-bgDark', 'border-white/5', 'text-white');
+        }
+      });
+
       var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
       var sheetNumberInput = document.getElementById('sheetNumberInput');
       var inputHelperText = document.getElementById('inputHelperText');
@@ -124,7 +138,6 @@
       var betBottomSheetBackdrop = document.getElementById('betBottomSheetBackdrop');
       var betBottomSheetContent = document.getElementById('betBottomSheetContent');
 
-      // Default to 1-digit Figure bet
       if (sheetSelectedNumber) sheetSelectedNumber.innerText = num;
       if (sheetNumberInput) {
         sheetNumberInput.maxLength = 1;
@@ -2120,14 +2133,20 @@
            <button id="closeSheetBtn" onclick="closeNumberBetSheet()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-times"></i></button>
          </div>
          
-         <div class="bg-bgDark rounded-2xl p-4 flex items-center justify-between border border-white/10 focus-within:border-gold transition-colors shadow-inner">
-           <div class="flex flex-col">
-             <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Selected Number</span>
-             <span class="text-[10px] text-gray-500">1 to 4 Digits</span>
-           </div>
-           <div class="flex items-center gap-2">
-             <input type="text" id="sheetNumberInput" oninput="updateBetNumberFromInput(this.value)" maxlength="4" class="w-36 bg-white/5 text-gold font-mono font-black text-3xl p-2 text-center outline-none border border-white/10 focus:border-gold rounded-xl tracking-widest shadow-inner" placeholder="0000" />
-             <span id="sheetSelectedNumber" class="hidden">7</span>
+         <!-- Quick Select Number Buttons -->
+         <div>
+           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Quick Select Number</h3>
+           <div class="grid grid-cols-5 sm:grid-cols-10 gap-2">
+             <button onclick="openNumberBetSheet('1')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">1</button>
+             <button onclick="openNumberBetSheet('2')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">2</button>
+             <button onclick="openNumberBetSheet('3')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">3</button>
+             <button onclick="openNumberBetSheet('4')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">4</button>
+             <button onclick="openNumberBetSheet('5')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">5</button>
+             <button onclick="openNumberBetSheet('6')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">6</button>
+             <button onclick="openNumberBetSheet('7')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">7</button>
+             <button onclick="openNumberBetSheet('8')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">8</button>
+             <button onclick="openNumberBetSheet('9')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">9</button>
+             <button onclick="openNumberBetSheet('0')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">0</button>
            </div>
          </div>
          
