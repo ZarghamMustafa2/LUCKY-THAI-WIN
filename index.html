@@ -1684,8 +1684,13 @@
       }
     }
 
+    let lastDrawStartTime = 0;
+
     function gameLoop() {
-      if(isDrawing) return;
+      if(isDrawing && (Date.now() - lastDrawStartTime < 12000)) return;
+      if(isDrawing && (Date.now() - lastDrawStartTime >= 12000)) {
+         isDrawing = false; // Emergency auto-unlock
+      }
       countdown = getRemainingSeconds();
       
       const percent = (countdown / 45) * 100;
@@ -1714,8 +1719,9 @@
 
     function startDraw() {
       window.startDraw = startDraw;
-      if (isDrawing) return;
+      if (isDrawing && (Date.now() - lastDrawStartTime < 12000)) return;
       isDrawing = true;
+      lastDrawStartTime = Date.now();
       gridNumBtns.forEach(btn => {
          btn.disabled = true;
          btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
