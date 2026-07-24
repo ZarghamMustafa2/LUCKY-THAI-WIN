@@ -1803,34 +1803,40 @@
     let lastDrawStartTime = 0;
 
     function gameLoop() {
-      if(isDrawing && (Date.now() - lastDrawStartTime < 12000)) return;
-      if(isDrawing && (Date.now() - lastDrawStartTime >= 12000)) {
-         isDrawing = false; // Emergency auto-unlock
-      }
       countdown = getRemainingSeconds();
       
-      const percent = (countdown / 45) * 100;
+      const percent = (countdown / 15) * 100;
       setProgress(percent);
       
-      // Always keep buttons enabled so users can open popup anytime
       gridNumBtns.forEach(btn => {
          btn.disabled = false;
          btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
       });
       
-      if(countdown <= 0) {
-        startDraw();
-      } else {
-        const mins = Math.floor(countdown / 60).toString().padStart(2, '0');
-        const secs = (countdown % 60).toString().padStart(2, '0');
-        const timeStr = `${mins}:${secs}`;
+      const mins = Math.floor(countdown / 60).toString().padStart(2, '0');
+      const secs = (countdown % 60).toString().padStart(2, '0');
+      const timeStr = `${mins}:${secs}`;
+      
+      if (!isDrawing) {
         wheelText.innerText = timeStr;
+      }
+      
+      const headerTimerText = document.getElementById('headerTimerText');
+      if (headerTimerText) headerTimerText.innerText = timeStr;
 
-        const headerTimerText = document.getElementById('headerTimerText');
-        if (headerTimerText) headerTimerText.innerText = timeStr;
+      const bannerCountdownText = document.getElementById('bannerCountdownText');
+      if (bannerCountdownText) bannerCountdownText.innerText = timeStr;
 
-        const bannerCountdownText = document.getElementById('bannerCountdownText');
-        if (bannerCountdownText) bannerCountdownText.innerText = timeStr;
+      if(countdown <= 0 && !isDrawing) {
+        startDraw();
+      } else if (!isDrawing) {
+        // Slow ambient rotation while waiting for next draw so wheel is never frozen
+        currentRotation += 1.5;
+        const spinWheel = document.getElementById('spinWheelElement') || spinWheelElement;
+        if (spinWheel) {
+          spinWheel.style.setProperty('transition', 'transform 1s linear', 'important');
+          spinWheel.style.setProperty('transform', `rotate(${currentRotation}deg)`, 'important');
+        }
       }
     }
 
