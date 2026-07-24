@@ -85,30 +85,67 @@
 
     window.setBetDigitLimit = function(limit) {
       var sheetNumberInput = document.getElementById('sheetNumberInput');
+      var inputHelperText = document.getElementById('inputHelperText');
       if (sheetNumberInput) {
         sheetNumberInput.maxLength = limit;
+        sheetNumberInput.placeholder = '0'.repeat(limit);
         var clean = sheetNumberInput.value.replace(/\D/g, '').slice(0, limit);
         sheetNumberInput.value = clean;
         window.sheetState.number = clean;
         var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
         if (sheetSelectedNumber) sheetSelectedNumber.innerText = clean || '-';
       }
+      if (inputHelperText) {
+        inputHelperText.innerText = limit === 1 ? '1 Digit Allowed' : (limit + ' Digits Allowed');
+      }
+    };
+
+    window.selectBetType = function(btn, type, digitLimit) {
+      var cards = document.querySelectorAll('.bet-type-card');
+      cards.forEach(function(c) {
+        c.classList.remove('border-gold', 'bg-gold/10');
+        c.classList.add('border-white/10', 'bg-bgDark');
+      });
+      if (btn) {
+        btn.classList.remove('border-white/10', 'bg-bgDark');
+        btn.classList.add('border-gold', 'bg-gold/10');
+      }
+      window.sheetState.type = type;
+      window.sheetState.multiplier = parseInt(btn ? (btn.getAttribute('data-mult') || '8') : '8');
+      window.setBetDigitLimit(digitLimit);
     };
 
     window.openNumberBetSheet = function(btn) {
       var num = (btn.getAttribute('data-num') || btn.innerText.trim()).replace(/\D/g, '').slice(0, 1);
       var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
       var sheetNumberInput = document.getElementById('sheetNumberInput');
+      var inputHelperText = document.getElementById('inputHelperText');
       var betBottomSheet = document.getElementById('betBottomSheet');
       var betBottomSheetBackdrop = document.getElementById('betBottomSheetBackdrop');
       var betBottomSheetContent = document.getElementById('betBottomSheetContent');
 
+      // Default to 1-digit Figure bet
       if (sheetSelectedNumber) sheetSelectedNumber.innerText = num;
       if (sheetNumberInput) {
         sheetNumberInput.maxLength = 1;
+        sheetNumberInput.placeholder = '0';
         sheetNumberInput.value = num;
       }
+      if (inputHelperText) inputHelperText.innerText = '1 Digit Allowed';
       window.sheetState.number = num;
+      window.sheetState.type = 'figure';
+      window.sheetState.multiplier = 8;
+
+      var cards = document.querySelectorAll('.bet-type-card');
+      cards.forEach(function(c) {
+        if (c.getAttribute('data-type') === 'figure') {
+          c.classList.remove('border-white/10', 'bg-bgDark');
+          c.classList.add('border-gold', 'bg-gold/10');
+        } else {
+          c.classList.remove('border-gold', 'bg-gold/10');
+          c.classList.add('border-white/10', 'bg-bgDark');
+        }
+      });
 
       if (betBottomSheet && betBottomSheetBackdrop && betBottomSheetContent) {
         betBottomSheet.style.display = 'flex';
@@ -2095,22 +2132,22 @@
          <div>
            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Type</h3>
            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="betTypeSelection">
-             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="figure" data-mult="8">
-               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span><span class="text-gold font-mono font-bold">1x8</span></div>
-               <span class="text-xs text-gray-500">Single Digit Bet</span>
-             </button>
-             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="akada" data-mult="80">
-               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span><span class="text-gold font-mono font-bold">1x80</span></div>
-               <span class="text-xs text-gray-500">Two Digit Bet</span>
-             </button>
-             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="ring" data-mult="800">
-               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">RING</span><span class="text-gold font-mono font-bold">1x800</span></div>
-               <span class="text-xs text-gray-500">Three Digit Bet</span>
-             </button>
-             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="packet" data-mult="6000">
-               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span><span class="text-gold font-mono font-bold">1x6000</span></div>
-               <span class="text-xs text-gray-500">Complete Combination</span>
-             </button>
+              <button onclick="selectBetType(this, 'figure', 1)" class="bet-type-card p-4 rounded-2xl border border-gold bg-gold/10 flex flex-col gap-1 text-left transition-all group cursor-pointer" data-type="figure" data-mult="8">
+                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span><span class="text-gold font-mono font-bold">1x8</span></div>
+                <span class="text-xs text-gray-400 font-bold">1 Digit Bet</span>
+              </button>
+              <button onclick="selectBetType(this, 'akada', 2)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group cursor-pointer" data-type="akada" data-mult="80">
+                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span><span class="text-gold font-mono font-bold">1x80</span></div>
+                <span class="text-xs text-gray-400 font-bold">2 Digits Bet</span>
+              </button>
+              <button onclick="selectBetType(this, 'ring', 3)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group cursor-pointer" data-type="ring" data-mult="800">
+                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">RING</span><span class="text-gold font-mono font-bold">1x800</span></div>
+                <span class="text-xs text-gray-400 font-bold">3 Digits Bet</span>
+              </button>
+              <button onclick="selectBetType(this, 'packet', 4)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group cursor-pointer" data-type="packet" data-mult="6000">
+                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span><span class="text-gold font-mono font-bold">1x6000</span></div>
+                <span class="text-xs text-gray-400 font-bold">4 Digits Bet</span>
+              </button>
            </div>
          </div>
          

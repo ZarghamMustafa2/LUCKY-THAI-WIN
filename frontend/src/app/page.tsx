@@ -547,10 +547,13 @@ export default function Home() {
               <input 
                 type="text" 
                 value={betNumber} 
-                onChange={(e) => setBetNumber(e.target.value.replace(/\D/g, '').slice(0, 1))} 
-                maxLength={1} 
+                onChange={(e) => {
+                  const limit = betType === 'figure' ? 1 : betType === 'akada' ? 2 : betType === 'ring' ? 3 : 4;
+                  setBetNumber(e.target.value.replace(/\D/g, '').slice(0, limit));
+                }} 
+                maxLength={betType === 'figure' ? 1 : betType === 'akada' ? 2 : betType === 'ring' ? 3 : 4} 
                 className="w-36 bg-white/5 text-[#FFD700] font-mono font-black text-3xl p-2 text-center outline-none border border-white/10 focus:border-[#FFD700] rounded-xl tracking-widest shadow-inner" 
-                placeholder="0"
+                placeholder={'0'.repeat(betType === 'figure' ? 1 : betType === 'akada' ? 2 : betType === 'ring' ? 3 : 4)}
               />
             </div>
             
@@ -558,8 +561,28 @@ export default function Home() {
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Select Spin</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[1,2,3,4].map(r => (
-                  <button key={r} onClick={() => { setSelectedRound(r); setBetNumber(prev => prev.slice(0, 1)); }} className={`p-3 rounded-xl border font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 ${selectedRound === r ? 'border-[#FFD700] bg-[#FFD700]/10 text-[#FFD700]' : 'border-white/10 bg-white/5 text-gray-300 hover:border-[#FFD700] hover:text-[#FFD700]'}`}>
+                  <button key={r} onClick={() => setSelectedRound(r)} className={`p-3 rounded-xl border font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 ${selectedRound === r ? 'border-[#FFD700] bg-[#FFD700]/10 text-[#FFD700]' : 'border-white/10 bg-white/5 text-gray-300 hover:border-[#FFD700] hover:text-[#FFD700]'}`}>
                     {r}{r===1?'st':r===2?'nd':r===3?'rd':'th'} Spin
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Type</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { id: 'figure', label: '1 Figure', limit: 1 },
+                  { id: 'akada', label: '2 Akada', limit: 2 },
+                  { id: 'ring', label: '3 Ring', limit: 3 },
+                  { id: 'packet', label: '4 Packet', limit: 4 },
+                ].map(b => (
+                  <button 
+                    key={b.id} 
+                    onClick={() => { setBetType(b.id); setBetNumber(prev => prev.slice(0, b.limit)); }}
+                    className={`py-3 px-2 rounded-xl border text-xs font-bold transition-all flex flex-col items-center gap-0.5 ${betType === b.id ? 'border-[#FFD700] bg-[#FFD700]/10 text-[#FFD700]' : 'border-white/10 bg-white/5 text-gray-400 hover:border-[#FFD700] hover:text-white'}`}>
+                    <span>{b.label}</span>
+                    <span className="text-[9px] opacity-75">{b.limit} {b.limit === 1 ? 'Digit' : 'Digits'}</span>
                   </button>
                 ))}
               </div>
