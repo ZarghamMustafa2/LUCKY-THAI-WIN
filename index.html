@@ -261,9 +261,7 @@
 
       if (!gameContainer) return;
 
-      var isHidden = gameContainer.classList.contains('hidden') || gameContainer.style.display === 'none';
-
-      if (isHidden) {
+      if (window.isWheelHidden) {
         window.isWheelHidden = false;
         gameContainer.style.setProperty('display', 'flex', 'important');
         gameContainer.classList.remove('hidden');
@@ -285,12 +283,11 @@
     };
 
     window.manualTriggerSpin = function() {
-      window.isDrawing = false;
       if (window.isWheelHidden && window.toggleWheelStage) {
         window.toggleWheelStage();
       }
       if (typeof window.startDraw === 'function') {
-        window.startDraw();
+        window.startDraw(true);
       }
     };
   </script>
@@ -1833,16 +1830,15 @@
       }
     }
 
-    function startDraw() {
-      if (isDrawing && (Date.now() - lastDrawStartTime < 12000)) return;
+    function startDraw(force) {
+      if (!force && isDrawing && (Date.now() - lastDrawStartTime < 12000)) return;
+      isDrawing = true;
+      lastDrawStartTime = Date.now();
       
       // Auto expand wheel stage if hidden when spin begins
       if (window.isWheelHidden && window.toggleWheelStage) {
         window.toggleWheelStage();
       }
-
-      isDrawing = true;
-      lastDrawStartTime = Date.now();
       gridNumBtns.forEach(btn => {
          btn.disabled = false;
          btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
@@ -2367,6 +2363,5 @@
     </div>
   </div>
 
-  <script src="index.js"></script>
 </body>
 </html>
