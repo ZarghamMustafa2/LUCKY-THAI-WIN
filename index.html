@@ -2182,34 +2182,37 @@
              <span id="sheetSelectedNumber" class="hidden">7</span>
            </div>
          </div>
+         
+         <!-- Quick Select Number Buttons -->
          <div>
            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Quick Select Number</h3>
            <div class="grid grid-cols-5 sm:grid-cols-10 gap-2">
-             <button onclick="openNumberBetSheet('1')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">1</button>
-             <button onclick="openNumberBetSheet('2')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">2</button>
-             <button onclick="openNumberBetSheet('3')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">3</button>
-             <button onclick="openNumberBetSheet('4')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">4</button>
-             <button onclick="openNumberBetSheet('5')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">5</button>
-             <button onclick="openNumberBetSheet('6')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">6</button>
-             <button onclick="openNumberBetSheet('7')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">7</button>
-             <button onclick="openNumberBetSheet('8')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">8</button>
-             <button onclick="openNumberBetSheet('9')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">9</button>
-             <button onclick="openNumberBetSheet('0')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">0</button>
-            <!-- Choose Betting Round (Multi-Select Checkboxes) -->
-          <div>
-            <div class="flex justify-between items-center mb-3">
-              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Spins</h3>
-              <button type="button" onclick="toggleSelectAllSpins()" class="text-xs font-bold text-gold hover:underline cursor-pointer flex items-center gap-1.5 bg-gold/10 px-3 py-1 rounded-lg border border-gold/30">
-                <i class="fa-solid fa-check-double"></i> Select All Spins
-              </button>
-            </div>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="roundSelection">
-              <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-3 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="1"><i class="fa-solid fa-square-check text-gold"></i> 1st Spin</button>
-              <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="2"><i class="fa-regular fa-square text-gray-500"></i> 2nd Spin</button>
-              <button type="button" onclick="toggleBetRound(this, 3)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="3"><i class="fa-regular fa-square text-gray-500"></i> 3rd Spin</button>
-              <button type="button" onclick="toggleBetRound(this, 4)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="4"><i class="fa-regular fa-square text-gray-500"></i> 4th Spin</button>
-            </div>
-          </div>
+             <button type="button" onclick="openNumberBetSheet('1')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">1</button>
+             <button type="button" onclick="openNumberBetSheet('2')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">2</button>
+             <button type="button" onclick="openNumberBetSheet('3')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">3</button>
+             <button type="button" onclick="openNumberBetSheet('4')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">4</button>
+             <button type="button" onclick="openNumberBetSheet('5')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">5</button>
+             <button type="button" onclick="openNumberBetSheet('6')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">6</button>
+             <button type="button" onclick="openNumberBetSheet('7')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">7</button>
+             <button type="button" onclick="openNumberBetSheet('8')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">8</button>
+             <button type="button" onclick="openNumberBetSheet('9')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">9</button>
+             <button type="button" onclick="openNumberBetSheet('0')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">0</button>
+           </div>
+         </div>
+          
+         <!-- Choose Betting Round (Multi-Select Checkboxes) -->
+         <div>
+           <div class="flex justify-between items-center mb-3">
+             <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Spins</h3>
+             <button type="button" onclick="toggleSelectAllSpins()" class="text-xs font-bold text-gold hover:underline cursor-pointer flex items-center gap-1.5 bg-gold/10 px-3 py-1 rounded-lg border border-gold/30">
+               <i class="fa-solid fa-check-double"></i> Select All Spins
+             </button>
+           </div>
+           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="roundSelection">
+             <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-3 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="1"><i class="fa-solid fa-square-check text-gold"></i> 1st Spin</button>
+             <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="2"><i class="fa-regular fa-square text-gray-500"></i> 2nd Spin</button>
+             <button type="button" onclick="toggleBetRound(this, 3)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="3"><i class="fa-regular fa-square text-gray-500"></i> 3rd Spin</button>
+             <button type="button" onclick="toggleBetRound(this, 4)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="4"><i class="fa-regular fa-square text-gray-500"></i> 4th Spin</button>
            </div>
          </div>
          
