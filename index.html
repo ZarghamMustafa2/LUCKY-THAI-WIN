@@ -217,12 +217,6 @@
     };
 
     window.manualTriggerSpin = function() {
-      var spinWheel = document.getElementById('spinWheelElement');
-      if (spinWheel) {
-        window._rot = (window._rot || 0) + 3600;
-        spinWheel.style.setProperty('transition', 'transform 4s cubic-bezier(0.15, 0.85, 0.35, 1.2)', 'important');
-        spinWheel.style.transform = 'rotate(' + window._rot + 'deg)';
-      }
       if (typeof window.startDraw === 'function') {
         window.startDraw();
       }
@@ -1792,71 +1786,70 @@
       let prizeIndex = 0;
       
       function drawPrize() {
-        if(prizeIndex >= 4) {
-          setTimeout(() => finishDraw(), 1000);
-          return;
-        }
-        
-        const winningNumStr = window.generatedResults[prizeIndex];
+        const winningNumStr = window.generatedResults[0];
         const targetDigits = winningNumStr.split('');
+        const targetDigit = parseInt(targetDigits[0]);
         
         for(let i=0; i<4; i++) {
           const d = document.getElementById(`digit-${i}`);
-          d.innerText = '?';
-          d.className = 'w-20 h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
+          if (d) {
+            d.innerText = '?';
+            d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
+          }
         }
         
-        wheelText.innerText = prizeIndex === 0 ? '!!' : `DRAW ${prizeIndex + 1}`;
+        wheelText.innerText = 'SPINNING...';
         wheelGlow.classList.remove('opacity-[0.15]');
         wheelGlow.classList.add('opacity-40', 'animate-pulse');
         
-        let digitIndex = 0;
+        // Calculate precise landing rotation on targetDigit
+        const currentAngle = currentRotation % 360;
+        const targetAngle = 360 - (targetDigit * 36);
+        let addedRotation = 1080 + (targetAngle - currentAngle);
+        if (addedRotation < 1080) addedRotation += 360;
+        currentRotation += addedRotation;
         
-        function spinDigit() {
-          if(digitIndex >= 4) {
-             setTimeout(() => {
-               const titles = ['1ST', '2ND', '3RD', '4TH'];
-               const multiContainer = document.getElementById('multiResultsContainer');
-               if (multiContainer) {
-                 if (prizeIndex === 0) multiContainer.classList.remove('opacity-0', 'translate-y-4');
-                 const colorClass = prizeIndex === 0 ? 'border-primary shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'border-white/10 shadow-lg';
-                 const textClass = prizeIndex === 0 ? 'text-primary' : 'text-white';
-                 multiContainer.innerHTML += `
-                    <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border ${colorClass} text-center animate-bounce">
-                       <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">${titles[prizeIndex]} PRIZE</div>
-                       <div class="text-lg md:text-2xl font-mono font-black ${textClass}">${winningNumStr}</div>
-                    </div>
-                 `;
-               }
-               prizeIndex++;
-               setTimeout(drawPrize, 1200);
-             }, 800);
-             return;
+        const spinDuration = 3.5;
+        spinWheelElement.style.setProperty('transition', `transform ${spinDuration}s cubic-bezier(0.15, 0.85, 0.35, 1.2)`, 'important');
+        spinWheelElement.style.transform = `rotate(${currentRotation}deg)`;
+        
+        // After wheel decelerates and stops on target digit
+        setTimeout(() => {
+          wheelText.innerText = 'LOCKED';
+          playSound('pop');
+          
+          // Sequentially lock the 4 digits
+          for(let i=0; i<4; i++) {
+            setTimeout(() => {
+              const d = document.getElementById(`digit-${i}`);
+              if (d) {
+                d.innerText = targetDigits[i];
+                d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_40px_rgba(0,255,136,0.3),inset_0_0_20px_rgba(0,255,136,0.1)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-300 transform scale-110 -rotateX-0';
+              }
+            }, i * 250);
           }
-          
-          const targetDigit = parseInt(targetDigits[digitIndex]);
-          const currentAngle = currentRotation % 360;
-          const targetAngle = 360 - (targetDigit * 36);
-          
-          let addedRotation = 5400 + (targetAngle - currentAngle);
-          if (addedRotation < 5400) addedRotation += 360;
-          currentRotation += addedRotation;
-          
-          const spinDuration = prizeIndex === 0 ? 4.0 : 2.0;
-          spinWheelElement.style.setProperty('transition', `transform ${spinDuration}s cubic-bezier(0.1, 1, 0.1, 1)`, 'important');
-          spinWheelElement.style.transform = `rotate(${currentRotation}deg)`;
-          
+
+          // Show 1st, 2nd, 3rd, 4th Prize Cards
           setTimeout(() => {
-            const d = document.getElementById(`digit-${digitIndex}`);
-            d.innerText = targetDigit;
-            d.className = 'w-20 h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_40px_rgba(0,255,136,0.3),inset_0_0_20px_rgba(0,255,136,0.1)] flex items-center justify-center font-mono text-6xl md:text-7xl font-black transition-all duration-300 transform scale-110 -rotateX-0';
-            
-            digitIndex++;
-            setTimeout(spinDigit, prizeIndex === 0 ? 200 : 100);
-          }, spinDuration * 1000);
-        }
-        
-        spinDigit();
+            const titles = ['1ST', '2ND', '3RD', '4TH'];
+            const multiContainer = document.getElementById('multiResultsContainer');
+            if (multiContainer) {
+              multiContainer.classList.remove('opacity-0', 'translate-y-4');
+              multiContainer.innerHTML = '';
+              for(let p=0; p<4; p++) {
+                const colorClass = p === 0 ? 'border-primary shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'border-white/10 shadow-lg';
+                const textClass = p === 0 ? 'text-primary' : 'text-white';
+                multiContainer.innerHTML += `
+                   <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border ${colorClass} text-center animate-bounce">
+                      <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">${titles[p]} PRIZE</div>
+                      <div class="text-lg md:text-2xl font-mono font-black ${textClass}">${window.generatedResults[p]}</div>
+                   </div>
+                `;
+              }
+            }
+            setTimeout(() => finishDraw(), 1200);
+          }, 1200);
+        }, spinDuration * 1000);
       }
       
       drawPrize();
