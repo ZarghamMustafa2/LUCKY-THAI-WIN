@@ -1759,13 +1759,14 @@
     setInterval(addMockActivity, 1500);
 
     // --- Game Logic ---
-    let timeOffset = 0;
+    window.targetDrawEndTime = Date.now() + 15000;
+
     function getRemainingSeconds() {
-      const ms = Date.now() + timeOffset;
-      const interval = 15 * 1000; // 15 Seconds Fast Draw Cycle
-      let nextDrawTime = Math.ceil(ms / interval) * interval;
-      if (nextDrawTime === ms) nextDrawTime += interval;
-      return Math.max(0, Math.floor((nextDrawTime - ms) / 1000));
+      const now = Date.now();
+      if (!window.targetDrawEndTime || now >= window.targetDrawEndTime) {
+        window.targetDrawEndTime = now + 15000;
+      }
+      return Math.max(0, Math.ceil((window.targetDrawEndTime - now) / 1000));
     }
 
     wheelText.addEventListener('click', () => {
@@ -1844,6 +1845,7 @@
       if (!force && isDrawing && (Date.now() - lastDrawStartTime < 12000)) return;
       isDrawing = true;
       lastDrawStartTime = Date.now();
+      window.targetDrawEndTime = Date.now() + 15000;
       
       // Auto expand wheel stage if hidden when spin begins
       if (window.isWheelHidden && window.toggleWheelStage) {
