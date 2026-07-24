@@ -1495,20 +1495,24 @@
     // Number Grid Click
     gridNumBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const num = (e.currentTarget.getAttribute('data-num') || e.currentTarget.innerText || e.target.innerText).trim();
+        const num = (e.currentTarget.getAttribute('data-num') || e.currentTarget.innerText || e.target.innerText).trim().replace(/\D/g, '').slice(0, 1);
         sheetState.number = num;
-        sheetSelectedNumber.innerText = num;
+        if (sheetSelectedNumber) sheetSelectedNumber.innerText = num;
         
-        // Reset state
-        sheetState.type = '';
-        sheetState.extraDigits = '';
-        sheetState.multiplier = 0;
-        sheetExtraInput.value = '';
-        dynamicInputSection.classList.add('hidden');
-        betTypeSelectionBtns.forEach(b => {
-          b.classList.remove('border-gold');
-          b.classList.add('border-white/10');
-        });
+        const sheetNumberInput = document.getElementById('sheetNumberInput');
+        if (sheetNumberInput) {
+          sheetNumberInput.maxLength = 1;
+          sheetNumberInput.value = num;
+          sheetNumberInput.placeholder = '0';
+        }
+        
+        sheetState.type = 'figure';
+        sheetState.multiplier = 8;
+        
+        var figureCard = document.querySelector('.bet-type-card[data-type="figure"]');
+        if (window.selectBetType && figureCard) {
+          window.selectBetType(figureCard, 'figure', 1);
+        }
         
         updateSummary();
         openBottomSheet();
