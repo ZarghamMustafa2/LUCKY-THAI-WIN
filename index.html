@@ -83,8 +83,20 @@
       }
     };
 
+    window.setBetDigitLimit = function(limit) {
+      var sheetNumberInput = document.getElementById('sheetNumberInput');
+      if (sheetNumberInput) {
+        sheetNumberInput.maxLength = limit;
+        var clean = sheetNumberInput.value.replace(/\D/g, '').slice(0, limit);
+        sheetNumberInput.value = clean;
+        window.sheetState.number = clean;
+        var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
+        if (sheetSelectedNumber) sheetSelectedNumber.innerText = clean || '-';
+      }
+    };
+
     window.openNumberBetSheet = function(btn) {
-      var num = btn.getAttribute('data-num') || btn.innerText.trim();
+      var num = (btn.getAttribute('data-num') || btn.innerText.trim()).replace(/\D/g, '').slice(0, 1);
       var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
       var sheetNumberInput = document.getElementById('sheetNumberInput');
       var betBottomSheet = document.getElementById('betBottomSheet');
@@ -92,7 +104,10 @@
       var betBottomSheetContent = document.getElementById('betBottomSheetContent');
 
       if (sheetSelectedNumber) sheetSelectedNumber.innerText = num;
-      if (sheetNumberInput) sheetNumberInput.value = num;
+      if (sheetNumberInput) {
+        sheetNumberInput.maxLength = 1;
+        sheetNumberInput.value = num;
+      }
       window.sheetState.number = num;
 
       if (betBottomSheet && betBottomSheetBackdrop && betBottomSheetContent) {
@@ -109,9 +124,10 @@
     };
 
     window.updateBetNumberFromInput = function(val) {
-      var cleanVal = val.replace(/\D/g, '').slice(0, 4);
-      var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
       var sheetNumberInput = document.getElementById('sheetNumberInput');
+      var maxLen = (sheetNumberInput && sheetNumberInput.maxLength > 0) ? sheetNumberInput.maxLength : 1;
+      var cleanVal = val.replace(/\D/g, '').slice(0, maxLen);
+      var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
       if (sheetNumberInput) sheetNumberInput.value = cleanVal;
       if (sheetSelectedNumber) sheetSelectedNumber.innerText = cleanVal || '-';
       window.sheetState.number = cleanVal;
@@ -143,6 +159,11 @@
       btn.classList.remove('border-white/10', 'text-gray-300', 'bg-white/5');
       btn.classList.add('border-gold', 'text-gold', 'bg-gold/10');
       window.sheetState.round = roundNum;
+      
+      // Default to 1 figure digit limit for single figure bets
+      if (window.sheetState.type === 'figure' || !window.sheetState.type) {
+        window.setBetDigitLimit(1);
+      }
     };
 
     window.manualTriggerSpin = function() {
@@ -1505,6 +1526,13 @@
         sheetState.extraDigits = '';
         sheetExtraInput.value = '';
         
+        let limit = 1;
+        if (sheetState.type === 'figure') limit = 1;
+        if (sheetState.type === 'akada') limit = 2;
+        if (sheetState.type === 'ring') limit = 3;
+        if (sheetState.type === 'packet') limit = 4;
+        if (window.setBetDigitLimit) window.setBetDigitLimit(limit);
+
         if (sheetState.type === 'akada' || sheetState.type === 'ring') {
           dynamicInputSection.classList.remove('hidden');
         } else {

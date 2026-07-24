@@ -547,10 +547,10 @@ export default function Home() {
               <input 
                 type="text" 
                 value={betNumber} 
-                onChange={(e) => setBetNumber(e.target.value.replace(/\D/g, '').slice(0, 4))} 
-                maxLength={4} 
+                onChange={(e) => setBetNumber(e.target.value.replace(/\D/g, '').slice(0, 1))} 
+                maxLength={1} 
                 className="w-36 bg-white/5 text-[#FFD700] font-mono font-black text-3xl p-2 text-center outline-none border border-white/10 focus:border-[#FFD700] rounded-xl tracking-widest shadow-inner" 
-                placeholder="0000"
+                placeholder="0"
               />
             </div>
             
@@ -558,7 +558,7 @@ export default function Home() {
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Select Spin</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[1,2,3,4].map(r => (
-                  <button key={r} onClick={() => setSelectedRound(r)} className={`p-3 rounded-xl border font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 ${selectedRound === r ? 'border-[#FFD700] bg-[#FFD700]/10 text-[#FFD700]' : 'border-white/10 bg-white/5 text-gray-300 hover:border-[#FFD700] hover:text-[#FFD700]'}`}>
+                  <button key={r} onClick={() => { setSelectedRound(r); setBetNumber(prev => prev.slice(0, 1)); }} className={`p-3 rounded-xl border font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 ${selectedRound === r ? 'border-[#FFD700] bg-[#FFD700]/10 text-[#FFD700]' : 'border-white/10 bg-white/5 text-gray-300 hover:border-[#FFD700] hover:text-[#FFD700]'}`}>
                     {r}{r===1?'st':r===2?'nd':r===3?'rd':'th'} Spin
                   </button>
                 ))}
