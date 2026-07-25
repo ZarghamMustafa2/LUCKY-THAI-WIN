@@ -211,20 +211,20 @@
       var packetBadge = document.getElementById('multBadgePacket');
 
       if (has1st && has2nd) {
-        if (figureBadge) figureBadge.innerHTML = '<span class="text-gold font-bold">1st: 1x8</span> <span class="text-gray-500">|</span> <span class="text-cyanLight font-bold">2nd: 1x2.70</span>';
-        if (akadaBadge) akadaBadge.innerHTML = '<span class="text-gold font-bold">1st: 1x80</span> <span class="text-gray-500">|</span> <span class="text-cyanLight font-bold">2nd: 1x27</span>';
-        if (ringBadge) ringBadge.innerHTML = '<span class="text-gold font-bold">1st: 1x800</span> <span class="text-gray-500">|</span> <span class="text-cyanLight font-bold">2nd: 1x270</span>';
-        if (packetBadge) packetBadge.innerHTML = '<span class="text-gold font-bold">1st: 1x6000</span> <span class="text-gray-500">|</span> <span class="text-cyanLight font-bold">2nd: 1x1600</span>';
+        if (figureBadge) figureBadge.innerHTML = '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-xs">1st: 1x8</span><span class="text-cyanLight font-bold text-xs">2nd: 1x2.70</span></div>';
+        if (akadaBadge) akadaBadge.innerHTML = '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-xs">1st: 1x80</span><span class="text-cyanLight font-bold text-xs">2nd: 1x27</span></div>';
+        if (ringBadge) ringBadge.innerHTML = '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-xs">1st: 1x800</span><span class="text-cyanLight font-bold text-xs">2nd: 1x270</span></div>';
+        if (packetBadge) packetBadge.innerHTML = '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-xs">1st: 1x6000</span><span class="text-cyanLight font-bold text-xs">2nd: 1x1600</span></div>';
       } else if (has2nd) {
-        if (figureBadge) figureBadge.innerHTML = '<span class="text-gold font-bold">1x2.70</span>';
-        if (akadaBadge) akadaBadge.innerHTML = '<span class="text-gold font-bold">1x27</span>';
-        if (ringBadge) ringBadge.innerHTML = '<span class="text-gold font-bold">1x270</span>';
-        if (packetBadge) packetBadge.innerHTML = '<span class="text-gold font-bold">1x1600</span>';
+        if (figureBadge) figureBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x2.70</span>';
+        if (akadaBadge) akadaBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x27</span>';
+        if (ringBadge) ringBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x270</span>';
+        if (packetBadge) packetBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x1600</span>';
       } else {
-        if (figureBadge) figureBadge.innerHTML = '<span class="text-gold font-bold">1x8</span>';
-        if (akadaBadge) akadaBadge.innerHTML = '<span class="text-gold font-bold">1x80</span>';
-        if (ringBadge) ringBadge.innerHTML = '<span class="text-gold font-bold">1x800</span>';
-        if (packetBadge) packetBadge.innerHTML = '<span class="text-gold font-bold">1x6000</span>';
+        if (figureBadge) figureBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x8</span>';
+        if (akadaBadge) akadaBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x80</span>';
+        if (ringBadge) ringBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x800</span>';
+        if (packetBadge) packetBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x6000</span>';
       }
     };
 
@@ -2326,27 +2326,47 @@
           </div>
          
          <!-- Bet Type -->
-         <div>
-           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Type</h3>
-           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="betTypeSelection">
-              <button onclick="selectBetType(this, 'figure', 1)" class="bet-type-card p-4 rounded-2xl border border-gold bg-gold/10 flex flex-col gap-1 text-left transition-all group cursor-pointer" data-type="figure" data-mult="8">
-                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span><span id="multBadgeFigure" class="font-mono text-xs sm:text-sm"><span class="text-gold font-bold">1x8</span></span></div>
-                <span class="text-xs text-gray-400 font-bold">1 Digit Bet</span>
-              </button>
-              <button onclick="selectBetType(this, 'akada', 2)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group cursor-pointer" data-type="akada" data-mult="80">
-                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span><span id="multBadgeAkada" class="font-mono text-xs sm:text-sm"><span class="text-gold font-bold">1x80</span></span></div>
-                <span class="text-xs text-gray-400 font-bold">2 Digits Bet</span>
-              </button>
-              <button onclick="selectBetType(this, 'ring', 3)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group cursor-pointer" data-type="ring" data-mult="800">
-                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">RING</span><span id="multBadgeRing" class="font-mono text-xs sm:text-sm"><span class="text-gold font-bold">1x800</span></span></div>
-                <span class="text-xs text-gray-400 font-bold">3 Digits Bet</span>
-              </button>
-              <button onclick="selectBetType(this, 'packet', 4)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group cursor-pointer" data-type="packet" data-mult="6000">
-                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span><span id="multBadgePacket" class="font-mono text-xs sm:text-sm"><span class="text-gold font-bold">1x6000</span></span></div>
-                <span class="text-xs text-gray-400 font-bold">4 Digits Bet</span>
-              </button>
-           </div>
-         </div>
+          <div>
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Type</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="betTypeSelection">
+               <button onclick="selectBetType(this, 'figure', 1)" class="bet-type-card p-4 rounded-2xl border border-gold bg-gold/10 flex flex-col gap-1 transition-all group cursor-pointer" data-type="figure" data-mult="8">
+                 <div class="flex justify-between items-start gap-2">
+                   <div class="flex flex-col">
+                     <span class="font-black text-white text-base sm:text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span>
+                     <span class="text-xs text-gray-400 font-bold">1 Digit Bet</span>
+                   </div>
+                   <div id="multBadgeFigure" class="font-mono bg-black/40 px-2.5 py-1 rounded-xl border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-sm">1x8</span></div>
+                 </div>
+               </button>
+               <button onclick="selectBetType(this, 'akada', 2)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 transition-all group cursor-pointer" data-type="akada" data-mult="80">
+                 <div class="flex justify-between items-start gap-2">
+                   <div class="flex flex-col">
+                     <span class="font-black text-white text-base sm:text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span>
+                     <span class="text-xs text-gray-400 font-bold">2 Digits Bet</span>
+                   </div>
+                   <div id="multBadgeAkada" class="font-mono bg-black/40 px-2.5 py-1 rounded-xl border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-sm">1x80</span></div>
+                 </div>
+               </button>
+               <button onclick="selectBetType(this, 'ring', 3)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 transition-all group cursor-pointer" data-type="ring" data-mult="800">
+                 <div class="flex justify-between items-start gap-2">
+                   <div class="flex flex-col">
+                     <span class="font-black text-white text-base sm:text-lg tracking-wider group-hover:text-gold transition-colors">RING</span>
+                     <span class="text-xs text-gray-400 font-bold">3 Digits Bet</span>
+                   </div>
+                   <div id="multBadgeRing" class="font-mono bg-black/40 px-2.5 py-1 rounded-xl border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-sm">1x800</span></div>
+                 </div>
+               </button>
+               <button onclick="selectBetType(this, 'packet', 4)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 transition-all group cursor-pointer" data-type="packet" data-mult="6000">
+                 <div class="flex justify-between items-start gap-2">
+                   <div class="flex flex-col">
+                     <span class="font-black text-white text-base sm:text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span>
+                     <span class="text-xs text-gray-400 font-bold">4 Digits Bet</span>
+                   </div>
+                   <div id="multBadgePacket" class="font-mono bg-black/40 px-2.5 py-1 rounded-xl border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-sm">1x6000</span></div>
+                 </div>
+               </button>
+            </div>
+          </div>
          
          <!-- Dynamic Input for Akada/Ring -->
          <div id="dynamicInputSection" class="hidden">
