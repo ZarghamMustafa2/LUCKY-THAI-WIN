@@ -628,6 +628,20 @@
               const upcomingEl2 = document.getElementById('upcomingTimer2');
               if (upcomingEl2) upcomingEl2.innerText = nextPhaseFormattedTime;
 
+              // Automatic Spin Trigger Execution at 00:00 (<= 1 second remaining)
+              if (remainingSecs <= 1 && (typeof window.isDrawing === 'undefined' || !window.isDrawing) && !window.hasTriggeredSpinThisCycle) {
+                window.hasTriggeredSpinThisCycle = true;
+                if (typeof window.startDraw === 'function') {
+                  window.startDraw();
+                } else if (typeof window.manualTriggerSpin === 'function') {
+                  window.manualTriggerSpin();
+                }
+              }
+
+              if (remainingSecs > 10 && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
+                window.hasTriggeredSpinThisCycle = false;
+              }
+
               // 3-Minute Pre-Draw Lock & Auto Expand Logic (<= 180 seconds)
               const statusDot = document.getElementById('statusDot');
               const statusText = document.getElementById('statusText');
@@ -1826,6 +1840,9 @@
       resultModal.classList.add('opacity-0');
       setTimeout(() => {
         resultModal.classList.add('hidden');
+        if (window.toggleWheelStage && !window.isWheelHidden) {
+          window.toggleWheelStage();
+        }
       }, 800);
     }
 
