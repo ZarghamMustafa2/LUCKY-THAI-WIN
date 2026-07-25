@@ -784,128 +784,128 @@
 
 
           <!-- INLINE PLACE YOUR BET BOARD (Shown when Wheel Stage is collapsed into top timer) -->
-          <div id="nextSpinBanner" class="order-1 xl:order-none glass-panel p-6 sm:p-8 flex flex-col gap-6 border-2 border-gold/40 shadow-[0_10px_30px_rgba(255,212,0,0.15)] transition-all group">
+          <div id="nextSpinBanner" class="order-1 xl:order-none glass-panel p-3.5 sm:p-6 flex flex-col gap-3.5 sm:gap-5 border-2 border-gold/40 shadow-[0_10px_30px_rgba(255,212,0,0.15)] transition-all group">
             <!-- Header Bar with Timer & Expand Button -->
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-white/10 pb-5">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-gold/10 border border-gold/40 flex items-center justify-center text-gold text-2xl">
+            <div class="flex items-center justify-between gap-2 border-b border-white/10 pb-3 sm:pb-4">
+              <div class="flex items-center gap-2.5 sm:gap-4">
+                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gold/10 border border-gold/40 flex items-center justify-center text-gold text-base sm:text-2xl">
                   <i class="fa-solid fa-stopwatch animate-pulse"></i>
                 </div>
                 <div class="flex flex-col">
-                  <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Next Spin Scheduled</span>
-                  <span class="text-lg sm:text-xl font-mono font-black text-white">Next Draw in <span id="bannerCountdownText" class="text-gold">30:00</span></span>
+                  <span class="text-[9px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest leading-tight">Next Spin Scheduled</span>
+                  <span class="text-sm sm:text-xl font-mono font-black text-white leading-tight">Next Draw <span id="bannerCountdownText" class="text-gold">30:00</span></span>
                 </div>
               </div>
-              <button type="button" onclick="toggleWheelStage()" class="flex items-center gap-2 bg-gold/20 text-gold font-bold px-5 py-2.5 rounded-2xl border border-gold/40 text-sm hover:bg-gold hover:text-black transition-all cursor-pointer">
-                <i class="fa-solid fa-gamepad"></i>
-                <span>Show Wheel Stage</span>
-                <i class="fa-solid fa-angle-right"></i>
+              <button type="button" onclick="toggleWheelStage()" class="flex items-center gap-1.5 sm:gap-2 bg-gold/20 text-gold font-bold px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl border border-gold/40 text-xs sm:text-sm hover:bg-gold hover:text-black transition-all cursor-pointer">
+                <i class="fa-solid fa-gamepad text-xs sm:text-sm"></i>
+                <span>Wheel Stage</span>
+                <i class="fa-solid fa-angle-right text-[10px] sm:text-xs"></i>
               </button>
             </div>
 
-            <!-- Full Place Your Bet Screen Form -->
-            <div class="flex flex-col gap-6">
+            <!-- Full Place Your Bet Screen Form (Ultra-Compact Mobile Design) -->
+            <div class="flex flex-col gap-3 sm:gap-5">
               <div class="flex items-center justify-between">
-                <h3 class="text-2xl font-display font-black text-white flex items-center gap-2">
-                  <i class="fa-solid fa-gem text-gold"></i> Place Your Bet
+                <h3 class="text-base sm:text-2xl font-display font-black text-white flex items-center gap-1.5">
+                  <i class="fa-solid fa-gem text-gold text-sm sm:text-xl"></i> Place Your Bet
                 </h3>
-                <span class="text-xs font-mono font-bold text-gray-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">100% Instant Play</span>
+                <span class="text-[9px] sm:text-xs font-mono font-bold text-gray-400 bg-white/5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-white/10">100% Instant</span>
               </div>
 
               <!-- Selected Bet Number Input Box -->
-              <div class="bg-bgDark rounded-2xl p-4 sm:p-5 border-2 border-gold/40 focus-within:border-gold transition-all shadow-[0_0_25px_rgba(255,212,0,0.15)] flex flex-col gap-2">
+              <div class="bg-bgDark rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border-2 border-gold/40 focus-within:border-gold transition-all shadow-[0_0_20px_rgba(255,212,0,0.1)] flex flex-col gap-1 sm:gap-2">
                 <div class="flex justify-between items-center">
-                  <label class="text-xs font-bold text-gold uppercase tracking-widest flex items-center gap-2">
-                    <i class="fa-solid fa-hashtag"></i> Selected Bet Number
+                  <label class="text-[10px] sm:text-xs font-bold text-gold uppercase tracking-widest flex items-center gap-1">
+                    <i class="fa-solid fa-hashtag"></i> Selected Number
                   </label>
-                  <span class="text-xs font-mono text-gray-400 font-bold bg-white/5 px-3 py-1 rounded-full border border-white/10">1 Digit Allowed</span>
+                  <span class="text-[9px] sm:text-xs font-mono text-gray-400 font-bold bg-white/5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-white/10">1 Digit Allowed</span>
                 </div>
                 
-                <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center justify-between gap-2">
                   <input 
                     type="text" 
                     readonly
                     tabindex="-1"
-                    class="w-full bg-white/5 text-gold font-mono font-black text-3xl sm:text-4xl py-3 px-4 text-center outline-none border border-gold/30 rounded-2xl tracking-[0.2em] shadow-inner transition-all placeholder:text-gray-600 placeholder:tracking-normal placeholder:text-base cursor-default select-none" 
+                    class="w-full bg-white/5 text-gold font-mono font-black text-xl sm:text-4xl py-1.5 sm:py-3 px-3 sm:px-4 text-center outline-none border border-gold/30 rounded-xl sm:rounded-2xl tracking-[0.2em] shadow-inner transition-all placeholder:text-gray-600 placeholder:tracking-normal placeholder:text-xs sm:placeholder:text-base cursor-default select-none" 
                     placeholder="Select digits below..." 
                   />
                 </div>
               </div>
 
-              <!-- Quick Select Number Buttons -->
+              <!-- Quick Select Number Buttons (Single Compact Row of 10 Digits on Mobile) -->
               <div>
-                <div class="flex justify-between items-center mb-3">
-                  <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Quick Select Number</h3>
-                  <button type="button" onclick="clearQuickDigit()" class="text-xs font-bold text-danger hover:underline cursor-pointer flex items-center gap-1.5 bg-danger/10 px-2.5 py-1 rounded-lg border border-danger/30 active:scale-95 transition-all">
+                <div class="flex justify-between items-center mb-1.5 sm:mb-3">
+                  <h3 class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest">Quick Select Number</h3>
+                  <button type="button" onclick="clearQuickDigit()" class="text-[10px] sm:text-xs font-bold text-danger hover:underline cursor-pointer flex items-center gap-1 bg-danger/10 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-danger/30 active:scale-95 transition-all">
                     <i class="fa-solid fa-eraser"></i> Clear
                   </button>
                 </div>
-                <div class="grid grid-cols-5 sm:grid-cols-10 gap-2">
-                  <button type="button" onclick="appendQuickDigit('1')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">1</button>
-                  <button type="button" onclick="appendQuickDigit('2')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">2</button>
-                  <button type="button" onclick="appendQuickDigit('3')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">3</button>
-                  <button type="button" onclick="appendQuickDigit('4')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">4</button>
-                  <button type="button" onclick="appendQuickDigit('5')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">5</button>
-                  <button type="button" onclick="appendQuickDigit('6')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">6</button>
-                  <button type="button" onclick="appendQuickDigit('7')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">7</button>
-                  <button type="button" onclick="appendQuickDigit('8')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">8</button>
-                  <button type="button" onclick="appendQuickDigit('9')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">9</button>
-                  <button type="button" onclick="appendQuickDigit('0')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">0</button>
+                <div class="grid grid-cols-10 gap-1 sm:gap-2">
+                  <button type="button" onclick="appendQuickDigit('1')" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm sm:text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">1</button>
+                  <button type="button" onclick="appendQuickDigit('2')" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm sm:text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">2</button>
+                  <button type="button" onclick="appendQuickDigit('3')" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm sm:text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">3</button>
+                  <button type="button" onclick="appendQuickDigit('4')" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm sm:text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">4</button>
+                  <button type="button" onclick="appendQuickDigit('5')" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm sm:text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">5</button>
+                  <button type="button" onclick="appendQuickDigit('6')" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm sm:text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">6</button>
+                  <button type="button" onclick="appendQuickDigit('7')" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm sm:text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">7</button>
+                  <button type="button" onclick="appendQuickDigit('8')" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm sm:text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">8</button>
+                  <button type="button" onclick="appendQuickDigit('9')" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm sm:text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">9</button>
+                  <button type="button" onclick="appendQuickDigit('0')" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-sm sm:text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">0</button>
                 </div>
               </div>
                
               <!-- Choose Betting Round (1st Spin and 2nd Spin) -->
               <div>
-                <div class="flex justify-between items-center mb-3">
-                  <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Spins</h3>
-                  <button type="button" onclick="toggleSelectAllSpins()" class="text-xs font-bold text-gold hover:underline cursor-pointer flex items-center gap-1.5 bg-gold/10 px-3 py-1 rounded-lg border border-gold/30">
-                    <i class="fa-solid fa-check-double"></i> Select Both Spins
+                <div class="flex justify-between items-center mb-1.5 sm:mb-3">
+                  <h3 class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest">Select Spins</h3>
+                  <button type="button" onclick="toggleSelectAllSpins()" class="text-[10px] sm:text-xs font-bold text-gold hover:underline cursor-pointer flex items-center gap-1 bg-gold/10 px-2 py-0.5 sm:px-3 sm:py-1 rounded-lg border border-gold/30">
+                    <i class="fa-solid fa-check-double"></i> Both Spins
                   </button>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="1"><i class="fa-solid fa-square-check text-gold"></i> 1st Spin</button>
-                  <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-3.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-sm sm:text-base hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="2"><i class="fa-regular fa-square text-gray-500"></i> 2nd Spin</button>
+                <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                  <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-2 sm:p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-xs sm:text-base transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm" data-round="1"><i class="fa-solid fa-square-check text-gold text-xs sm:text-sm"></i> 1st Spin</button>
+                  <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-2 sm:p-3.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-base hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm" data-round="2"><i class="fa-regular fa-square text-gray-500 text-xs sm:text-sm"></i> 2nd Spin</button>
                 </div>
               </div>
              
               <!-- Bet Type Cards with Dynamic Multipliers -->
               <div>
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Type</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                   <button onclick="selectBetType(this, 'figure', 1)" class="bet-type-card p-4 rounded-2xl border border-gold bg-gold/10 flex flex-col gap-1 transition-all group cursor-pointer" data-type="figure" data-mult="8">
-                     <div class="flex justify-between items-start gap-2">
-                       <div class="flex flex-col">
-                         <span class="font-black text-white text-base sm:text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span>
-                         <span class="text-xs text-gray-400 font-bold">1 Digit Bet</span>
+                <h3 class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5 sm:mb-3">Bet Type</h3>
+                <div class="grid grid-cols-2 gap-2 sm:gap-4">
+                   <button onclick="selectBetType(this, 'figure', 1)" class="bet-type-card p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-gold bg-gold/10 flex flex-col gap-0.5 transition-all group cursor-pointer" data-type="figure" data-mult="8">
+                     <div class="flex justify-between items-center gap-1">
+                       <div class="flex flex-col text-left">
+                         <span class="font-black text-white text-xs sm:text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span>
+                         <span class="text-[9px] sm:text-xs text-gray-400 font-bold">1 Digit</span>
                        </div>
-                       <div class="font-mono bg-black/40 px-2.5 py-1 rounded-xl border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-sm">1x8</span></div>
+                       <div class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x8</span></div>
                      </div>
                    </button>
-                   <button onclick="selectBetType(this, 'akada', 2)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 transition-all group cursor-pointer" data-type="akada" data-mult="80">
-                     <div class="flex justify-between items-start gap-2">
-                       <div class="flex flex-col">
-                         <span class="font-black text-white text-base sm:text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span>
-                         <span class="text-xs text-gray-400 font-bold">2 Digits Bet</span>
+                   <button onclick="selectBetType(this, 'akada', 2)" class="bet-type-card p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-0.5 transition-all group cursor-pointer" data-type="akada" data-mult="80">
+                     <div class="flex justify-between items-center gap-1">
+                       <div class="flex flex-col text-left">
+                         <span class="font-black text-white text-xs sm:text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span>
+                         <span class="text-[9px] sm:text-xs text-gray-400 font-bold">2 Digits</span>
                        </div>
-                       <div class="font-mono bg-black/40 px-2.5 py-1 rounded-xl border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-sm">1x80</span></div>
+                       <div class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x80</span></div>
                      </div>
                    </button>
-                   <button onclick="selectBetType(this, 'ring', 3)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 transition-all group cursor-pointer" data-type="ring" data-mult="800">
-                     <div class="flex justify-between items-start gap-2">
-                       <div class="flex flex-col">
-                         <span class="font-black text-white text-base sm:text-lg tracking-wider group-hover:text-gold transition-colors">RING</span>
-                         <span class="text-xs text-gray-400 font-bold">3 Digits Bet</span>
+                   <button onclick="selectBetType(this, 'ring', 3)" class="bet-type-card p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-0.5 transition-all group cursor-pointer" data-type="ring" data-mult="800">
+                     <div class="flex justify-between items-center gap-1">
+                       <div class="flex flex-col text-left">
+                         <span class="font-black text-white text-xs sm:text-lg tracking-wider group-hover:text-gold transition-colors">RING</span>
+                         <span class="text-[9px] sm:text-xs text-gray-400 font-bold">3 Digits</span>
                        </div>
-                       <div class="font-mono bg-black/40 px-2.5 py-1 rounded-xl border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-sm">1x800</span></div>
+                       <div class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x800</span></div>
                      </div>
                    </button>
-                   <button onclick="selectBetType(this, 'packet', 4)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 transition-all group cursor-pointer" data-type="packet" data-mult="6000">
-                     <div class="flex justify-between items-start gap-2">
-                       <div class="flex flex-col">
-                         <span class="font-black text-white text-base sm:text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span>
-                         <span class="text-xs text-gray-400 font-bold">4 Digits Bet</span>
+                   <button onclick="selectBetType(this, 'packet', 4)" class="bet-type-card p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-0.5 transition-all group cursor-pointer" data-type="packet" data-mult="6000">
+                     <div class="flex justify-between items-center gap-1">
+                       <div class="flex flex-col text-left">
+                         <span class="font-black text-white text-xs sm:text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span>
+                         <span class="text-[9px] sm:text-xs text-gray-400 font-bold">4 Digits</span>
                        </div>
-                       <div class="font-mono bg-black/40 px-2.5 py-1 rounded-xl border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-sm">1x6000</span></div>
+                       <div class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x6000</span></div>
                      </div>
                    </button>
                 </div>
@@ -913,20 +913,20 @@
 
               <!-- Quick Chips & Custom Amount -->
               <div>
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Amount</h3>
-                <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3">
-                  <button type="button" onclick="openNumberBetSheet(this)" data-num="1" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 10</button>
-                  <button type="button" onclick="openNumberBetSheet(this)" data-num="2" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 20</button>
-                  <button type="button" onclick="openNumberBetSheet(this)" data-num="3" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 50</button>
-                  <button type="button" onclick="openNumberBetSheet(this)" data-num="4" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 100</button>
-                  <button type="button" onclick="openNumberBetSheet(this)" data-num="5" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 500</button>
-                  <button type="button" onclick="openNumberBetSheet(this)" data-num="6" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 1000</button>
+                <h3 class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1.5 sm:mb-3">Bet Amount</h3>
+                <div class="grid grid-cols-6 gap-1 sm:gap-2 mb-1.5">
+                  <button type="button" onclick="openNumberBetSheet(this)" data-num="1" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 10</button>
+                  <button type="button" onclick="openNumberBetSheet(this)" data-num="2" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 20</button>
+                  <button type="button" onclick="openNumberBetSheet(this)" data-num="3" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 50</button>
+                  <button type="button" onclick="openNumberBetSheet(this)" data-num="4" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 100</button>
+                  <button type="button" onclick="openNumberBetSheet(this)" data-num="5" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 500</button>
+                  <button type="button" onclick="openNumberBetSheet(this)" data-num="6" class="py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-sm hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">Rs 1000</button>
                 </div>
               </div>
 
               <!-- Primary Action Button -->
-              <button type="button" onclick="openNumberBetSheet('1')" class="w-full py-4 rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2">
-                <i class="fa-solid fa-bolt"></i> Place Bet Now
+              <button type="button" onclick="openNumberBetSheet('1')" class="w-full py-2.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-bolt text-xs sm:text-base"></i> Place Bet Now
               </button>
             </div>
           </div>
