@@ -897,20 +897,20 @@
                 </div>
               </div>
                
-              <!-- Choose Betting Round (1st Spin and 2nd Spin) with Rates -->
+              <!-- Choose Betting Round (1st Draw and 2nd Draw) -->
               <div>
                 <div class="flex justify-between items-center mb-1.5 sm:mb-3">
-                  <h3 class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest">Select Spins</h3>
+                  <h3 class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest">Select Draws</h3>
                   <button type="button" onclick="toggleSelectAllSpins()" class="text-[10px] sm:text-xs font-bold text-gold hover:underline cursor-pointer flex items-center gap-1 bg-gold/10 px-2 py-0.5 sm:px-3 sm:py-1 rounded-lg border border-gold/30">
-                    <i class="fa-solid fa-check-double"></i> Both Spins
+                    <i class="fa-solid fa-check-double"></i> Both Draws
                   </button>
                 </div>
                 <div class="grid grid-cols-2 gap-2 sm:gap-3">
                   <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-2 sm:p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-xs sm:text-base transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm" data-round="1">
-                    <i class="fa-solid fa-square-check text-gold text-xs sm:text-sm"></i> 1st Spin
+                    <i class="fa-solid fa-square-check text-gold text-xs sm:text-sm"></i> 1st Draw
                   </button>
                   <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-2 sm:p-3.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-base hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm" data-round="2">
-                    <i class="fa-regular fa-square text-gray-500 text-xs sm:text-sm"></i> 2nd Spin
+                    <i class="fa-regular fa-square text-gray-500 text-xs sm:text-sm"></i> 2nd Draw
                   </button>
                 </div>
               </div>
@@ -1909,7 +1909,7 @@
       }
       summarySequence.innerText = fullSeq || '-';
       
-      let roundMap = {'1':'1st Spin', '2':'2nd Spin', '3':'3rd Spin', '4':'4th Spin'};
+      let roundMap = {'1':'1st Draw', '2':'2nd Draw', '3':'3rd Draw', '4':'4th Draw'};
       summaryRound.innerText = roundMap[sheetState.round] || '-';
       
       summaryMult.innerText = sheetState.multiplier > 0 ? `1x${sheetState.multiplier}` : '1x0';
@@ -2683,20 +2683,19 @@
              <button type="button" onclick="appendQuickDigit('9')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">9</button>
              <button type="button" onclick="appendQuickDigit('0')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">0</button>
            </div>
-         </div>
-          
-         <!-- Choose Betting Round (Just 1st Spin and 2nd Spin) -->
+                   <!-- Choose Betting Round (Just 1st Draw and 2nd Draw) -->
           <div>
             <div class="flex justify-between items-center mb-3">
-              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Spins</h3>
+              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Draws</h3>
               <button type="button" onclick="toggleSelectAllSpins()" class="text-xs font-bold text-gold hover:underline cursor-pointer flex items-center gap-1.5 bg-gold/10 px-3 py-1 rounded-lg border border-gold/30">
-                <i class="fa-solid fa-check-double"></i> Select Both Spins
+                <i class="fa-solid fa-check-double"></i> Select Both Draws
               </button>
             </div>
             <div class="grid grid-cols-2 gap-3" id="roundSelection">
-              <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="1"><i class="fa-solid fa-square-check text-gold"></i> 1st Spin</button>
-              <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-3.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-sm sm:text-base hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="2"><i class="fa-regular fa-square text-gray-500"></i> 2nd Spin</button>
+              <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="1"><i class="fa-solid fa-square-check text-gold"></i> 1st Draw</button>
+              <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-3.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-sm sm:text-base hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="2"><i class="fa-regular fa-square text-gray-500"></i> 2nd Draw</button>
             </div>
+          </div>>
           </div>
          
          <!-- Bet Type -->
