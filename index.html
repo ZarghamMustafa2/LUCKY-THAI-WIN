@@ -83,21 +83,38 @@
       }
     };
 
+    window.updateSpinMultipliersUI = function() {
+      var mult = window.sheetState.multiplier || 8;
+      var rateStr = '1x' + mult;
+      ['bannerRateBadge1st', 'bannerRateBadge2nd', 'sheetRateBadge1st', 'sheetRateBadge2nd'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.innerText = rateStr;
+      });
+    };
+
     window.setBetDigitLimit = function(limit) {
       var sheetNumberInput = document.getElementById('sheetNumberInput');
+      var bannerNumberInput = document.getElementById('bannerNumberInput');
       var inputHelperText = document.getElementById('inputHelperText');
-      if (sheetNumberInput) {
-        sheetNumberInput.maxLength = limit;
-        sheetNumberInput.placeholder = '0'.repeat(limit);
-        var clean = sheetNumberInput.value.replace(/\D/g, '').slice(0, limit);
-        sheetNumberInput.value = clean;
-        window.sheetState.number = clean;
-        var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
-        if (sheetSelectedNumber) sheetSelectedNumber.innerText = clean || '-';
-      }
-      if (inputHelperText) {
-        inputHelperText.innerText = limit === 1 ? '1 Digit Allowed' : (limit + ' Digits Allowed');
-      }
+      var bannerInputHelperText = document.getElementById('bannerInputHelperText');
+      var helperMsg = limit === 1 ? '1 Digit Allowed' : (limit + ' Digits Allowed');
+
+      [sheetNumberInput, bannerNumberInput].forEach(function(inp) {
+        if (inp) {
+          inp.maxLength = limit;
+          inp.placeholder = '0'.repeat(limit);
+          var clean = inp.value.replace(/\D/g, '').slice(0, limit);
+          inp.value = clean;
+          window.sheetState.number = clean;
+        }
+      });
+
+      if (inputHelperText) inputHelperText.innerText = helperMsg;
+      if (bannerInputHelperText) bannerInputHelperText.innerText = helperMsg;
+
+      var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
+      if (sheetSelectedNumber) sheetSelectedNumber.innerText = window.sheetState.number || '-';
+      window.updateSpinMultipliersUI();
     };
 
     window.selectBetType = function(btn, type, digitLimit) {
@@ -202,15 +219,23 @@
       }
       
       window.sheetState.number = current;
-      var numInput = document.getElementById('sheetNumberInput');
-      if (numInput) numInput.value = current;
+      ['sheetNumberInput', 'bannerNumberInput'].forEach(function(id) {
+        var inp = document.getElementById(id);
+        if (inp) inp.value = current;
+      });
+      var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
+      if (sheetSelectedNumber) sheetSelectedNumber.innerText = current || '-';
       if (window.updateSummary) window.updateSummary();
     };
 
     window.clearQuickDigit = function() {
       window.sheetState.number = '';
-      var numInput = document.getElementById('sheetNumberInput');
-      if (numInput) numInput.value = '';
+      ['sheetNumberInput', 'bannerNumberInput'].forEach(function(id) {
+        var inp = document.getElementById(id);
+        if (inp) inp.value = '';
+      });
+      var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
+      if (sheetSelectedNumber) sheetSelectedNumber.innerText = '-';
       if (window.updateSummary) window.updateSummary();
     };
 
@@ -838,11 +863,12 @@
                   <label class="text-[10px] sm:text-xs font-bold text-gold uppercase tracking-widest flex items-center gap-1">
                     <i class="fa-solid fa-hashtag"></i> Selected Number
                   </label>
-                  <span class="text-[9px] sm:text-xs font-mono text-gray-400 font-bold bg-white/5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-white/10">1 Digit Allowed</span>
+                  <span id="bannerInputHelperText" class="text-[9px] sm:text-xs font-mono text-gray-400 font-bold bg-white/5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-white/10">1 Digit Allowed</span>
                 </div>
                 
                 <div class="flex items-center justify-between gap-2">
                   <input 
+                    id="bannerNumberInput"
                     type="text" 
                     readonly
                     tabindex="-1"
@@ -874,7 +900,7 @@
                 </div>
               </div>
                
-              <!-- Choose Betting Round (1st Spin and 2nd Spin) -->
+              <!-- Choose Betting Round (1st Spin and 2nd Spin) with Rates -->
               <div>
                 <div class="flex justify-between items-center mb-1.5 sm:mb-3">
                   <h3 class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest">Select Spins</h3>
@@ -883,8 +909,14 @@
                   </button>
                 </div>
                 <div class="grid grid-cols-2 gap-2 sm:gap-3">
-                  <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-2 sm:p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-xs sm:text-base transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm" data-round="1"><i class="fa-solid fa-square-check text-gold text-xs sm:text-sm"></i> 1st Spin</button>
-                  <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-2 sm:p-3.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-base hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm" data-round="2"><i class="fa-regular fa-square text-gray-500 text-xs sm:text-sm"></i> 2nd Spin</button>
+                  <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-2 sm:p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-xs sm:text-base transition-all flex items-center justify-between gap-1.5 cursor-pointer shadow-sm" data-round="1">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-square-check text-gold text-xs sm:text-sm"></i> 1st Spin</span>
+                    <span class="text-[9px] sm:text-xs font-mono font-bold bg-black/40 px-1.5 py-0.5 rounded border border-gold/30 text-gold">Rate: <span id="bannerRateBadge1st">1x8</span></span>
+                  </button>
+                  <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-2 sm:p-3.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-base hover:border-gold hover:text-gold transition-all flex items-center justify-between gap-1.5 cursor-pointer shadow-sm" data-round="2">
+                    <span class="flex items-center gap-1.5"><i class="fa-regular fa-square text-gray-500 text-xs sm:text-sm"></i> 2nd Spin</span>
+                    <span class="text-[9px] sm:text-xs font-mono font-bold bg-black/40 px-1.5 py-0.5 rounded border border-white/10 text-gold">Rate: <span id="bannerRateBadge2nd">1x8</span></span>
+                  </button>
                 </div>
               </div>
              
