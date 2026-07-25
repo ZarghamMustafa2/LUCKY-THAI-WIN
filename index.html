@@ -183,6 +183,33 @@
       window.sheetState.number = cleanVal;
     };
 
+    window.appendQuickDigit = function(digit) {
+      var limit = window.sheetState.type === 'figure' ? 1 : window.sheetState.type === 'akada' ? 2 : window.sheetState.type === 'ring' ? 3 : 4;
+      var current = window.sheetState.number || '';
+      
+      if (limit === 1) {
+        current = digit;
+      } else {
+        if (current.length < limit) {
+          current += digit;
+        } else {
+          current = digit;
+        }
+      }
+      
+      window.sheetState.number = current;
+      var numInput = document.getElementById('sheetNumberInput');
+      if (numInput) numInput.value = current;
+      if (window.updateSummary) window.updateSummary();
+    };
+
+    window.clearQuickDigit = function() {
+      window.sheetState.number = '';
+      var numInput = document.getElementById('sheetNumberInput');
+      if (numInput) numInput.value = '';
+      if (window.updateSummary) window.updateSummary();
+    };
+
     window.closeNumberBetSheet = function() {
       var betBottomSheet = document.getElementById('betBottomSheet');
       var betBottomSheetBackdrop = document.getElementById('betBottomSheetBackdrop');
@@ -2359,18 +2386,23 @@
          
          <!-- Quick Select Number Buttons -->
          <div>
-           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Quick Select Number</h3>
+           <div class="flex justify-between items-center mb-3">
+             <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Quick Select Number</h3>
+             <button type="button" onclick="clearQuickDigit()" class="text-xs font-bold text-danger hover:underline cursor-pointer flex items-center gap-1.5 bg-danger/10 px-2.5 py-1 rounded-lg border border-danger/30 active:scale-95 transition-all">
+               <i class="fa-solid fa-eraser"></i> Clear
+             </button>
+           </div>
            <div class="grid grid-cols-5 sm:grid-cols-10 gap-2">
-             <button type="button" onclick="openNumberBetSheet('1')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">1</button>
-             <button type="button" onclick="openNumberBetSheet('2')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">2</button>
-             <button type="button" onclick="openNumberBetSheet('3')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">3</button>
-             <button type="button" onclick="openNumberBetSheet('4')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">4</button>
-             <button type="button" onclick="openNumberBetSheet('5')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">5</button>
-             <button type="button" onclick="openNumberBetSheet('6')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">6</button>
-             <button type="button" onclick="openNumberBetSheet('7')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">7</button>
-             <button type="button" onclick="openNumberBetSheet('8')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">8</button>
-             <button type="button" onclick="openNumberBetSheet('9')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">9</button>
-             <button type="button" onclick="openNumberBetSheet('0')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold transition-all cursor-pointer">0</button>
+             <button type="button" onclick="appendQuickDigit('1')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">1</button>
+             <button type="button" onclick="appendQuickDigit('2')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">2</button>
+             <button type="button" onclick="appendQuickDigit('3')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">3</button>
+             <button type="button" onclick="appendQuickDigit('4')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">4</button>
+             <button type="button" onclick="appendQuickDigit('5')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">5</button>
+             <button type="button" onclick="appendQuickDigit('6')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">6</button>
+             <button type="button" onclick="appendQuickDigit('7')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">7</button>
+             <button type="button" onclick="appendQuickDigit('8')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">8</button>
+             <button type="button" onclick="appendQuickDigit('9')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">9</button>
+             <button type="button" onclick="appendQuickDigit('0')" class="py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-lg hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">0</button>
            </div>
          </div>
           
