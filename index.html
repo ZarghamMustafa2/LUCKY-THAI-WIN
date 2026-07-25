@@ -1792,12 +1792,13 @@
     setInterval(addMockActivity, 1500);
 
     // --- Game Logic ---
-    window.targetDrawEndTime = Date.now() + 15000;
+    const DRAW_INTERVAL_SEC = 30 * 60; // 30 Minutes Cycle
+    window.targetDrawEndTime = Date.now() + (DRAW_INTERVAL_SEC * 1000);
 
     function getRemainingSeconds() {
       const now = Date.now();
       if (!window.targetDrawEndTime || now >= window.targetDrawEndTime) {
-        window.targetDrawEndTime = now + 15000;
+        window.targetDrawEndTime = now + (DRAW_INTERVAL_SEC * 1000);
       }
       return Math.max(0, Math.ceil((window.targetDrawEndTime - now) / 1000));
     }
@@ -1834,7 +1835,7 @@
     function gameLoop() {
       countdown = getRemainingSeconds();
       
-      const percent = (countdown / 15) * 100;
+      const percent = (countdown / DRAW_INTERVAL_SEC) * 100;
       setProgress(percent);
       
       gridNumBtns.forEach(btn => {
@@ -1862,10 +1863,10 @@
     }
 
     function startDraw(force) {
-      if (!force && isDrawing && (Date.now() - lastDrawStartTime < 12000)) return;
+      if (!force && isDrawing && (Date.now() - lastDrawStartTime < 25000)) return;
       isDrawing = true;
       lastDrawStartTime = Date.now();
-      window.targetDrawEndTime = Date.now() + 15000;
+      window.targetDrawEndTime = Date.now() + (DRAW_INTERVAL_SEC * 1000);
       
       // Auto expand wheel stage if hidden when spin begins
       if (window.isWheelHidden && window.toggleWheelStage) {
@@ -1878,11 +1879,6 @@
 
       if (isAutoBet && currentBet) { autoBetConfig = { ...currentBet }; }
 
-      statusText.innerText = 'DRAWING';
-      statusText.style.color = '#FFD400';
-      statusDot.style.backgroundColor = '#FFD400';
-      statusDot.style.boxShadow = '0 0 12px rgba(255,212,0,0.8)';
-      
       const multiResultsContainer = document.getElementById('multiResultsContainer');
       if(multiResultsContainer) {
          multiResultsContainer.classList.add('opacity-0', 'translate-y-4');
@@ -1901,101 +1897,105 @@
         return result;
       }
 
-      window.generatedResults = [];
-      while(window.generatedResults.length < 4) {
-        let numStr = generateUniqueDigitString(4);
-        if(!window.generatedResults.includes(numStr)) {
-          window.generatedResults.push(numStr);
-        }
+      let res1 = generateUniqueDigitString(4);
+      let res2 = generateUniqueDigitString(4);
+      while(res2 === res1) {
+        res2 = generateUniqueDigitString(4);
       }
-      
-      // Demo Cheat: 50% win rate if bet placed
-      if (currentBet && Math.random() > 0.5) {
+
+      // Demo Cheat: Win opportunity if bet placed
+      if (currentBet && Math.random() > 0.4) {
          let missingLen = 4 - currentBet.target.length;
          let excludeDigits = currentBet.target.split('');
          let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
-         const winIndex = Math.floor(Math.random() * 4);
-         window.generatedResults[winIndex] = currentBet.target + randomSuffix;
+         if (currentBet.round.indexOf('1') > -1) {
+           res1 = currentBet.target + randomSuffix;
+         } else {
+           res2 = currentBet.target + randomSuffix;
+         }
       }
-      
-      let prizeIndex = 0;
-      
-      function drawPrize() {
-        const winningNumStr = window.generatedResults[0];
-        const targetDigits = winningNumStr.split('');
-        const targetDigit = parseInt(targetDigits[0]);
-        
-        for(let i=0; i<4; i++) {
-          const d = document.getElementById(`digit-${i}`);
-          if (d) {
-            d.innerText = '?';
-            d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
-          }
-        }
-        
-        wheelText.innerText = 'SPINNING...';
-        wheelGlow.classList.remove('opacity-[0.15]');
-        wheelGlow.classList.add('opacity-40', 'animate-pulse');
-        
-        // Calculate precise landing rotation on targetDigit (4 full 360deg spins + target angle)
-        const currentAngle = ((currentRotation % 360) + 360) % 360;
-        const targetAngle = (360 - (targetDigit * 36)) % 360;
-        let addedRotation = 1440 + (targetAngle - currentAngle);
-        if (addedRotation < 1440) addedRotation += 360;
-        currentRotation += addedRotation;
-        
-        const spinDuration = 3.5;
-        const spinWheel = document.getElementById('spinWheelElement') || spinWheelElement;
-        if (spinWheel) {
-          spinWheel.style.setProperty('transition', `transform ${spinDuration}s cubic-bezier(0.15, 0.85, 0.35, 1.2)`, 'important');
-          spinWheel.style.setProperty('transition-duration', `${spinDuration}s`, 'important');
-          void spinWheel.offsetWidth; // Force DOM reflow
-          requestAnimationFrame(() => {
-            spinWheel.style.setProperty('transform', `rotate(${currentRotation}deg)`, 'important');
-          });
-        }
-        
-        // After wheel decelerates and stops on target digit
-        setTimeout(() => {
-          wheelText.innerText = 'LOCKED';
-          playSound('pop');
-          
-          // Sequentially lock the 4 digits
-          for(let i=0; i<4; i++) {
-            setTimeout(() => {
-              const d = document.getElementById(`digit-${i}`);
-              if (d) {
-                d.innerText = targetDigits[i];
-                d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_40px_rgba(0,255,136,0.3),inset_0_0_20px_rgba(0,255,136,0.1)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-300 transform scale-110 -rotateX-0';
-              }
-            }, i * 250);
-          }
 
-          // Show 1st, 2nd, 3rd, 4th Prize Cards
-          setTimeout(() => {
-            const titles = ['1ST', '2ND', '3RD', '4TH'];
-            const multiContainer = document.getElementById('multiResultsContainer');
-            if (multiContainer) {
-              multiContainer.classList.remove('opacity-0', 'translate-y-4');
-              multiContainer.innerHTML = '';
-              for(let p=0; p<4; p++) {
-                const colorClass = p === 0 ? 'border-primary shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'border-white/10 shadow-lg';
-                const textClass = p === 0 ? 'text-primary' : 'text-white';
-                multiContainer.innerHTML += `
-                   <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border ${colorClass} text-center animate-bounce">
-                      <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">${titles[p]} PRIZE</div>
-                      <div class="text-lg md:text-2xl font-mono font-black ${textClass}">${window.generatedResults[p]}</div>
-                   </div>
-                `;
-              }
-            }
+      window.generatedResults = [res1, res2];
+
+      // Sequential Spin Execution: 1st Spin then 2nd Spin
+      runSpinPhase(1, res1, () => {
+        setTimeout(() => {
+          runSpinPhase(2, res2, () => {
             setTimeout(() => finishDraw(), 1200);
-          }, 1200);
-        }, spinDuration * 1000);
-      }
-      
-      drawPrize();
+          });
+        }, 1800);
+      });
     }
+
+    function runSpinPhase(phaseNum, winningNumStr, onComplete) {
+      statusText.innerText = phaseNum === 1 ? '1ST SPIN IN PROGRESS...' : '2ND SPIN IN PROGRESS...';
+      statusText.style.color = '#FFD400';
+      statusDot.style.backgroundColor = '#FFD400';
+      statusDot.style.boxShadow = '0 0 12px rgba(255,212,0,0.8)';
+
+      const targetDigits = winningNumStr.split('');
+      const targetDigit = parseInt(targetDigits[0]);
+
+      for(let i=0; i<4; i++) {
+        const d = document.getElementById(`digit-${i}`);
+        if (d) {
+          d.innerText = '?';
+          d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
+        }
+      }
+
+      wheelText.innerText = phaseNum === 1 ? '1ST SPIN...' : '2ND SPIN...';
+      wheelGlow.classList.remove('opacity-[0.15]');
+      wheelGlow.classList.add('opacity-40', 'animate-pulse');
+
+      const currentAngle = ((currentRotation % 360) + 360) % 360;
+      const targetAngle = (360 - (targetDigit * 36)) % 360;
+      let addedRotation = 1440 + (targetAngle - currentAngle);
+      if (addedRotation < 1440) addedRotation += 360;
+      currentRotation += addedRotation;
+
+      const spinDuration = 3.5;
+      const spinWheel = document.getElementById('spinWheelElement') || spinWheelElement;
+      if (spinWheel) {
+        spinWheel.style.setProperty('transition', `transform ${spinDuration}s cubic-bezier(0.15, 0.85, 0.35, 1.2)`, 'important');
+        spinWheel.style.setProperty('transition-duration', `${spinDuration}s`, 'important');
+        void spinWheel.offsetWidth;
+        requestAnimationFrame(() => {
+          spinWheel.style.setProperty('transform', `rotate(${currentRotation}deg)`, 'important');
+        });
+      }
+
+      setTimeout(() => {
+        wheelText.innerText = phaseNum === 1 ? '1ST LOCKED' : '2ND LOCKED';
+        playSound('pop');
+
+        for(let i=0; i<4; i++) {
+          setTimeout(() => {
+            const d = document.getElementById(`digit-${i}`);
+            if (d) {
+              d.innerText = targetDigits[i];
+              d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_40px_rgba(0,255,136,0.3),inset_0_0_20px_rgba(0,255,136,0.1)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-300 transform scale-110 -rotateX-0';
+            }
+          }, i * 200);
+        }
+
+        setTimeout(() => {
+          const multiContainer = document.getElementById('multiResultsContainer');
+          if (multiContainer) {
+            multiContainer.classList.remove('opacity-0', 'translate-y-4');
+            const badgeBorder = phaseNum === 1 ? 'border-gold text-gold shadow-[0_0_15px_rgba(255,212,0,0.3)]' : 'border-cyanLight text-cyanLight shadow-[0_0_15px_rgba(0,212,255,0.3)]';
+            multiContainer.innerHTML += `
+               <div class="bg-cardDark px-4 py-2 md:px-6 md:py-3 rounded-xl border ${badgeBorder} text-center animate-bounce">
+                  <div class="text-[9px] md:text-[11px] text-gray-400 font-bold mb-1">${phaseNum === 1 ? '1ST SPIN WINNER' : '2ND SPIN WINNER'}</div>
+                  <div class="text-xl md:text-3xl font-mono font-black">${winningNumStr}</div>
+               </div>
+            `;
+          }
+          if (onComplete) onComplete();
+        }, 1200);
+      }, spinDuration * 1000);
+    }
+
     window.startDraw = startDraw;
 
     function finishDraw() {
