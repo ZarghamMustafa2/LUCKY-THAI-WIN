@@ -226,12 +226,12 @@
     window.toggleSelectAllSpins = function() {
       var btns = document.querySelectorAll('.round-btn');
       if (!window.sheetState.selectedRounds) window.sheetState.selectedRounds = [1];
-      var allSelected = window.sheetState.selectedRounds.length === 4;
+      var allSelected = window.sheetState.selectedRounds.length === 2;
       
       if (allSelected) {
         window.sheetState.selectedRounds = [1];
       } else {
-        window.sheetState.selectedRounds = [1, 2, 3, 4];
+        window.sheetState.selectedRounds = [1, 2];
       }
       
       btns.forEach(function(b) {
@@ -2281,21 +2281,19 @@
            </div>
          </div>
           
-         <!-- Choose Betting Round (Multi-Select Checkboxes) -->
-         <div>
-           <div class="flex justify-between items-center mb-3">
-             <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Spins</h3>
-             <button type="button" onclick="toggleSelectAllSpins()" class="text-xs font-bold text-gold hover:underline cursor-pointer flex items-center gap-1.5 bg-gold/10 px-3 py-1 rounded-lg border border-gold/30">
-               <i class="fa-solid fa-check-double"></i> Select All Spins
-             </button>
-           </div>
-           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="roundSelection">
-             <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-3 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="1"><i class="fa-solid fa-square-check text-gold"></i> 1st Spin</button>
-             <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="2"><i class="fa-regular fa-square text-gray-500"></i> 2nd Spin</button>
-             <button type="button" onclick="toggleBetRound(this, 3)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="3"><i class="fa-regular fa-square text-gray-500"></i> 3rd Spin</button>
-             <button type="button" onclick="toggleBetRound(this, 4)" class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="4"><i class="fa-regular fa-square text-gray-500"></i> 4th Spin</button>
-           </div>
-         </div>
+         <!-- Choose Betting Round (Just 1st Spin and 2nd Spin) -->
+          <div>
+            <div class="flex justify-between items-center mb-3">
+              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Spins</h3>
+              <button type="button" onclick="toggleSelectAllSpins()" class="text-xs font-bold text-gold hover:underline cursor-pointer flex items-center gap-1.5 bg-gold/10 px-3 py-1 rounded-lg border border-gold/30">
+                <i class="fa-solid fa-check-double"></i> Select Both Spins
+              </button>
+            </div>
+            <div class="grid grid-cols-2 gap-3" id="roundSelection">
+              <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="1"><i class="fa-solid fa-square-check text-gold"></i> 1st Spin</button>
+              <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-3.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-sm sm:text-base hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="2"><i class="fa-regular fa-square text-gray-500"></i> 2nd Spin</button>
+            </div>
+          </div>
          
          <!-- Bet Type -->
          <div>

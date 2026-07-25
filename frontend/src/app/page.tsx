@@ -559,10 +559,10 @@ export default function Home() {
             
             <div>
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Select Spin</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {[1,2,3,4].map(r => (
+              <div className="grid grid-cols-2 gap-3">
+                {[1,2].map(r => (
                   <button key={r} onClick={() => setSelectedRound(r)} className={`p-3 rounded-xl border font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 ${selectedRound === r ? 'border-[#FFD700] bg-[#FFD700]/10 text-[#FFD700]' : 'border-white/10 bg-white/5 text-gray-300 hover:border-[#FFD700] hover:text-[#FFD700]'}`}>
-                    {r}{r===1?'st':r===2?'nd':r===3?'rd':'th'} Spin
+                    {r}{r===1?'st':'nd'} Spin
                   </button>
                 ))}
               </div>
