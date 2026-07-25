@@ -83,35 +83,41 @@ export default function Home() {
       if(Math.random() > 0.5) setJackpotPool(prev => prev + Math.floor(Math.random() * 5000));
     });
 
-    // Offline / Standalone Fallback Timer if Socket is disconnected
-    let fallbackTime = 15;
+    // Real-World Clock Syncing Timer (Draws at :00 and :30 of every hour)
+    const getNextRealClockMs = () => {
+      const now = new Date();
+      const minutes = now.getMinutes();
+      const nextDraw = new Date(now);
+      if (minutes < 30) {
+        nextDraw.setMinutes(30, 0, 0);
+      } else {
+        nextDraw.setHours(now.getHours() + 1, 0, 0, 0);
+      }
+      return Math.max(0, nextDraw.getTime() - now.getTime());
+    };
+
+    setRemainingMs(getNextRealClockMs());
+
     const fallbackInterval = setInterval(() => {
       if (Date.now() - lastTickTime > 3000) {
-        // Socket is offline, use local timer
-        setRemainingMs(prev => {
-          if (prev <= 1000) {
-            // Trigger local drawing
-            setIsDrawing(true);
-            const num = Math.floor(1000 + Math.random() * 9000).toString();
-            setPendingWinner(num);
+        const ms = getNextRealClockMs();
+        setRemainingMs(ms);
+        if (ms <= 1000 && !isDrawing) {
+          setIsDrawing(true);
+          const num = Math.floor(1000 + Math.random() * 9000).toString();
+          setPendingWinner(num);
+          setTimeout(() => {
+            setFinalWinner(num);
+            setRecentResults(r => [{ round_number: 'DRAW-' + Date.now().toString().slice(-4), winning_number: num, id: Date.now() }, ...r].slice(0, 20));
             setTimeout(() => {
-              setFinalWinner(num);
-              setRecentResults(r => [{ round_number: 'LOCAL-999', winning_number: num, id: Date.now() }, ...r].slice(0, 20));
-              setTimeout(() => {
-                setIsDrawing(false);
-                setFinalWinner(null);
-                setPendingWinner(null);
-              }, 5000);
-            }, 10000);
-            return 25000;
-          }
-          return prev - 1000;
-        });
+              setIsDrawing(false);
+              setFinalWinner(null);
+              setPendingWinner(null);
+            }, 5000);
+          }, 6000);
+        }
       }
     }, 1000);
-
-    // Initial fallback start
-    setRemainingMs(15000);
 
     newSocket.on('round_started', (data: any) => {
       setCurrentRoundId(data.id);
