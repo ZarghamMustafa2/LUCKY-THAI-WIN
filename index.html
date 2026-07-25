@@ -724,21 +724,50 @@
           
 
 
-          <!-- NEXT SPIN COUNTDOWN BANNER (Shown when Spinner Stage is hidden) -->
-          <div id="nextSpinBanner" onclick="toggleWheelStage()" class="order-1 xl:order-none glass-panel p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-2 border-gold/40 hover:border-gold cursor-pointer transition-all shadow-[0_10px_30px_rgba(255,212,0,0.15)] group hidden">
-            <div class="flex items-center gap-4">
-              <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gold/10 border border-gold/40 flex items-center justify-center text-gold text-2xl sm:text-3xl group-hover:scale-110 transition-transform">
-                <i class="fa-solid fa-stopwatch animate-pulse"></i>
+          <!-- INLINE PLACE YOUR BET BOARD (Shown when Wheel Stage is collapsed into top timer) -->
+          <div id="nextSpinBanner" class="order-1 xl:order-none glass-panel p-6 sm:p-8 flex flex-col gap-6 border-2 border-gold/40 shadow-[0_10px_30px_rgba(255,212,0,0.15)] transition-all group hidden">
+            <!-- Header Bar -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-white/10 pb-5">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-gold/10 border border-gold/40 flex items-center justify-center text-gold text-2xl">
+                  <i class="fa-solid fa-stopwatch animate-pulse"></i>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Next Spin Scheduled</span>
+                  <span class="text-lg sm:text-xl font-mono font-black text-white">Next Draw in <span id="bannerCountdownText" class="text-gold">30:00</span></span>
+                </div>
               </div>
-              <div class="flex flex-col">
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Next Spin Scheduled</span>
-                <span class="text-xl sm:text-2xl font-mono font-black text-white">Next Draw in <span id="bannerCountdownText" class="text-gold">30:00</span></span>
-              </div>
+              <button type="button" onclick="toggleWheelStage()" class="flex items-center gap-2 bg-gold/20 text-gold font-bold px-5 py-2.5 rounded-2xl border border-gold/40 text-sm hover:bg-gold hover:text-black transition-all cursor-pointer">
+                <i class="fa-solid fa-gamepad"></i>
+                <span>Show Wheel Stage</span>
+                <i class="fa-solid fa-angle-right"></i>
+              </button>
             </div>
-            <div class="flex items-center gap-2 bg-gold/20 text-gold font-bold px-5 py-3 rounded-2xl border border-gold/40 text-sm group-hover:bg-gold group-hover:text-black transition-all">
-              <i class="fa-solid fa-gamepad"></i>
-              <span>Show Wheel Stage</span>
-              <i class="fa-solid fa-angle-right"></i>
+
+            <!-- Inline Place Your Bet Board Content -->
+            <div class="flex flex-col gap-5">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xl font-display font-black text-white flex items-center gap-2">
+                  <i class="fa-solid fa-gem text-gold"></i> Place Your Bet
+                </h3>
+                <span class="text-xs font-mono font-bold text-gray-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">100% Instant Play</span>
+              </div>
+
+              <!-- Number Grid Selector (1-9, 0) -->
+              <div class="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-3">
+                <button onclick="openNumberBetSheet(this)" data-num="1" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-2xl sm:text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">1</button>
+                <button onclick="openNumberBetSheet(this)" data-num="2" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-2xl sm:text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">2</button>
+                <button onclick="openNumberBetSheet(this)" data-num="3" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-2xl sm:text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">3</button>
+                <button onclick="openNumberBetSheet(this)" data-num="4" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-2xl sm:text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">4</button>
+                <button onclick="openNumberBetSheet(this)" data-num="5" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-2xl sm:text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">5</button>
+                <button onclick="openNumberBetSheet(this)" data-num="6" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-2xl sm:text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">6</button>
+                <button onclick="openNumberBetSheet(this)" data-num="7" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-2xl sm:text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">7</button>
+                <button onclick="openNumberBetSheet(this)" data-num="8" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-2xl sm:text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">8</button>
+                <button onclick="openNumberBetSheet(this)" data-num="9" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-2xl sm:text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">9</button>
+                <button onclick="openNumberBetSheet(this)" data-num="0" class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-2xl sm:text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer">0</button>
+              </div>
+
+              <p class="text-center text-gray-400 text-xs font-bold tracking-widest uppercase">Click any number to place your bet for next draw</p>
             </div>
           </div>
 
