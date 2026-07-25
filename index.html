@@ -587,6 +587,27 @@
           </div>
           <i id="headerChevronIcon" class="fa-solid fa-chevron-down text-xs text-gray-400 ml-0.5 transition-transform duration-300"></i>
         </button>
+        <script>
+          (function() {
+            function updateHeaderClock() {
+              const now = new Date();
+              const minutes = now.getMinutes();
+              const nextDraw = new Date(now);
+              if (minutes < 30) {
+                nextDraw.setMinutes(30, 0, 0);
+              } else {
+                nextDraw.setHours(now.getHours() + 1, 0, 0, 0);
+              }
+              const remainingSecs = Math.max(0, Math.ceil((nextDraw.getTime() - now.getTime()) / 1000));
+              const m = Math.floor(remainingSecs / 60).toString().padStart(2, '0');
+              const s = (remainingSecs % 60).toString().padStart(2, '0');
+              const el = document.getElementById('headerTimerText');
+              if (el) el.innerText = `${m}:${s}`;
+            }
+            updateHeaderClock();
+            setInterval(updateHeaderClock, 1000);
+          })();
+        </script>
       </div>
 
       <div class="flex items-center gap-3 sm:gap-4 lg:gap-6">

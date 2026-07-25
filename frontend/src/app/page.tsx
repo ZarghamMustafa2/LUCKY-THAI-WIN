@@ -304,9 +304,13 @@ export default function Home() {
               <span className="text-[#FFD700] font-black text-xl">THAINXT</span>
             </div>
             
-            <div className="hidden lg:flex items-center bg-[#121B2F] rounded-full px-4 py-2.5 border border-[rgba(255,255,255,0.05)] focus-within:border-[#FFD700] transition-colors w-[300px]">
-              <Search className="w-4 h-4 text-gray-500 mr-3" />
-              <input type="text" placeholder="Search games, slots..." className="bg-transparent border-none outline-none text-sm text-white placeholder:text-gray-600 w-full font-bold" />
+            {/* NEXT SPIN Live Ticking Timer Button */}
+            <div className="flex items-center gap-2.5 bg-[#121B2F] border border-[#FFD700]/40 px-3.5 py-2 rounded-2xl shadow-[0_0_15px_rgba(255,215,0,0.15)]">
+              <span className="text-[#FFD700] text-base animate-pulse">⏱️</span>
+              <div className="flex flex-col text-left">
+                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Next Spin</span>
+                <span className="font-mono text-xs sm:text-sm font-black text-[#FFD700] leading-none">{mins}:{secs}</span>
+              </div>
             </div>
           </div>
           
