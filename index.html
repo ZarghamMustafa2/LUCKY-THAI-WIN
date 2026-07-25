@@ -521,7 +521,7 @@
               <span class="relative inline-flex rounded-full h-2 w-2 bg-danger"></span>
             </span>
           </div>
-          <div class="font-mono text-xl font-black text-gold drop-shadow-[0_0_8px_rgba(255,212,0,0.4)]">฿ 8.4M</div>
+          <div class="font-mono text-xl font-black text-gold drop-shadow-[0_0_8px_rgba(255,212,0,0.4)]">Rs 8.4M</div>
           <div class="text-[10px] text-gray-500 mt-1 uppercase font-bold">Must drop today!</div>
         </div>
       </div>
@@ -569,7 +569,7 @@
           <i class="fa-solid fa-coins text-gold text-sm sm:text-base"></i>
           <div class="flex flex-col text-left">
             <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Current Bet</span>
-            <span id="headerCurrentBet" class="font-mono text-xs sm:text-sm font-black text-gold leading-none">₹0</span>
+            <span id="headerCurrentBet" class="font-mono text-xs sm:text-sm font-black text-gold leading-none">Rs 0</span>
           </div>
         </div>
 
@@ -581,7 +581,7 @@
         <div class="flex items-center bg-cardDark rounded-2xl border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden">
           <div class="px-4 sm:px-6 py-2.5 sm:py-3 flex items-center gap-3 bg-gradient-to-r from-bgDark to-transparent">
             <i class="fa-solid fa-wallet text-gray-500"></i>
-            <span id="walletBalance" class="text-white font-mono font-black text-xs md:text-lg tracking-wider">฿ 10,450.00</span>
+            <span id="walletBalance" class="text-white font-mono font-black text-xs md:text-lg tracking-wider">Rs 10,450.00</span>
           </div>
         </div>
         
@@ -1488,12 +1488,12 @@
              <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary text-xl"><i class="fa-solid fa-arrow-trend-up"></i></div>
              <div class="flex flex-col">
                 <span class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Payout Acquired</span>
-                <span class="text-primary font-mono font-black text-xl drop-shadow-[0_0_10px_currentColor]">฿ ${payout.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                <span class="text-primary font-mono font-black text-xl drop-shadow-[0_0_10px_currentColor]">Rs ${payout.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
              </div>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">System Balance</span>
-            <span class="text-white font-mono font-bold text-sm">฿ ${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+            <span class="text-white font-mono font-bold text-sm">Rs ${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
           </div>
         `;
         
@@ -1529,12 +1529,12 @@
              <div class="w-12 h-12 rounded-xl bg-danger/20 flex items-center justify-center text-danger text-xl"><i class="fa-solid fa-arrow-trend-down"></i></div>
              <div class="flex flex-col">
                 <span class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Funds Lost</span>
-                <span class="text-danger font-mono font-black text-xl drop-shadow-[0_0_10px_currentColor]">฿ ${betAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                <span class="text-danger font-mono font-black text-xl drop-shadow-[0_0_10px_currentColor]">Rs ${betAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
              </div>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">System Balance</span>
-            <span class="text-white font-mono font-bold text-sm">฿ ${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+            <span class="text-white font-mono font-bold text-sm">Rs ${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
           </div>
         `;
         
@@ -1750,7 +1750,7 @@
     // Amount Selection
     sheetQuickChips.addEventListener('click', (e) => {
       if (e.target.tagName !== 'BUTTON') return;
-      const text = e.target.innerText.replace('₹', '');
+      const text = e.target.innerText.replace('Rs', '').trim();
       let amount = parseInt(text);
       let current = sheetState.amount || 0;
       current += amount;
@@ -1780,9 +1780,9 @@
       tr.innerHTML = `
         <td class="py-3 pl-4 flex items-center gap-2"><i class="fa-solid fa-crosshairs text-primary"></i> <span class="hidden sm:inline">Thai Lottery</span></td>
         <td class="py-3 text-white">${name}</td>
-        <td class="py-3 text-right text-gray-400">฿ ${Number(wager).toLocaleString()}</td>
+        <td class="py-3 text-right text-gray-400">Rs ${Number(wager).toLocaleString()}</td>
         <td class="py-3 text-right text-white">x${mult}</td>
-        <td class="py-3 pr-4 text-right ${isWin ? 'text-primary font-black drop-shadow-[0_0_5px_rgba(0,255,136,0.3)]' : 'text-gray-500'}">${isWin ? '+' : ''}฿ ${Math.abs(payout).toLocaleString()}</td>
+        <td class="py-3 pr-4 text-right ${isWin ? 'text-primary font-black drop-shadow-[0_0_5px_rgba(0,255,136,0.3)]' : 'text-gray-500'}">${isWin ? '+' : ''}Rs ${Math.abs(payout).toLocaleString()}</td>
       `;
       liveActivityBody.prepend(tr);
       if(liveActivityBody.children.length > 8) {
@@ -2054,7 +2054,7 @@
                currentBalance -= autoBetConfig.amount;
                updateWalletUI();
                currentBet = { ...autoBetConfig };
-               showToast(`Auto Bet Placed: ₹${autoBetConfig.amount}`, 'success');
+               showToast(`Auto Bet Placed: Rs ${autoBetConfig.amount}`, 'success');
                
                gridNumBtns.forEach(btn => {
                   btn.disabled = false;
@@ -2083,7 +2083,7 @@
       currentBalance -= amount;
       updateWalletUI();
       currentBet = { amount, target, type: sheetState.type, round: sheetState.round, mult: sheetState.multiplier };
-      showToast(`Bet Placed: ₹${amount} on sequence ${target}`, 'success');
+      showToast(`Bet Placed: Rs ${amount} on sequence ${target}`, 'success');
       closeBottomSheet();
     });
 
@@ -2375,42 +2375,42 @@
          </div>
          
          <!-- Bet Amount -->
-         <div>
-           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Amount</h3>
-           <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3" id="sheetQuickChips">
-             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹10</button>
-             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹20</button>
-             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹50</button>
-             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹100</button>
-             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹500</button>
-             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹1000</button>
-           </div>
-           <div class="relative">
-             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gold font-bold">₹</span>
-             <input type="number" id="sheetAmountInput" class="w-full bg-bgDark text-white font-mono text-2xl p-4 pl-8 text-center outline-none border border-white/10 focus:border-gold rounded-2xl transition-colors placeholder:text-gray-700" placeholder="Custom Amount">
-           </div>
-         </div>
-         
-         <!-- Bet Summary -->
-         <div class="bg-gradient-to-br from-gold/10 to-transparent rounded-2xl p-5 border border-gold/30">
-           <div class="flex justify-between items-center mb-1">
-             <span class="text-xs font-bold text-gray-400">Total Sequence</span>
-             <span id="summarySequence" class="font-mono text-white font-bold tracking-widest">-</span>
-           </div>
-           <div class="flex justify-between items-center mb-1">
-             <span class="text-xs font-bold text-gray-400">Round</span>
-             <span id="summaryRound" class="text-white font-bold">-</span>
-           </div>
-           <div class="flex justify-between items-center mb-1">
-             <span class="text-xs font-bold text-gray-400">Winning Multiplier</span>
-             <span id="summaryMult" class="font-mono text-gold font-bold">1x0</span>
-           </div>
-           <div class="h-px bg-white/10 my-3"></div>
-           <div class="flex justify-between items-center">
-             <span class="text-sm font-bold text-gold uppercase tracking-widest">Potential Winning</span>
-             <span id="summaryPayout" class="font-mono text-2xl font-black text-gold drop-shadow-[0_0_8px_rgba(255,212,0,0.5)]">₹0</span>
-           </div>
-         </div>
+          <div>
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Amount</h3>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3" id="sheetQuickChips">
+              <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">Rs 10</button>
+              <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">Rs 20</button>
+              <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">Rs 50</button>
+              <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">Rs 100</button>
+              <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">Rs 500</button>
+              <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">Rs 1000</button>
+            </div>
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gold font-bold text-xs sm:text-sm">Rs</span>
+              <input type="number" id="sheetAmountInput" class="w-full bg-bgDark text-white font-mono text-2xl p-4 pl-10 text-center outline-none border border-white/10 focus:border-gold rounded-2xl transition-colors placeholder:text-gray-700" placeholder="Custom Amount">
+            </div>
+          </div>
+          
+          <!-- Bet Summary -->
+          <div class="bg-gradient-to-br from-gold/10 to-transparent rounded-2xl p-5 border border-gold/30">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-bold text-gray-400">Total Sequence</span>
+              <span id="summarySequence" class="font-mono text-white font-bold tracking-widest">-</span>
+            </div>
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-bold text-gray-400">Round</span>
+              <span id="summaryRound" class="text-white font-bold">-</span>
+            </div>
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-bold text-gray-400">Winning Multiplier</span>
+              <span id="summaryMult" class="font-mono text-gold font-bold">1x0</span>
+            </div>
+            <div class="h-px bg-white/10 my-3"></div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-bold text-gold uppercase tracking-widest">Potential Winning</span>
+              <span id="summaryPayout" class="font-mono text-2xl font-black text-gold drop-shadow-[0_0_8px_rgba(255,212,0,0.5)]">Rs 0</span>
+            </div>
+          </div>
          
          <!-- Confirm Button -->
          <button id="confirmBetBtn" class="w-full bg-gold hover:bg-yellow-400 text-bgDark py-5 rounded-2xl font-display font-black uppercase tracking-[0.2em] text-lg shadow-[0_0_30px_rgba(255,212,0,0.4)] hover:shadow-[0_0_40px_rgba(255,212,0,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
