@@ -309,7 +309,7 @@
       if (window.updateSummary) window.updateSummary();
     };
 
-    window.isWheelHidden = false;
+    window.isWheelHidden = true;
 
     window.toggleWheelStage = function() {
       var gameContainer = document.getElementById('gameContainer');
@@ -585,7 +585,7 @@
             <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Next Spin</span>
             <span id="headerTimerText" class="font-mono text-xs sm:text-sm font-black text-gold leading-none">30:00</span>
           </div>
-          <i id="headerChevronIcon" class="fa-solid fa-chevron-down text-xs text-gray-400 ml-0.5 transition-transform duration-300"></i>
+          <i id="headerChevronIcon" class="fa-solid fa-chevron-down text-xs text-gray-400 ml-0.5 transition-transform duration-300" style="transform: rotate(180deg);"></i>
         </button>
         <script>
           (function() {
@@ -725,7 +725,7 @@
 
 
           <!-- INLINE PLACE YOUR BET BOARD (Shown when Wheel Stage is collapsed into top timer) -->
-          <div id="nextSpinBanner" class="order-1 xl:order-none glass-panel p-6 sm:p-8 flex flex-col gap-6 border-2 border-gold/40 shadow-[0_10px_30px_rgba(255,212,0,0.15)] transition-all group hidden">
+          <div id="nextSpinBanner" class="order-1 xl:order-none glass-panel p-6 sm:p-8 flex flex-col gap-6 border-2 border-gold/40 shadow-[0_10px_30px_rgba(255,212,0,0.15)] transition-all group">
             <!-- Header Bar -->
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-white/10 pb-5">
               <div class="flex items-center gap-4">
@@ -772,7 +772,7 @@
           </div>
 
           <!-- THE 3D WHEEL STAGE -->
-          <div id="gameContainer" class="order-1 xl:order-none glass-panel relative flex flex-col items-center justify-center overflow-hidden min-h-[500px] md:min-h-[600px] lg:min-h-[700px] transition-transform duration-500">
+          <div id="gameContainer" class="order-1 xl:order-none glass-panel relative flex flex-col items-center justify-center overflow-hidden min-h-[500px] md:min-h-[600px] lg:min-h-[700px] transition-transform duration-500 hidden" style="display: none !important;">
             <!-- Background effects -->
             <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvc3ZnPg==')] opacity-50 mix-blend-overlay"></div>
             
