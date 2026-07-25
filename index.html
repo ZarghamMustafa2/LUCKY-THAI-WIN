@@ -1815,10 +1815,19 @@
       localStorage.setItem('lucky_thai_target_draw_end', newEnd);
     }
 
-    wheelText.addEventListener('click', () => {
-       localStorage.setItem('lucky_thai_target_draw_end', Date.now() + 3000);
-       showToast('Fast Forward: 3 Seconds Remaining', 'info');
-    });
+    const wheelTextEl = document.getElementById('wheelText');
+    const timerCircleEl = document.getElementById('timerCircle');
+    const statusTextEl = document.getElementById('statusText');
+    const statusDotEl = document.getElementById('statusDot');
+    const wheelGlowEl = document.getElementById('wheelGlow');
+    const gridNumBtnsList = document.querySelectorAll('.grid-num-btn');
+
+    if (wheelTextEl) {
+      wheelTextEl.addEventListener('click', () => {
+         localStorage.setItem('lucky_thai_target_draw_end', Date.now() + 3000);
+         showToast('Fast Forward: 3 Seconds Remaining', 'info');
+      });
+    }
     
     let countdown = getRemainingSeconds();
     let isDrawing = false;
@@ -1827,51 +1836,65 @@
     const CIRCUMFERENCE = 339.292; // 2 * pi * 54
 
     function setProgress(percent) {
-      const offset = CIRCUMFERENCE - percent / 100 * CIRCUMFERENCE;
-      timerCircle.style.strokeDashoffset = offset;
-      if (percent < 25) {
-        timerCircle.style.stroke = '#FF4D4F'; // Danger red
-        statusText.style.color = '#FF4D4F';
-        statusDot.style.backgroundColor = '#FF4D4F';
-        statusDot.style.boxShadow = '0 0 12px rgba(255,77,79,0.8)';
-      } else {
-        timerCircle.style.stroke = '#00FF88'; // Primary green
-        statusText.style.color = '#00FF88';
-        statusDot.style.backgroundColor = '#00FF88';
-        statusDot.style.boxShadow = '0 0 12px rgba(0,255,136,0.8)';
+      if (timerCircleEl) {
+        const offset = CIRCUMFERENCE - (percent / 100) * CIRCUMFERENCE;
+        timerCircleEl.style.strokeDashoffset = offset;
+        if (percent < 25) {
+          timerCircleEl.style.stroke = '#FF4D4F'; // Danger red
+        } else {
+          timerCircleEl.style.stroke = '#00FF88'; // Primary green
+        }
+      }
+      if (statusTextEl && statusDotEl && !isDrawing) {
+        if (percent < 25) {
+          statusTextEl.style.color = '#FF4D4F';
+          statusDotEl.style.backgroundColor = '#FF4D4F';
+          statusDotEl.style.boxShadow = '0 0 12px rgba(255,77,79,0.8)';
+        } else {
+          statusTextEl.style.color = '#00FF88';
+          statusDotEl.style.backgroundColor = '#00FF88';
+          statusDotEl.style.boxShadow = '0 0 12px rgba(0,255,136,0.8)';
+        }
       }
     }
 
     let lastDrawStartTime = 0;
 
     function gameLoop() {
-      countdown = getRemainingSeconds();
-      
-      const percent = (countdown / DRAW_INTERVAL_SEC) * 100;
-      setProgress(percent);
-      
-      gridNumBtns.forEach(btn => {
-         btn.disabled = false;
-         btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
-      });
-      
-      const mins = Math.floor(countdown / 60);
-      const secs = countdown % 60;
-      const timeStrFormatted = `${mins}m ${secs.toString().padStart(2, '0')}s`;
-      const timeStrDigital = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      
-      if (!isDrawing) {
-        wheelText.innerText = timeStrFormatted;
-      }
-      
-      const headerTimerText = document.getElementById('headerTimerText');
-      if (headerTimerText) headerTimerText.innerText = timeStrDigital;
+      try {
+        countdown = getRemainingSeconds();
+        
+        const percent = (countdown / DRAW_INTERVAL_SEC) * 100;
+        setProgress(percent);
+        
+        if (gridNumBtnsList) {
+          gridNumBtnsList.forEach(btn => {
+             btn.disabled = false;
+             btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+          });
+        }
+        
+        const mins = Math.floor(countdown / 60);
+        const secs = countdown % 60;
+        const timeStrFormatted = `${mins}m ${secs.toString().padStart(2, '0')}s`;
+        const timeStrDigital = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        
+        const currentWheelText = document.getElementById('wheelText');
+        if (currentWheelText && !isDrawing) {
+          currentWheelText.innerText = timeStrFormatted;
+        }
+        
+        const headerTimerText = document.getElementById('headerTimerText');
+        if (headerTimerText) headerTimerText.innerText = timeStrDigital;
 
-      const bannerCountdownText = document.getElementById('bannerCountdownText');
-      if (bannerCountdownText) bannerCountdownText.innerText = timeStrFormatted;
+        const bannerCountdownText = document.getElementById('bannerCountdownText');
+        if (bannerCountdownText) bannerCountdownText.innerText = timeStrFormatted;
 
-      if(countdown <= 0 && !isDrawing) {
-        startDraw();
+        if(countdown <= 0 && !isDrawing) {
+          startDraw();
+        }
+      } catch (e) {
+        console.error("gameLoop error:", e);
       }
     }
 
