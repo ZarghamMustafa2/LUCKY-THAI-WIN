@@ -1820,15 +1820,38 @@
       return Math.max(0, Math.ceil((targetTime - now) / 1000));
     }
 
-    const wheelTextEl = document.getElementById('wheelText');
-    const timerCircleEl = document.getElementById('timerCircle');
-    const statusTextEl = document.getElementById('statusText');
-    const statusDotEl = document.getElementById('statusDot');
-    const wheelGlowEl = document.getElementById('wheelGlow');
-    const gridNumBtnsList = document.querySelectorAll('.grid-num-btn');
+    const wheelText = document.getElementById('wheelText');
+    const timerCircle = document.getElementById('timerCircle');
+    const statusText = document.getElementById('statusText');
+    const statusDot = document.getElementById('statusDot');
+    const wheelGlow = document.getElementById('wheelGlow');
+    const gridNumBtns = document.querySelectorAll('.grid-num-btn');
+    const confirmBetBtn = document.getElementById('confirmBetBtn');
+    const sheetNumberInput = document.getElementById('sheetNumberInput');
+    const sheetExtraInput = document.getElementById('sheetExtraInput');
+    const sheetQuickChips = document.getElementById('sheetQuickChips');
+    const sheetAmountInput = document.getElementById('sheetAmountInput');
+    const summarySequence = document.getElementById('summarySequence');
+    const summaryRound = document.getElementById('summaryRound');
+    const summaryMult = document.getElementById('summaryMult');
+    const summaryPayout = document.getElementById('summaryPayout');
+    const walletBalanceEl = document.getElementById('walletBalance');
+    const resultModal = document.getElementById('resultModal');
+    const modalContainer = document.getElementById('modalContainer');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultIcon = document.getElementById('resultIcon');
+    const iconInner = document.getElementById('iconInner');
+    const summaryCard = document.getElementById('summaryCard');
+    const collectBtn = document.getElementById('collectBtn');
+    const nextRoundBtn = document.getElementById('nextRoundBtn');
+    const progressCircle = document.getElementById('progressCircle');
+    const coreRing = document.getElementById('coreRing');
+    const hudBorderTop = document.getElementById('hudBorderTop');
+    const hudSysText = document.getElementById('hudSysText');
+    const modalGlow = document.getElementById('modalGlow');
 
-    if (wheelTextEl) {
-      wheelTextEl.addEventListener('click', () => {
+    if (wheelText) {
+      wheelText.addEventListener('click', () => {
          manualFastForwardTime = Date.now() + 3000;
          showToast('Fast Forward: 3 Seconds Remaining', 'info');
       });
@@ -1841,24 +1864,24 @@
     const CIRCUMFERENCE = 339.292; // 2 * pi * 54
 
     function setProgress(percent) {
-      if (timerCircleEl) {
+      if (timerCircle) {
         const offset = CIRCUMFERENCE - (percent / 100) * CIRCUMFERENCE;
-        timerCircleEl.style.strokeDashoffset = offset;
+        timerCircle.style.strokeDashoffset = offset;
         if (percent < 25) {
-          timerCircleEl.style.stroke = '#FF4D4F'; // Danger red
+          timerCircle.style.stroke = '#FF4D4F'; // Danger red
         } else {
-          timerCircleEl.style.stroke = '#00FF88'; // Primary green
+          timerCircle.style.stroke = '#00FF88'; // Primary green
         }
       }
-      if (statusTextEl && statusDotEl && !isDrawing) {
+      if (statusText && statusDot && !isDrawing) {
         if (percent < 25) {
-          statusTextEl.style.color = '#FF4D4F';
-          statusDotEl.style.backgroundColor = '#FF4D4F';
-          statusDotEl.style.boxShadow = '0 0 12px rgba(255,77,79,0.8)';
+          statusText.style.color = '#FF4D4F';
+          statusDot.style.backgroundColor = '#FF4D4F';
+          statusDot.style.boxShadow = '0 0 12px rgba(255,77,79,0.8)';
         } else {
-          statusTextEl.style.color = '#00FF88';
-          statusDotEl.style.backgroundColor = '#00FF88';
-          statusDotEl.style.boxShadow = '0 0 12px rgba(0,255,136,0.8)';
+          statusText.style.color = '#00FF88';
+          statusDot.style.backgroundColor = '#00FF88';
+          statusDot.style.boxShadow = '0 0 12px rgba(0,255,136,0.8)';
         }
       }
     }
@@ -1872,8 +1895,8 @@
         const percent = (countdown / DRAW_INTERVAL_SEC) * 100;
         setProgress(percent);
         
-        if (gridNumBtnsList) {
-          gridNumBtnsList.forEach(btn => {
+        if (gridNumBtns) {
+          gridNumBtns.forEach(btn => {
              btn.disabled = false;
              btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
           });
@@ -1884,9 +1907,8 @@
         const timeStrFormatted = `${mins}m ${secs.toString().padStart(2, '0')}s`;
         const timeStrDigital = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         
-        const currentWheelText = document.getElementById('wheelText');
-        if (currentWheelText && !isDrawing) {
-          currentWheelText.innerText = timeStrFormatted;
+        if (wheelText && !isDrawing) {
+          wheelText.innerText = timeStrFormatted;
         }
         
         const headerTimerText = document.getElementById('headerTimerText');
