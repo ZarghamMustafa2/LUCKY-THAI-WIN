@@ -638,8 +638,9 @@
                 }
               }
 
-              if (remainingSecs > 10 && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
+              if (remainingSecs > 180 && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
                 window.hasTriggeredSpinThisCycle = false;
+                window.hasExpandedForThisPreDraw = false;
               }
 
               // 3-Minute Pre-Draw Lock & Auto Expand Logic (<= 180 seconds)
@@ -650,8 +651,9 @@
               if (remainingSecs <= 180 && remainingSecs > 0) {
                 window.isBettingLocked = true;
                 
-                // Auto Expand Wheel 3 minutes before draw if collapsed
-                if (window.isWheelHidden && window.toggleWheelStage && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
+                // Auto Expand Wheel ONCE 3 minutes before draw if collapsed
+                if (!window.hasExpandedForThisPreDraw && window.isWheelHidden && window.toggleWheelStage && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
+                  window.hasExpandedForThisPreDraw = true;
                   window.toggleWheelStage();
                 }
 
@@ -1840,6 +1842,7 @@
       resultModal.classList.add('opacity-0');
       setTimeout(() => {
         resultModal.classList.add('hidden');
+        window.hasExpandedForThisPreDraw = true;
         if (window.toggleWheelStage && !window.isWheelHidden) {
           window.toggleWheelStage();
         }
@@ -2373,6 +2376,7 @@
         statusText.innerText = 'Accepting Bets';
 
         // Auto collapse wheel stage after winning draw completes
+        window.hasExpandedForThisPreDraw = true;
         if (window.toggleWheelStage && !window.isWheelHidden) {
           window.toggleWheelStage();
         }
