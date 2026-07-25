@@ -599,20 +599,30 @@
                 nextDraw.setHours(now.getHours() + 1, 0, 0, 0);
               }
               const remainingSecs = Math.max(0, Math.ceil((nextDraw.getTime() - now.getTime()) / 1000));
-              const m = Math.floor(remainingSecs / 60).toString().padStart(2, '0');
-              const s = (remainingSecs % 60).toString().padStart(2, '0');
-              const timeStr = `${m}:${s}`;
+              const m = Math.floor(remainingSecs / 60);
+              const s = remainingSecs % 60;
+              const mStr = m.toString().padStart(2, '0');
+              const sStr = s.toString().padStart(2, '0');
+              const digitalTime = `${mStr}:${sStr}`;
+              const formattedTime = `${m}m ${sStr}s`;
+              const nextPhaseFormattedTime = `${m + 30}m ${sStr}s`;
               
               const headerEl = document.getElementById('headerTimerText');
-              if (headerEl) headerEl.innerText = timeStr;
+              if (headerEl) headerEl.innerText = digitalTime;
 
               const wheelEl = document.getElementById('wheelText');
               if (wheelEl && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
-                wheelEl.innerText = timeStr;
+                wheelEl.innerText = digitalTime;
               }
 
               const bannerEl = document.getElementById('bannerCountdownText');
-              if (bannerEl) bannerEl.innerText = timeStr;
+              if (bannerEl) bannerEl.innerText = formattedTime;
+
+              const upcomingEl1 = document.getElementById('upcomingTimer1');
+              if (upcomingEl1) upcomingEl1.innerText = formattedTime;
+
+              const upcomingEl2 = document.getElementById('upcomingTimer2');
+              if (upcomingEl2) upcomingEl2.innerText = nextPhaseFormattedTime;
             }
             updateAllClocks();
             setInterval(updateAllClocks, 1000);
@@ -924,14 +934,14 @@
                 <div class="text-sm font-bold text-white tracking-widest">Draw #4829</div>
                 <div class="text-[10px] text-primary uppercase tracking-widest mt-1 font-bold animate-pulse">Starting soon</div>
               </div>
-              <div class="text-gold font-mono font-black text-xl drop-shadow-[0_0_8px_rgba(255,212,0,0.4)]">2m 30s</div>
+              <div id="upcomingTimer1" class="text-gold font-mono font-black text-xl drop-shadow-[0_0_8px_rgba(255,212,0,0.4)]">30m 00s</div>
             </div>
             <div class="bg-bgDark p-4 rounded-2xl border border-white/5 flex justify-between items-center opacity-60 group hover:opacity-100 transition-all">
               <div>
                 <div class="text-sm font-bold text-white tracking-widest">Draw #4830</div>
                 <div class="text-[10px] text-gray-500 uppercase tracking-widest mt-1 font-bold">Next Phase</div>
               </div>
-              <div class="text-gray-400 font-mono font-black text-xl">32m 00s</div>
+              <div id="upcomingTimer2" class="text-gray-400 font-mono font-black text-xl">60m 00s</div>
             </div>
           </div>
         </div>
