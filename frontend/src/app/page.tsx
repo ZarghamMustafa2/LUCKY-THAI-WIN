@@ -390,8 +390,13 @@ export default function Home() {
                   {isDrawing && !finalWinner ? (
                     <SpinWheel isDrawing={isDrawing} winningNumber={pendingWinner} />
                   ) : (
-                    <div className={`text-8xl md:text-[200px] font-black tracking-tighter text-center w-full transition-all duration-700 ${finalWinner ? 'text-gradient-gold drop-shadow-[0_0_80px_rgba(255,215,0,0.4)] scale-110' : 'text-[#131C2A] drop-shadow-2xl'}`}>
-                      {finalWinner ? finalWinner : `${mins}:${secs}`}
+                    <div className="flex flex-col items-center justify-center gap-4">
+                      <div className="text-6xl sm:text-8xl md:text-9xl font-mono font-black tracking-wider text-[#FFD700] drop-shadow-[0_0_40px_rgba(255,215,0,0.8)] animate-pulse">
+                        {finalWinner ? finalWinner : `${mins}:${secs}`}
+                      </div>
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest bg-white/5 px-4 py-1.5 rounded-full border border-white/10">
+                        {finalWinner ? 'ROUND WINNER' : 'NEXT DRAW COUNTDOWN'}
+                      </span>
                     </div>
                   )}
                 </div>
