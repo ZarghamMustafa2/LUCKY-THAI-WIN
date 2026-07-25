@@ -1793,18 +1793,30 @@
 
     // --- Game Logic ---
     const DRAW_INTERVAL_SEC = 30 * 60; // 30 Minutes Cycle
-    window.targetDrawEndTime = Date.now() + (DRAW_INTERVAL_SEC * 1000);
+
+    function getTargetDrawEndTime() {
+      let stored = localStorage.getItem('lucky_thai_target_draw_end');
+      const now = Date.now();
+      if (!stored || parseInt(stored) <= now || (parseInt(stored) - now) > (DRAW_INTERVAL_SEC * 1000)) {
+        stored = now + (DRAW_INTERVAL_SEC * 1000);
+        localStorage.setItem('lucky_thai_target_draw_end', stored);
+      }
+      return parseInt(stored);
+    }
 
     function getRemainingSeconds() {
       const now = Date.now();
-      if (!window.targetDrawEndTime || now >= window.targetDrawEndTime) {
-        window.targetDrawEndTime = now + (DRAW_INTERVAL_SEC * 1000);
-      }
-      return Math.max(0, Math.ceil((window.targetDrawEndTime - now) / 1000));
+      const endTime = getTargetDrawEndTime();
+      return Math.max(0, Math.ceil((endTime - now) / 1000));
+    }
+
+    function resetTargetDrawEndTime() {
+      const newEnd = Date.now() + (DRAW_INTERVAL_SEC * 1000);
+      localStorage.setItem('lucky_thai_target_draw_end', newEnd);
     }
 
     wheelText.addEventListener('click', () => {
-       window.targetDrawEndTime = Date.now() + 3000;
+       localStorage.setItem('lucky_thai_target_draw_end', Date.now() + 3000);
        showToast('Fast Forward: 3 Seconds Remaining', 'info');
     });
     
@@ -1843,19 +1855,20 @@
          btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
       });
       
-      const mins = Math.floor(countdown / 60).toString().padStart(2, '0');
-      const secs = (countdown % 60).toString().padStart(2, '0');
-      const timeStr = `${mins}:${secs}`;
+      const mins = Math.floor(countdown / 60);
+      const secs = countdown % 60;
+      const timeStrFormatted = `${mins}m ${secs.toString().padStart(2, '0')}s`;
+      const timeStrDigital = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
       
       if (!isDrawing) {
-        wheelText.innerText = timeStr;
+        wheelText.innerText = timeStrFormatted;
       }
       
       const headerTimerText = document.getElementById('headerTimerText');
-      if (headerTimerText) headerTimerText.innerText = timeStr;
+      if (headerTimerText) headerTimerText.innerText = timeStrDigital;
 
       const bannerCountdownText = document.getElementById('bannerCountdownText');
-      if (bannerCountdownText) bannerCountdownText.innerText = timeStr;
+      if (bannerCountdownText) bannerCountdownText.innerText = timeStrFormatted;
 
       if(countdown <= 0 && !isDrawing) {
         startDraw();
@@ -1866,7 +1879,7 @@
       if (!force && isDrawing && (Date.now() - lastDrawStartTime < 25000)) return;
       isDrawing = true;
       lastDrawStartTime = Date.now();
-      window.targetDrawEndTime = Date.now() + (DRAW_INTERVAL_SEC * 1000);
+      resetTargetDrawEndTime();
       
       // Auto expand wheel stage if hidden when spin begins
       if (window.isWheelHidden && window.toggleWheelStage) {
