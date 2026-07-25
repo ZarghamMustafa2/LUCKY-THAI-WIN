@@ -642,9 +642,13 @@
               const upcomingEl2 = document.getElementById('upcomingTimer2');
               if (upcomingEl2) upcomingEl2.innerText = nextPhaseFormattedTime;
 
-              // Automatic Spin Trigger Execution at 00:00 (<= 1 second remaining)
-              if (remainingSecs <= 1 && (typeof window.isDrawing === 'undefined' || !window.isDrawing) && !window.hasTriggeredSpinThisCycle) {
+              // Automatic 3D Spin Trigger Execution at 30-Min Boundary (remainingSecs <= 3 OR >= 1797 right after rollover)
+              const isDrawBoundary = (remainingSecs <= 3 || remainingSecs >= 1797);
+              if (isDrawBoundary && (typeof window.isDrawing === 'undefined' || !window.isDrawing) && !window.hasTriggeredSpinThisCycle) {
                 window.hasTriggeredSpinThisCycle = true;
+                if (typeof window.expandWheelStage === 'function') {
+                  window.expandWheelStage();
+                }
                 if (typeof window.startDraw === 'function') {
                   window.startDraw();
                 } else if (typeof window.manualTriggerSpin === 'function') {
@@ -652,7 +656,7 @@
                 }
               }
 
-              if (remainingSecs > 180 && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
+              if (remainingSecs > 10 && remainingSecs < 1780 && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
                 window.hasTriggeredSpinThisCycle = false;
                 window.hasExpandedForThisPreDraw = false;
               }
