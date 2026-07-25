@@ -83,15 +83,6 @@
       }
     };
 
-    window.updateSpinMultipliersUI = function() {
-      var mult = window.sheetState.multiplier || 8;
-      var rateStr = '1x' + mult;
-      ['bannerRateBadge1st', 'bannerRateBadge2nd', 'sheetRateBadge1st', 'sheetRateBadge2nd'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) el.innerText = rateStr;
-      });
-    };
-
     window.setBetDigitLimit = function(limit) {
       var sheetNumberInput = document.getElementById('sheetNumberInput');
       var bannerNumberInput = document.getElementById('bannerNumberInput');
@@ -260,7 +251,29 @@
       var selected = window.sheetState.selectedRounds || [1];
       var has1st = selected.indexOf(1) > -1;
       var has2nd = selected.indexOf(2) > -1;
+      var type = window.sheetState.type || 'figure';
 
+      var rates = {
+        figure: { first: '1x8', second: '1x2.70' },
+        akada:  { first: '1x80', second: '1x27' },
+        ring:   { first: '1x800', second: '1x270' },
+        packet: { first: '1x6000', second: '1x1600' }
+      };
+
+      var currentTypeRates = rates[type] || rates.figure;
+
+      // Update 1st Spin & 2nd Spin Badges on Main Page Banner and Bottom Sheet
+      ['bannerRateBadge1st', 'sheetRateBadge1st'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.innerText = currentTypeRates.first;
+      });
+
+      ['bannerRateBadge2nd', 'sheetRateBadge2nd'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.innerText = currentTypeRates.second;
+      });
+
+      // Update Bet Type Card Badges
       var figureBadge = document.getElementById('multBadgeFigure');
       var akadaBadge = document.getElementById('multBadgeAkada');
       var ringBadge = document.getElementById('multBadgeRing');
