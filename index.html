@@ -1791,28 +1791,33 @@
     }
     setInterval(addMockActivity, 1500);
 
-    // --- Game Logic ---
+    // --- Real-Time Wall Clock Syncing (Draws at :00 and :30 of every hour) ---
     const DRAW_INTERVAL_SEC = 30 * 60; // 30 Minutes Cycle
 
-    function getTargetDrawEndTime() {
-      let stored = localStorage.getItem('lucky_thai_target_draw_end');
-      const now = Date.now();
-      if (!stored || parseInt(stored) <= now || (parseInt(stored) - now) > (DRAW_INTERVAL_SEC * 1000)) {
-        stored = now + (DRAW_INTERVAL_SEC * 1000);
-        localStorage.setItem('lucky_thai_target_draw_end', stored);
+    function getNextRealClockDrawTime() {
+      const now = new Date();
+      const minutes = now.getMinutes();
+      const nextDraw = new Date(now);
+      
+      if (minutes < 30) {
+        nextDraw.setMinutes(30, 0, 0); // Next draw is at XX:30:00
+      } else {
+        nextDraw.setHours(now.getHours() + 1, 0, 0, 0); // Next draw is at (XX+1):00:00
       }
-      return parseInt(stored);
+      
+      return nextDraw.getTime();
     }
+
+    let manualFastForwardTime = null;
 
     function getRemainingSeconds() {
       const now = Date.now();
-      const endTime = getTargetDrawEndTime();
-      return Math.max(0, Math.ceil((endTime - now) / 1000));
-    }
-
-    function resetTargetDrawEndTime() {
-      const newEnd = Date.now() + (DRAW_INTERVAL_SEC * 1000);
-      localStorage.setItem('lucky_thai_target_draw_end', newEnd);
+      if (manualFastForwardTime && now < manualFastForwardTime) {
+        return Math.max(0, Math.ceil((manualFastForwardTime - now) / 1000));
+      }
+      manualFastForwardTime = null;
+      const targetTime = getNextRealClockDrawTime();
+      return Math.max(0, Math.ceil((targetTime - now) / 1000));
     }
 
     const wheelTextEl = document.getElementById('wheelText');
@@ -1824,7 +1829,7 @@
 
     if (wheelTextEl) {
       wheelTextEl.addEventListener('click', () => {
-         localStorage.setItem('lucky_thai_target_draw_end', Date.now() + 3000);
+         manualFastForwardTime = Date.now() + 3000;
          showToast('Fast Forward: 3 Seconds Remaining', 'info');
       });
     }
