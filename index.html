@@ -589,7 +589,7 @@
         </button>
         <script>
           (function() {
-            function updateHeaderClock() {
+            function updateAllClocks() {
               const now = new Date();
               const minutes = now.getMinutes();
               const nextDraw = new Date(now);
@@ -601,11 +601,21 @@
               const remainingSecs = Math.max(0, Math.ceil((nextDraw.getTime() - now.getTime()) / 1000));
               const m = Math.floor(remainingSecs / 60).toString().padStart(2, '0');
               const s = (remainingSecs % 60).toString().padStart(2, '0');
-              const el = document.getElementById('headerTimerText');
-              if (el) el.innerText = `${m}:${s}`;
+              const timeStr = `${m}:${s}`;
+              
+              const headerEl = document.getElementById('headerTimerText');
+              if (headerEl) headerEl.innerText = timeStr;
+
+              const wheelEl = document.getElementById('wheelText');
+              if (wheelEl && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
+                wheelEl.innerText = timeStr;
+              }
+
+              const bannerEl = document.getElementById('bannerCountdownText');
+              if (bannerEl) bannerEl.innerText = timeStr;
             }
-            updateHeaderClock();
-            setInterval(updateHeaderClock, 1000);
+            updateAllClocks();
+            setInterval(updateAllClocks, 1000);
           })();
         </script>
       </div>
