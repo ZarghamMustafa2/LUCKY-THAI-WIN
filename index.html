@@ -200,6 +200,34 @@
       }
     };
 
+    window.updateSpinMultipliersUI = function() {
+      var selected = window.sheetState.selectedRounds || [1];
+      var has1st = selected.indexOf(1) > -1;
+      var has2nd = selected.indexOf(2) > -1;
+
+      var figureBadge = document.getElementById('multBadgeFigure');
+      var akadaBadge = document.getElementById('multBadgeAkada');
+      var ringBadge = document.getElementById('multBadgeRing');
+      var packetBadge = document.getElementById('multBadgePacket');
+
+      if (has1st && has2nd) {
+        if (figureBadge) figureBadge.innerHTML = '<span class="text-gold font-bold">1st: 1x8</span> <span class="text-gray-500">|</span> <span class="text-cyanLight font-bold">2nd: 1x2.70</span>';
+        if (akadaBadge) akadaBadge.innerHTML = '<span class="text-gold font-bold">1st: 1x80</span> <span class="text-gray-500">|</span> <span class="text-cyanLight font-bold">2nd: 1x27</span>';
+        if (ringBadge) ringBadge.innerHTML = '<span class="text-gold font-bold">1st: 1x800</span> <span class="text-gray-500">|</span> <span class="text-cyanLight font-bold">2nd: 1x270</span>';
+        if (packetBadge) packetBadge.innerHTML = '<span class="text-gold font-bold">1st: 1x6000</span> <span class="text-gray-500">|</span> <span class="text-cyanLight font-bold">2nd: 1x1600</span>';
+      } else if (has2nd) {
+        if (figureBadge) figureBadge.innerHTML = '<span class="text-gold font-bold">1x2.70</span>';
+        if (akadaBadge) akadaBadge.innerHTML = '<span class="text-gold font-bold">1x27</span>';
+        if (ringBadge) ringBadge.innerHTML = '<span class="text-gold font-bold">1x270</span>';
+        if (packetBadge) packetBadge.innerHTML = '<span class="text-gold font-bold">1x1600</span>';
+      } else {
+        if (figureBadge) figureBadge.innerHTML = '<span class="text-gold font-bold">1x8</span>';
+        if (akadaBadge) akadaBadge.innerHTML = '<span class="text-gold font-bold">1x80</span>';
+        if (ringBadge) ringBadge.innerHTML = '<span class="text-gold font-bold">1x800</span>';
+        if (packetBadge) packetBadge.innerHTML = '<span class="text-gold font-bold">1x6000</span>';
+      }
+    };
+
     window.toggleBetRound = function(btn, roundNum) {
       if (!window.sheetState.selectedRounds) window.sheetState.selectedRounds = [1];
       var idx = window.sheetState.selectedRounds.indexOf(roundNum);
@@ -220,6 +248,7 @@
       }
       
       window.sheetState.round = window.sheetState.selectedRounds.join(', ');
+      window.updateSpinMultipliersUI();
       if (window.updateSummary) window.updateSummary();
     };
 
@@ -249,6 +278,7 @@
       });
       
       window.sheetState.round = window.sheetState.selectedRounds.join(', ');
+      window.updateSpinMultipliersUI();
       if (window.updateSummary) window.updateSummary();
     };
 
@@ -2300,19 +2330,19 @@
            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Type</h3>
            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="betTypeSelection">
               <button onclick="selectBetType(this, 'figure', 1)" class="bet-type-card p-4 rounded-2xl border border-gold bg-gold/10 flex flex-col gap-1 text-left transition-all group cursor-pointer" data-type="figure" data-mult="8">
-                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span><span class="text-gold font-mono font-bold">1x8</span></div>
+                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span><span id="multBadgeFigure" class="font-mono text-xs sm:text-sm"><span class="text-gold font-bold">1x8</span></span></div>
                 <span class="text-xs text-gray-400 font-bold">1 Digit Bet</span>
               </button>
               <button onclick="selectBetType(this, 'akada', 2)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group cursor-pointer" data-type="akada" data-mult="80">
-                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span><span class="text-gold font-mono font-bold">1x80</span></div>
+                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span><span id="multBadgeAkada" class="font-mono text-xs sm:text-sm"><span class="text-gold font-bold">1x80</span></span></div>
                 <span class="text-xs text-gray-400 font-bold">2 Digits Bet</span>
               </button>
               <button onclick="selectBetType(this, 'ring', 3)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group cursor-pointer" data-type="ring" data-mult="800">
-                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">RING</span><span class="text-gold font-mono font-bold">1x800</span></div>
+                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">RING</span><span id="multBadgeRing" class="font-mono text-xs sm:text-sm"><span class="text-gold font-bold">1x800</span></span></div>
                 <span class="text-xs text-gray-400 font-bold">3 Digits Bet</span>
               </button>
               <button onclick="selectBetType(this, 'packet', 4)" class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group cursor-pointer" data-type="packet" data-mult="6000">
-                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span><span class="text-gold font-mono font-bold">1x6000</span></div>
+                <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span><span id="multBadgePacket" class="font-mono text-xs sm:text-sm"><span class="text-gold font-bold">1x6000</span></span></div>
                 <span class="text-xs text-gray-400 font-bold">4 Digits Bet</span>
               </button>
            </div>
