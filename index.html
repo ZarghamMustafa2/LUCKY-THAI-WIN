@@ -2369,6 +2369,18 @@
       wheelGlow.classList.remove('opacity-40', 'animate-pulse');
       wheelGlow.classList.add('opacity-[0.15]');
       
+      // Auto collapse wheel stage IMMEDIATELY (0ms delay) so Place Your Bet board returns instantly
+      window.hasExpandedForThisPreDraw = true;
+      isDrawing = false;
+      if (window.collapseWheelStage) {
+        window.collapseWheelStage();
+      }
+      gridNumBtns.forEach(btn => {
+         btn.disabled = false;
+         btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+      });
+      if (statusText) statusText.innerText = 'Accepting Bets';
+      
       let isWin = false;
       if (currentBet) {
         for(let i=0; i<4; i++) {
@@ -2393,29 +2405,14 @@
               disableForReducedMotion: true
             });
           }
-          setTimeout(() => showModal(true, window.generatedResults, payout), 600);
+          setTimeout(() => showModal(true, window.generatedResults, payout), 400);
         } else {
-          setTimeout(() => showModal(false, window.generatedResults, 0, currentBet.amount), 600);
+          setTimeout(() => showModal(false, window.generatedResults, 0, currentBet.amount), 400);
         }
         currentBet = null;
       } else {
-        setTimeout(() => showModal(null, window.generatedResults), 600);
+        setTimeout(() => showModal(null, window.generatedResults), 400);
       }
-
-      setTimeout(() => {
-        isDrawing = false;
-        countdown = getRemainingSeconds();
-        gridNumBtns.forEach(btn => {
-           btn.disabled = false;
-           btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
-        });
-        statusText.innerText = 'Accepting Bets';
-
-        // Auto collapse wheel stage after winning draw completes
-        window.hasExpandedForThisPreDraw = true;
-        if (window.collapseWheelStage) {
-          window.collapseWheelStage();
-        }
 
         if (isAutoBet && autoBetConfig) {
            if (currentBalance >= autoBetConfig.amount) {
