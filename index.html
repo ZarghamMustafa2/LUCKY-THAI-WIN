@@ -251,49 +251,33 @@
       var selected = window.sheetState.selectedRounds || [1];
       var has1st = selected.indexOf(1) > -1;
       var has2nd = selected.indexOf(2) > -1;
-      var type = window.sheetState.type || 'figure';
 
-      var rates = {
-        figure: { first: '1x8', second: '1x2.70' },
-        akada:  { first: '1x80', second: '1x27' },
-        ring:   { first: '1x800', second: '1x270' },
-        packet: { first: '1x6000', second: '1x1600' }
-      };
+      var figureBadges = [document.getElementById('bannerMultBadgeFigure'), document.getElementById('multBadgeFigure')];
+      var akadaBadges  = [document.getElementById('bannerMultBadgeAkada'),  document.getElementById('multBadgeAkada')];
+      var ringBadges   = [document.getElementById('bannerMultBadgeRing'),   document.getElementById('multBadgeRing')];
+      var packetBadges = [document.getElementById('bannerMultBadgePacket'), document.getElementById('multBadgePacket')];
 
-      var currentTypeRates = rates[type] || rates.figure;
-
-      // Update 1st Spin & 2nd Spin Badges on Main Page Banner and Bottom Sheet
-      ['bannerRateBadge1st', 'sheetRateBadge1st'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) el.innerText = currentTypeRates.first;
-      });
-
-      ['bannerRateBadge2nd', 'sheetRateBadge2nd'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) el.innerText = currentTypeRates.second;
-      });
-
-      // Update Bet Type Card Badges
-      var figureBadge = document.getElementById('multBadgeFigure');
-      var akadaBadge = document.getElementById('multBadgeAkada');
-      var ringBadge = document.getElementById('multBadgeRing');
-      var packetBadge = document.getElementById('multBadgePacket');
+      function setBadgeHTML(elements, html) {
+        elements.forEach(function(el) {
+          if (el) el.innerHTML = html;
+        });
+      }
 
       if (has1st && has2nd) {
-        if (figureBadge) figureBadge.innerHTML = '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-xs">1st: 1x8</span><span class="text-cyanLight font-bold text-xs">2nd: 1x2.70</span></div>';
-        if (akadaBadge) akadaBadge.innerHTML = '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-xs">1st: 1x80</span><span class="text-cyanLight font-bold text-xs">2nd: 1x27</span></div>';
-        if (ringBadge) ringBadge.innerHTML = '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-xs">1st: 1x800</span><span class="text-cyanLight font-bold text-xs">2nd: 1x270</span></div>';
-        if (packetBadge) packetBadge.innerHTML = '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-xs">1st: 1x6000</span><span class="text-cyanLight font-bold text-xs">2nd: 1x1600</span></div>';
+        setBadgeHTML(figureBadges, '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-[10px] sm:text-xs">1st: 1x8</span><span class="text-cyanLight font-bold text-[10px] sm:text-xs">2nd: 1x2.70</span></div>');
+        setBadgeHTML(akadaBadges,  '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-[10px] sm:text-xs">1st: 1x80</span><span class="text-cyanLight font-bold text-[10px] sm:text-xs">2nd: 1x27</span></div>');
+        setBadgeHTML(ringBadges,   '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-[10px] sm:text-xs">1st: 1x800</span><span class="text-cyanLight font-bold text-[10px] sm:text-xs">2nd: 1x270</span></div>');
+        setBadgeHTML(packetBadges, '<div class="flex flex-col items-end leading-tight"><span class="text-gold font-bold text-[10px] sm:text-xs">1st: 1x6000</span><span class="text-cyanLight font-bold text-[10px] sm:text-xs">2nd: 1x1600</span></div>');
       } else if (has2nd) {
-        if (figureBadge) figureBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x2.70</span>';
-        if (akadaBadge) akadaBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x27</span>';
-        if (ringBadge) ringBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x270</span>';
-        if (packetBadge) packetBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x1600</span>';
+        setBadgeHTML(figureBadges, '<span class="text-gold font-bold text-[10px] sm:text-sm">1x2.70</span>');
+        setBadgeHTML(akadaBadges,  '<span class="text-gold font-bold text-[10px] sm:text-sm">1x27</span>');
+        setBadgeHTML(ringBadges,   '<span class="text-gold font-bold text-[10px] sm:text-sm">1x270</span>');
+        setBadgeHTML(packetBadges, '<span class="text-gold font-bold text-[10px] sm:text-sm">1x1600</span>');
       } else {
-        if (figureBadge) figureBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x8</span>';
-        if (akadaBadge) akadaBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x80</span>';
-        if (ringBadge) ringBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x800</span>';
-        if (packetBadge) packetBadge.innerHTML = '<span class="text-gold font-bold text-sm">1x6000</span>';
+        setBadgeHTML(figureBadges, '<span class="text-gold font-bold text-[10px] sm:text-sm">1x8</span>');
+        setBadgeHTML(akadaBadges,  '<span class="text-gold font-bold text-[10px] sm:text-sm">1x80</span>');
+        setBadgeHTML(ringBadges,   '<span class="text-gold font-bold text-[10px] sm:text-sm">1x800</span>');
+        setBadgeHTML(packetBadges, '<span class="text-gold font-bold text-[10px] sm:text-sm">1x6000</span>');
       }
     };
 
@@ -943,7 +927,7 @@
                          <span class="font-black text-white text-xs sm:text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span>
                          <span class="text-[9px] sm:text-xs text-gray-400 font-bold">1 Digit</span>
                        </div>
-                       <div class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x8</span></div>
+                       <div id="bannerMultBadgeFigure" class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x8</span></div>
                      </div>
                    </button>
                    <button onclick="selectBetType(this, 'akada', 2)" class="bet-type-card p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-0.5 transition-all group cursor-pointer" data-type="akada" data-mult="80">
@@ -952,7 +936,7 @@
                          <span class="font-black text-white text-xs sm:text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span>
                          <span class="text-[9px] sm:text-xs text-gray-400 font-bold">2 Digits</span>
                        </div>
-                       <div class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x80</span></div>
+                       <div id="bannerMultBadgeAkada" class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x80</span></div>
                      </div>
                    </button>
                    <button onclick="selectBetType(this, 'ring', 3)" class="bet-type-card p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-0.5 transition-all group cursor-pointer" data-type="ring" data-mult="800">
@@ -961,7 +945,7 @@
                          <span class="font-black text-white text-xs sm:text-lg tracking-wider group-hover:text-gold transition-colors">RING</span>
                          <span class="text-[9px] sm:text-xs text-gray-400 font-bold">3 Digits</span>
                        </div>
-                       <div class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x800</span></div>
+                       <div id="bannerMultBadgeRing" class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x800</span></div>
                      </div>
                    </button>
                    <button onclick="selectBetType(this, 'packet', 4)" class="bet-type-card p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-0.5 transition-all group cursor-pointer" data-type="packet" data-mult="6000">
@@ -970,7 +954,7 @@
                          <span class="font-black text-white text-xs sm:text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span>
                          <span class="text-[9px] sm:text-xs text-gray-400 font-bold">4 Digits</span>
                        </div>
-                       <div class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x6000</span></div>
+                       <div id="bannerMultBadgePacket" class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x6000</span></div>
                      </div>
                    </button>
                 </div>
