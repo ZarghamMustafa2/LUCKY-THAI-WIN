@@ -628,7 +628,7 @@
     }
   </style>
 </head>
-<body class="flex flex-col min-h-screen overflow-y-auto bg-bgDark bg-particles relative text-gray-300">
+<body class="flex h-screen overflow-hidden bg-bgDark bg-particles relative text-gray-300">
 
   <!-- Floating Pull to Refresh Bar -->
   <div id="pullToRefreshIndicator" class="fixed top-2 left-1/2 -translate-x-1/2 -translate-y-24 z-[999999] opacity-0 transition-opacity duration-150 pointer-events-none flex items-center gap-3 bg-cardDark/95 border-2 border-gold px-5 py-2.5 rounded-full shadow-[0_10px_40px_rgba(255,212,0,0.5)]">
@@ -953,7 +953,7 @@
     </header>
 
     <!-- SCROLLABLE MAIN -->
-    <main class="flex-1 p-4 lg:p-10 relative">
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-4 lg:p-10 relative">
       
       <div class="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-10">
         
