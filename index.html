@@ -1251,19 +1251,19 @@
           </div>
         </div>
 
-        <!-- Last 10 Winning Draws Card (Replaces Upcoming Draws & How To Play) -->
+        <!-- Last 24 Hours Winning Draws Card -->
         <div class="glass-panel p-6 lg:p-8 rounded-[32px] border-t-2 border-t-gold shadow-[0_20px_40px_rgba(0,0,0,0.4)] md:col-span-2">
           <div class="flex items-center justify-between mb-6 pb-3 border-b border-white/5">
             <h3 class="text-lg font-display font-black text-white flex items-center gap-2">
               <i class="fa-solid fa-trophy text-gold"></i>
-              <span>Last 10 Winning Draws</span>
+              <span>Last 24 Hours Winning Draws</span>
             </h3>
             <span class="text-[10px] sm:text-xs font-mono font-bold text-gold bg-gold/10 px-3 py-1 rounded-full border border-gold/30">
-              <i class="fa-solid fa-clock mr-1"></i> Live 30-Min Results
+              <i class="fa-solid fa-clock-rotate-left mr-1"></i> Past 24 Hours (48 Draws)
             </span>
           </div>
 
-          <div class="space-y-3 max-h-[460px] overflow-y-auto custom-scrollbar pr-1" id="last10WinningDrawsList">
+          <div class="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-1" id="last10WinningDrawsList">
             <!-- 10 Past Winning Rows -->
             <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-gold/30 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-gold transition-all">
               <div class="flex items-center gap-3">
@@ -2904,6 +2904,55 @@
         headerLast.innerText = window.lastBetAmount > 0 ? ('Rs ' + window.lastBetAmount.toLocaleString()) : 'Rs 0';
       }
     } catch(e) {}
+
+    // Render 48 Draws for the Last 24 Hours History
+    (function init24HoursDrawHistory() {
+      var container = document.getElementById('last10WinningDrawsList');
+      if (!container) return;
+
+      var now = new Date();
+      var html = '';
+      
+      // 48 draws in 24 hours (every 30 minutes)
+      for (var i = 0; i < 48; i++) {
+        var drawTime = new Date(now.getTime() - i * 30 * 60 * 1000);
+        var drawNum = 4828 - i;
+        var isLatest = (i === 0);
+        
+        var timeStr = drawTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        var num1 = String((7492 + i * 137) % 10000).padStart(4, '0');
+        var num2 = String((3185 + i * 243) % 10000).padStart(4, '0');
+        
+        var cardBorder = isLatest ? 'border-gold/40 hover:border-gold' : 'border-white/5 hover:border-white/20';
+        var badgeBg = isLatest ? 'bg-gold/10 border-gold/30 text-gold' : 'bg-white/5 border-white/10 text-gray-400';
+        var num1Color = isLatest ? 'text-gold drop-shadow-[0_0_8px_rgba(255,212,0,0.4)]' : 'text-gold';
+        var num2Color = isLatest ? 'text-cyanLight drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]' : 'text-cyanLight';
+
+        html += '<div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border ' + cardBorder + ' flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group transition-all">' +
+          '<div class="flex items-center gap-3">' +
+            '<div class="w-9 h-9 rounded-xl ' + badgeBg + ' border flex items-center justify-center font-bold text-xs">#' + (48 - i) + '</div>' +
+            '<div class="flex flex-col">' +
+              '<span class="text-sm font-bold text-white tracking-wider">Draw #' + drawNum + '</span>' +
+              '<span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> ' + timeStr + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="flex items-center gap-2 sm:gap-4">' +
+            '<div class="flex flex-col items-end">' +
+              '<span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>' +
+              '<span class="font-mono text-base sm:text-lg font-black ' + num1Color + ' tracking-widest">' + num1 + '</span>' +
+            '</div>' +
+            '<div class="w-px h-7 bg-white/10"></div>' +
+            '<div class="flex flex-col items-end">' +
+              '<span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>' +
+              '<span class="font-mono text-base sm:text-lg font-black ' + num2Color + ' tracking-widest">' + num2 + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+      
+      container.innerHTML = html;
+    })();
 
     // Native Physical Rubberband Pull To Refresh (Guaranteed Mobile Touch Drag)
     (function initPullToRefresh() {
