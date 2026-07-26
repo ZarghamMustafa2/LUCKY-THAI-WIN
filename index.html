@@ -734,7 +734,7 @@
   </aside>
 
   <!-- MAIN WRAPPER -->
-  <div class="flex-1 flex flex-col h-full relative overflow-hidden z-10">
+  <div id="appMainWrapper" class="flex-1 flex flex-col h-full relative overflow-hidden z-10">
     
     <!-- TOP HEADER -->
     <header class="h-[70px] md:h-[90px] bg-bgDark/60 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 lg:px-10 z-30 flex-shrink-0 sticky top-0">
@@ -2793,19 +2793,20 @@
       }
     } catch(e) {}
 
-    // Universal Pull To Refresh (Supports Mobile Touch, Stylus, Mouse Drag & Trackpad)
+    // Native Physical Rubberband Pull To Refresh (Whole Page Drags Down On Pull)
     (function initPullToRefresh() {
       var startY = 0;
       var currentY = 0;
       var isPulling = false;
       var isRefreshing = false;
-      var threshold = 40; // Easy 40px pull distance threshold
+      var threshold = 40; // 40px pull distance threshold
       var indicator = document.getElementById('pullToRefreshIndicator');
       var spinnerIcon = document.getElementById('pullSpinnerIcon');
       var pullText = document.getElementById('pullText');
+      var appWrapper = document.getElementById('appMainWrapper') || document.querySelector('main') || document.body;
       var mainEl = document.querySelector('main') || document.body;
 
-      if (!indicator) return;
+      if (!indicator || !appWrapper) return;
 
       function getScrollTop() {
         var mainTop = (mainEl && typeof mainEl.scrollTop !== 'undefined') ? mainEl.scrollTop : 0;
@@ -2815,7 +2816,7 @@
 
       function handleStart(clientY) {
         if (isRefreshing) return;
-        if (getScrollTop() <= 25) {
+        if (getScrollTop() <= 30) {
           startY = clientY;
           currentY = clientY;
           isPulling = true;
@@ -2829,12 +2830,17 @@
         currentY = clientY;
         var diff = currentY - startY;
 
-        if (diff > 5 && getScrollTop() <= 25) {
+        if (diff > 5 && getScrollTop() <= 30) {
           if (e && e.cancelable) e.preventDefault();
 
-          var distance = Math.min(diff * 0.6, 90);
+          var pullDistance = Math.min(diff * 0.45, 95);
+          
+          // Physically Translate the Whole Web Page Wrapper Downwards!
+          appWrapper.style.transition = 'none';
+          appWrapper.style.transform = 'translateY(' + pullDistance + 'px)';
+
           indicator.style.opacity = '1';
-          indicator.style.transform = 'translate(-50%, ' + distance + 'px)';
+          indicator.style.transform = 'translate(-50%, ' + (pullDistance - 15) + 'px)';
 
           var rot = Math.min(diff * 5, 360);
           if (spinnerIcon) spinnerIcon.style.transform = 'rotate(' + rot + 'deg)';
@@ -2856,9 +2862,12 @@
         var diff = currentY - startY;
         isPulling = false;
 
-        if (diff >= threshold && getScrollTop() <= 25) {
+        if (diff >= threshold && getScrollTop() <= 30) {
           triggerRefresh();
         } else {
+          // Smooth Springy Bounce Back Animation
+          appWrapper.style.transition = 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+          appWrapper.style.transform = 'translateY(0px)';
           indicator.style.opacity = '0';
           indicator.style.transform = 'translate(-50%, -96px)';
         }
@@ -2874,11 +2883,16 @@
           spinnerIcon.style.transform = 'none';
           spinnerIcon.classList.add('animate-spin');
         }
+        
+        // Hold physical offset while refreshing
+        appWrapper.style.transition = 'transform 0.25s ease-out';
+        appWrapper.style.transform = 'translateY(65px)';
         indicator.style.opacity = '1';
-        indicator.style.transform = 'translate(-50%, 65px)';
+        indicator.style.transform = 'translate(-50%, 50px)';
+
         setTimeout(function() {
           window.location.reload();
-        }, 300);
+        }, 350);
       }
 
       // Allow clicking indicator to refresh as fallback
@@ -2895,9 +2909,9 @@
 
       window.addEventListener('touchend', handleEnd, { passive: true });
 
-      // Mouse Drag Events for Desktop / Laptop testing
+      // Mouse Drag Events for Desktop / Laptop / Touchpad
       window.addEventListener('mousedown', function(e) {
-        if (e.button === 0 && getScrollTop() <= 25) handleStart(e.clientY);
+        if (e.button === 0 && getScrollTop() <= 30) handleStart(e.clientY);
       }, { passive: true });
 
       window.addEventListener('mousemove', function(e) {
