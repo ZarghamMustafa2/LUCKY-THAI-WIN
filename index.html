@@ -247,6 +247,70 @@
       }
     };
 
+    window.updatePotentialProfitUI = function() {
+      var selected = window.sheetState.selectedRounds || [1];
+      var has1st = selected.indexOf(1) > -1;
+      var has2nd = selected.indexOf(2) > -1;
+      var type = window.sheetState.type || 'figure';
+      var amount = window.sheetState.amount || 10;
+
+      var rates = {
+        figure: { first: 8, second: 2.7 },
+        akada:  { first: 80, second: 27 },
+        ring:   { first: 800, second: 270 },
+        packet: { first: 6000, second: 1600 }
+      };
+
+      var typeRates = rates[type] || rates.figure;
+      var totalMult = 0;
+      var detailRounds = [];
+
+      if (has1st && has2nd) {
+        totalMult = typeRates.first + typeRates.second;
+        detailRounds.push('Both Draws');
+      } else if (has2nd) {
+        totalMult = typeRates.second;
+        detailRounds.push('2nd Draw');
+      } else {
+        totalMult = typeRates.first;
+        detailRounds.push('1st Draw');
+      }
+
+      var totalPayout = Math.round(amount * totalMult);
+      var netProfit = Math.max(0, totalPayout - amount);
+
+      var typeNameUpper = type.toUpperCase();
+      var detailsStr = detailRounds.join(', ') + ' • ' + typeNameUpper + ' (' + totalMult + 'x Multiplier)';
+
+      var bannerDetails = document.getElementById('bannerSelectedDetailsText');
+      if (bannerDetails) bannerDetails.innerText = detailsStr;
+
+      var bannerPayout = document.getElementById('bannerPotentialPayoutText');
+      if (bannerPayout) bannerPayout.innerText = 'Rs ' + totalPayout.toLocaleString();
+
+      var bannerNet = document.getElementById('bannerNetProfitText');
+      if (bannerNet) bannerNet.innerText = '(+Rs ' + netProfit.toLocaleString() + ' Profit)';
+
+      var bannerCurrentAmt = document.getElementById('bannerCurrentAmountText');
+      if (bannerCurrentAmt) bannerCurrentAmt.innerText = 'Rs ' + amount.toLocaleString();
+    };
+
+    window.setMainBetAmount = function(amt) {
+      window.sheetState.amount = amt;
+      var btns = document.querySelectorAll('.banner-amount-btn');
+      btns.forEach(function(b) {
+        var a = parseInt(b.getAttribute('data-amount') || '0');
+        if (a === amt) {
+          b.classList.remove('bg-white/5', 'border-white/10', 'text-gray-300');
+          b.classList.add('bg-gold/20', 'border-gold', 'text-gold');
+        } else {
+          b.classList.remove('bg-gold/20', 'border-gold', 'text-gold');
+          b.classList.add('bg-white/5', 'border-white/10', 'text-gray-300');
+        }
+      });
+      window.updatePotentialProfitUI();
+    };
+
     window.updateSpinMultipliersUI = function() {
       var selected = window.sheetState.selectedRounds || [1];
       var has1st = selected.indexOf(1) > -1;
@@ -279,6 +343,8 @@
         setBadgeHTML(ringBadges,   '<span class="text-gold font-bold text-[10px] sm:text-sm">1x800</span>');
         setBadgeHTML(packetBadges, '<span class="text-gold font-bold text-[10px] sm:text-sm">1x6000</span>');
       }
+
+      window.updatePotentialProfitUI();
     };
 
     window.toggleBetRound = function(btn, roundNum) {
@@ -955,6 +1021,42 @@
                        <div id="bannerMultBadgePacket" class="font-mono bg-black/40 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-white/10 flex items-center justify-end"><span class="text-gold font-bold text-[10px] sm:text-sm">1x6000</span></div>
                      </div>
                    </button>
+                </div>
+              </div>
+
+              <!-- Select Bet Amount (Quick Chips) -->
+              <div>
+                <div class="flex justify-between items-center mb-1.5 sm:mb-2">
+                  <h3 class="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest">Select Bet Amount</h3>
+                  <span id="bannerCurrentAmountText" class="text-[10px] sm:text-xs font-mono font-bold text-gold">Rs 10</span>
+                </div>
+                <div class="grid grid-cols-6 gap-1 sm:gap-2">
+                  <button type="button" onclick="setMainBetAmount(10)" class="banner-amount-btn py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-gold/20 border border-gold text-gold font-mono font-bold text-[10px] sm:text-xs hover:border-gold active:scale-95 transition-all cursor-pointer" data-amount="10">Rs 10</button>
+                  <button type="button" onclick="setMainBetAmount(20)" class="banner-amount-btn py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer" data-amount="20">Rs 20</button>
+                  <button type="button" onclick="setMainBetAmount(50)" class="banner-amount-btn py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer" data-amount="50">Rs 50</button>
+                  <button type="button" onclick="setMainBetAmount(100)" class="banner-amount-btn py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer" data-amount="100">Rs 100</button>
+                  <button type="button" onclick="setMainBetAmount(500)" class="banner-amount-btn py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer" data-amount="500">Rs 500</button>
+                  <button type="button" onclick="setMainBetAmount(1000)" class="banner-amount-btn py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-[10px] sm:text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer" data-amount="1000">Rs 1000</button>
+                </div>
+              </div>
+
+              <!-- Dynamic Potential Win Profit Card -->
+              <div id="bannerProfitCard" class="bg-cardDark/90 rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 border-gold/40 shadow-[0_0_25px_rgba(255,212,0,0.15)] flex items-center justify-between gap-3 transition-all">
+                <div class="flex items-center gap-2.5 sm:gap-3">
+                  <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gold/10 border border-gold/40 flex items-center justify-center text-gold text-base sm:text-2xl shadow-inner">
+                    <i class="fa-solid fa-trophy animate-pulse"></i>
+                  </div>
+                  <div class="flex flex-col text-left">
+                    <span class="text-[9px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Potential Win Payout</span>
+                    <span id="bannerSelectedDetailsText" class="text-[10px] sm:text-xs text-gold font-bold leading-none">1st Draw • FIGURE (8x Multiplier)</span>
+                  </div>
+                </div>
+                <div class="flex flex-col items-end text-right">
+                  <span class="text-[9px] sm:text-xs text-gray-400 font-bold uppercase tracking-widest leading-none mb-1">Total Return / Profit</span>
+                  <div class="flex items-baseline gap-1">
+                    <span id="bannerPotentialPayoutText" class="font-mono text-base sm:text-2xl font-black text-primary drop-shadow-[0_0_12px_rgba(0,255,136,0.6)]">Rs 80</span>
+                    <span id="bannerNetProfitText" class="text-[9px] sm:text-xs font-mono font-bold text-primary/80">(+Rs 70 Profit)</span>
+                  </div>
                 </div>
               </div>
 
