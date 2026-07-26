@@ -2793,13 +2793,13 @@
       }
     } catch(e) {}
 
-    // Touch Pull To Refresh Feature (Guaranteed Visible Drag & Refresh)
+    // Universal Pull To Refresh (Supports Mobile Touch, Stylus, Mouse Drag & Trackpad)
     (function initPullToRefresh() {
       var startY = 0;
       var currentY = 0;
       var isPulling = false;
       var isRefreshing = false;
-      var threshold = 50;
+      var threshold = 40; // Easy 40px pull distance threshold
       var indicator = document.getElementById('pullToRefreshIndicator');
       var spinnerIcon = document.getElementById('pullSpinnerIcon');
       var pullText = document.getElementById('pullText');
@@ -2808,37 +2808,35 @@
       if (!indicator) return;
 
       function getScrollTop() {
-        if (mainEl && typeof mainEl.scrollTop !== 'undefined' && mainEl.scrollTop > 0) {
-          return mainEl.scrollTop;
-        }
-        return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        var mainTop = (mainEl && typeof mainEl.scrollTop !== 'undefined') ? mainEl.scrollTop : 0;
+        var winTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        return Math.min(mainTop, winTop);
       }
 
-      function onTouchStart(e) {
+      function handleStart(clientY) {
         if (isRefreshing) return;
-        var touch = e.touches ? e.touches[0] : e;
-        if (getScrollTop() <= 5) {
-          startY = touch.clientY;
+        if (getScrollTop() <= 25) {
+          startY = clientY;
+          currentY = clientY;
           isPulling = true;
         } else {
           isPulling = false;
         }
       }
 
-      function onTouchMove(e) {
+      function handleMove(clientY, e) {
         if (!isPulling || isRefreshing) return;
-        var touch = e.touches ? e.touches[0] : e;
-        currentY = touch.clientY;
+        currentY = clientY;
         var diff = currentY - startY;
 
-        if (diff > 10 && getScrollTop() <= 5) {
-          if (e.cancelable) e.preventDefault();
+        if (diff > 5 && getScrollTop() <= 25) {
+          if (e && e.cancelable) e.preventDefault();
 
-          var distance = Math.min(diff * 0.55, 85);
+          var distance = Math.min(diff * 0.6, 90);
           indicator.style.opacity = '1';
           indicator.style.transform = 'translate(-50%, ' + distance + 'px)';
 
-          var rot = Math.min(diff * 4, 360);
+          var rot = Math.min(diff * 5, 360);
           if (spinnerIcon) spinnerIcon.style.transform = 'rotate(' + rot + 'deg)';
 
           if (diff >= threshold) {
@@ -2853,23 +2851,13 @@
         }
       }
 
-      function onTouchEnd() {
+      function handleEnd() {
         if (!isPulling || isRefreshing) return;
         var diff = currentY - startY;
         isPulling = false;
 
-        if (diff >= threshold && getScrollTop() <= 5) {
-          isRefreshing = true;
-          if (pullText) pullText.innerText = 'REFRESHING...';
-          if (spinnerIcon) {
-            spinnerIcon.style.transform = 'none';
-            spinnerIcon.classList.add('animate-spin');
-          }
-          indicator.style.opacity = '1';
-          indicator.style.transform = 'translate(-50%, 60px)';
-          setTimeout(function() {
-            window.location.reload();
-          }, 350);
+        if (diff >= threshold && getScrollTop() <= 25) {
+          triggerRefresh();
         } else {
           indicator.style.opacity = '0';
           indicator.style.transform = 'translate(-50%, -96px)';
@@ -2878,19 +2866,47 @@
         currentY = 0;
       }
 
-      window.addEventListener('touchstart', onTouchStart, { passive: true });
-      window.addEventListener('touchmove', onTouchMove, { passive: false });
-      window.addEventListener('touchend', onTouchEnd, { passive: true });
-
-      document.addEventListener('touchstart', onTouchStart, { passive: true });
-      document.addEventListener('touchmove', onTouchMove, { passive: false });
-      document.addEventListener('touchend', onTouchEnd, { passive: true });
-
-      if (mainEl) {
-        mainEl.addEventListener('touchstart', onTouchStart, { passive: true });
-        mainEl.addEventListener('touchmove', onTouchMove, { passive: false });
-        mainEl.addEventListener('touchend', onTouchEnd, { passive: true });
+      function triggerRefresh() {
+        if (isRefreshing) return;
+        isRefreshing = true;
+        if (pullText) pullText.innerText = 'REFRESHING...';
+        if (spinnerIcon) {
+          spinnerIcon.style.transform = 'none';
+          spinnerIcon.classList.add('animate-spin');
+        }
+        indicator.style.opacity = '1';
+        indicator.style.transform = 'translate(-50%, 65px)';
+        setTimeout(function() {
+          window.location.reload();
+        }, 300);
       }
+
+      // Allow clicking indicator to refresh as fallback
+      indicator.addEventListener('click', triggerRefresh);
+
+      // Touch Events
+      window.addEventListener('touchstart', function(e) {
+        if (e.touches && e.touches.length === 1) handleStart(e.touches[0].clientY);
+      }, { passive: true });
+
+      window.addEventListener('touchmove', function(e) {
+        if (e.touches && e.touches.length === 1) handleMove(e.touches[0].clientY, e);
+      }, { passive: false });
+
+      window.addEventListener('touchend', handleEnd, { passive: true });
+
+      // Mouse Drag Events for Desktop / Laptop testing
+      window.addEventListener('mousedown', function(e) {
+        if (e.button === 0 && getScrollTop() <= 25) handleStart(e.clientY);
+      }, { passive: true });
+
+      window.addEventListener('mousemove', function(e) {
+        if (isPulling) handleMove(e.clientY, e);
+      }, { passive: false });
+
+      window.addEventListener('mouseup', function(e) {
+        if (isPulling) handleEnd();
+      }, { passive: true });
     })();
 
   </script>
