@@ -630,10 +630,10 @@
 </head>
 <body class="flex h-screen overflow-hidden bg-bgDark bg-particles relative text-gray-300">
 
-  <!-- Pull to Refresh Floating Overlay Indicator -->
-  <div id="pullToRefreshIndicator" class="fixed top-0 left-1/2 -translate-x-1/2 -translate-y-full z-[99999] transition-transform duration-75 pointer-events-none flex items-center gap-2.5 bg-cardDark/95 border-2 border-gold px-5 py-2.5 rounded-full shadow-[0_10px_35px_rgba(255,212,0,0.5)]">
-    <i id="pullSpinnerIcon" class="fa-solid fa-arrows-rotate text-gold text-base sm:text-lg transition-transform duration-75"></i>
-    <span id="pullText" class="text-xs font-bold text-white tracking-wide uppercase">Pull down to refresh</span>
+  <!-- Floating Pull to Refresh Bar -->
+  <div id="pullToRefreshIndicator" class="fixed top-2 left-1/2 -translate-x-1/2 -translate-y-24 z-[999999] opacity-0 transition-opacity duration-150 pointer-events-none flex items-center gap-3 bg-cardDark/95 border-2 border-gold px-5 py-2.5 rounded-full shadow-[0_10px_40px_rgba(255,212,0,0.5)]">
+    <i id="pullSpinnerIcon" class="fa-solid fa-arrows-rotate text-gold text-base sm:text-lg"></i>
+    <span id="pullText" class="text-xs font-bold text-white tracking-widest uppercase">Pull down to refresh</span>
   </div>
 
   <!-- Ambient Background Glows -->
@@ -2797,13 +2797,13 @@
       }
     } catch(e) {}
 
-    // Touch Pull To Refresh Feature (Bulletproof Touch & Overscroll Handler)
+    // Touch Pull To Refresh Feature (Guaranteed Visible Drag & Refresh)
     (function initPullToRefresh() {
       var startY = 0;
       var currentY = 0;
       var isPulling = false;
       var isRefreshing = false;
-      var threshold = 65;
+      var threshold = 50;
       var indicator = document.getElementById('pullToRefreshIndicator');
       var spinnerIcon = document.getElementById('pullSpinnerIcon');
       var pullText = document.getElementById('pullText');
@@ -2818,7 +2818,7 @@
         return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
       }
 
-      function handleStart(e) {
+      function onTouchStart(e) {
         if (isRefreshing) return;
         var touch = e.touches ? e.touches[0] : e;
         if (getScrollTop() <= 5) {
@@ -2829,42 +2829,35 @@
         }
       }
 
-      function handleMove(e) {
+      function onTouchMove(e) {
         if (!isPulling || isRefreshing) return;
         var touch = e.touches ? e.touches[0] : e;
         currentY = touch.clientY;
         var diff = currentY - startY;
 
-        if (diff > 0 && getScrollTop() <= 5) {
-          if (e.cancelable && diff > 8) {
-            e.preventDefault();
-          }
-          var distance = Math.min(diff * 0.5, 100);
-          if (indicator) {
-            indicator.style.transform = 'translate(-50%, ' + distance + 'px)';
-          }
-          if (spinnerIcon) {
-            var rot = Math.min(diff * 4, 360);
-            spinnerIcon.style.transform = 'rotate(' + rot + 'deg)';
-          }
+        if (diff > 10 && getScrollTop() <= 5) {
+          if (e.cancelable) e.preventDefault();
+
+          var distance = Math.min(diff * 0.55, 85);
+          indicator.style.opacity = '1';
+          indicator.style.transform = 'translate(-50%, ' + distance + 'px)';
+
+          var rot = Math.min(diff * 4, 360);
+          if (spinnerIcon) spinnerIcon.style.transform = 'rotate(' + rot + 'deg)';
 
           if (diff >= threshold) {
             if (pullText) pullText.innerText = 'RELEASE TO REFRESH';
-            if (indicator) {
-              indicator.classList.remove('border-gold');
-              indicator.classList.add('border-primary');
-            }
+            indicator.classList.remove('border-gold');
+            indicator.classList.add('border-primary');
           } else {
             if (pullText) pullText.innerText = 'PULL DOWN TO REFRESH';
-            if (indicator) {
-              indicator.classList.remove('border-primary');
-              indicator.classList.add('border-gold');
-            }
+            indicator.classList.remove('border-primary');
+            indicator.classList.add('border-gold');
           }
         }
       }
 
-      function handleEnd() {
+      function onTouchEnd() {
         if (!isPulling || isRefreshing) return;
         var diff = currentY - startY;
         isPulling = false;
@@ -2872,26 +2865,35 @@
         if (diff >= threshold && getScrollTop() <= 5) {
           isRefreshing = true;
           if (pullText) pullText.innerText = 'REFRESHING...';
-          if (spinnerIcon) spinnerIcon.classList.add('animate-spin');
-          if (indicator) indicator.style.transform = 'translate(-50%, 60px)';
+          if (spinnerIcon) {
+            spinnerIcon.style.transform = 'none';
+            spinnerIcon.classList.add('animate-spin');
+          }
+          indicator.style.opacity = '1';
+          indicator.style.transform = 'translate(-50%, 60px)';
           setTimeout(function() {
             window.location.reload();
           }, 350);
         } else {
-          if (indicator) indicator.style.transform = 'translate(-50%, -100px)';
+          indicator.style.opacity = '0';
+          indicator.style.transform = 'translate(-50%, -96px)';
         }
         startY = 0;
         currentY = 0;
       }
 
-      window.addEventListener('touchstart', handleStart, { passive: true });
-      window.addEventListener('touchmove', handleMove, { passive: false });
-      window.addEventListener('touchend', handleEnd, { passive: true });
+      window.addEventListener('touchstart', onTouchStart, { passive: true });
+      window.addEventListener('touchmove', onTouchMove, { passive: false });
+      window.addEventListener('touchend', onTouchEnd, { passive: true });
+
+      document.addEventListener('touchstart', onTouchStart, { passive: true });
+      document.addEventListener('touchmove', onTouchMove, { passive: false });
+      document.addEventListener('touchend', onTouchEnd, { passive: true });
 
       if (mainEl) {
-        mainEl.addEventListener('touchstart', handleStart, { passive: true });
-        mainEl.addEventListener('touchmove', handleMove, { passive: false });
-        mainEl.addEventListener('touchend', handleEnd, { passive: true });
+        mainEl.addEventListener('touchstart', onTouchStart, { passive: true });
+        mainEl.addEventListener('touchmove', onTouchMove, { passive: false });
+        mainEl.addEventListener('touchend', onTouchEnd, { passive: true });
       }
     })();
 
