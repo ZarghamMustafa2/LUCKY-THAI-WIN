@@ -190,6 +190,30 @@
       };
     };
 
+    window.cancelActiveBet = function() {
+      if (window.isBettingLocked) {
+        if (typeof showToast === 'function') showToast('Cannot cancel bet within 3 minutes of draw!', 'error');
+        return;
+      }
+
+      if (window.currentBet && window.currentBet.amount > 0) {
+        var refundAmount = window.currentBet.amount;
+        if (typeof currentBalance !== 'undefined') {
+          currentBalance += refundAmount;
+          if (typeof updateWalletUI === 'function') updateWalletUI();
+        }
+        window.currentBet = null;
+        if (window.clearQuickDigit) window.clearQuickDigit();
+        if (typeof playSound === 'function') playSound('pop');
+        if (typeof showToast === 'function') showToast('Bet Cancelled! Rs ' + refundAmount + ' refunded to your wallet.', 'info');
+      } else if (window.sheetState.number || window.sheetState.amount) {
+        if (window.clearQuickDigit) window.clearQuickDigit();
+        if (typeof showToast === 'function') showToast('Selection Cleared', 'info');
+      } else {
+        if (typeof showToast === 'function') showToast('No active bet to cancel', 'warning');
+      }
+    };
+
     window.updateBetNumberFromInput = function(val) {
       var sheetNumberInput = document.getElementById('sheetNumberInput');
       var maxLen = (sheetNumberInput && sheetNumberInput.maxLength > 0) ? sheetNumberInput.maxLength : 1;
@@ -1065,10 +1089,16 @@
                 </div>
               </div>
 
-              <!-- Primary Action Button -->
-              <button type="button" onclick="placeInlineBet()" class="w-full py-2.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-bolt text-xs sm:text-base"></i> Place Bet Now
-              </button>
+              <!-- Primary Action Buttons Grid: Cancel Bet & Place Bet Now -->
+              <div class="grid grid-cols-12 gap-2 sm:gap-3">
+                <button type="button" onclick="cancelActiveBet()" class="col-span-4 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-danger/10 border-2 border-danger/40 text-danger font-black text-xs sm:text-base uppercase tracking-wider hover:bg-danger hover:text-white active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
+                  <i class="fa-solid fa-xmark text-xs sm:text-base"></i> Cancel Bet
+                </button>
+                
+                <button type="button" onclick="placeInlineBet()" class="col-span-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-bolt text-xs sm:text-base"></i> Place Bet Now
+                </button>
+              </div>
             </div>
           </div>
 
