@@ -129,7 +129,9 @@
         return;
       }
       var num = typeof btn === 'string' ? btn : ((btn && btn.getAttribute ? btn.getAttribute('data-num') : '') || (btn && btn.innerText ? btn.innerText.trim() : '')).replace(/\D/g, '').slice(0, 1);
-      if (!num) num = '1';
+      if (num) {
+        window.appendQuickDigit(num);
+      }
 
       // Highlight selected button on main grid
       var allNumBtns = document.querySelectorAll('.grid-num-btn');
@@ -142,47 +144,50 @@
           b.classList.add('bg-bgDark', 'border-white/5', 'text-white');
         }
       });
+    };
 
-      var sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
-      var sheetNumberInput = document.getElementById('sheetNumberInput');
-      var inputHelperText = document.getElementById('inputHelperText');
-      var betBottomSheet = document.getElementById('betBottomSheet');
-      var betBottomSheetBackdrop = document.getElementById('betBottomSheetBackdrop');
-      var betBottomSheetContent = document.getElementById('betBottomSheetContent');
-
-      if (sheetSelectedNumber) sheetSelectedNumber.innerText = num;
-      if (sheetNumberInput) {
-        sheetNumberInput.maxLength = 1;
-        sheetNumberInput.placeholder = '0';
-        sheetNumberInput.value = num;
+    window.placeInlineBet = function() {
+      if (window.isBettingLocked) {
+        if (typeof showToast === 'function') showToast('Betting is locked 3 minutes before spin!', 'error');
+        return;
       }
-      if (inputHelperText) inputHelperText.innerText = '1 Digit Allowed';
-      window.sheetState.number = num;
-      window.sheetState.type = 'figure';
-      window.sheetState.multiplier = 8;
 
-      var cards = document.querySelectorAll('.bet-type-card');
-      cards.forEach(function(c) {
-        if (c.getAttribute('data-type') === 'figure') {
-          c.classList.remove('border-white/10', 'bg-bgDark');
-          c.classList.add('border-gold', 'bg-gold/10');
-        } else {
-          c.classList.remove('border-gold', 'bg-gold/10');
-          c.classList.add('border-white/10', 'bg-bgDark');
-        }
-      });
-
-      if (betBottomSheet && betBottomSheetBackdrop && betBottomSheetContent) {
-        betBottomSheet.style.display = 'flex';
-        betBottomSheet.classList.remove('hidden');
-        betBottomSheet.style.zIndex = '99999';
-        setTimeout(function() {
-          betBottomSheetBackdrop.style.opacity = '1';
-          betBottomSheetBackdrop.classList.remove('opacity-0');
-          betBottomSheetContent.style.transform = 'translateY(0px)';
-          betBottomSheetContent.classList.remove('translate-y-full');
-        }, 10);
+      var num = window.sheetState.number;
+      if (!num || num.trim() === '') {
+        if (typeof showToast === 'function') showToast('Please select a number first!', 'warning');
+        return;
       }
+
+      var amount = window.sheetState.amount || 10;
+      if (typeof currentBalance !== 'undefined' && currentBalance < amount) {
+        if (typeof showToast === 'function') showToast('Insufficient Wallet Balance!', 'error');
+        return;
+      }
+
+      // Deduct Wallet Balance
+      if (typeof currentBalance !== 'undefined') {
+        currentBalance -= amount;
+        if (typeof updateWalletUI === 'function') updateWalletUI();
+      }
+
+      var selected = window.sheetState.selectedRounds || [1];
+      var roundNames = selected.map(function(r) { return r === 1 ? '1st Draw' : '2nd Draw'; }).join(' & ');
+      var typeName = (window.sheetState.type || 'figure').toUpperCase();
+
+      if (typeof playSound === 'function') playSound('pop');
+      if (typeof showToast === 'function') {
+        showToast('Bet Placed Successfully! Rs ' + amount + ' on Number ' + num + ' (' + roundNames + ', ' + typeName + ')', 'success');
+      }
+
+      // Save Current Bet for Draw Result Evaluation
+      window.currentBet = {
+        number: num,
+        target: num,
+        round: roundNames,
+        type: window.sheetState.type,
+        amount: amount,
+        multiplier: window.sheetState.multiplier
+      };
     };
 
     window.updateBetNumberFromInput = function(val) {
@@ -1061,7 +1066,7 @@
               </div>
 
               <!-- Primary Action Button -->
-              <button type="button" onclick="openNumberBetSheet('1')" class="w-full py-2.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5">
+              <button type="button" onclick="placeInlineBet()" class="w-full py-2.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5">
                 <i class="fa-solid fa-bolt text-xs sm:text-base"></i> Place Bet Now
               </button>
             </div>
