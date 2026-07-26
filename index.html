@@ -1302,67 +1302,230 @@
           </div>
         </div>
 
-        <!-- Upcoming Draws -->
-        <div class="glass-panel p-6 lg:p-8 rounded-[32px] border-t-2 border-t-gold shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
-          <h3 class="text-lg font-display font-black text-white mb-6"><i class="fa-solid fa-calendar-alt text-gold mr-2"></i> Upcoming Draws</h3>
-          <div class="space-y-4">
-            <div class="bg-bgDark p-4 rounded-2xl border border-white/5 flex justify-between items-center group hover:border-gold/30 transition-colors">
-              <div>
-                <div class="text-sm font-bold text-white tracking-widest">Draw #4829</div>
-                <div class="text-[10px] text-primary uppercase tracking-widest mt-1 font-bold animate-pulse">Starting soon</div>
-              </div>
-              <div id="upcomingTimer1" class="text-gold font-mono font-black text-xl drop-shadow-[0_0_8px_rgba(255,212,0,0.4)]">30m 00s</div>
-            </div>
-            <div class="bg-bgDark p-4 rounded-2xl border border-white/5 flex justify-between items-center opacity-60 group hover:opacity-100 transition-all">
-              <div>
-                <div class="text-sm font-bold text-white tracking-widest">Draw #4830</div>
-                <div class="text-[10px] text-gray-500 uppercase tracking-widest mt-1 font-bold">Next Phase</div>
-              </div>
-              <div id="upcomingTimer2" class="text-gray-400 font-mono font-black text-xl">60m 00s</div>
-            </div>
+        <!-- Last 10 Winning Draws Card (Replaces Upcoming Draws & How To Play) -->
+        <div class="glass-panel p-6 lg:p-8 rounded-[32px] border-t-2 border-t-gold shadow-[0_20px_40px_rgba(0,0,0,0.4)] md:col-span-2">
+          <div class="flex items-center justify-between mb-6 pb-3 border-b border-white/5">
+            <h3 class="text-lg font-display font-black text-white flex items-center gap-2">
+              <i class="fa-solid fa-trophy text-gold"></i>
+              <span>Last 10 Winning Draws</span>
+            </h3>
+            <span class="text-[10px] sm:text-xs font-mono font-bold text-gold bg-gold/10 px-3 py-1 rounded-full border border-gold/30">
+              <i class="fa-solid fa-clock mr-1"></i> Live 30-Min Results
+            </span>
           </div>
-        </div>
 
-        <!-- Game Rules -->
-        <div class="glass-panel p-6 lg:p-8 rounded-[32px] border-t-2 border-t-cyanLight shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
-          <h3 class="text-lg font-display font-black text-white mb-6"><i class="fa-solid fa-book text-cyanLight mr-2"></i> How To Play</h3>
-          <div class="space-y-3">
-            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
-              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
-                Figure (1x8)
-                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
-              </summary>
-              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
-                Select a single digit. If your number appears anywhere in the winning sequence, you win 8x your bet amount.
+          <div class="space-y-3 max-h-[460px] overflow-y-auto custom-scrollbar pr-1" id="last10WinningDrawsList">
+            <!-- 10 Past Winning Rows -->
+            <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-gold/30 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-gold transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gold/10 border border-gold/30 flex items-center justify-center text-gold font-bold text-xs">#10</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white tracking-wider">Draw #4828</span>
+                  <span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 11:30 AM</span>
+                </div>
               </div>
-            </details>
-            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
-              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
-                Akada (1x80)
-                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
-              </summary>
-              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
-                Select two digits. If both numbers appear in the winning sequence, you win 80x your bet amount.
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-gold drop-shadow-[0_0_8px_rgba(255,212,0,0.4)] tracking-widest">7492</span>
+                </div>
+                <div class="w-px h-7 bg-white/10"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-cyanLight drop-shadow-[0_0_8px_rgba(0,229,255,0.4)] tracking-widest">3185</span>
+                </div>
               </div>
-            </details>
-            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
-              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
-                Ring (1x800)
-                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
-              </summary>
-              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
-                Select three digits. If all three numbers appear in the winning sequence, you win 800x your bet amount.
+            </div>
+
+            <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-white/5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-white/20 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-bold text-xs">#9</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white tracking-wider">Draw #4827</span>
+                  <span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 11:00 AM</span>
+                </div>
               </div>
-            </details>
-            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
-              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
-                Packet (1x6000)
-                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
-              </summary>
-              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
-                Select the complete combination. If your combination perfectly matches the winning sequence, you win 6000x your bet amount.
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-gold tracking-widest">5019</span>
+                </div>
+                <div class="w-px h-7 bg-white/10"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-cyanLight tracking-widest">8642</span>
+                </div>
               </div>
-            </details>
+            </div>
+
+            <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-white/5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-white/20 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-bold text-xs">#8</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white tracking-wider">Draw #4826</span>
+                  <span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 10:30 AM</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-gold tracking-widest">9241</span>
+                </div>
+                <div class="w-px h-7 bg-white/10"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-cyanLight tracking-widest">1730</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-white/5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-white/20 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-bold text-xs">#7</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white tracking-wider">Draw #4825</span>
+                  <span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 10:00 AM</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-gold tracking-widest">3684</span>
+                </div>
+                <div class="w-px h-7 bg-white/10"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-cyanLight tracking-widest">6925</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-white/5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-white/20 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-bold text-xs">#6</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white tracking-wider">Draw #4824</span>
+                  <span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 09:30 AM</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-gold tracking-widest">1407</span>
+                </div>
+                <div class="w-px h-7 bg-white/10"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-cyanLight tracking-widest">4518</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-white/5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-white/20 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-bold text-xs">#5</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white tracking-wider">Draw #4823</span>
+                  <span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 09:00 AM</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-gold tracking-widest">8932</span>
+                </div>
+                <div class="w-px h-7 bg-white/10"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-cyanLight tracking-widest">2076</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-white/5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-white/20 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-bold text-xs">#4</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white tracking-wider">Draw #4822</span>
+                  <span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 08:30 AM</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-gold tracking-widest">6154</span>
+                </div>
+                <div class="w-px h-7 bg-white/10"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-cyanLight tracking-widest">9381</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-white/5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-white/20 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-bold text-xs">#3</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white tracking-wider">Draw #4821</span>
+                  <span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 08:00 AM</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-gold tracking-widest">2749</span>
+                </div>
+                <div class="w-px h-7 bg-white/10"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-cyanLight tracking-widest">5810</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-white/5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-white/20 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-bold text-xs">#2</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white tracking-wider">Draw #4820</span>
+                  <span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 07:30 AM</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-gold tracking-widest">4306</span>
+                </div>
+                <div class="w-px h-7 bg-white/10"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-cyanLight tracking-widest">7193</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-bgDark p-3.5 sm:p-4 rounded-2xl border border-white/5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 group hover:border-white/20 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-bold text-xs">#1</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white tracking-wider">Draw #4819</span>
+                  <span class="text-[10px] font-mono font-bold text-gray-400"><i class="fa-regular fa-clock mr-1"></i> 07:00 AM</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 sm:gap-4">
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-gold tracking-widest">9821</span>
+                </div>
+                <div class="w-px h-7 bg-white/10"></div>
+                <div class="flex flex-col items-end">
+                  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">2nd Draw</span>
+                  <span class="font-mono text-base sm:text-lg font-black text-cyanLight tracking-widest">0457</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
