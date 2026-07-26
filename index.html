@@ -776,6 +776,10 @@
               if (remainingSecs > 10 && remainingSecs < 1780 && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
                 window.hasTriggeredSpinThisCycle = false;
                 window.hasExpandedForThisPreDraw = false;
+                // Auto collapse wheel stage if still open after draw completion
+                if (!window.isWheelHidden && typeof window.collapseWheelStage === 'function') {
+                  window.collapseWheelStage();
+                }
               }
 
               // 3-Minute Pre-Draw Lock & Auto Expand Logic (<= 180 seconds)
@@ -1968,25 +1972,36 @@
             document.getElementById(`modalDigit${i}`).style.color = '#00D4FF';
         }
       }
+      // Auto-dismiss modal after 4.5 seconds so user automatically returns to Place Your Bet board
+      if (window.modalAutoCloseTimer) clearTimeout(window.modalAutoCloseTimer);
+      window.modalAutoCloseTimer = setTimeout(() => {
+        hideModal();
+      }, 4500);
     }
 
     function hideModal() {
+      if (window.modalAutoCloseTimer) clearTimeout(window.modalAutoCloseTimer);
       const resultModal = document.getElementById('resultModal');
       const hudContainer = document.getElementById('resultModalContent');
       const extraContainer = document.getElementById('modalExtraResults');
       if(extraContainer) extraContainer.classList.add('opacity-0');
       
-      hudContainer.classList.remove('scale-100', 'opacity-100', 'hud-active');
-      hudContainer.classList.add('scale-110', 'opacity-0');
+      if (hudContainer) {
+        hudContainer.classList.remove('scale-100', 'opacity-100', 'hud-active');
+        hudContainer.classList.add('scale-110', 'opacity-0');
+      }
       
-      resultModal.classList.add('opacity-0');
+      if (resultModal) resultModal.classList.add('opacity-0');
+
+      // Auto collapse wheel stage IMMEDIATELY when modal closes
+      window.hasExpandedForThisPreDraw = true;
+      if (window.collapseWheelStage) {
+        window.collapseWheelStage();
+      }
+
       setTimeout(() => {
-        resultModal.classList.add('hidden');
-        window.hasExpandedForThisPreDraw = true;
-        if (window.collapseWheelStage) {
-          window.collapseWheelStage();
-        }
-      }, 800);
+        if (resultModal) resultModal.classList.add('hidden');
+      }, 500);
     }
 
     document.getElementById('nextRoundBtn').addEventListener('click', hideModal);
