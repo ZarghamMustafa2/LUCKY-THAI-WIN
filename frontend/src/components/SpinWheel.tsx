@@ -14,42 +14,25 @@ export default function SpinWheel({ isDrawing, winningNumber }: SpinWheelProps) 
     
     if (isDrawing) {
       setLockedDigits([]);
-      setRotation(0);
       
       const targetNumber = winningNumber || Math.floor(1000 + Math.random() * 9000).toString();
       const targetDigits = targetNumber.split('');
-      let currentRotation = 0;
       
-      const spinDigit = (index: number) => {
-        if (index >= 4) return;
-        
-        const targetDigit = parseInt(targetDigits[index]);
-        const currentAngle = currentRotation % 360;
-        const targetAngle = 360 - (targetDigit * 36);
-        
-        let addedRotation = 3600 + (targetAngle - currentAngle); // 10 full 360-degree rotations
-        if (addedRotation < 3600) addedRotation += 360;
-        
-        currentRotation += addedRotation;
-        setRotation(currentRotation);
-        
-        timeouts.push(setTimeout(() => {
-          setLockedDigits(prev => {
-            const next = [...prev];
-            next[index] = targetDigit.toString();
-            return next;
-          });
-          
-          timeouts.push(setTimeout(() => {
-            spinDigit(index + 1);
-          }, 800));
-        }, 4500));
-      };
+      const targetDigit = parseInt(targetDigits[0]);
+      const currentAngle = ((rotation % 360) + 360) % 360;
+      const targetAngle = (360 - (targetDigit * 36)) % 360;
       
-      timeouts.push(setTimeout(() => spinDigit(0), 100));
+      let addedRotation = 7200 + (targetAngle - currentAngle); // 20 Full 360-degree rotations
+      if (addedRotation < 7200) addedRotation += 360;
+      
+      const nextRot = rotation + addedRotation;
+      setRotation(nextRot);
+      
+      timeouts.push(setTimeout(() => {
+        setLockedDigits(targetDigits);
+      }, 12000));
       
     } else if (!isDrawing) {
-      setRotation(0);
       setLockedDigits([]);
     }
     
@@ -73,9 +56,9 @@ export default function SpinWheel({ isDrawing, winningNumber }: SpinWheelProps) 
         <div 
           className="w-full h-full relative rounded-full"
           style={{
-            transition: isDrawing && rotation > 0 ? 'transform 4.5s cubic-bezier(0.1, 1, 0.1, 1)' : 'none',
+            transition: 'transform 12s cubic-bezier(0.15, 0.85, 0.2, 1.0)',
             transform: `rotate(${rotation}deg)`,
-            filter: isDrawing && rotation > 0 ? 'blur(1px)' : 'none'
+            willChange: 'transform'
           }}
         >
           {/* Background Slices (10 slices) */}
