@@ -23,15 +23,15 @@ export default function SpinWheel({ isDrawing, winningNumber }: SpinWheelProps) 
       const targetDigit = parseInt(targetDigits[0]);
       const targetAngle = (360 - (targetDigit * 36)) % 360;
       
-      // Execute rotation set state
+      // Execute 2-Minute Physical Wheel Rotation (36,000 degrees / 100 rotations over 115 seconds)
       const timer = setTimeout(() => {
-        setRotation(prev => prev + 7200 + targetAngle);
+        setRotation(prev => prev + 36000 + targetAngle);
       }, 50);
       timeouts.push(timer);
       
       timeouts.push(setTimeout(() => {
         setLockedDigits(targetDigits);
-      }, 12000));
+      }, 115000));
       
     } else if (!isDrawing) {
       hasSpunRef.current = false;
@@ -58,7 +58,7 @@ export default function SpinWheel({ isDrawing, winningNumber }: SpinWheelProps) 
         <div 
           className="w-full h-full relative rounded-full"
           style={{
-            transition: 'transform 12s cubic-bezier(0.15, 0.85, 0.2, 1.0)',
+            transition: 'transform 115s cubic-bezier(0.05, 0.95, 0.15, 1.0)',
             transform: `rotate(${rotation}deg)`,
             willChange: 'transform'
           }}

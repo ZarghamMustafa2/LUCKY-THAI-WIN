@@ -823,7 +823,7 @@
           (function() {
             function updateAllClocks() {
               const nowSec = Math.floor(Date.now() / 1000);
-              const cycleSec = nowSec % 120; // 2-Minute Cycle (120s)
+              const cycleSec = nowSec % 240; // 4-Minute Cycle (240s)
               
               if (cycleSec < 60) {
                 // PHASE 1: Place Your Bet Screen (1 Minute: 60s to 1s)
@@ -849,13 +849,15 @@
                 if (!window.isWheelHidden && typeof window.collapseWheelStage === 'function') {
                   window.collapseWheelStage();
                 }
-              } else {
-                // PHASE 2: Wheel Spin Screen (1 Minute: 60s to 1s)
+              } else if (cycleSec < 180) {
+                // PHASE 2: 2-Minute Wheel Spinning Phase (120s: 60s to 179s)
                 const spinSecs = cycleSec - 60;
-                const remainingSecs = 60 - spinSecs;
-                const sStr = remainingSecs.toString().padStart(2, '0');
-                const digitalTime = `00:${sStr}`;
-                const formattedTime = `0m ${sStr}s`;
+                const remainingSecs = 120 - spinSecs;
+                const mins = Math.floor(remainingSecs / 60);
+                const secs = remainingSecs % 60;
+                const sStr = secs.toString().padStart(2, '0');
+                const digitalTime = `0${mins}:${sStr}`;
+                const formattedTime = `${mins}m ${sStr}s`;
 
                 const headerEl = document.getElementById('headerTimerText');
                 if (headerEl) headerEl.innerText = digitalTime;
@@ -873,6 +875,17 @@
                 if (window.isWheelHidden && typeof window.expandWheelStage === 'function') {
                   window.expandWheelStage();
                 }
+              } else {
+                // PHASE 3: Result & Winner Stage (60s: 180s to 239s)
+                const spinSecs = cycleSec - 180;
+                const remainingSecs = 60 - spinSecs;
+                const sStr = remainingSecs.toString().padStart(2, '0');
+                const digitalTime = `00:${sStr}`;
+
+                const headerEl = document.getElementById('headerTimerText');
+                if (headerEl) headerEl.innerText = digitalTime;
+
+                window.currentPhase = 'winner_stage';
               }
             }
             updateAllClocks();

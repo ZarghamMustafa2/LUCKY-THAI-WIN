@@ -83,14 +83,16 @@ export default function Home() {
       if(Math.random() > 0.5) setJackpotPool(prev => prev + Math.floor(Math.random() * 5000));
     });
 
-    // 2-Minute Draw Cycle Engine (120,000 ms: 60s Betting + 60s Spinning)
+    // 4-Minute Draw Cycle Engine (240,000 ms: 60s Betting + 120s Spinning + 60s Winner Stage)
     const getNextRealClockMs = () => {
       const nowSec = Math.floor(Date.now() / 1000);
-      const cycleSec = nowSec % 120; // 0 to 119
+      const cycleSec = nowSec % 240; // 0 to 239
       if (cycleSec < 60) {
         return (60 - cycleSec) * 1000;
+      } else if (cycleSec < 180) {
+        return (180 - cycleSec) * 1000;
       } else {
-        return (120 - cycleSec) * 1000;
+        return (240 - cycleSec) * 1000;
       }
     };
 
@@ -98,10 +100,10 @@ export default function Home() {
 
     const fallbackInterval = setInterval(() => {
       const nowSec = Math.floor(Date.now() / 1000);
-      const cycleSec = nowSec % 120;
+      const cycleSec = nowSec % 240; // 4-Minute Total Cycle
       
       if (cycleSec < 60) {
-        // Betting Stage (0s to 59s)
+        // Phase 1: Place Your Bet Screen (60s: 0s to 59s)
         const ms = (60 - cycleSec) * 1000;
         setRemainingMs(ms);
         if (isDrawingRef.current) {
@@ -110,19 +112,23 @@ export default function Home() {
           setPendingWinner(null);
           setFinalWinner(null);
         }
-      } else {
-        // Spinning Stage (60s to 119s)
-        const ms = (120 - cycleSec) * 1000;
+      } else if (cycleSec < 180) {
+        // Phase 2: Active 2-Minute Wheel Spinning (120s: 60s to 179s)
+        const ms = (180 - cycleSec) * 1000;
         setRemainingMs(ms);
         if (!isDrawingRef.current) {
           setIsDrawing(true);
           isDrawingRef.current = true;
           const num = Math.floor(1000 + Math.random() * 9000).toString();
           setPendingWinner(num);
-          setTimeout(() => {
-            setFinalWinner(num);
-            setRecentResults(r => [{ round_number: 'DRAW-' + Date.now().toString().slice(-4), winning_number: num, id: Date.now() }, ...r].slice(0, 20));
-          }, 15000);
+        }
+      } else {
+        // Phase 3: Winner Payout & Spin Screen (60s: 180s to 239s)
+        const ms = (240 - cycleSec) * 1000;
+        setRemainingMs(ms);
+        if (pendingWinner && !finalWinner) {
+          setFinalWinner(pendingWinner);
+          setRecentResults(r => [{ round_number: 'DRAW-' + Date.now().toString().slice(-4), winning_number: pendingWinner, id: Date.now() }, ...r].slice(0, 20));
         }
       }
     }, 1000);
