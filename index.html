@@ -2658,12 +2658,8 @@
       wheelGlow.classList.remove('opacity-40', 'animate-pulse');
       wheelGlow.classList.add('opacity-[0.15]');
       
-      // Auto collapse wheel stage IMMEDIATELY (0ms delay) so Place Your Bet board returns instantly
       window.hasExpandedForThisPreDraw = true;
       isDrawing = false;
-      if (window.collapseWheelStage) {
-        window.collapseWheelStage();
-      }
       gridNumBtns.forEach(btn => {
          btn.disabled = false;
          btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
