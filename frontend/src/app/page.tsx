@@ -72,7 +72,9 @@ export default function Home() {
 
     newSocket.on('tick', (data: any) => {
       lastTickTime = Date.now();
-      setRemainingMs(data.remainingMs);
+      const rawMs = typeof data.remainingMs === 'number' ? data.remainingMs : 120000;
+      const clampedMs = rawMs > 120000 ? (rawMs % 120000) : rawMs;
+      setRemainingMs(clampedMs);
       if (data.roundId !== currentRoundId) {
         setCurrentRoundId(data.roundId);
       }
