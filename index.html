@@ -2388,33 +2388,17 @@
     }
     setInterval(addMockActivity, 1500);
 
-    // --- Real-Time Wall Clock Syncing (Draws at :00 and :30 of every hour) ---
-    const DRAW_INTERVAL_SEC = 30 * 60; // 30 Minutes Cycle
-
-    function getNextRealClockDrawTime() {
-      const now = new Date();
-      const minutes = now.getMinutes();
-      const nextDraw = new Date(now);
-      
-      if (minutes < 30) {
-        nextDraw.setMinutes(30, 0, 0); // Next draw is at XX:30:00
-      } else {
-        nextDraw.setHours(now.getHours() + 1, 0, 0, 0); // Next draw is at (XX+1):00:00
-      }
-      
-      return nextDraw.getTime();
-    }
-
-    let manualFastForwardTime = null;
+    // --- Real-Time 2-Minute Draw Cycle Engine ---
+    const DRAW_INTERVAL_SEC = 120; // 2 Minutes Cycle (60s Betting + 60s Spinning)
 
     function getRemainingSeconds() {
-      const now = Date.now();
-      if (manualFastForwardTime && now < manualFastForwardTime) {
-        return Math.max(0, Math.ceil((manualFastForwardTime - now) / 1000));
+      const nowSec = Math.floor(Date.now() / 1000);
+      const cycleSec = nowSec % DRAW_INTERVAL_SEC;
+      if (cycleSec < 60) {
+        return 60 - cycleSec;
+      } else {
+        return 120 - cycleSec;
       }
-      manualFastForwardTime = null;
-      const targetTime = getNextRealClockDrawTime();
-      return Math.max(0, Math.ceil((targetTime - now) / 1000));
     }
 
     const wheelText = document.getElementById('wheelText');
@@ -2487,35 +2471,46 @@
 
     function gameLoop() {
       try {
-        countdown = getRemainingSeconds();
+        const nowSec = Math.floor(Date.now() / 1000);
+        const cycleSec = nowSec % 120; // 2-Minute Cycle
         
-        const percent = (countdown / DRAW_INTERVAL_SEC) * 100;
-        setProgress(percent);
-        
-        if (gridNumBtns) {
-          gridNumBtns.forEach(btn => {
-             btn.disabled = false;
-             btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
-          });
-        }
-        
-        const mins = Math.floor(countdown / 60);
-        const secs = countdown % 60;
-        const timeStrFormatted = `${mins}m ${secs.toString().padStart(2, '0')}s`;
-        const timeStrDigital = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        
-        if (wheelText && !isDrawing) {
-          wheelText.innerText = timeStrFormatted;
-        }
-        
-        const headerTimerText = document.getElementById('headerTimerText');
-        if (headerTimerText) headerTimerText.innerText = timeStrDigital;
+        if (cycleSec < 60) {
+          // Betting Phase (60s -> 1s)
+          const remainingSecs = 60 - cycleSec;
+          const sStr = remainingSecs.toString().padStart(2, '0');
+          const timeStrFormatted = `0m ${sStr}s`;
+          const timeStrDigital = `00:${sStr}`;
 
-        const bannerCountdownText = document.getElementById('bannerCountdownText');
-        if (bannerCountdownText) bannerCountdownText.innerText = timeStrFormatted;
+          const percent = (remainingSecs / 60) * 100;
+          setProgress(percent);
 
-        if(countdown <= 0 && !isDrawing) {
-          startDraw();
+          if (wheelText && !isDrawing) wheelText.innerText = timeStrFormatted;
+          const headerTimerText = document.getElementById('headerTimerText');
+          if (headerTimerText) headerTimerText.innerText = timeStrDigital;
+          const bannerCountdownText = document.getElementById('bannerCountdownText');
+          if (bannerCountdownText) bannerCountdownText.innerText = timeStrFormatted;
+
+          window.currentPhase = 'betting';
+          window.isBettingLocked = false;
+        } else {
+          // Spinning Phase (60s -> 1s)
+          const spinSecs = cycleSec - 60;
+          const remainingSecs = 60 - spinSecs;
+          const sStr = remainingSecs.toString().padStart(2, '0');
+          const timeStrFormatted = `0m ${sStr}s`;
+          const timeStrDigital = `00:${sStr}`;
+
+          const percent = (remainingSecs / 60) * 100;
+          setProgress(percent);
+
+          if (wheelText) wheelText.innerText = timeStrFormatted;
+          const headerTimerText = document.getElementById('headerTimerText');
+          if (headerTimerText) headerTimerText.innerText = timeStrDigital;
+          const bannerCountdownText = document.getElementById('bannerCountdownText');
+          if (bannerCountdownText) bannerCountdownText.innerText = 'Wheel Spinning...';
+
+          window.currentPhase = 'spinning';
+          window.isBettingLocked = true;
         }
       } catch (e) {
         console.error("gameLoop error:", e);
