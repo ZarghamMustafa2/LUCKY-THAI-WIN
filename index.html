@@ -229,6 +229,19 @@
         window.currentBalance += refundAmount;
         window.updateWalletUI();
         window.currentBet = null;
+
+        // Reset Last Bet Display & Storage on Bet Cancel
+        window.lastBetAmount = 0;
+        try {
+          localStorage.removeItem('lastBetAmount');
+        } catch(e) {}
+
+        var headerLast = document.getElementById('headerLastBet');
+        if (headerLast) headerLast.innerText = 'Rs 0';
+
+        var headerCurrent = document.getElementById('headerCurrentBet');
+        if (headerCurrent) headerCurrent.innerText = 'Rs 0';
+
         if (window.clearQuickDigit) window.clearQuickDigit();
         if (typeof playSound === 'function') playSound('pop');
         if (typeof showToast === 'function') showToast('Bet Cancelled! Rs ' + refundAmount + ' refunded back to your wallet.', 'info');
