@@ -2644,23 +2644,22 @@
         setTimeout(() => showModal(null, window.generatedResults), 400);
       }
 
-        if (isAutoBet && autoBetConfig) {
-           if (currentBalance >= autoBetConfig.amount) {
-               currentBalance -= autoBetConfig.amount;
-               updateWalletUI();
-               currentBet = { ...autoBetConfig };
-               showToast(`Auto Bet Placed: Rs ${autoBetConfig.amount}`, 'success');
-               
-               gridNumBtns.forEach(btn => {
-                  btn.disabled = false;
-                  btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
-               });
-           } else {
-               showToast('Auto Bet Stopped: Insufficient Balance', 'error');
-               isAutoBet = false;
-           }
+      if (isAutoBet && autoBetConfig) {
+        if (currentBalance >= autoBetConfig.amount) {
+          currentBalance -= autoBetConfig.amount;
+          updateWalletUI();
+          currentBet = { ...autoBetConfig };
+          showToast(`Auto Bet Placed: Rs ${autoBetConfig.amount}`, 'success');
+          
+          gridNumBtns.forEach(btn => {
+             btn.disabled = false;
+             btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+          });
+        } else {
+          showToast('Auto Bet Stopped: Insufficient Balance', 'error');
+          isAutoBet = false;
         }
-      }, 3500);
+      }
     }
 
      gameLoop(); // Immediate initial execution
@@ -2846,9 +2845,12 @@
         circle.style.width = circle.style.height = `${diameter}px`;
         circle.style.left = `${e.clientX - rect.left - radius}px`;
         circle.style.top = `${e.clientY - rect.top - radius}px`;
-        circle.classList.add('ripple');
-        
         const existingRipple = target.querySelector('.ripple');
+        if (existingRipple) existingRipple.remove();
+        
+        target.appendChild(circle);
+    });
+
     // Initialize Wallet & Last Bet Amount UI on load
     try {
       if (typeof window.updateWalletUI === 'function') window.updateWalletUI();
