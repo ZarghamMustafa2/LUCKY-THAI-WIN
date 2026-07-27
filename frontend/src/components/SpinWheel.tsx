@@ -19,20 +19,19 @@ export default function SpinWheel({ isDrawing, winningNumber }: SpinWheelProps) 
       const targetDigits = targetNumber.split('');
       
       const targetDigit = parseInt(targetDigits[0]);
-      const currentAngle = ((rotation % 360) + 360) % 360;
       const targetAngle = (360 - (targetDigit * 36)) % 360;
       
-      let addedRotation = 7200 + (targetAngle - currentAngle); // 20 Full 360-degree rotations
-      if (addedRotation < 7200) addedRotation += 360;
-      
-      const nextRot = rotation + addedRotation;
-      setRotation(nextRot);
+      // Delay 100ms after mount so browser registers initial rotation before animating transition!
+      const timer = setTimeout(() => {
+        setRotation(prev => prev + 7200 + targetAngle);
+      }, 100);
+      timeouts.push(timer);
       
       timeouts.push(setTimeout(() => {
         setLockedDigits(targetDigits);
       }, 12000));
       
-    } else if (!isDrawing) {
+    } else {
       setLockedDigits([]);
     }
     

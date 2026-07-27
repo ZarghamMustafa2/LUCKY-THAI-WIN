@@ -398,19 +398,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="w-full flex justify-center items-center py-10 mt-12 mb-8">
-                  {isDrawing && !finalWinner ? (
-                    <SpinWheel isDrawing={isDrawing} winningNumber={pendingWinner} />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center gap-4">
-                      <div className="text-6xl sm:text-8xl md:text-9xl font-mono font-black tracking-wider text-[#FFD700] drop-shadow-[0_0_40px_rgba(255,215,0,0.8)] animate-pulse">
-                        {finalWinner ? finalWinner : `${mins}:${secs}`}
-                      </div>
-                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest bg-white/5 px-4 py-1.5 rounded-full border border-white/10">
-                        {finalWinner ? 'ROUND WINNER' : 'NEXT DRAW COUNTDOWN'}
-                      </span>
-                    </div>
-                  )}
+                <div className="w-full flex justify-center items-center py-6 mt-6 mb-4">
+                  <SpinWheel isDrawing={isDrawing} winningNumber={pendingWinner} />
                 </div>
 
                 <p className={`text-sm uppercase tracking-widest font-black mt-12 transition-colors ${finalWinner ? 'text-[#FFD700] animate-pulse drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]' : 'text-gray-600'}`}>
