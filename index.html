@@ -2513,7 +2513,6 @@
       if (!force && isDrawing && (Date.now() - lastDrawStartTime < 25000)) return;
       isDrawing = true;
       lastDrawStartTime = Date.now();
-      resetTargetDrawEndTime();
       
       // Auto expand wheel stage if hidden when spin begins
       if (window.isWheelHidden && window.expandWheelStage) {
