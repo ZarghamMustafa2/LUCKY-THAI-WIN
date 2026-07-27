@@ -875,11 +875,9 @@
                 }
 
                 // Trigger Wheel Spin once per cycle
-                if (!window.hasTriggeredSpinThisCycle) {
+                if (!window.hasTriggeredSpinThisCycle && typeof window.startDraw === 'function') {
                   window.hasTriggeredSpinThisCycle = true;
-                  if (typeof window.startDraw === 'function') {
-                    window.startDraw(true);
-                  }
+                  window.startDraw(true);
                 }
               }
             }
@@ -2495,7 +2493,7 @@
           const percent = (remainingSecs / 60) * 100;
           setProgress(percent);
 
-          if (wheelText) wheelText.innerText = timeStrFormatted;
+          if (wheelText && !isDrawing) wheelText.innerText = timeStrFormatted;
           const headerTimerText = document.getElementById('headerTimerText');
           if (headerTimerText) headerTimerText.innerText = timeStrDigital;
           const bannerCountdownText = document.getElementById('bannerCountdownText');
@@ -2503,6 +2501,15 @@
 
           window.currentPhase = 'spinning';
           window.isBettingLocked = true;
+
+          // Expand wheel stage & Trigger 3D Wheel Spin automatically if not yet triggered
+          if (window.isWheelHidden && typeof window.expandWheelStage === 'function') {
+            window.expandWheelStage();
+          }
+          if (!window.hasTriggeredSpinThisCycle && typeof window.startDraw === 'function') {
+            window.hasTriggeredSpinThisCycle = true;
+            window.startDraw(true);
+          }
         }
       } catch (e) {
         console.error("gameLoop error:", e);
