@@ -822,63 +822,33 @@
         <script>
           (function() {
             function updateAllClocks() {
-              const now = new Date();
-              const minutes = now.getMinutes();
-              const nextDraw = new Date(now);
-              if (minutes < 30) {
-                nextDraw.setMinutes(30, 0, 0);
-              } else {
-                nextDraw.setHours(now.getHours() + 1, 0, 0, 0);
-              }
-              const remainingSecs = Math.max(0, Math.ceil((nextDraw.getTime() - now.getTime()) / 1000));
-              const m = Math.floor(remainingSecs / 60);
-              const s = remainingSecs % 60;
-              const mStr = m.toString().padStart(2, '0');
-              const sStr = s.toString().padStart(2, '0');
-              const digitalTime = `${mStr}:${sStr}`;
-              const formattedTime = `${m}m ${sStr}s`;
-              const nextPhaseFormattedTime = `${m + 30}m ${sStr}s`;
+              const nowSec = Math.floor(Date.now() / 1000);
+              const cycleSec = nowSec % 120; // 2-Minute Cycle (120s)
               
-              const headerEl = document.getElementById('headerTimerText');
-              if (headerEl) headerEl.innerText = digitalTime;
+              if (cycleSec < 60) {
+                // PHASE 1: Place Your Bet Screen (1 Minute: 60s to 1s)
+                const remainingSecs = 60 - cycleSec;
+                const sStr = remainingSecs.toString().padStart(2, '0');
+                const digitalTime = `00:${sStr}`;
+                const formattedTime = `0m ${sStr}s`;
+                
+                const headerEl = document.getElementById('headerTimerText');
+                if (headerEl) headerEl.innerText = digitalTime;
 
-              const wheelEl = document.getElementById('wheelText');
-              if (wheelEl && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
-                wheelEl.innerText = digitalTime;
-              }
+                const wheelEl = document.getElementById('wheelText');
+                if (wheelEl) wheelEl.innerText = digitalTime;
 
-              const bannerEl = document.getElementById('bannerCountdownText');
-              if (bannerEl) bannerEl.innerText = formattedTime;
+                const bannerEl = document.getElementById('bannerCountdownText');
+                if (bannerEl) bannerEl.innerText = formattedTime;
 
-              const upcomingEl1 = document.getElementById('upcomingTimer1');
-              if (upcomingEl1) upcomingEl1.innerText = formattedTime;
-
-              const upcomingEl2 = document.getElementById('upcomingTimer2');
-              if (upcomingEl2) upcomingEl2.innerText = nextPhaseFormattedTime;
-
-              // Automatic 3D Spin Trigger Execution at 30-Min Boundary (remainingSecs <= 3 OR >= 1797 right after rollover)
-              const isDrawBoundary = (remainingSecs <= 3 || remainingSecs >= 1797);
-              if (isDrawBoundary && (typeof window.isDrawing === 'undefined' || !window.isDrawing) && !window.hasTriggeredSpinThisCycle) {
-                window.hasTriggeredSpinThisCycle = true;
-                if (typeof window.expandWheelStage === 'function') {
-                  window.expandWheelStage();
-                }
-                if (typeof window.startDraw === 'function') {
-                  window.startDraw();
-                } else if (typeof window.manualTriggerSpin === 'function') {
-                  window.manualTriggerSpin();
-                }
-              }
-
-              if (remainingSecs > 10 && remainingSecs < 1780 && (typeof window.isDrawing === 'undefined' || !window.isDrawing)) {
+                window.currentPhase = 'betting';
+                window.isBettingLocked = false;
                 window.hasTriggeredSpinThisCycle = false;
-                window.hasExpandedForThisPreDraw = false;
-                // Auto collapse wheel stage if still open after draw completion
+
+                // Ensure Place Your Bet Board is visible during betting phase
                 if (!window.isWheelHidden && typeof window.collapseWheelStage === 'function') {
                   window.collapseWheelStage();
                 }
-              }
-
               // 3-Minute Pre-Draw Lock & Auto Expand Logic (<= 180 seconds)
               const statusDot = document.getElementById('statusDot');
               const statusText = document.getElementById('statusText');
