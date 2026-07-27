@@ -146,6 +146,24 @@
       });
     };
 
+    // Global Wallet State Initializer
+    try {
+      var savedBal = localStorage.getItem('userWalletBalance');
+      window.currentBalance = savedBal !== null ? parseFloat(savedBal) : 10450;
+    } catch(e) {
+      window.currentBalance = 10450;
+    }
+
+    window.updateWalletUI = function() {
+      var walletEl = document.getElementById('walletBalance');
+      if (walletEl) {
+        walletEl.innerText = 'Rs ' + window.currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      }
+      try {
+        localStorage.setItem('userWalletBalance', window.currentBalance);
+      } catch(e) {}
+    };
+
     window.placeInlineBet = function() {
       if (window.isBettingLocked) {
         if (typeof showToast === 'function') showToast('Betting is locked 3 minutes before spin!', 'error');
@@ -159,16 +177,14 @@
       }
 
       var amount = window.sheetState.amount || 10;
-      if (typeof currentBalance !== 'undefined' && currentBalance < amount) {
-        if (typeof showToast === 'function') showToast('Insufficient Wallet Balance!', 'error');
+      if (window.currentBalance < amount) {
+        if (typeof showToast === 'function') showToast('Insufficient Wallet Balance! Balance is Rs ' + window.currentBalance.toLocaleString(), 'error');
         return;
       }
 
-      // Deduct Wallet Balance
-      if (typeof currentBalance !== 'undefined') {
-        currentBalance -= amount;
-        if (typeof updateWalletUI === 'function') updateWalletUI();
-      }
+      // Automatically Deduct Wallet Balance!
+      window.currentBalance -= amount;
+      window.updateWalletUI();
 
       var selected = window.sheetState.selectedRounds || [1];
       var roundNames = selected.map(function(r) { return r === 1 ? '1st Draw' : '2nd Draw'; }).join(' & ');
@@ -176,7 +192,7 @@
 
       if (typeof playSound === 'function') playSound('pop');
       if (typeof showToast === 'function') {
-        showToast('Bet Placed Successfully! Rs ' + amount + ' on Number ' + num + ' (' + roundNames + ', ' + typeName + ')', 'success');
+        showToast('Bet Placed Successfully! Rs ' + amount + ' deducted from your wallet.', 'success');
       }
 
       // Save & Display Last Bet
@@ -210,14 +226,12 @@
 
       if (window.currentBet && window.currentBet.amount > 0) {
         var refundAmount = window.currentBet.amount;
-        if (typeof currentBalance !== 'undefined') {
-          currentBalance += refundAmount;
-          if (typeof updateWalletUI === 'function') updateWalletUI();
-        }
+        window.currentBalance += refundAmount;
+        window.updateWalletUI();
         window.currentBet = null;
         if (window.clearQuickDigit) window.clearQuickDigit();
         if (typeof playSound === 'function') playSound('pop');
-        if (typeof showToast === 'function') showToast('Bet Cancelled! Rs ' + refundAmount + ' refunded to your wallet.', 'info');
+        if (typeof showToast === 'function') showToast('Bet Cancelled! Rs ' + refundAmount + ' refunded back to your wallet.', 'info');
       } else if (window.sheetState.number || window.sheetState.amount) {
         if (window.clearQuickDigit) window.clearQuickDigit();
         if (typeof showToast === 'function') showToast('Selection Cleared', 'info');
@@ -2896,8 +2910,9 @@
         circle.classList.add('ripple');
         
         const existingRipple = target.querySelector('.ripple');
-    // Initialize Last Bet Amount UI on load
+    // Initialize Wallet & Last Bet Amount UI on load
     try {
+      if (typeof window.updateWalletUI === 'function') window.updateWalletUI();
       window.lastBetAmount = parseInt(localStorage.getItem('lastBetAmount') || '0', 10);
       var headerLast = document.getElementById('headerLastBet');
       if (headerLast) {
