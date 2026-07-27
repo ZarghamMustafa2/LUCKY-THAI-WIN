@@ -83,17 +83,15 @@ export default function Home() {
       if(Math.random() > 0.5) setJackpotPool(prev => prev + Math.floor(Math.random() * 5000));
     });
 
-    // Real-World Clock Syncing Timer (Draws at :00 and :30 of every hour)
+    // 2-Minute Draw Cycle Engine (120,000 ms: 60s Betting + 60s Spinning)
     const getNextRealClockMs = () => {
-      const now = new Date();
-      const minutes = now.getMinutes();
-      const nextDraw = new Date(now);
-      if (minutes < 30) {
-        nextDraw.setMinutes(30, 0, 0);
+      const nowSec = Math.floor(Date.now() / 1000);
+      const cycleSec = nowSec % 120; // 0 to 119
+      if (cycleSec < 60) {
+        return (60 - cycleSec) * 1000;
       } else {
-        nextDraw.setHours(now.getHours() + 1, 0, 0, 0);
+        return (120 - cycleSec) * 1000;
       }
-      return Math.max(0, nextDraw.getTime() - now.getTime());
     };
 
     setRemainingMs(getNextRealClockMs());
