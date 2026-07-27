@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import AuthModal from '@/components/AuthModal';
 import SpinWheel from '@/components/SpinWheel';
@@ -27,20 +27,18 @@ export default function Home() {
   const [recentResults, setRecentResults] = useState<any[]>([]);
   const [liveBets, setLiveBets] = useState<any[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
+  const isDrawingRef = useRef(false);
   const [finalWinner, setFinalWinner] = useState<string | null>(null);
   const [pendingWinner, setPendingWinner] = useState<string | null>(null);
-  
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [token, setToken] = useState<string | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-
-  // Dummy stats for the premium feel
   const [onlinePlayers, setOnlinePlayers] = useState(3204);
   const [totalWagered, setTotalWagered] = useState(45200000);
   const [jackpotPool, setJackpotPool] = useState(5100000);
-  
+
   useEffect(() => {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     const handleResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight });
@@ -106,8 +104,9 @@ export default function Home() {
         // Betting Stage (0s to 59s)
         const ms = (60 - cycleSec) * 1000;
         setRemainingMs(ms);
-        if (isDrawing) {
+        if (isDrawingRef.current) {
           setIsDrawing(false);
+          isDrawingRef.current = false;
           setPendingWinner(null);
           setFinalWinner(null);
         }
@@ -115,8 +114,9 @@ export default function Home() {
         // Spinning Stage (60s to 119s)
         const ms = (120 - cycleSec) * 1000;
         setRemainingMs(ms);
-        if (!isDrawing) {
+        if (!isDrawingRef.current) {
           setIsDrawing(true);
+          isDrawingRef.current = true;
           const num = Math.floor(1000 + Math.random() * 9000).toString();
           setPendingWinner(num);
           setTimeout(() => {
