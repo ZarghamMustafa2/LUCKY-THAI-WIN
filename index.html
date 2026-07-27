@@ -2125,41 +2125,37 @@
       }
     }
 
-    let sheetState = {
-      number: '',
-      round: '',
-      type: '',
+    window.sheetState = window.sheetState || {
+      number: '0',
+      round: '1',
+      type: 'figure',
       extraDigits: '',
-      multiplier: 0,
-      amount: 0
+      multiplier: 9,
+      amount: 10
     };
+    let sheetState = window.sheetState;
 
     function updateSummary() {
-      let fullSeq = sheetState.number;
-      if (sheetState.type === 'akada' || sheetState.type === 'ring') {
-         fullSeq += sheetState.extraDigits;
-      } else if (sheetState.type === 'packet') {
+      const state = window.sheetState || sheetState;
+      let fullSeq = state.number || '0';
+      if (state.type === 'akada' || state.type === 'ring') {
+         fullSeq += (state.extraDigits || '');
+      } else if (state.type === 'packet') {
          fullSeq += ' (Packet)';
       }
-      summarySequence.innerText = fullSeq || '-';
+      if (summarySequence) summarySequence.innerText = fullSeq || '-';
       
       let roundMap = {'1':'1st Draw', '2':'2nd Draw', '3':'3rd Draw', '4':'4th Draw'};
-      summaryRound.innerText = roundMap[sheetState.round] || '-';
+      if (summaryRound) summaryRound.innerText = roundMap[state.round] || '1st Draw';
       
-      summaryMult.innerText = sheetState.multiplier > 0 ? `1x${sheetState.multiplier}` : '1x0';
+      const mult = state.multiplier || 9;
+      if (summaryMult) summaryMult.innerText = mult > 0 ? `1x${mult}` : '1x9';
       
-      const payout = sheetState.amount * sheetState.multiplier;
-      summaryPayout.innerText = `₹${payout.toLocaleString()}`;
+      const amt = state.amount || 10;
+      const payout = amt * mult;
+      if (summaryPayout) summaryPayout.innerText = `Rs ${payout.toLocaleString()}`;
       
-      // Validate Bet
-      let isValid = false;
-      if (sheetState.number && sheetState.round && sheetState.type && sheetState.amount > 0) {
-        if (sheetState.type === 'figure') isValid = true;
-        if (sheetState.type === 'akada' && sheetState.extraDigits.length === 1) isValid = true;
-        if (sheetState.type === 'ring' && sheetState.extraDigits.length === 2) isValid = true;
-        if (sheetState.type === 'packet') isValid = true;
-      }
-      confirmBetBtn.disabled = !isValid;
+      if (confirmBetBtn) confirmBetBtn.disabled = false;
     }
 
     // Number Grid Click
@@ -2711,10 +2707,11 @@
 
     confirmBetBtn.addEventListener('click', () => {
       if(isDrawing) return;
-      const amount = sheetState.amount;
-      let target = sheetState.number;
-      if (sheetState.type === 'akada' || sheetState.type === 'ring') target += sheetState.extraDigits;
-      else if (sheetState.type === 'packet') target = sheetState.number; // Just an example for packet
+      const state = window.sheetState || sheetState || {};
+      const amount = parseInt(state.amount, 10) || 10;
+      let target = String(state.number || '0').trim();
+      if (state.type === 'akada' || state.type === 'ring') target += (state.extraDigits || '');
+      else if (state.type === 'packet') target = String(state.number || '0');
       
       if(!amount || amount <= 0) return showToast('Enter a valid amount!', 'error');
       if(amount > window.currentBalance) return showToast('Insufficient balance!', 'error');
@@ -2723,7 +2720,7 @@
       updateWalletUI();
       
       if (!window.activeBets) window.activeBets = [];
-      window.activeBets.push({ amount, target, type: sheetState.type, round: sheetState.round, mult: sheetState.multiplier });
+      window.activeBets.push({ amount, target, type: state.type || 'figure', round: state.round || '1', mult: state.multiplier || 9 });
       
       const countEl = document.getElementById('headerActiveBetsCount');
       if (countEl) countEl.innerText = window.activeBets.length;
@@ -2733,7 +2730,9 @@
       var headerCurrent = document.getElementById('headerCurrentBet');
       if (headerCurrent) headerCurrent.innerText = 'Rs ' + totalAmount.toLocaleString();
 
-      showToast(`Bet Placed: Rs ${amount} on sequence ${target}`, 'success');
+      if (typeof window.setBetButtonState === 'function') window.setBetButtonState(true);
+
+      showToast(`Bet Placed Successfully: Rs ${amount} on sequence ${target}`, 'success');
       closeBottomSheet();
     });
 
