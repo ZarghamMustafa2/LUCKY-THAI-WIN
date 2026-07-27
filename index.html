@@ -2682,8 +2682,11 @@
       closeBottomSheet();
     });
 
-    // Initialize UI
-    updateCalculations();
+     // Initialize UI
+     function updateCalculations() {
+       if (typeof updateSummary === 'function') updateSummary();
+     }
+     updateCalculations();
     
     // Add initial mock activity
     for(let i=0; i<6; i++) addMockActivity();
