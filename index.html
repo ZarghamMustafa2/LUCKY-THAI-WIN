@@ -164,9 +164,31 @@
       } catch(e) {}
     };
 
+    window.setBetButtonState = function(isPlaced) {
+      var btn = document.getElementById('inlinePlaceBetBtn');
+      if (!btn) return;
+
+      if (isPlaced) {
+        btn.disabled = true;
+        btn.setAttribute('data-placed', 'true');
+        btn.className = 'col-span-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-white/10 border-2 border-gold/40 text-gold font-black text-xs sm:text-lg uppercase tracking-widest cursor-not-allowed opacity-80 flex items-center justify-center gap-1.5 shadow-none';
+        btn.innerHTML = '<i class="fa-solid fa-check-circle text-gold text-xs sm:text-base"></i> BET PLACED FOR THIS DRAW';
+      } else {
+        btn.disabled = false;
+        btn.removeAttribute('data-placed');
+        btn.className = 'col-span-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5';
+        btn.innerHTML = '<i class="fa-solid fa-bolt text-xs sm:text-base"></i> Place Bet Now';
+      }
+    };
+
     window.placeInlineBet = function() {
       if (window.isBettingLocked) {
         if (typeof showToast === 'function') showToast('Betting is locked 3 minutes before spin!', 'error');
+        return;
+      }
+
+      if (window.isBetPlaced || (window.currentBet && window.currentBet.amount > 0)) {
+        if (typeof showToast === 'function') showToast('Bet already placed for this draw! Cancel active bet first if you wish to change.', 'warning');
         return;
       }
 
@@ -194,6 +216,10 @@
       if (typeof showToast === 'function') {
         showToast('Bet Placed Successfully! Rs ' + amount + ' deducted from your wallet.', 'success');
       }
+
+      // Lock Bet Button so user cannot place bet again for this draw
+      window.isBetPlaced = true;
+      window.setBetButtonState(true);
 
       // Save & Display Last Bet
       window.lastBetAmount = amount;
@@ -229,6 +255,8 @@
         window.currentBalance += refundAmount;
         window.updateWalletUI();
         window.currentBet = null;
+        window.isBetPlaced = false;
+        window.setBetButtonState(false);
 
         // Reset Last Bet Display & Storage on Bet Cancel
         window.lastBetAmount = 0;
@@ -1168,7 +1196,7 @@
                   <i class="fa-solid fa-xmark text-xs sm:text-base"></i> Cancel Bet
                 </button>
                 
-                <button type="button" onclick="placeInlineBet()" class="col-span-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                <button id="inlinePlaceBetBtn" type="button" onclick="placeInlineBet()" class="col-span-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5">
                   <i class="fa-solid fa-bolt text-xs sm:text-base"></i> Place Bet Now
                 </button>
               </div>
