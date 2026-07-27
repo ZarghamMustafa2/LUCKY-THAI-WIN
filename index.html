@@ -872,13 +872,6 @@
                 // Ensure 3D Wheel Stage is expanded during spinning phase
                 if (window.isWheelHidden && typeof window.expandWheelStage === 'function') {
                   window.expandWheelStage();
-                }
-
-                // Trigger Wheel Spin once per cycle
-                if (!window.hasTriggeredSpinThisCycle && typeof window.startDraw === 'function') {
-                  window.hasTriggeredSpinThisCycle = true;
-                  window.startDraw(true);
-                }
               }
             }
             updateAllClocks();
