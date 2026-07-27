@@ -2500,9 +2500,11 @@
           if (window.isWheelHidden && typeof window.expandWheelStage === 'function') {
             window.expandWheelStage();
           }
-          if (!window.hasTriggeredSpinThisCycle && typeof window.startDraw === 'function') {
+          if (!window.hasTriggeredSpinThisCycle) {
             window.hasTriggeredSpinThisCycle = true;
-            window.startDraw(true);
+            if (typeof startDraw === 'function') {
+              startDraw(true);
+            }
           }
         }
       } catch (e) {
