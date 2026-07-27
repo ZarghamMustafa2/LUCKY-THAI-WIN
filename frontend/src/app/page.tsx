@@ -398,27 +398,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="w-full flex flex-col items-center justify-center py-6 mt-6 mb-4 gap-6">
+                <div className="w-full flex justify-center items-center py-6 mt-6 mb-4">
                   <SpinWheel isDrawing={isDrawing} winningNumber={pendingWinner} />
-                  
-                  <button 
-                    onClick={() => {
-                      if (!isDrawing) {
-                        setIsDrawing(true);
-                        isDrawingRef.current = true;
-                        const num = Math.floor(1000 + Math.random() * 9000).toString();
-                        setPendingWinner(num);
-                        setTimeout(() => {
-                          setFinalWinner(num);
-                          setRecentResults(r => [{ round_number: 'DRAW-' + Date.now().toString().slice(-4), winning_number: num, id: Date.now() }, ...r].slice(0, 20));
-                        }, 12000);
-                      }
-                    }}
-                    className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFA500] hover:to-[#FFD700] text-black font-black text-base sm:text-lg px-8 py-3.5 rounded-2xl shadow-[0_0_30px_rgba(255,215,0,0.5)] transition-all transform hover:scale-105 active:scale-95 flex items-center gap-3 cursor-pointer"
-                  >
-                    <Flame className="w-5 h-5 animate-pulse" />
-                    <span>SPIN WHEEL NOW 🎡</span>
-                  </button>
                 </div>
 
                 <p className={`text-sm uppercase tracking-widest font-black mt-12 transition-colors ${finalWinner ? 'text-[#FFD700] animate-pulse drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]' : 'text-gray-600'}`}>
