@@ -60,6 +60,7 @@
       multiplier: 8,
       amount: 0
     };
+    window.activeBets = [];
 
     window.toggleMobileSidebar = function() {
       var sidebar = document.getElementById('sidebar');
@@ -187,11 +188,6 @@
         return;
       }
 
-      if (window.isBetPlaced || (window.currentBet && window.currentBet.amount > 0)) {
-        if (typeof showToast === 'function') showToast('Bet already placed for this draw! Cancel active bet first if you wish to change.', 'warning');
-        return;
-      }
-
       var num = window.sheetState.number;
       if (!num || num.trim() === '') {
         if (typeof showToast === 'function') showToast('Please select a number first!', 'warning');
@@ -210,38 +206,34 @@
 
       var selected = window.sheetState.selectedRounds || [1];
       var roundNames = selected.map(function(r) { return r === 1 ? '1st Draw' : '2nd Draw'; }).join(' & ');
-      var typeName = (window.sheetState.type || 'figure').toUpperCase();
 
       if (typeof playSound === 'function') playSound('pop');
       if (typeof showToast === 'function') {
         showToast('Bet Placed Successfully! Rs ' + amount + ' deducted from your wallet.', 'success');
       }
 
-      // Lock Bet Button so user cannot place bet again for this draw
-      window.isBetPlaced = true;
-      window.setBetButtonState(true);
-
-      // Save & Display Last Bet
-      window.lastBetAmount = amount;
-      try {
-        localStorage.setItem('lastBetAmount', amount);
-      } catch(e) {}
-      
-      var headerLast = document.getElementById('headerLastBet');
-      if (headerLast) headerLast.innerText = 'Rs ' + amount.toLocaleString();
-
-      var headerCurrent = document.getElementById('headerCurrentBet');
-      if (headerCurrent) headerCurrent.innerText = 'Rs ' + amount.toLocaleString();
-
-      // Save Current Bet for Draw Result Evaluation
-      window.currentBet = {
+      // Push to active bets array
+      if (!window.activeBets) window.activeBets = [];
+      window.activeBets.push({
         number: num,
         target: num,
         round: roundNames,
-        type: window.sheetState.type,
+        type: window.sheetState.type || 'figure',
         amount: amount,
         multiplier: window.sheetState.multiplier
-      };
+      });
+
+      // Update Active Bets count UI
+      const countEl = document.getElementById('headerActiveBetsCount');
+      if (countEl) countEl.innerText = window.activeBets.length;
+
+      // Update header current bet display to total amount
+      let totalAmount = window.activeBets.reduce((sum, b) => sum + b.amount, 0);
+      var headerCurrent = document.getElementById('headerCurrentBet');
+      if (headerCurrent) headerCurrent.innerText = 'Rs ' + totalAmount.toLocaleString();
+
+      window.isBetPlaced = true;
+      window.setBetButtonState(true);
     };
 
     window.cancelActiveBet = function() {
@@ -250,11 +242,18 @@
         return;
       }
 
-      if (window.currentBet && window.currentBet.amount > 0) {
-        var refundAmount = window.currentBet.amount;
+      if (window.activeBets && window.activeBets.length > 0) {
+        let refundAmount = window.activeBets.reduce((sum, b) => sum + b.amount, 0);
         window.currentBalance += refundAmount;
         window.updateWalletUI();
-        window.currentBet = null;
+        
+        window.activeBets = [];
+        const countEl = document.getElementById('headerActiveBetsCount');
+        if (countEl) countEl.innerText = '0';
+
+        var headerCurrent = document.getElementById('headerCurrentBet');
+        if (headerCurrent) headerCurrent.innerText = 'Rs 0';
+
         window.isBetPlaced = false;
         window.setBetButtonState(false);
 
@@ -267,12 +266,9 @@
         var headerLast = document.getElementById('headerLastBet');
         if (headerLast) headerLast.innerText = 'Rs 0';
 
-        var headerCurrent = document.getElementById('headerCurrentBet');
-        if (headerCurrent) headerCurrent.innerText = 'Rs 0';
-
         if (window.clearQuickDigit) window.clearQuickDigit();
         if (typeof playSound === 'function') playSound('pop');
-        if (typeof showToast === 'function') showToast('Bet Cancelled! Rs ' + refundAmount + ' refunded back to your wallet.', 'info');
+        if (typeof showToast === 'function') showToast('All active bets cancelled! Rs ' + refundAmount + ' refunded back to your wallet.', 'info');
       } else if (window.sheetState.number || window.sheetState.amount) {
         if (window.clearQuickDigit) window.clearQuickDigit();
         if (typeof showToast === 'function') showToast('Selection Cleared', 'info');
@@ -829,6 +825,15 @@
           <div class="flex items-center gap-1">
             <span class="text-[8px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Last Bet:</span>
             <span id="headerLastBet" class="font-mono text-[10px] sm:text-xs font-black text-gold leading-none">Rs 0</span>
+          </div>
+        </div>
+
+        <!-- Active Bets Counter Pill -->
+        <div class="flex items-center gap-1.5 sm:gap-2 bg-cardDark/90 border border-primary/30 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-sm whitespace-nowrap">
+          <i class="fa-solid fa-dice text-primary text-[10px] sm:text-xs"></i>
+          <div class="flex items-center gap-1">
+            <span class="text-[8px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Active Bets:</span>
+            <span id="headerActiveBetsCount" class="font-mono text-[10px] sm:text-xs font-black text-primary leading-none">0</span>
           </div>
         </div>
 
@@ -2467,7 +2472,9 @@
         });
       }
 
-      if (isAutoBet && currentBet) { autoBetConfig = { ...currentBet }; }
+      if (isAutoBet && window.activeBets && window.activeBets.length > 0) {
+        autoBetConfig = { ...window.activeBets[window.activeBets.length - 1] };
+      }
 
       const multiResultsContainer = document.getElementById('multiResultsContainer');
       if(multiResultsContainer) {
@@ -2494,14 +2501,16 @@
       }
 
       // Demo Cheat: Win opportunity if bet placed
-      if (currentBet && Math.random() > 0.4) {
-         let missingLen = 4 - currentBet.target.length;
-         let excludeDigits = currentBet.target.split('');
+      if (window.activeBets && window.activeBets.length > 0 && Math.random() > 0.4) {
+         const firstBet = window.activeBets[0];
+         let missingLen = 4 - firstBet.target.length;
+         let excludeDigits = firstBet.target.split('');
          let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
-         if (currentBet.round.indexOf('1') > -1) {
-           res1 = currentBet.target + randomSuffix;
+         const roundStr = String(firstBet.round);
+         if (roundStr.indexOf('1') > -1) {
+           res1 = firstBet.target + randomSuffix;
          } else {
-           res2 = currentBet.target + randomSuffix;
+           res2 = firstBet.target + randomSuffix;
          }
       }
 
@@ -2613,19 +2622,29 @@
       });
       if (statusText) statusText.innerText = 'Accepting Bets';
       
-      let isWin = false;
-      if (currentBet) {
-        for(let i=0; i<4; i++) {
-          if (window.generatedResults[i].startsWith(currentBet.target)) {
-            isWin = true;
-            break;
-          }
-        }
+      let totalPayout = 0;
+      let totalAmount = 0;
+      const betsToProcess = window.activeBets || [];
 
-        if (isWin) {
-          let multiplier = (Math.pow(10, currentBet.target.length) * 0.9) / 4;
-          let payout = currentBet.amount * multiplier;
-          currentBalance += payout;
+      if (betsToProcess.length > 0) {
+        betsToProcess.forEach(bet => {
+          totalAmount += bet.amount;
+          let isWin = false;
+          for(let i=0; i<4; i++) {
+            if (window.generatedResults[i].startsWith(bet.target)) {
+              isWin = true;
+              break;
+            }
+          }
+          if (isWin) {
+            let multiplier = (Math.pow(10, bet.target.length) * 0.9) / 4;
+            let payout = bet.amount * multiplier;
+            totalPayout += payout;
+          }
+        });
+
+        if (totalPayout > 0) {
+          currentBalance += totalPayout;
           updateWalletUI();
           
           if (typeof confetti === 'function') {
@@ -2637,11 +2656,25 @@
               disableForReducedMotion: true
             });
           }
-          setTimeout(() => showModal(true, window.generatedResults, payout), 400);
+          setTimeout(() => showModal(true, window.generatedResults, totalPayout), 400);
         } else {
-          setTimeout(() => showModal(false, window.generatedResults, 0, currentBet.amount), 400);
+          setTimeout(() => showModal(false, window.generatedResults, 0, totalAmount), 400);
         }
-        currentBet = null;
+        
+        // Store total bet amount in lastBetAmount
+        window.lastBetAmount = totalAmount;
+        try {
+          localStorage.setItem('lastBetAmount', totalAmount);
+        } catch(e) {}
+        var headerLast = document.getElementById('headerLastBet');
+        if (headerLast) headerLast.innerText = 'Rs ' + totalAmount.toLocaleString();
+
+        window.activeBets = [];
+        const countEl = document.getElementById('headerActiveBetsCount');
+        if (countEl) countEl.innerText = '0';
+        
+        var headerCurrent = document.getElementById('headerCurrentBet');
+        if (headerCurrent) headerCurrent.innerText = 'Rs 0';
       } else {
         setTimeout(() => showModal(null, window.generatedResults), 400);
       }
@@ -2650,7 +2683,13 @@
         if (currentBalance >= autoBetConfig.amount) {
           currentBalance -= autoBetConfig.amount;
           updateWalletUI();
-          currentBet = { ...autoBetConfig };
+          
+          if (!window.activeBets) window.activeBets = [];
+          window.activeBets.push({ ...autoBetConfig });
+          
+          const countEl = document.getElementById('headerActiveBetsCount');
+          if (countEl) countEl.innerText = window.activeBets.length;
+          
           showToast(`Auto Bet Placed: Rs ${autoBetConfig.amount}`, 'success');
           
           gridNumBtns.forEach(btn => {
@@ -2679,7 +2718,18 @@
       
       currentBalance -= amount;
       updateWalletUI();
-      currentBet = { amount, target, type: sheetState.type, round: sheetState.round, mult: sheetState.multiplier };
+      
+      if (!window.activeBets) window.activeBets = [];
+      window.activeBets.push({ amount, target, type: sheetState.type, round: sheetState.round, mult: sheetState.multiplier });
+      
+      const countEl = document.getElementById('headerActiveBetsCount');
+      if (countEl) countEl.innerText = window.activeBets.length;
+
+      // Update header current bet display to total amount
+      let totalAmount = window.activeBets.reduce((sum, b) => sum + b.amount, 0);
+      var headerCurrent = document.getElementById('headerCurrentBet');
+      if (headerCurrent) headerCurrent.innerText = 'Rs ' + totalAmount.toLocaleString();
+
       showToast(`Bet Placed: Rs ${amount} on sequence ${target}`, 'success');
       closeBottomSheet();
     });
