@@ -2416,6 +2416,8 @@
 
           window.currentPhase = 'betting';
           window.isBettingLocked = false;
+          window.hasTriggeredSpinThisCycle = false;
+          isDrawing = false;
         } else if (cycleSec < 180) {
           // Phase 2: Active 2-Minute Wheel Spinning Phase (120s: 60s -> 179s)
           const spinSecs = cycleSec - 60;
