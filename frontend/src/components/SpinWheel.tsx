@@ -12,11 +12,12 @@ export default function SpinWheel({ isDrawing, winningNumber }: SpinWheelProps) 
   useEffect(() => {
     let timeouts: NodeJS.Timeout[] = [];
     
-    if (isDrawing && winningNumber) {
+    if (isDrawing) {
       setLockedDigits([]);
       setRotation(0);
       
-      const targetDigits = winningNumber.split('');
+      const targetNumber = winningNumber || Math.floor(1000 + Math.random() * 9000).toString();
+      const targetDigits = targetNumber.split('');
       let currentRotation = 0;
       
       const spinDigit = (index: number) => {
@@ -26,8 +27,8 @@ export default function SpinWheel({ isDrawing, winningNumber }: SpinWheelProps) 
         const currentAngle = currentRotation % 360;
         const targetAngle = 360 - (targetDigit * 36);
         
-        let addedRotation = 1080 + (targetAngle - currentAngle);
-        if (addedRotation < 1080) addedRotation += 360;
+        let addedRotation = 3600 + (targetAngle - currentAngle); // 10 full 360-degree rotations
+        if (addedRotation < 3600) addedRotation += 360;
         
         currentRotation += addedRotation;
         setRotation(currentRotation);
@@ -41,7 +42,7 @@ export default function SpinWheel({ isDrawing, winningNumber }: SpinWheelProps) 
           
           timeouts.push(setTimeout(() => {
             spinDigit(index + 1);
-          }, 600));
+          }, 800));
         }, 4500));
       };
       

@@ -99,22 +99,30 @@ export default function Home() {
     setRemainingMs(getNextRealClockMs());
 
     const fallbackInterval = setInterval(() => {
-      if (Date.now() - lastTickTime > 3000) {
-        const ms = getNextRealClockMs();
+      const nowSec = Math.floor(Date.now() / 1000);
+      const cycleSec = nowSec % 120;
+      
+      if (cycleSec < 60) {
+        // Betting Stage (0s to 59s)
+        const ms = (60 - cycleSec) * 1000;
         setRemainingMs(ms);
-        if (ms <= 1000 && !isDrawing) {
+        if (isDrawing) {
+          setIsDrawing(false);
+          setPendingWinner(null);
+          setFinalWinner(null);
+        }
+      } else {
+        // Spinning Stage (60s to 119s)
+        const ms = (120 - cycleSec) * 1000;
+        setRemainingMs(ms);
+        if (!isDrawing) {
           setIsDrawing(true);
           const num = Math.floor(1000 + Math.random() * 9000).toString();
           setPendingWinner(num);
           setTimeout(() => {
             setFinalWinner(num);
             setRecentResults(r => [{ round_number: 'DRAW-' + Date.now().toString().slice(-4), winning_number: num, id: Date.now() }, ...r].slice(0, 20));
-            setTimeout(() => {
-              setIsDrawing(false);
-              setFinalWinner(null);
-              setPendingWinner(null);
-            }, 5000);
-          }, 6000);
+          }, 15000);
         }
       }
     }, 1000);
