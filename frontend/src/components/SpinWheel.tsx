@@ -8,11 +8,13 @@ interface SpinWheelProps {
 export default function SpinWheel({ isDrawing, winningNumber }: SpinWheelProps) {
   const [rotation, setRotation] = useState(0);
   const [lockedDigits, setLockedDigits] = useState<string[]>([]);
+  const hasSpunRef = React.useRef(false);
   
   useEffect(() => {
     let timeouts: NodeJS.Timeout[] = [];
     
-    if (isDrawing) {
+    if (isDrawing && !hasSpunRef.current) {
+      hasSpunRef.current = true;
       setLockedDigits([]);
       
       const targetNumber = winningNumber || Math.floor(1000 + Math.random() * 9000).toString();
@@ -21,24 +23,25 @@ export default function SpinWheel({ isDrawing, winningNumber }: SpinWheelProps) 
       const targetDigit = parseInt(targetDigits[0]);
       const targetAngle = (360 - (targetDigit * 36)) % 360;
       
-      // Delay 100ms after mount so browser registers initial rotation before animating transition!
+      // Execute rotation set state
       const timer = setTimeout(() => {
         setRotation(prev => prev + 7200 + targetAngle);
-      }, 100);
+      }, 50);
       timeouts.push(timer);
       
       timeouts.push(setTimeout(() => {
         setLockedDigits(targetDigits);
       }, 12000));
       
-    } else {
+    } else if (!isDrawing) {
+      hasSpunRef.current = false;
       setLockedDigits([]);
     }
     
     return () => {
       timeouts.forEach(clearTimeout);
     };
-  }, [isDrawing, winningNumber]);
+  }, [isDrawing]);
 
   return (
     <div className="relative w-80 h-80 sm:w-[360px] sm:h-[360px] md:w-[520px] md:h-[520px] aspect-square flex-shrink-0 mx-auto mb-32 md:mb-40 flex justify-center items-center">
