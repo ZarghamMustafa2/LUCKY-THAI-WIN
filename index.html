@@ -169,15 +169,15 @@
       var btn = document.getElementById('inlinePlaceBetBtn');
       if (!btn) return;
 
-      if (isPlaced) {
-        btn.disabled = true;
-        btn.setAttribute('data-placed', 'true');
-        btn.className = 'col-span-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-white/10 border-2 border-gold/40 text-gold font-black text-xs sm:text-lg uppercase tracking-widest cursor-not-allowed opacity-80 flex items-center justify-center gap-1.5 shadow-none';
-        btn.innerHTML = '<i class="fa-solid fa-check-circle text-gold text-xs sm:text-base"></i> BET PLACED FOR THIS DRAW';
+      var count = window.activeBets ? window.activeBets.length : 0;
+
+      btn.disabled = false;
+      btn.removeAttribute('data-placed');
+      btn.className = 'col-span-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5';
+
+      if (count > 0) {
+        btn.innerHTML = `<i class="fa-solid fa-plus text-xs sm:text-base"></i> Place Another Bet (${count} Active)`;
       } else {
-        btn.disabled = false;
-        btn.removeAttribute('data-placed');
-        btn.className = 'col-span-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5';
         btn.innerHTML = '<i class="fa-solid fa-bolt text-xs sm:text-base"></i> Place Bet Now';
       }
     };
@@ -2675,6 +2675,8 @@
         
         var headerCurrent = document.getElementById('headerCurrentBet');
         if (headerCurrent) headerCurrent.innerText = 'Rs 0';
+
+        if (typeof window.setBetButtonState === 'function') window.setBetButtonState(false);
       } else {
         setTimeout(() => showModal(null, window.generatedResults), 400);
       }
