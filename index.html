@@ -2607,6 +2607,10 @@
     window.startDraw = startDraw;
 
     function runSpinPhase(phaseNum, winningNumStr, onComplete) {
+      if (typeof window.expandWheelStage === 'function') {
+        window.expandWheelStage();
+      }
+
       if (statusText) {
         statusText.innerText = phaseNum === 1 ? '1ST SPIN IN PROGRESS...' : '2ND SPIN IN PROGRESS...';
         statusText.style.color = '#FFD400';
@@ -2627,7 +2631,8 @@
         }
       }
 
-      if (wheelText) wheelText.innerText = phaseNum === 1 ? '1ST SPIN...' : '2ND SPIN...';
+      const wheelText = document.getElementById('wheelText');
+      if (wheelText) wheelText.innerText = phaseNum === 1 ? 'SPIN 1' : 'SPIN 2';
       if (wheelGlow) {
         wheelGlow.classList.remove('opacity-[0.15]');
         wheelGlow.classList.add('opacity-40', 'animate-pulse');
@@ -2641,23 +2646,28 @@
 
       const spinDuration = 55.0; // 55 Seconds Physical Wheel Rotation Per Spin
       const spinWheel = document.getElementById('spinWheelElement');
-      if (spinWheel) {
-        spinWheel.style.transition = `transform ${spinDuration}s cubic-bezier(0.05, 0.95, 0.15, 1.0)`;
-        spinWheel.style.transform = `rotate(${currentRotation}deg)`;
-      }
+      
+      // Delay 50ms after unhiding container so browser registers layout before starting CSS transition!
+      setTimeout(() => {
+        if (spinWheel) {
+          spinWheel.style.transition = `transform ${spinDuration}s cubic-bezier(0.05, 0.95, 0.15, 1.0)`;
+          spinWheel.style.transform = `rotate(${currentRotation}deg)`;
+        }
+      }, 50);
 
       setTimeout(() => {
-        wheelText.innerText = phaseNum === 1 ? '1ST LOCKED' : '2ND LOCKED';
+        if (wheelText) wheelText.innerText = phaseNum === 1 ? '1ST LOCKED' : '2ND LOCKED';
         playSound('pop');
 
         for(let i=0; i<4; i++) {
-          setTimeout(() => {
-            const d = document.getElementById(`digit-${i}`);
-            if (d) {
+          const d = document.getElementById(`digit-${i}`);
+          if (d && targetDigits[i]) {
+            setTimeout(() => {
               d.innerText = targetDigits[i];
-              d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_40px_rgba(0,255,136,0.3),inset_0_0_20px_rgba(0,255,136,0.1)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-300 transform scale-110 -rotateX-0';
-            }
-          }, i * 200);
+              d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_30px_rgba(0,255,136,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform scale-105';
+              playSound('pop');
+            }, i * 400);
+          }
         }
 
         setTimeout(() => {
