@@ -526,35 +526,17 @@
     window.expandWheelStage = function() {
       window.isWheelHidden = false;
       var gameContainer = document.getElementById('gameContainer');
-      var nextSpinBanner = document.getElementById('nextSpinBanner');
       var headerChevronIcon = document.getElementById('headerChevronIcon');
 
       if (gameContainer) {
         gameContainer.style.setProperty('display', 'flex', 'important');
         gameContainer.classList.remove('hidden');
       }
-      if (nextSpinBanner) {
-        nextSpinBanner.style.setProperty('display', 'none', 'important');
-        nextSpinBanner.classList.add('hidden');
-      }
       if (headerChevronIcon) headerChevronIcon.style.transform = 'rotate(0deg)';
     };
 
     window.collapseWheelStage = function() {
-      window.isWheelHidden = true;
-      var gameContainer = document.getElementById('gameContainer');
-      var nextSpinBanner = document.getElementById('nextSpinBanner');
-      var headerChevronIcon = document.getElementById('headerChevronIcon');
-
-      if (gameContainer) {
-        gameContainer.style.setProperty('display', 'none', 'important');
-        gameContainer.classList.add('hidden');
-      }
-      if (nextSpinBanner) {
-        nextSpinBanner.style.setProperty('display', 'flex', 'important');
-        nextSpinBanner.classList.remove('hidden');
-      }
-      if (headerChevronIcon) headerChevronIcon.style.transform = 'rotate(180deg)';
+      window.expandWheelStage();
     };
 
     window.toggleWheelStage = function() {
