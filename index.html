@@ -2815,8 +2815,14 @@
       }
     }
 
-     gameLoop(); // Immediate initial execution
-     setInterval(gameLoop, 1000); // Continuous tick every 1000ms
+     function startGameLoopTicker() {
+       try { gameLoop(); } catch(e) {}
+       if (typeof requestAnimationFrame === 'function') {
+         requestAnimationFrame(startGameLoopTicker);
+       }
+     }
+     startGameLoopTicker();
+     setInterval(gameLoop, 500);
 
      document.addEventListener('visibilitychange', () => {
        if (document.visibilityState === 'visible') {
