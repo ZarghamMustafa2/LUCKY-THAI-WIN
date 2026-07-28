@@ -125,10 +125,6 @@
     };
 
     window.openNumberBetSheet = function(btn) {
-      if (window.isBettingLocked) {
-        if (typeof showToast === 'function') showToast('Betting is locked 3 minutes before spin!', 'error');
-        return;
-      }
       var num = typeof btn === 'string' ? btn : ((btn && btn.getAttribute ? btn.getAttribute('data-num') : '') || (btn && btn.innerText ? btn.innerText.trim() : '')).replace(/\D/g, '').slice(0, 1);
       if (num) {
         window.appendQuickDigit(num);
@@ -183,11 +179,6 @@
     };
 
     window.placeInlineBet = function() {
-      if (window.isBettingLocked) {
-        if (typeof showToast === 'function') showToast('Betting is locked 3 minutes before spin!', 'error');
-        return;
-      }
-
       var num = window.sheetState.number;
       if (!num || num.trim() === '') {
         if (typeof showToast === 'function') showToast('Please select a number first!', 'warning');
@@ -237,11 +228,6 @@
     };
 
     window.cancelActiveBet = function() {
-      if (window.isBettingLocked) {
-        if (typeof showToast === 'function') showToast('Cannot cancel bet within 3 minutes of draw!', 'error');
-        return;
-      }
-
       if (window.activeBets && window.activeBets.length > 0) {
         let refundAmount = window.activeBets.reduce((sum, b) => sum + b.amount, 0);
         window.currentBalance += refundAmount;
@@ -2747,7 +2733,6 @@
      });
 
     confirmBetBtn.addEventListener('click', () => {
-      if(isDrawing) return;
       const state = window.sheetState || sheetState || {};
       const amount = parseInt(state.amount, 10) || 10;
       let target = String(state.number || '0').trim();
