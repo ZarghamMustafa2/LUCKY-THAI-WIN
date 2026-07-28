@@ -1138,7 +1138,7 @@
                 <div class="absolute inset-0 rounded-full shadow-[inset_0_0_60px_rgba(0,0,0,0.9)] z-20 pointer-events-none"></div>
 
                 <!-- Spinning Content -->
-                <div id="spinWheelElement" class="w-full h-full relative rounded-full transition-transform will-change-transform" style="transform: rotate(0deg);">
+                <div id="spinWheelElement" class="w-full h-full relative rounded-full will-change-transform" style="transform: rotate(0deg);">
                   <!-- Conic Gradient Slices -->
                   <div class="absolute -inset-10" style="background: conic-gradient(from -18deg, #2A3B54 0deg 36deg, #151E2E 36deg 72deg, #2A3B54 72deg 108deg, #151E2E 108deg 144deg, #2A3B54 144deg 180deg, #151E2E 180deg 216deg, #2A3B54 216deg 252deg, #151E2E 252deg 288deg, #2A3B54 288deg 324deg, #151E2E 324deg 360deg)"></div>
                   
@@ -2558,17 +2558,20 @@
 
       const currentAngle = ((currentRotation % 360) + 360) % 360;
       const targetAngle = (360 - (targetDigit * 36)) % 360;
-      let addedRotation = 36000 + (targetAngle - currentAngle); // 100 Full 360-Degree Rotations
-      if (addedRotation < 36000) addedRotation += 360;
+      let addedRotation = 2880 + (targetAngle - currentAngle); // 8 Full 360-Degree Rotations
+      if (addedRotation < 2880) addedRotation += 360;
       currentRotation += addedRotation;
 
-      const spinDuration = 55.0; // 55 Seconds Physical Wheel Rotation Per Spin
+      const spinDuration = 12.0; // 12 Seconds Smooth Physical Wheel Rotation Per Spin
       const spinWheel = document.getElementById('spinWheelElement');
       
-      // Delay 50ms after unhiding container so browser registers layout before starting CSS transition!
+      // Delay 50ms after unhiding container & force layout reflow so browser renders smooth CSS transition!
       setTimeout(() => {
         if (spinWheel) {
-          spinWheel.style.transition = `transform ${spinDuration}s cubic-bezier(0.05, 0.95, 0.15, 1.0)`;
+          spinWheel.style.transitionProperty = 'transform';
+          spinWheel.style.transitionDuration = `${spinDuration}s`;
+          spinWheel.style.transitionTimingFunction = 'cubic-bezier(0.1, 0.9, 0.2, 1.0)';
+          void spinWheel.offsetHeight;
           spinWheel.style.transform = `rotate(${currentRotation}deg)`;
         }
       }, 50);
