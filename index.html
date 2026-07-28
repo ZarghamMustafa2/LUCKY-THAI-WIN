@@ -2599,29 +2599,31 @@
         return result;
       }
 
-      let res1 = generateUniqueDigitString(4);
-      let res2 = generateUniqueDigitString(4);
+      let res1 = generateUniqueDigitString(4); // 1st Draw: 4 Digits
+      let res2 = generateUniqueDigitString(3); // 2nd Draw: 3 Digits
       while(res2 === res1) {
-        res2 = generateUniqueDigitString(4);
+        res2 = generateUniqueDigitString(3);
       }
 
       // Demo Cheat: Win opportunity if bet placed
       if (window.activeBets && window.activeBets.length > 0 && Math.random() > 0.4) {
          const firstBet = window.activeBets[0];
-         let missingLen = 4 - firstBet.target.length;
-         let excludeDigits = firstBet.target.split('');
-         let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
          const roundStr = String(firstBet.round);
          if (roundStr.indexOf('1') > -1) {
-           res1 = firstBet.target + randomSuffix;
+           let missingLen = 4 - firstBet.target.length;
+           let excludeDigits = firstBet.target.split('');
+           let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
+           res1 = (firstBet.target + randomSuffix).slice(0, 4);
          } else {
-           res2 = firstBet.target + randomSuffix;
+           let missingLen = 3 - firstBet.target.length;
+           let excludeDigits = firstBet.target.split('');
+           let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
+           res2 = (firstBet.target + randomSuffix).slice(0, 3);
          }
       }
 
       window.generatedResults = [res1, res2];
 
-      // Sequential 20-Second Rotational Spin Execution: 1st Spin (20s) then 2nd Spin (20s)
       runSpinPhase(1, res1, () => {
         setTimeout(() => {
           runSpinPhase(2, res2, () => {
@@ -2638,12 +2640,18 @@
       }
 
       const targetDigits = winningNumStr.split('');
+      const totalDigitsInDraw = targetDigits.length;
 
       for(let i=0; i<4; i++) {
         const d = document.getElementById(`digit-${i}`);
         if (d) {
-          d.innerText = '?';
-          d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
+          if (i < totalDigitsInDraw) {
+            d.style.display = 'flex';
+            d.innerText = '?';
+            d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
+          } else {
+            d.style.display = 'none';
+          }
         }
       }
 
@@ -2653,14 +2661,14 @@
       }
 
       function spinForDigit(digitIndex) {
-        if (digitIndex >= 4) {
+        if (digitIndex >= totalDigitsInDraw) {
           const multiContainer = document.getElementById('multiResultsContainer');
           if (multiContainer) {
             multiContainer.classList.remove('opacity-0', 'translate-y-4');
             const badgeBorder = phaseNum === 1 ? 'border-gold text-gold shadow-[0_0_15px_rgba(255,212,0,0.3)]' : 'border-cyanLight text-cyanLight shadow-[0_0_15px_rgba(0,212,255,0.3)]';
             multiContainer.innerHTML += `
                <div class="bg-cardDark px-4 py-2 md:px-6 md:py-3 rounded-xl border ${badgeBorder} text-center animate-bounce">
-                  <div class="text-[9px] md:text-[11px] text-gray-400 font-bold mb-1">${phaseNum === 1 ? '1ST SPIN WINNER' : '2ND SPIN WINNER'}</div>
+                  <div class="text-[9px] md:text-[11px] text-gray-400 font-bold mb-1">${phaseNum === 1 ? '1ST DRAW WINNER' : '2ND DRAW WINNER'}</div>
                   <div class="text-xl md:text-3xl font-mono font-black">${winningNumStr}</div>
                </div>
             `;
@@ -2681,7 +2689,7 @@
         const digitVal = parseInt(digitChar, 10);
 
         if (statusText) {
-          statusText.innerText = `${phaseNum === 1 ? '1ST' : '2ND'} DRAW - SPINNING FOR DIGIT ${digitIndex + 1} OF 4...`;
+          statusText.innerText = `${phaseNum === 1 ? '1ST' : '2ND'} DRAW - SPINNING FOR DIGIT ${digitIndex + 1} OF ${totalDigitsInDraw}...`;
           statusText.style.color = '#FFD400';
         }
         if (statusDot) {
@@ -2731,6 +2739,10 @@
 
     function finishDraw() {
       try {
+        for (let i = 0; i < 4; i++) {
+          const d = document.getElementById(`digit-${i}`);
+          if (d) d.style.display = 'flex';
+        }
         if (wheelGlow) {
           wheelGlow.classList.remove('opacity-40', 'animate-pulse');
           wheelGlow.classList.add('opacity-[0.15]');
