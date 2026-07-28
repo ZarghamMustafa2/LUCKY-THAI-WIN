@@ -2197,11 +2197,15 @@
       }, 500);
     }
 
-    document.getElementById('nextRoundBtn').addEventListener('click', hideModal);
-    document.getElementById('collectBtn').addEventListener('click', () => {
-        playSound('pop');
-        hideModal();
-    });
+    const nxtBtn = document.getElementById('nextRoundBtn');
+    if (nxtBtn) nxtBtn.addEventListener('click', hideModal);
+    const clctBtn = document.getElementById('collectBtn');
+    if (clctBtn) {
+      clctBtn.addEventListener('click', () => {
+          playSound('pop');
+          hideModal();
+      });
+    }
 
     window.sheetState = window.sheetState || {
       number: '0',
@@ -2237,135 +2241,150 @@
     }
 
     // Number Grid Click
-    gridNumBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const num = (e.currentTarget.getAttribute('data-num') || e.currentTarget.innerText || e.target.innerText).trim().replace(/\D/g, '').slice(0, 1);
-        sheetState.number = num;
-        if (sheetSelectedNumber) sheetSelectedNumber.innerText = num;
-        
-        const sheetNumberInput = document.getElementById('sheetNumberInput');
-        if (sheetNumberInput) {
-          sheetNumberInput.maxLength = 1;
-          sheetNumberInput.value = num;
-          sheetNumberInput.placeholder = '0';
-        }
-        
-        sheetState.type = 'figure';
-        sheetState.multiplier = 8;
-        
-        var figureCard = document.querySelector('.bet-type-card[data-type="figure"]');
-        if (window.selectBetType && figureCard) {
-          window.selectBetType(figureCard, 'figure', 1);
-        }
-        
-        updateSummary();
-        openBottomSheet();
+    if (gridNumBtns) {
+      gridNumBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const num = (e.currentTarget.getAttribute('data-num') || e.currentTarget.innerText || e.target.innerText).trim().replace(/\D/g, '').slice(0, 1);
+          sheetState.number = num;
+          if (sheetSelectedNumber) sheetSelectedNumber.innerText = num;
+          
+          const sheetNumberInput = document.getElementById('sheetNumberInput');
+          if (sheetNumberInput) {
+            sheetNumberInput.maxLength = 1;
+            sheetNumberInput.value = num;
+            sheetNumberInput.placeholder = '0';
+          }
+          
+          sheetState.type = 'figure';
+          sheetState.multiplier = 8;
+          
+          var figureCard = document.querySelector('.bet-type-card[data-type="figure"]');
+          if (window.selectBetType && figureCard) {
+            window.selectBetType(figureCard, 'figure', 1);
+          }
+          
+          updateSummary();
+          openBottomSheet();
+        });
       });
-    });
+    }
 
     function openBottomSheet() {
-      betBottomSheet.classList.remove('hidden');
+      if (betBottomSheet) betBottomSheet.classList.remove('hidden');
       setTimeout(() => {
-        betBottomSheetBackdrop.classList.remove('opacity-0');
-        betBottomSheetContent.classList.remove('translate-y-full');
+        if (betBottomSheetBackdrop) betBottomSheetBackdrop.classList.remove('opacity-0');
+        if (betBottomSheetContent) betBottomSheetContent.classList.remove('translate-y-full');
       }, 10);
     }
 
     function closeBottomSheet() {
-      betBottomSheetBackdrop.classList.add('opacity-0');
-      betBottomSheetContent.classList.add('translate-y-full');
+      if (betBottomSheetBackdrop) betBottomSheetBackdrop.classList.add('opacity-0');
+      if (betBottomSheetContent) betBottomSheetContent.classList.add('translate-y-full');
       setTimeout(() => {
-        betBottomSheet.classList.add('hidden');
+        if (betBottomSheet) betBottomSheet.classList.add('hidden');
       }, 300);
     }
 
-    closeSheetBtn.addEventListener('click', closeBottomSheet);
-    betBottomSheetBackdrop.addEventListener('click', closeBottomSheet);
+    if (closeSheetBtn) closeSheetBtn.addEventListener('click', closeBottomSheet);
+    if (betBottomSheetBackdrop) betBottomSheetBackdrop.addEventListener('click', closeBottomSheet);
 
     // Round Selection
-    roundSelectionBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const clicked = e.currentTarget;
-        roundSelectionBtns.forEach(b => {
-          b.classList.remove('border-gold', 'text-gold');
-          b.classList.add('border-white/10', 'text-gray-300');
-          b.querySelector('i').classList.replace('fa-check-square', 'fa-square');
+    if (roundSelectionBtns) {
+      roundSelectionBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const clicked = e.currentTarget;
+          roundSelectionBtns.forEach(b => {
+            b.classList.remove('border-gold', 'text-gold');
+            b.classList.add('border-white/10', 'text-gray-300');
+            const icon = b.querySelector('i');
+            if (icon) icon.classList.replace('fa-check-square', 'fa-square');
+          });
+          clicked.classList.remove('border-white/10', 'text-gray-300');
+          clicked.classList.add('border-gold', 'text-gold');
+          const icon = clicked.querySelector('i');
+          if (icon) icon.classList.replace('fa-square', 'fa-check-square');
+          sheetState.round = clicked.dataset.round;
+          updateSummary();
         });
-        clicked.classList.remove('border-white/10', 'text-gray-300');
-        clicked.classList.add('border-gold', 'text-gold');
-        clicked.querySelector('i').classList.replace('fa-square', 'fa-check-square');
-        sheetState.round = clicked.dataset.round;
-        updateSummary();
       });
-    });
+    }
 
     // Bet Type Selection
-    betTypeSelectionBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const clicked = e.currentTarget;
-        betTypeSelectionBtns.forEach(b => {
-          b.classList.remove('border-gold');
-          b.classList.add('border-white/10');
-        });
-        clicked.classList.remove('border-white/10');
-        clicked.classList.add('border-gold');
-        
-        sheetState.type = clicked.dataset.type;
-        sheetState.multiplier = parseInt(clicked.dataset.mult);
-        sheetState.extraDigits = '';
-        sheetExtraInput.value = '';
-        
-        let limit = 1;
-        if (sheetState.type === 'figure') limit = 1;
-        if (sheetState.type === 'akada') limit = 2;
-        if (sheetState.type === 'ring') limit = 3;
-        if (sheetState.type === 'packet') limit = 4;
-        if (window.setBetDigitLimit) window.setBetDigitLimit(limit);
+    if (betTypeSelectionBtns) {
+      betTypeSelectionBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const clicked = e.currentTarget;
+          betTypeSelectionBtns.forEach(b => {
+            b.classList.remove('border-gold');
+            b.classList.add('border-white/10');
+          });
+          clicked.classList.remove('border-white/10');
+          clicked.classList.add('border-gold');
+          
+          sheetState.type = clicked.dataset.type;
+          sheetState.multiplier = parseInt(clicked.dataset.mult);
+          sheetState.extraDigits = '';
+          if (sheetExtraInput) sheetExtraInput.value = '';
+          
+          let limit = 1;
+          if (sheetState.type === 'figure') limit = 1;
+          if (sheetState.type === 'akada') limit = 2;
+          if (sheetState.type === 'ring') limit = 3;
+          if (sheetState.type === 'packet') limit = 4;
+          if (window.setBetDigitLimit) window.setBetDigitLimit(limit);
 
-        if (sheetState.type === 'akada' || sheetState.type === 'ring') {
-          dynamicInputSection.classList.remove('hidden');
-        } else {
-          dynamicInputSection.classList.add('hidden');
-        }
-        updateSummary();
+          if (dynamicInputSection) {
+            if (sheetState.type === 'akada' || sheetState.type === 'ring') {
+              dynamicInputSection.classList.remove('hidden');
+            } else {
+              dynamicInputSection.classList.add('hidden');
+            }
+          }
+          updateSummary();
+        });
       });
-    });
+    }
 
     // Extra Input for Akada/Ring
-    sheetExtraInput.addEventListener('input', (e) => {
-      let raw = e.target.value.replace(/\D/g, '');
-      let allowedLen = sheetState.type === 'akada' ? 1 : (sheetState.type === 'ring' ? 2 : 0);
-      let unique = '';
-      // Filter duplicates including the already selected first number
-      let allChars = sheetState.number;
-      for(let char of raw) {
-         if(!allChars.includes(char)) {
-            unique += char;
-            allChars += char;
-         }
-      }
-      raw = unique.slice(0, allowedLen);
-      e.target.value = raw;
-      sheetState.extraDigits = raw;
-      updateSummary();
-    });
+    if (sheetExtraInput) {
+      sheetExtraInput.addEventListener('input', (e) => {
+        let raw = e.target.value.replace(/\D/g, '');
+        let allowedLen = sheetState.type === 'akada' ? 1 : (sheetState.type === 'ring' ? 2 : 0);
+        let unique = '';
+        let allChars = sheetState.number;
+        for(let char of raw) {
+           if(!allChars.includes(char)) {
+              unique += char;
+              allChars += char;
+           }
+        }
+        raw = unique.slice(0, allowedLen);
+        e.target.value = raw;
+        sheetState.extraDigits = raw;
+        updateSummary();
+      });
+    }
 
     // Amount Selection
-    sheetQuickChips.addEventListener('click', (e) => {
-      if (e.target.tagName !== 'BUTTON') return;
-      const text = e.target.innerText.replace('Rs', '').trim();
-      let amount = parseInt(text);
-      let current = sheetState.amount || 0;
-      current += amount;
-      sheetAmountInput.value = current;
-      sheetState.amount = current;
-      updateSummary();
-    });
+    if (sheetQuickChips) {
+      sheetQuickChips.addEventListener('click', (e) => {
+        if (e.target.tagName !== 'BUTTON') return;
+        const text = e.target.innerText.replace('Rs', '').trim();
+        let amount = parseInt(text);
+        let current = sheetState.amount || 0;
+        current += amount;
+        if (sheetAmountInput) sheetAmountInput.value = current;
+        sheetState.amount = current;
+        updateSummary();
+      });
+    }
 
-    sheetAmountInput.addEventListener('input', (e) => {
-      sheetState.amount = parseInt(e.target.value) || 0;
-      updateSummary();
-    });
+    if (sheetAmountInput) {
+      sheetAmountInput.addEventListener('input', (e) => {
+        sheetState.amount = parseInt(e.target.value) || 0;
+        updateSummary();
+      });
+    }
 
     // --- Mock Activity Feed ---
     const liveActivityBody = document.getElementById('liveActivityBody');
