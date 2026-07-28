@@ -2637,17 +2637,7 @@
         window.expandWheelStage();
       }
 
-      if (statusText) {
-        statusText.innerText = phaseNum === 1 ? '1ST SPIN IN PROGRESS...' : '2ND SPIN IN PROGRESS...';
-        statusText.style.color = '#FFD400';
-      }
-      if (statusDot) {
-        statusDot.style.backgroundColor = '#FFD400';
-        statusDot.style.boxShadow = '0 0 12px rgba(255,212,0,0.8)';
-      }
-
       const targetDigits = winningNumStr.split('');
-      const targetDigit = parseInt(targetDigits[0]);
 
       for(let i=0; i<4; i++) {
         const d = document.getElementById(`digit-${i}`);
@@ -2657,49 +2647,13 @@
         }
       }
 
-      const wheelText = document.getElementById('wheelText');
-      if (wheelText) wheelText.innerText = phaseNum === 1 ? 'SPIN 1' : 'SPIN 2';
       if (wheelGlow) {
         wheelGlow.classList.remove('opacity-[0.15]');
         wheelGlow.classList.add('opacity-40', 'animate-pulse');
       }
 
-      const currentAngle = ((currentRotation % 360) + 360) % 360;
-      const targetAngle = (360 - (targetDigit * 36)) % 360;
-      let addedRotation = 2880 + (targetAngle - currentAngle); // 8 Full 360-Degree Rotations
-      if (addedRotation < 2880) addedRotation += 360;
-      currentRotation += addedRotation;
-
-      const spinDuration = 12.0; // 12 Seconds Smooth Physical Wheel Rotation Per Spin
-      const spinWheel = document.getElementById('spinWheelElement');
-      
-      // Delay 50ms after unhiding container & force layout reflow so browser renders smooth CSS transition!
-      setTimeout(() => {
-        if (spinWheel) {
-          spinWheel.style.transitionProperty = 'transform';
-          spinWheel.style.transitionDuration = `${spinDuration}s`;
-          spinWheel.style.transitionTimingFunction = 'cubic-bezier(0.1, 0.9, 0.2, 1.0)';
-          void spinWheel.offsetHeight;
-          spinWheel.style.transform = `rotate(${currentRotation}deg)`;
-        }
-      }, 50);
-
-      setTimeout(() => {
-        if (wheelText) wheelText.innerText = phaseNum === 1 ? '1ST LOCKED' : '2ND LOCKED';
-        playSound('pop');
-
-        for(let i=0; i<4; i++) {
-          const d = document.getElementById(`digit-${i}`);
-          if (d && targetDigits[i]) {
-            setTimeout(() => {
-              d.innerText = targetDigits[i];
-              d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_30px_rgba(0,255,136,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform scale-105';
-              playSound('pop');
-            }, i * 400);
-          }
-        }
-
-        setTimeout(() => {
+      function spinForDigit(digitIndex) {
+        if (digitIndex >= 4) {
           const multiContainer = document.getElementById('multiResultsContainer');
           if (multiContainer) {
             multiContainer.classList.remove('opacity-0', 'translate-y-4');
@@ -2711,9 +2665,66 @@
                </div>
             `;
           }
+          if (statusText) {
+            statusText.innerText = `${phaseNum === 1 ? '1ST' : '2ND'} DRAW RESULT: ${winningNumStr}`;
+            statusText.style.color = '#00FF88';
+          }
+          if (statusDot) {
+            statusDot.style.backgroundColor = '#00FF88';
+            statusDot.style.boxShadow = '0 0 12px rgba(0,255,136,0.8)';
+          }
           if (onComplete) onComplete();
-        }, 1200);
-      }, spinDuration * 1000);
+          return;
+        }
+
+        const digitChar = targetDigits[digitIndex];
+        const digitVal = parseInt(digitChar, 10);
+
+        if (statusText) {
+          statusText.innerText = `${phaseNum === 1 ? '1ST' : '2ND'} DRAW - SPINNING FOR DIGIT ${digitIndex + 1} OF 4...`;
+          statusText.style.color = '#FFD400';
+        }
+        if (statusDot) {
+          statusDot.style.backgroundColor = '#FFD400';
+          statusDot.style.boxShadow = '0 0 12px rgba(255,212,0,0.8)';
+        }
+
+        const wheelText = document.getElementById('wheelText');
+        if (wheelText) wheelText.innerText = `DIGIT ${digitIndex + 1}`;
+
+        const currentAngle = ((currentRotation % 360) + 360) % 360;
+        const targetAngle = (360 - (digitVal * 36)) % 360;
+        let addedRotation = 1440 + (targetAngle - currentAngle);
+        if (addedRotation < 1440) addedRotation += 360;
+        currentRotation += addedRotation;
+
+        const spinDuration = 3.0;
+        const spinWheel = document.getElementById('spinWheelElement');
+
+        if (spinWheel) {
+          spinWheel.style.transitionProperty = 'transform';
+          spinWheel.style.transitionDuration = `${spinDuration}s`;
+          spinWheel.style.transitionTimingFunction = 'cubic-bezier(0.1, 0.9, 0.2, 1.0)';
+          void spinWheel.offsetHeight;
+          spinWheel.style.transform = `rotate(${currentRotation}deg)`;
+        }
+
+        setTimeout(() => {
+          const d = document.getElementById(`digit-${digitIndex}`);
+          if (d) {
+            d.innerText = digitChar;
+            d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_30px_rgba(0,255,136,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform scale-105';
+            playSound('pop');
+          }
+          if (wheelText) wheelText.innerText = `#${digitIndex + 1}: ${digitChar}`;
+
+          setTimeout(() => {
+            spinForDigit(digitIndex + 1);
+          }, 800);
+        }, spinDuration * 1000);
+      }
+
+      spinForDigit(0);
     }
 
     window.startDraw = startDraw;
