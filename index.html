@@ -2415,16 +2415,16 @@
     }
     setInterval(addMockActivity, 1500);
 
-    // --- Real-Time 2-Minute Draw Cycle Engine ---
-    const DRAW_INTERVAL_SEC = 2100; // 35 Minutes Total Cycle (30m Betting + 3m Spinning + 2m Payout)
+    // --- Real-Time 30-Minute Draw Cycle Engine (2 Draws Per Hour Synchronized with Wall Clock) ---
+    const DRAW_INTERVAL_SEC = 1800; // 30 Minutes Total Cycle (25m Betting + 3m Spinning + 2m Payout)
 
     function getRemainingSeconds() {
       const nowSec = Math.floor(Date.now() / 1000);
       const cycleSec = nowSec % DRAW_INTERVAL_SEC;
-      if (cycleSec < 1800) {
-        return 1800 - cycleSec;
+      if (cycleSec < 1500) {
+        return 1500 - cycleSec;
       } else {
-        return 2100 - cycleSec;
+        return 1800 - cycleSec;
       }
     }
 
@@ -2491,13 +2491,13 @@
     function gameLoop() {
       try {
         const nowSec = Math.floor(Date.now() / 1000);
-        const cycleSec = nowSec % 2100; // 35-Minute Continuous Cycle (2100s)
+        const cycleSec = nowSec % 1800; // 30-Minute Continuous Cycle (2 Draws Per Hour: :00 and :30)
         
-        if (cycleSec < 1800) {
-          // Phase 1: Betting Phase (30 Minutes: 1800s: 0s -> 1799s)
-          const remainingSecs = 1800 - cycleSec;
+        if (cycleSec < 1500) {
+          // Phase 1: Betting Phase (25 Minutes: 1500s: 0s -> 1499s)
+          const remainingSecs = 1500 - cycleSec;
           const time = formatTime(remainingSecs);
-          const percent = (remainingSecs / 1800) * 100;
+          const percent = (remainingSecs / 1500) * 100;
           setProgress(percent);
 
           const wEl = document.getElementById('wheelText');
@@ -2511,9 +2511,9 @@
           window.isBettingLocked = false;
           window.hasTriggeredSpinThisCycle = false;
           isDrawing = false;
-        } else if (cycleSec < 1980) {
-          // Phase 2: Active 3-Minute Wheel Spinning Phase (180s: 1800s -> 1979s)
-          const remainingSecs = 1980 - cycleSec;
+        } else if (cycleSec < 1680) {
+          // Phase 2: Active 3-Minute Wheel Spinning Phase (180s: 1500s -> 1679s)
+          const remainingSecs = 1680 - cycleSec;
           const time = formatTime(remainingSecs);
           const percent = (remainingSecs / 180) * 100;
           setProgress(percent);
@@ -2539,8 +2539,8 @@
             }
           }
         } else {
-          // Phase 3: Winner Payout & Result Stage (2 Minutes: 120s: 1980s -> 2099s)
-          const remainingSecs = 2100 - cycleSec;
+          // Phase 3: Winner Payout & Result Stage (2 Minutes: 120s: 1680s -> 1799s)
+          const remainingSecs = 1800 - cycleSec;
           const time = formatTime(remainingSecs);
           const percent = (remainingSecs / 120) * 100;
           setProgress(percent);
