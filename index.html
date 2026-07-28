@@ -2422,7 +2422,7 @@
           const percent = (remainingSecs / 120) * 100;
           setProgress(percent);
 
-          if (wheelText && !isDrawing) wheelText.innerText = time.digital;
+          if (wheelText) wheelText.innerText = time.digital;
           const headerTimerText = document.getElementById('headerTimerText');
           if (headerTimerText) headerTimerText.innerText = time.digital;
           const bannerCountdownText = document.getElementById('bannerCountdownText');
@@ -2448,7 +2448,7 @@
           const percent = (remainingSecs / 60) * 100;
           setProgress(percent);
 
-          if (wheelText && !isDrawing) wheelText.innerText = time.digital;
+          if (wheelText) wheelText.innerText = time.digital;
           const headerTimerText = document.getElementById('headerTimerText');
           if (headerTimerText) headerTimerText.innerText = time.digital;
           const bannerCountdownText = document.getElementById('bannerCountdownText');
@@ -2733,6 +2733,18 @@
 
      gameLoop(); // Immediate initial execution
      setInterval(gameLoop, 1000); // Continuous tick every 1000ms
+
+     document.addEventListener('visibilitychange', () => {
+       if (document.visibilityState === 'visible') {
+         isDrawing = false;
+         gameLoop();
+       }
+     });
+
+     window.addEventListener('focus', () => {
+       isDrawing = false;
+       gameLoop();
+     });
 
     confirmBetBtn.addEventListener('click', () => {
       if(isDrawing) return;
