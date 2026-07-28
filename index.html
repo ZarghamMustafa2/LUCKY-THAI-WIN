@@ -593,7 +593,7 @@
       if (window.updateSummary) window.updateSummary();
     };
 
-    window.isWheelHidden = true;
+    window.isWheelHidden = false;
 
     window.expandWheelStage = function() {
       window.isWheelHidden = false;
@@ -2487,10 +2487,6 @@
           if (headerTimerText) headerTimerText.innerText = time.digital;
           const bannerCountdownText = document.getElementById('bannerCountdownText');
           if (bannerCountdownText) bannerCountdownText.innerText = time.formatted;
-
-          if (!window.isWheelHidden && typeof window.collapseWheelStage === 'function') {
-            window.collapseWheelStage();
-          }
 
           window.currentPhase = 'betting';
           window.isBettingLocked = false;
