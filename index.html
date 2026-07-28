@@ -251,12 +251,19 @@
 
     window.placeInlineBet = function() {
       try {
-        var bannerInput = document.getElementById('bannerNumberInput');
+        var bannerInput = document.getElementById('bannerCustomBetInput') || document.getElementById('bannerNumberInput');
         var sheetInput = document.getElementById('sheetNumberInput');
-        var inputVal = (bannerInput && bannerInput.value) || (sheetInput && sheetInput.value) || '';
-        var num = (window.sheetState.number || inputVal || '0').trim();
+        var customInputVal = (bannerInput && bannerInput.value) ? bannerInput.value.trim() : '';
+        var sheetInputVal = (sheetInput && sheetInput.value) ? sheetInput.value.trim() : '';
+        var inputVal = customInputVal || sheetInputVal || '';
+        
+        var num = String((window.sheetState && window.sheetState.number) || inputVal || '0').trim();
+        if (!num) num = '0';
 
-        var amount = parseInt(window.sheetState.amount, 10) || 10;
+        var rawAmount = (window.sheetState && window.sheetState.amount) ? window.sheetState.amount : 10;
+        var amount = parseInt(rawAmount, 10);
+        if (isNaN(amount) || amount <= 0) amount = 10;
+
         if (window.currentBalance < amount) {
           if (typeof window.showToast === 'function') window.showToast('Insufficient Wallet Balance! Balance is Rs ' + window.currentBalance.toLocaleString(), 'error');
           return;
@@ -266,13 +273,13 @@
         window.currentBalance -= amount;
         if (typeof window.updateWalletUI === 'function') window.updateWalletUI();
 
-        var selected = Array.isArray(window.sheetState.selectedRounds) ? window.sheetState.selectedRounds : [1];
+        var selected = (window.sheetState && Array.isArray(window.sheetState.selectedRounds)) ? window.sheetState.selectedRounds : [1];
         var roundNames = selected.map(function(r) { return (r == 1) ? '1st Draw' : '2nd Draw'; }).join(' & ');
 
+        var betType = (window.sheetState && window.sheetState.type) || 'figure';
+        var betMult = (window.sheetState && window.sheetState.multiplier) || 8;
+
         if (typeof playSound === 'function') playSound('pop');
-        if (typeof window.showToast === 'function') {
-          window.showToast('Bet Placed Successfully! Rs ' + amount + ' deducted from your wallet.', 'success');
-        }
 
         // Push to active bets array
         if (!window.activeBets) window.activeBets = [];
@@ -280,25 +287,32 @@
           number: num,
           target: num,
           round: roundNames,
-          type: window.sheetState.type || 'figure',
+          type: betType,
           amount: amount,
-          multiplier: window.sheetState.multiplier || 9
+          multiplier: betMult
         });
 
         // Update Active Bets count UI
-        const countEl = document.getElementById('headerActiveBetsCount');
+        var countEl = document.getElementById('headerActiveBetsCount');
         if (countEl) countEl.innerText = window.activeBets.length;
 
         // Update header current bet display to total amount
-        let totalAmount = window.activeBets.reduce((sum, b) => sum + b.amount, 0);
+        var totalAmount = window.activeBets.reduce(function(sum, b) { return sum + (b.amount || 0); }, 0);
         var headerCurrent = document.getElementById('headerCurrentBet');
         if (headerCurrent) headerCurrent.innerText = 'Rs ' + totalAmount.toLocaleString();
 
         window.isBetPlaced = true;
         if (typeof window.setBetButtonState === 'function') window.setBetButtonState(true);
         if (typeof window.renderActiveBetsList === 'function') window.renderActiveBetsList();
+
+        if (typeof window.showToast === 'function') {
+          window.showToast('Bet Placed Successfully! Rs ' + amount.toLocaleString() + ' deducted from wallet.', 'success');
+        }
       } catch(err) {
         console.error("placeInlineBet error:", err);
+        if (typeof window.showToast === 'function') {
+          window.showToast('Error placing bet: ' + err.message, 'error');
+        }
       }
     };
 
@@ -2847,6 +2861,15 @@
       showToast(`Bet Placed Successfully: Rs ${amount} on sequence ${target}`, 'success');
       closeBottomSheet();
     });
+
+    const inlinePlaceBetBtn = document.getElementById('inlinePlaceBetBtn');
+    if (inlinePlaceBetBtn) {
+      inlinePlaceBetBtn.addEventListener('click', (e) => {
+        if (typeof window.placeInlineBet === 'function') {
+          window.placeInlineBet();
+        }
+      });
+    }
 
      // Initialize UI
      function updateCalculations() {
