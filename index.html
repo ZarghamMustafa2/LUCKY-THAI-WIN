@@ -2600,41 +2600,51 @@
       }
 
       let res1 = generateUniqueDigitString(4); // 1st Draw: 4 Digits
-      let res2 = generateUniqueDigitString(3); // 2nd Draw: 3 Digits
-      while(res2 === res1) {
-        res2 = generateUniqueDigitString(3);
-      }
+      let res2 = generateUniqueDigitString(4); // 2nd Draw: 4 Digits
+      let res3 = generateUniqueDigitString(4); // 2nd Draw: 4 Digits
+      let res4 = generateUniqueDigitString(4); // 2nd Draw: 4 Digits
 
       // Demo Cheat: Win opportunity if bet placed
       if (window.activeBets && window.activeBets.length > 0 && Math.random() > 0.4) {
          const firstBet = window.activeBets[0];
          const roundStr = String(firstBet.round);
+         let missingLen = 4 - firstBet.target.length;
+         let excludeDigits = firstBet.target.split('');
+         let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
+         let matchVal = (firstBet.target + randomSuffix).slice(0, 4);
+
          if (roundStr.indexOf('1') > -1) {
-           let missingLen = 4 - firstBet.target.length;
-           let excludeDigits = firstBet.target.split('');
-           let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
-           res1 = (firstBet.target + randomSuffix).slice(0, 4);
+           res1 = matchVal;
+         } else if (roundStr.indexOf('2') > -1) {
+           res2 = matchVal;
+         } else if (roundStr.indexOf('3') > -1) {
+           res3 = matchVal;
          } else {
-           let missingLen = 3 - firstBet.target.length;
-           let excludeDigits = firstBet.target.split('');
-           let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
-           res2 = (firstBet.target + randomSuffix).slice(0, 3);
+           res4 = matchVal;
          }
       }
 
-      window.generatedResults = [res1, res2];
+      window.generatedResults = [res1, res2, res3, res4];
 
-      runSpinPhase(1, res1, () => {
+      runSpinPhase(1, '1ST DRAW', res1, () => {
         setTimeout(() => {
-          runSpinPhase(2, res2, () => {
-            setTimeout(() => finishDraw(), 1000);
+          runSpinPhase(2, '2ND DRAW', res2, () => {
+            setTimeout(() => {
+              runSpinPhase(3, '2ND DRAW', res3, () => {
+                setTimeout(() => {
+                  runSpinPhase(4, '2ND DRAW', res4, () => {
+                    setTimeout(() => finishDraw(), 1000);
+                  });
+                }, 1500);
+              });
+            }, 1500);
           });
-        }, 2000);
+        }, 1500);
       });
     }
     window.startDraw = startDraw;
 
-    function runSpinPhase(phaseNum, winningNumStr, onComplete) {
+    function runSpinPhase(phaseNum, drawLabel, winningNumStr, onComplete) {
       if (typeof window.expandWheelStage === 'function') {
         window.expandWheelStage();
       }
@@ -2665,16 +2675,16 @@
           const multiContainer = document.getElementById('multiResultsContainer');
           if (multiContainer) {
             multiContainer.classList.remove('opacity-0', 'translate-y-4');
-            const badgeBorder = phaseNum === 1 ? 'border-gold text-gold shadow-[0_0_15px_rgba(255,212,0,0.3)]' : 'border-cyanLight text-cyanLight shadow-[0_0_15px_rgba(0,212,255,0.3)]';
+            const badgeBorder = drawLabel.indexOf('1ST') > -1 ? 'border-gold text-gold shadow-[0_0_15px_rgba(255,212,0,0.3)]' : 'border-cyanLight text-cyanLight shadow-[0_0_15px_rgba(0,212,255,0.3)]';
             multiContainer.innerHTML += `
                <div class="bg-cardDark px-4 py-2 md:px-6 md:py-3 rounded-xl border ${badgeBorder} text-center animate-bounce">
-                  <div class="text-[9px] md:text-[11px] text-gray-400 font-bold mb-1">${phaseNum === 1 ? '1ST DRAW WINNER' : '2ND DRAW WINNER'}</div>
+                  <div class="text-[9px] md:text-[11px] text-gray-400 font-bold mb-1">${drawLabel} WINNER</div>
                   <div class="text-xl md:text-3xl font-mono font-black">${winningNumStr}</div>
                </div>
             `;
           }
           if (statusText) {
-            statusText.innerText = `${phaseNum === 1 ? '1ST' : '2ND'} DRAW RESULT: ${winningNumStr}`;
+            statusText.innerText = `${drawLabel} RESULT: ${winningNumStr}`;
             statusText.style.color = '#00FF88';
           }
           if (statusDot) {
@@ -2689,7 +2699,7 @@
         const digitVal = parseInt(digitChar, 10);
 
         if (statusText) {
-          statusText.innerText = `${phaseNum === 1 ? '1ST' : '2ND'} DRAW - SPINNING FOR DIGIT ${digitIndex + 1} OF ${totalDigitsInDraw}...`;
+          statusText.innerText = `${drawLabel} - SPINNING FOR DIGIT ${digitIndex + 1} OF ${totalDigitsInDraw}...`;
           statusText.style.color = '#FFD400';
         }
         if (statusDot) {
