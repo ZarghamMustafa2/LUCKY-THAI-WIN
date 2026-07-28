@@ -887,7 +887,7 @@
           <i class="fa-solid fa-stopwatch text-gold animate-pulse text-base sm:text-lg"></i>
           <div class="flex flex-col text-left">
             <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Wheel Stage</span>
-            <span id="headerTimerText" class="font-mono text-xs sm:text-sm font-black text-gold leading-none">25:00</span>
+            <span id="headerTimerText" class="font-mono text-xs sm:text-sm font-black text-gold leading-none">30:00</span>
           </div>
           <i id="headerChevronIcon" class="fa-solid fa-chevron-down text-xs text-gray-400 ml-0.5 transition-transform duration-300" style="transform: rotate(180deg);"></i>
         </button>
@@ -1002,7 +1002,7 @@
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[9px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest leading-tight">Next Spin Scheduled</span>
-                  <span class="text-sm sm:text-xl font-mono font-black text-white leading-tight">Next Draw <span id="bannerCountdownText" class="text-gold">25m 00s</span></span>
+                  <span class="text-sm sm:text-xl font-mono font-black text-white leading-tight">Next Draw <span id="bannerCountdownText" class="text-gold">30m 00s</span></span>
                 </div>
               </div>
             </div>
@@ -1242,7 +1242,7 @@
                   <!-- Glowing Center Hub Display with Large Automatic Real-Time Timer & Manual Spin Trigger -->
                   <div id="centerSpinBtn" onclick="if(typeof startDraw==='function'){ showToast('Spinning Wheel...', 'success'); startDraw(true); }" class="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-full border-4 md:border-8 border-gold shadow-[0_0_30px_rgba(255,212,0,0.5),inset_0_0_20px_rgba(0,0,0,0.8)] flex flex-col items-center justify-center relative z-10 bg-gradient-to-b from-[#121B2F] to-[#0D0D0D] cursor-pointer hover:scale-105 active:scale-95 transition-all">
                     <span class="text-[9px] sm:text-[11px] font-black text-gray-400 uppercase tracking-widest pointer-events-none mb-0.5">NEXT DRAW IN</span>
-                    <span id="wheelText" class="font-mono text-base sm:text-2xl md:text-3xl font-black text-gold drop-shadow-[0_0_15px_rgba(255,212,0,0.9)] tracking-wider pointer-events-none">25:00</span>
+                    <span id="wheelText" class="font-mono text-base sm:text-2xl md:text-3xl font-black text-gold drop-shadow-[0_0_15px_rgba(255,212,0,0.9)] tracking-wider pointer-events-none">30:00</span>
                   </div>
                 </div>
               </div>
@@ -2397,15 +2397,15 @@
     setInterval(addMockActivity, 1500);
 
     // --- Real-Time 2-Minute Draw Cycle Engine ---
-    const DRAW_INTERVAL_SEC = 1800; // 30 Minutes Cycle (25m Betting + 3m Spinning + 2m Payout)
+    const DRAW_INTERVAL_SEC = 2100; // 35 Minutes Total Cycle (30m Betting + 3m Spinning + 2m Payout)
 
     function getRemainingSeconds() {
       const nowSec = Math.floor(Date.now() / 1000);
       const cycleSec = nowSec % DRAW_INTERVAL_SEC;
-      if (cycleSec < 1500) {
-        return 1500 - cycleSec;
-      } else {
+      if (cycleSec < 1800) {
         return 1800 - cycleSec;
+      } else {
+        return 2100 - cycleSec;
       }
     }
 
@@ -2472,13 +2472,13 @@
     function gameLoop() {
       try {
         const nowSec = Math.floor(Date.now() / 1000);
-        const cycleSec = nowSec % 1800; // 30-Minute Continuous Cycle (1800s)
+        const cycleSec = nowSec % 2100; // 35-Minute Continuous Cycle (2100s)
         
-        if (cycleSec < 1500) {
-          // Phase 1: Betting Phase (25 Minutes: 1500s: 0s -> 1499s)
-          const remainingSecs = 1500 - cycleSec;
+        if (cycleSec < 1800) {
+          // Phase 1: Betting Phase (30 Minutes: 1800s: 0s -> 1799s)
+          const remainingSecs = 1800 - cycleSec;
           const time = formatTime(remainingSecs);
-          const percent = (remainingSecs / 1500) * 100;
+          const percent = (remainingSecs / 1800) * 100;
           setProgress(percent);
 
           const wEl = document.getElementById('wheelText');
@@ -2496,9 +2496,9 @@
           window.isBettingLocked = false;
           window.hasTriggeredSpinThisCycle = false;
           isDrawing = false;
-        } else if (cycleSec < 1680) {
-          // Phase 2: Active 3-Minute Wheel Spinning Phase (180s: 1500s -> 1679s)
-          const remainingSecs = 1680 - cycleSec;
+        } else if (cycleSec < 1980) {
+          // Phase 2: Active 3-Minute Wheel Spinning Phase (180s: 1800s -> 1979s)
+          const remainingSecs = 1980 - cycleSec;
           const time = formatTime(remainingSecs);
           const percent = (remainingSecs / 180) * 100;
           setProgress(percent);
@@ -2524,8 +2524,8 @@
             }
           }
         } else {
-          // Phase 3: Winner Payout & Result Stage (2 Minutes: 120s: 1680s -> 1799s)
-          const remainingSecs = 1800 - cycleSec;
+          // Phase 3: Winner Payout & Result Stage (2 Minutes: 120s: 1980s -> 2099s)
+          const remainingSecs = 2100 - cycleSec;
           const time = formatTime(remainingSecs);
           const percent = (remainingSecs / 120) * 100;
           setProgress(percent);
