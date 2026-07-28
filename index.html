@@ -2393,7 +2393,7 @@
           const percent = (remainingSecs / 60) * 100;
           setProgress(percent);
 
-          if (wheelText && !isDrawing) wheelText.innerText = timeStrFormatted;
+          if (wheelText) wheelText.innerText = timeStrDigital;
           const headerTimerText = document.getElementById('headerTimerText');
           if (headerTimerText) headerTimerText.innerText = timeStrDigital;
           const bannerCountdownText = document.getElementById('bannerCountdownText');
@@ -2411,6 +2411,7 @@
           const secs = remainingSecs % 60;
           const sStr = secs.toString().padStart(2, '0');
           const timeStrDigital = `0${mins}:${sStr}`;
+          const timeStrFormatted = `0${mins}m ${sStr}s`;
 
           const percent = (remainingSecs / 120) * 100;
           setProgress(percent);
@@ -2419,7 +2420,7 @@
           const headerTimerText = document.getElementById('headerTimerText');
           if (headerTimerText) headerTimerText.innerText = timeStrDigital;
           const bannerCountdownText = document.getElementById('bannerCountdownText');
-          if (bannerCountdownText) bannerCountdownText.innerText = 'Wheel Spinning...';
+          if (bannerCountdownText) bannerCountdownText.innerText = timeStrFormatted;
 
           window.currentPhase = 'spinning';
           window.isBettingLocked = true;
@@ -2440,9 +2441,16 @@
           const remainingSecs = 60 - spinSecs;
           const sStr = remainingSecs.toString().padStart(2, '0');
           const timeStrDigital = `00:${sStr}`;
+          const timeStrFormatted = `0m ${sStr}s`;
 
+          const percent = (remainingSecs / 60) * 100;
+          setProgress(percent);
+
+          if (wheelText && !isDrawing) wheelText.innerText = timeStrDigital;
           const headerTimerText = document.getElementById('headerTimerText');
           if (headerTimerText) headerTimerText.innerText = timeStrDigital;
+          const bannerCountdownText = document.getElementById('bannerCountdownText');
+          if (bannerCountdownText) bannerCountdownText.innerText = timeStrFormatted;
 
           window.currentPhase = 'winner_stage';
         }
