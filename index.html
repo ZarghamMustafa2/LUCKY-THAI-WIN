@@ -2611,97 +2611,113 @@
     window.startDraw = startDraw;
 
     function finishDraw() {
-      wheelGlow.classList.remove('opacity-40', 'animate-pulse');
-      wheelGlow.classList.add('opacity-[0.15]');
-      
-      window.hasExpandedForThisPreDraw = true;
-      isDrawing = false;
-      gridNumBtns.forEach(btn => {
-         btn.disabled = false;
-         btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
-      });
-      if (statusText) statusText.innerText = 'Accepting Bets';
-      
-      let totalPayout = 0;
-      let totalAmount = 0;
-      const betsToProcess = window.activeBets || [];
-
-      if (betsToProcess.length > 0) {
-        betsToProcess.forEach(bet => {
-          totalAmount += bet.amount;
-          let isWin = false;
-          for(let i=0; i<4; i++) {
-            if (window.generatedResults[i].startsWith(bet.target)) {
-              isWin = true;
-              break;
-            }
-          }
-          if (isWin) {
-            let multiplier = (Math.pow(10, bet.target.length) * 0.9) / 4;
-            let payout = bet.amount * multiplier;
-            totalPayout += payout;
-          }
-        });
-
-        if (totalPayout > 0) {
-          window.currentBalance += totalPayout;
-          updateWalletUI();
-          
-          if (typeof confetti === 'function') {
-            confetti({
-              particleCount: 200,
-              spread: 90,
-              origin: { y: 0.6 },
-              colors: ['#00e701', '#FFD400', '#00D4FF', '#8B5CF6'],
-              disableForReducedMotion: true
-            });
-          }
-          setTimeout(() => showModal(true, window.generatedResults, totalPayout), 400);
-        } else {
-          setTimeout(() => showModal(false, window.generatedResults, 0, totalAmount), 400);
+      try {
+        if (wheelGlow) {
+          wheelGlow.classList.remove('opacity-40', 'animate-pulse');
+          wheelGlow.classList.add('opacity-[0.15]');
         }
         
-        // Store total bet amount in lastBetAmount
-        window.lastBetAmount = totalAmount;
-        try {
-          localStorage.setItem('lastBetAmount', totalAmount);
-        } catch(e) {}
-        var headerLast = document.getElementById('headerLastBet');
-        if (headerLast) headerLast.innerText = 'Rs ' + totalAmount.toLocaleString();
-
-        window.activeBets = [];
-        const countEl = document.getElementById('headerActiveBetsCount');
-        if (countEl) countEl.innerText = '0';
-        
-        var headerCurrent = document.getElementById('headerCurrentBet');
-        if (headerCurrent) headerCurrent.innerText = 'Rs 0';
-
-        if (typeof window.setBetButtonState === 'function') window.setBetButtonState(false);
-      } else {
-        setTimeout(() => showModal(null, window.generatedResults), 400);
-      }
-
-      if (isAutoBet && autoBetConfig) {
-        if (window.currentBalance >= autoBetConfig.amount) {
-          window.currentBalance -= autoBetConfig.amount;
-          updateWalletUI();
-          
-          if (!window.activeBets) window.activeBets = [];
-          window.activeBets.push({ ...autoBetConfig });
-          
-          const countEl = document.getElementById('headerActiveBetsCount');
-          if (countEl) countEl.innerText = window.activeBets.length;
-          
-          showToast(`Auto Bet Placed: Rs ${autoBetConfig.amount}`, 'success');
-          
+        window.hasExpandedForThisPreDraw = true;
+        isDrawing = false;
+        if (gridNumBtns) {
           gridNumBtns.forEach(btn => {
              btn.disabled = false;
              btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
           });
-        } else {
-          showToast('Auto Bet Stopped: Insufficient Balance', 'error');
-          isAutoBet = false;
         }
+        if (statusText) statusText.innerText = 'Accepting Bets';
+        
+        let totalPayout = 0;
+        let totalAmount = 0;
+        const betsToProcess = window.activeBets || [];
+
+        if (betsToProcess.length > 0) {
+          betsToProcess.forEach(bet => {
+            if (!bet) return;
+            totalAmount += (bet.amount || 0);
+            let isWin = false;
+            if (window.generatedResults && Array.isArray(window.generatedResults)) {
+              for(let i=0; i<window.generatedResults.length; i++) {
+                if (window.generatedResults[i] && String(window.generatedResults[i]).startsWith(String(bet.target || bet.number || ''))) {
+                  isWin = true;
+                  break;
+                }
+              }
+            }
+            if (isWin) {
+              const targetStr = String(bet.target || bet.number || '0');
+              let multiplier = (Math.pow(10, targetStr.length) * 0.9) / 4;
+              let payout = (bet.amount || 0) * multiplier;
+              totalPayout += payout;
+            }
+          });
+
+          if (totalPayout > 0) {
+            window.currentBalance += totalPayout;
+            updateWalletUI();
+            
+            if (typeof confetti === 'function') {
+              confetti({
+                particleCount: 200,
+                spread: 90,
+                origin: { y: 0.6 },
+                colors: ['#00e701', '#FFD400', '#00D4FF', '#8B5CF6'],
+                disableForReducedMotion: true
+              });
+            }
+            setTimeout(() => showModal(true, window.generatedResults, totalPayout), 400);
+          } else {
+            setTimeout(() => showModal(false, window.generatedResults, 0, totalAmount), 400);
+          }
+          
+          // Store total bet amount in lastBetAmount
+          window.lastBetAmount = totalAmount;
+          try {
+            localStorage.setItem('lastBetAmount', totalAmount);
+          } catch(e) {}
+          var headerLast = document.getElementById('headerLastBet');
+          if (headerLast) headerLast.innerText = 'Rs ' + totalAmount.toLocaleString();
+
+          window.activeBets = [];
+          const countEl = document.getElementById('headerActiveBetsCount');
+          if (countEl) countEl.innerText = '0';
+          
+          var headerCurrent = document.getElementById('headerCurrentBet');
+          if (headerCurrent) headerCurrent.innerText = 'Rs 0';
+
+          if (typeof window.setBetButtonState === 'function') window.setBetButtonState(false);
+        } else {
+          setTimeout(() => showModal(null, window.generatedResults), 400);
+        }
+
+        if (isAutoBet && autoBetConfig) {
+          if (window.currentBalance >= autoBetConfig.amount) {
+            window.currentBalance -= autoBetConfig.amount;
+            updateWalletUI();
+            
+            if (!window.activeBets) window.activeBets = [];
+            window.activeBets.push({ ...autoBetConfig });
+            
+            const countEl = document.getElementById('headerActiveBetsCount');
+            if (countEl) countEl.innerText = window.activeBets.length;
+            
+            showToast(`Auto Bet Placed: Rs ${autoBetConfig.amount}`, 'success');
+            
+            if (gridNumBtns) {
+              gridNumBtns.forEach(btn => {
+                 btn.disabled = false;
+                 btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+              });
+            }
+          } else {
+            showToast('Auto Bet Stopped: Insufficient Balance', 'error');
+            isAutoBet = false;
+          }
+        }
+      } catch (err) {
+        console.error("finishDraw error:", err);
+      } finally {
+        isDrawing = false;
       }
     }
 
