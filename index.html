@@ -2371,7 +2371,9 @@
     const liveActivityBody = document.getElementById('liveActivityBody');
     const mockNames = ["Alex_Winner", "CryptoWhale", "Luna99", "DegenKing", "Satoshi_N", "LuckyStar", "ThaiRoller"];
     function addMockActivity() {
-      if(Math.random() > 0.3) return; // Random interval
+      const liveActivityBody = document.getElementById('liveActivityBody');
+      if (!liveActivityBody) return;
+      if (Math.random() > 0.3) return; // Random interval
       const isWin = Math.random() > 0.7;
       const name = mockNames[Math.floor(Math.random() * mockNames.length)];
       const wager = (Math.random() * 5000 + 100).toFixed(2);
