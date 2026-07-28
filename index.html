@@ -294,8 +294,8 @@
 
         if (window.clearQuickDigit) window.clearQuickDigit();
         if (typeof playSound === 'function') playSound('pop');
-        if (typeof showToast === 'function') showToast('All active bets cancelled! Rs ' + refundAmount + ' refunded back to your wallet.', 'info');
-      } else if (window.sheetState.number || window.sheetState.amount) {
+        if (typeof showToast === 'function') showToast('Bet Cancelled! Rs ' + refundAmount.toLocaleString() + ' refunded back to wallet.', 'info');
+      } else if (window.sheetState && (window.sheetState.number || window.sheetState.amount)) {
         if (window.clearQuickDigit) window.clearQuickDigit();
         if (typeof showToast === 'function') showToast('Selection Cleared', 'info');
       } else {
@@ -1828,10 +1828,17 @@
       if (type === 'error') {
         toastIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
         toastIcon.className = 'text-danger text-2xl drop-shadow-[0_0_8px_rgba(255,77,79,0.6)]';
+      } else if (type === 'info') {
+        toastIcon.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+        toastIcon.className = 'text-cyanLight text-2xl drop-shadow-[0_0_8px_rgba(0,212,255,0.6)]';
+      } else if (type === 'warning') {
+        toastIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+        toastIcon.className = 'text-gold text-2xl drop-shadow-[0_0_8px_rgba(255,212,0,0.6)]';
       } else {
         toastIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
         toastIcon.className = 'text-primary text-2xl drop-shadow-[0_0_8px_rgba(0,255,136,0.6)]';
       }
+      toastMsg.innerText = msg;
       toast.classList.remove('-translate-y-10', 'opacity-0');
       toast.classList.add('translate-y-0', 'opacity-100');
       clearTimeout(toastTimeout);
