@@ -146,20 +146,24 @@
     // Global Wallet State Initializer
     try {
       var savedBal = localStorage.getItem('userWalletBalance');
-      window.currentBalance = savedBal !== null ? parseFloat(savedBal) : 10450;
+      window.currentBalance = (savedBal !== null && !isNaN(parseFloat(savedBal))) ? parseFloat(savedBal) : 10450;
     } catch(e) {
       window.currentBalance = 10450;
     }
 
     window.updateWalletUI = function() {
-      var walletEl = document.getElementById('walletBalance');
-      if (walletEl) {
-        walletEl.innerText = 'Rs ' + window.currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-      }
+      var bal = (typeof window.currentBalance === 'number' && !isNaN(window.currentBalance)) ? window.currentBalance : 10450;
+      window.currentBalance = bal;
+      var formatted = 'Rs ' + bal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      var walletEls = document.querySelectorAll('#walletBalance, .wallet-balance-text, [data-wallet-balance]');
+      walletEls.forEach(function(el) {
+        if (el) el.innerText = formatted;
+      });
       try {
-        localStorage.setItem('userWalletBalance', window.currentBalance);
+        localStorage.setItem('userWalletBalance', String(bal));
       } catch(e) {}
     };
+    window.updateWalletUI();
 
     window.setBetButtonState = function(isPlaced) {
       var btn = document.getElementById('inlinePlaceBetBtn');
