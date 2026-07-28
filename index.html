@@ -2481,7 +2481,8 @@
           const percent = (remainingSecs / 60) * 100;
           setProgress(percent);
 
-          if (wheelText) wheelText.innerText = time.digital;
+          const wEl = document.getElementById('wheelText');
+          if (wEl) wEl.innerText = time.digital;
           const headerTimerText = document.getElementById('headerTimerText');
           if (headerTimerText) headerTimerText.innerText = time.digital;
           const bannerCountdownText = document.getElementById('bannerCountdownText');
@@ -2502,7 +2503,8 @@
           const percent = (remainingSecs / 120) * 100;
           setProgress(percent);
 
-          if (wheelText) wheelText.innerText = time.digital;
+          const wEl = document.getElementById('wheelText');
+          if (wEl) wEl.innerText = time.digital;
           const headerTimerText = document.getElementById('headerTimerText');
           if (headerTimerText) headerTimerText.innerText = time.digital;
           const bannerCountdownText = document.getElementById('bannerCountdownText');
@@ -2528,7 +2530,8 @@
           const percent = (remainingSecs / 60) * 100;
           setProgress(percent);
 
-          if (wheelText) wheelText.innerText = time.digital;
+          const wEl = document.getElementById('wheelText');
+          if (wEl) wEl.innerText = time.digital;
           const headerTimerText = document.getElementById('headerTimerText');
           if (headerTimerText) headerTimerText.innerText = time.digital;
           const bannerCountdownText = document.getElementById('bannerCountdownText');
