@@ -179,28 +179,27 @@
     };
 
     window.placeInlineBet = function() {
-      var num = window.sheetState.number;
-      if (!num || num.trim() === '') {
-        if (typeof showToast === 'function') showToast('Please select a number first!', 'warning');
-        return;
-      }
+      var bannerInput = document.getElementById('bannerNumberInput');
+      var sheetInput = document.getElementById('sheetNumberInput');
+      var inputVal = (bannerInput && bannerInput.value) || (sheetInput && sheetInput.value) || '';
+      var num = (window.sheetState.number || inputVal || '0').trim();
 
-      var amount = window.sheetState.amount || 10;
+      var amount = parseInt(window.sheetState.amount, 10) || 10;
       if (window.currentBalance < amount) {
-        if (typeof showToast === 'function') showToast('Insufficient Wallet Balance! Balance is Rs ' + window.currentBalance.toLocaleString(), 'error');
+        if (typeof window.showToast === 'function') window.showToast('Insufficient Wallet Balance! Balance is Rs ' + window.currentBalance.toLocaleString(), 'error');
         return;
       }
 
       // Automatically Deduct Wallet Balance!
       window.currentBalance -= amount;
-      window.updateWalletUI();
+      if (typeof window.updateWalletUI === 'function') window.updateWalletUI();
 
       var selected = window.sheetState.selectedRounds || [1];
       var roundNames = selected.map(function(r) { return r === 1 ? '1st Draw' : '2nd Draw'; }).join(' & ');
 
       if (typeof playSound === 'function') playSound('pop');
-      if (typeof showToast === 'function') {
-        showToast('Bet Placed Successfully! Rs ' + amount + ' deducted from your wallet.', 'success');
+      if (typeof window.showToast === 'function') {
+        window.showToast('Bet Placed Successfully! Rs ' + amount + ' deducted from your wallet.', 'success');
       }
 
       // Push to active bets array
@@ -211,7 +210,7 @@
         round: roundNames,
         type: window.sheetState.type || 'figure',
         amount: amount,
-        multiplier: window.sheetState.multiplier
+        multiplier: window.sheetState.multiplier || 9
       });
 
       // Update Active Bets count UI
@@ -224,7 +223,7 @@
       if (headerCurrent) headerCurrent.innerText = 'Rs ' + totalAmount.toLocaleString();
 
       window.isBetPlaced = true;
-      window.setBetButtonState(true);
+      if (typeof window.setBetButtonState === 'function') window.setBetButtonState(true);
     };
 
     window.cancelActiveBet = function() {
@@ -1783,7 +1782,8 @@
     let toastTimeout;
 
     function showToast(msg, type = 'success') {
-      toastMsg.innerText = msg;
+      window.showToast = showToast;
+      if (!toastMsg) return;
       if (type === 'error') {
         toastIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
         toastIcon.className = 'text-danger text-2xl drop-shadow-[0_0_8px_rgba(255,77,79,0.6)]';
