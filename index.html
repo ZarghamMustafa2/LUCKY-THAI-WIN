@@ -772,25 +772,6 @@
       from { transform: translateY(-20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-
-    @media (max-width: 1024px) {
-      html, body {
-        overflow-y: auto !important;
-        height: auto !important;
-        min-height: 100vh !important;
-        -webkit-overflow-scrolling: touch !important;
-        overscroll-behavior-y: contain !important;
-      }
-      #appMainWrapper {
-        height: auto !important;
-        min-height: 100vh !important;
-        overflow: visible !important;
-      }
-      main {
-        height: auto !important;
-        overflow: visible !important;
-      }
-    }
   </style>
 </head>
 <body class="flex h-screen overflow-hidden bg-bgDark bg-particles relative text-gray-300">
@@ -3086,13 +3067,13 @@
       container.innerHTML = html;
     })();
 
-    // Native Physical Rubberband Pull To Refresh (Universal Mobile Touch Handler)
+    // Native Physical Rubberband Pull To Refresh (100% Passive & Non-Blocking Touch Handler)
     (function initPullToRefresh() {
       var startY = 0;
       var currentY = 0;
       var isPulling = false;
       var isRefreshing = false;
-      var threshold = 30;
+      var threshold = 40;
 
       var indicator = document.getElementById('pullToRefreshIndicator');
       var spinnerIcon = document.getElementById('pullSpinnerIcon');
@@ -3105,7 +3086,7 @@
         var mainEl = document.querySelector('main');
         var mainTop = mainEl ? mainEl.scrollTop : 0;
         var winTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        return mainTop <= 5 && winTop <= 5;
+        return mainTop <= 2 && winTop <= 2;
       }
 
       function handleTouchStart(e) {
@@ -3119,7 +3100,6 @@
         if (isRefreshing || !e.touches || e.touches.length !== 1) return;
         currentY = e.touches[0].clientY;
 
-        // If top is reached while dragging down, activate pull mode dynamically
         if (!isPulling && isAtTop() && currentY > startY) {
           startY = currentY;
           isPulling = true;
@@ -3128,10 +3108,8 @@
         if (!isPulling) return;
 
         var diff = currentY - startY;
-        if (diff > 0 && isAtTop()) {
-          if (e.cancelable) e.preventDefault();
-
-          var pullDistance = Math.min(diff * 0.55, 95);
+        if (diff > 10 && isAtTop()) {
+          var pullDistance = Math.min(diff * 0.45, 80);
 
           if (appWrapper) {
             appWrapper.style.transition = 'none';
@@ -3141,7 +3119,7 @@
           indicator.style.opacity = '1';
           indicator.style.transform = 'translate(-50%, ' + (pullDistance + 10) + 'px)';
 
-          var rot = Math.min(diff * 7, 360);
+          var rot = Math.min(diff * 5, 360);
           if (spinnerIcon) spinnerIcon.style.transform = 'rotate(' + rot + 'deg)';
 
           if (diff >= threshold) {
@@ -3204,16 +3182,11 @@
 
       window.triggerAppRefresh = triggerRefresh;
 
-      // Register non-passive touchmove listener directly on window and document
+      // Clean 100% passive listeners to ensure smooth scrolling without touch freezes!
       window.addEventListener('touchstart', handleTouchStart, { passive: true });
-      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+      window.addEventListener('touchmove', handleTouchMove, { passive: true });
       window.addEventListener('touchend', handleTouchEnd, { passive: true });
       window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
-
-      document.addEventListener('touchstart', handleTouchStart, { passive: true });
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('touchend', handleTouchEnd, { passive: true });
-      document.addEventListener('touchcancel', handleTouchEnd, { passive: true });
     })();
 
   </script>
