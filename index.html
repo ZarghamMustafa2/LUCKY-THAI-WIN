@@ -3120,7 +3120,7 @@
         var mainEl = document.querySelector('main');
         var mainTop = mainEl ? mainEl.scrollTop : 0;
         var winTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        return mainTop <= 2 && winTop <= 2;
+        return mainTop <= 25 && winTop <= 25;
       }
 
       function handleTouchStart(e) {
@@ -3142,8 +3142,8 @@
         if (!isPulling) return;
 
         var diff = currentY - startY;
-        if (diff > 10 && isAtTop()) {
-          var pullDistance = Math.min(diff * 0.45, 80);
+        if (diff > 8 && isAtTop()) {
+          var pullDistance = Math.min(diff * 0.55, 90);
 
           if (appWrapper) {
             appWrapper.style.transition = 'none';
@@ -3151,9 +3151,9 @@
           }
 
           indicator.style.opacity = '1';
-          indicator.style.transform = 'translate(-50%, ' + (pullDistance + 10) + 'px)';
+          indicator.style.transform = 'translate(-50%, ' + (pullDistance + 15) + 'px)';
 
-          var rot = Math.min(diff * 5, 360);
+          var rot = Math.min(diff * 6, 360);
           if (spinnerIcon) spinnerIcon.style.transform = 'rotate(' + rot + 'deg)';
 
           if (diff >= threshold) {
@@ -3216,11 +3216,16 @@
 
       window.triggerAppRefresh = triggerRefresh;
 
-      // Clean 100% passive listeners to ensure smooth scrolling without touch freezes!
-      window.addEventListener('touchstart', handleTouchStart, { passive: true });
-      window.addEventListener('touchmove', handleTouchMove, { passive: true });
-      window.addEventListener('touchend', handleTouchEnd, { passive: true });
-      window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+      var mainEl = document.querySelector('main') || document.body;
+
+      // Register touch listeners on window, document, and main element
+      [window, document, mainEl].forEach(function(target) {
+        if (!target) return;
+        target.addEventListener('touchstart', handleTouchStart, { passive: true });
+        target.addEventListener('touchmove', handleTouchMove, { passive: true });
+        target.addEventListener('touchend', handleTouchEnd, { passive: true });
+        target.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+      });
     })();
 
   </script>
