@@ -257,8 +257,15 @@
         var sheetInputVal = (sheetInput && sheetInput.value) ? sheetInput.value.trim() : '';
         var inputVal = customInputVal || sheetInputVal || '';
         
-        var num = String((window.sheetState && window.sheetState.number) || inputVal || '0').trim();
-        if (!num) num = '0';
+        var num = String((window.sheetState && window.sheetState.number) || inputVal || '').trim();
+
+        // Require number selection before bet can be placed!
+        if (!num) {
+          if (typeof window.showToast === 'function') {
+            window.showToast('Pehle koi number select ki jiye ya enter ki jiye!', 'warning');
+          }
+          return;
+        }
 
         var rawAmount = (window.sheetState && window.sheetState.amount) ? window.sheetState.amount : 10;
         var amount = parseInt(rawAmount, 10);
