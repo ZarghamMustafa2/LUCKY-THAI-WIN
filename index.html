@@ -2413,14 +2413,13 @@
         liveActivityBody.removeChild(liveActivityBody.lastChild);
       }
     }
-    setInterval(addMockActivity, 1500);
-
-    // --- Real-Time 30-Minute Draw Cycle Engine (2 Draws Per Hour Synchronized with Wall Clock) ---
-    const DRAW_INTERVAL_SEC = 1800; // 30 Minutes Total Cycle (25m Betting + 3m Spinning + 2m Payout)
+    // --- Real-Time 30-Minute Draw Cycle Engine (Synchronized starting fresh right now) ---
+    const DRAW_INTERVAL_SEC = 1800; // 30 Minutes Total Cycle
+    const ANCHOR_EPOCH_SEC = Math.floor(Date.now() / 1000); // Fixed fresh anchor starting right now
 
     function getRemainingSeconds() {
       const nowSec = Math.floor(Date.now() / 1000);
-      const cycleSec = nowSec % DRAW_INTERVAL_SEC;
+      const cycleSec = ((nowSec - ANCHOR_EPOCH_SEC) % DRAW_INTERVAL_SEC + DRAW_INTERVAL_SEC) % DRAW_INTERVAL_SEC;
       if (cycleSec < 1500) {
         return 1500 - cycleSec;
       } else {
@@ -2491,7 +2490,7 @@
     function gameLoop() {
       try {
         const nowSec = Math.floor(Date.now() / 1000);
-        const cycleSec = nowSec % 1800; // 30-Minute Continuous Cycle (2 Draws Per Hour: :00 and :30)
+        const cycleSec = ((nowSec - ANCHOR_EPOCH_SEC) % 1800 + 1800) % 1800; // 30-Minute Continuous Cycle
         
         if (cycleSec < 1500) {
           // Phase 1: Betting Phase (25 Minutes: 1500s: 0s -> 1499s)
