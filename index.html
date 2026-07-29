@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.85, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>ThaiNXT | Premium Crypto Casino</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -2930,38 +2930,14 @@
       sidebarOverlay.addEventListener('click', window.toggleMobileSidebar);
     }
 
-    // Dynamic App Zoom Scaling Logic
-    window.appZoomScale = parseFloat(localStorage.getItem('appZoomScale') || '1.0');
-    if (isNaN(window.appZoomScale) || window.appZoomScale < 0.7 || window.appZoomScale > 1.4) window.appZoomScale = 1.0;
-
-    window.setAppZoom = function(scale) {
-      window.appZoomScale = Math.round(scale * 100) / 100;
-      if (window.appZoomScale < 0.7) window.appZoomScale = 0.7;
-      if (window.appZoomScale > 1.4) window.appZoomScale = 1.4;
-
+    // Clear any residual zoom scaling to ensure 100% full screen fit
+    try {
+      localStorage.removeItem('appZoomScale');
       var mainEl = document.querySelector('main') || document.getElementById('appMainWrapper');
       if (mainEl) {
-        mainEl.style.zoom = String(window.appZoomScale);
+        mainEl.style.zoom = '1.0';
+        mainEl.style.transform = 'none';
       }
-
-      var zoomText = document.getElementById('zoomLevelText');
-      if (zoomText) zoomText.innerText = Math.round(window.appZoomScale * 100) + '%';
-      
-      try {
-        localStorage.setItem('appZoomScale', String(window.appZoomScale));
-      } catch(e) {}
-    };
-
-    window.changeAppZoom = function(delta) {
-      window.setAppZoom(window.appZoomScale + delta);
-    };
-
-    window.resetAppZoom = function() {
-      window.setAppZoom(1.0);
-    };
-
-    try {
-      setTimeout(function() { window.setAppZoom(window.appZoomScale); }, 100);
     } catch(e) {}
 
     // Ripple Effect Logic
