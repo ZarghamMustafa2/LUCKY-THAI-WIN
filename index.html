@@ -884,11 +884,22 @@
     
     <!-- TOP HEADER -->
     <header class="min-h-[60px] md:h-[90px] bg-bgDark/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-2 sm:px-4 lg:px-10 z-30 flex-shrink-0 sticky top-0 py-1.5 sm:py-0">
-      <div class="flex items-center gap-1.5 sm:gap-4">
+      <div class="flex items-center gap-1.5 sm:gap-3">
         <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" class="xl:hidden text-gray-400 hover:text-white transition-colors p-1 sm:p-2 cursor-pointer"><i class="fa-solid fa-bars text-xl sm:text-2xl"></i></button>
         <button id="mobileRefreshBtn" onclick="if(typeof triggerAppRefresh==='function') triggerAppRefresh(); else window.location.reload();" class="text-gold hover:text-white bg-gold/10 hover:bg-gold/20 border border-gold/30 p-1.5 sm:p-2 rounded-xl transition-all cursor-pointer flex items-center justify-center shadow-sm active:scale-95" title="Refresh Page">
           <i class="fa-solid fa-arrows-rotate text-xs sm:text-sm"></i>
         </button>
+
+        <!-- Zoom Controls Widget -->
+        <div class="flex items-center gap-0.5 sm:gap-1 bg-cardDark/90 border border-gold/30 px-1 sm:px-2 py-0.5 sm:py-1 rounded-xl shadow-sm">
+          <button type="button" onclick="changeAppZoom(-0.05)" class="text-gold hover:text-white p-1 rounded transition-all cursor-pointer active:scale-95 flex items-center justify-center" title="Zoom Out">
+            <i class="fa-solid fa-magnifying-glass-minus text-[10px] sm:text-xs"></i>
+          </button>
+          <button type="button" onclick="resetAppZoom()" class="font-mono text-[9px] sm:text-xs font-bold text-white px-0.5 hover:text-gold cursor-pointer" id="zoomLevelText" title="Reset Zoom (100%)">100%</button>
+          <button type="button" onclick="changeAppZoom(0.05)" class="text-gold hover:text-white p-1 rounded transition-all cursor-pointer active:scale-95 flex items-center justify-center" title="Zoom In">
+            <i class="fa-solid fa-magnifying-glass-plus text-[10px] sm:text-xs"></i>
+          </button>
+        </div>
         
         <!-- Active Users Indicator -->
         <div class="hidden md:flex items-center gap-3 bg-cardDark rounded-2xl px-4 py-2 border border-white/5">
@@ -2936,6 +2947,40 @@
     if (sidebarOverlay) {
       sidebarOverlay.addEventListener('click', window.toggleMobileSidebar);
     }
+
+    // Dynamic App Zoom Scaling Logic
+    window.appZoomScale = parseFloat(localStorage.getItem('appZoomScale') || '1.0');
+    if (isNaN(window.appZoomScale) || window.appZoomScale < 0.7 || window.appZoomScale > 1.4) window.appZoomScale = 1.0;
+
+    window.setAppZoom = function(scale) {
+      window.appZoomScale = Math.round(scale * 100) / 100;
+      if (window.appZoomScale < 0.7) window.appZoomScale = 0.7;
+      if (window.appZoomScale > 1.4) window.appZoomScale = 1.4;
+
+      var mainEl = document.querySelector('main') || document.getElementById('appMainWrapper');
+      if (mainEl) {
+        mainEl.style.zoom = String(window.appZoomScale);
+      }
+
+      var zoomText = document.getElementById('zoomLevelText');
+      if (zoomText) zoomText.innerText = Math.round(window.appZoomScale * 100) + '%';
+      
+      try {
+        localStorage.setItem('appZoomScale', String(window.appZoomScale));
+      } catch(e) {}
+    };
+
+    window.changeAppZoom = function(delta) {
+      window.setAppZoom(window.appZoomScale + delta);
+    };
+
+    window.resetAppZoom = function() {
+      window.setAppZoom(1.0);
+    };
+
+    try {
+      setTimeout(function() { window.setAppZoom(window.appZoomScale); }, 100);
+    } catch(e) {}
 
     // Ripple Effect Logic
     document.addEventListener('click', function(e) {
