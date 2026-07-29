@@ -205,12 +205,12 @@
 
       btn.disabled = false;
       btn.removeAttribute('data-placed');
-      btn.className = 'col-span-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5';
+      btn.className = 'w-full py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-sm sm:text-xl uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2';
 
       if (count > 0) {
-        btn.innerHTML = `<i class="fa-solid fa-plus text-xs sm:text-base"></i> Place Another Bet (${count} Active)`;
+        btn.innerHTML = `<i class="fa-solid fa-plus text-base sm:text-xl"></i> Place Another Bet (${count} Active)`;
       } else {
-        btn.innerHTML = '<i class="fa-solid fa-bolt text-xs sm:text-base"></i> Place Bet Now';
+        btn.innerHTML = '<i class="fa-solid fa-bolt text-base sm:text-xl"></i> Place Bet Now';
       }
     };
 
@@ -1165,14 +1165,10 @@
                 </div>
               </div>
 
-              <!-- Primary Action Buttons Grid: Cancel Bet & Place Bet Now -->
-              <div class="grid grid-cols-12 gap-2 sm:gap-3">
-                <button type="button" onclick="cancelActiveBet()" class="col-span-4 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-danger/10 border-2 border-danger/40 text-danger font-black text-xs sm:text-base uppercase tracking-wider hover:bg-danger hover:text-white active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-                  <i class="fa-solid fa-xmark text-xs sm:text-base"></i> Cancel Bet
-                </button>
-                
-                <button id="inlinePlaceBetBtn" type="button" onclick="placeInlineBet()" class="col-span-8 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-xs sm:text-lg uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5">
-                  <i class="fa-solid fa-bolt text-xs sm:text-base"></i> Place Bet Now
+              <!-- Primary Action Button: Place Bet Now -->
+              <div class="w-full">
+                <button id="inlinePlaceBetBtn" type="button" onclick="placeInlineBet()" class="w-full py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-sm sm:text-xl uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-bolt text-base sm:text-xl"></i> Place Bet Now
                 </button>
               </div>
             </div>
