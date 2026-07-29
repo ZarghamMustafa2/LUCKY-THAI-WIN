@@ -3064,13 +3064,13 @@
       container.innerHTML = html;
     })();
 
-    // Native Physical Rubberband Pull To Refresh (Guaranteed Mobile Touch Drag)
+    // Native Physical Rubberband Pull To Refresh (Super Responsive Mobile Touch Drag)
     (function initPullToRefresh() {
       var startY = 0;
       var currentY = 0;
       var isPulling = false;
       var isRefreshing = false;
-      var threshold = 50;
+      var threshold = 35;
 
       var indicator = document.getElementById('pullToRefreshIndicator');
       var spinnerIcon = document.getElementById('pullSpinnerIcon');
@@ -3083,7 +3083,7 @@
       function isAtTop() {
         var mainTop = mainEl ? mainEl.scrollTop : 0;
         var winTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        return mainTop <= 2 && winTop <= 2;
+        return mainTop <= 15 && winTop <= 15;
       }
 
       function handleStart(clientY) {
@@ -3102,18 +3102,18 @@
         currentY = clientY;
         var diff = currentY - startY;
 
-        if (diff > 8 && isAtTop()) {
+        if (diff > 5 && isAtTop()) {
           if (e && e.cancelable) e.preventDefault();
 
-          var pullDistance = Math.min(diff * 0.48, 95);
+          var pullDistance = Math.min(diff * 0.55, 100);
 
           appWrapper.style.transition = 'none';
           appWrapper.style.transform = 'translateY(' + pullDistance + 'px)';
 
           indicator.style.opacity = '1';
-          indicator.style.transform = 'translate(-50%, ' + (pullDistance - 10) + 'px)';
+          indicator.style.transform = 'translate(-50%, ' + (pullDistance - 5) + 'px)';
 
-          var rot = Math.min(diff * 5, 360);
+          var rot = Math.min(diff * 6, 360);
           if (spinnerIcon) spinnerIcon.style.transform = 'rotate(' + rot + 'deg)';
 
           if (diff >= threshold) {
@@ -3161,11 +3161,15 @@
         appWrapper.style.transition = 'transform 0.25s ease-out';
         appWrapper.style.transform = 'translateY(60px)';
         indicator.style.opacity = '1';
-        indicator.style.transform = 'translate(-50%, 50px)';
+        indicator.style.transform = 'translate(-50%, 55px)';
+
+        if (typeof window.showToast === 'function') {
+          window.showToast('Refreshing Live Data...', 'info');
+        }
 
         setTimeout(function() {
           window.location.reload();
-        }, 350);
+        }, 400);
       }
 
       indicator.addEventListener('click', triggerRefresh);
