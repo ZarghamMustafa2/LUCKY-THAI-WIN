@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.7, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.5, user-scalable=yes, viewport-fit=cover">
   <title>ThaiNXT | Premium Crypto Casino</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -2930,68 +2930,18 @@
       sidebarOverlay.addEventListener('click', window.toggleMobileSidebar);
     }
 
-    // Universal 2-Finger Touch Pinch-to-Zoom-Out Engine (Multi-Touch Edge-to-Edge)
-    (function initPinchToZoom() {
-      var initialDistance = 0;
-      var isPinching = false;
-      var currentScale = parseFloat(localStorage.getItem('appPinchScale') || '1.0');
-      if (isNaN(currentScale) || currentScale < 0.75 || currentScale > 1.0) currentScale = 1.0;
-
-      function getDistance(t1, t2) {
-        var dx = t1.clientX - t2.clientX;
-        var dy = t1.clientY - t2.clientY;
-        return Math.hypot(dx, dy);
+    // Clean 100% full screen layout reset (Zoom In Enabled, Zoom Out Disabled)
+    try {
+      localStorage.removeItem('appPinchScale');
+      localStorage.removeItem('appZoomScale');
+      localStorage.removeItem('appZoomOutState');
+      var mainEl = document.querySelector('main') || document.getElementById('appMainWrapper');
+      if (mainEl) {
+        mainEl.style.zoom = '1.0';
+        mainEl.style.width = '100%';
+        mainEl.style.transform = 'none';
       }
-
-      function applyScale(scale) {
-        currentScale = Math.round(Math.max(0.75, Math.min(1.0, scale)) * 100) / 100;
-        var mainEl = document.querySelector('main') || document.getElementById('appMainWrapper') || document.body;
-        if (mainEl) {
-          mainEl.style.zoom = String(currentScale);
-          mainEl.style.width = (100 / currentScale) + '%';
-        }
-        try {
-          localStorage.setItem('appPinchScale', String(currentScale));
-        } catch(e) {}
-      }
-
-      function onTouchStart(e) {
-        if (e.touches && e.touches.length === 2) {
-          isPinching = true;
-          initialDistance = getDistance(e.touches[0], e.touches[1]);
-        }
-      }
-
-      function onTouchMove(e) {
-        if (!isPinching || !e.touches || e.touches.length !== 2) return;
-        var newDistance = getDistance(e.touches[0], e.touches[1]);
-        var diff = newDistance - initialDistance;
-
-        if (Math.abs(diff) > 10) {
-          var scaleDelta = (diff / 250);
-          applyScale(currentScale + scaleDelta);
-          initialDistance = newDistance;
-        }
-      }
-
-      function onTouchEnd(e) {
-        if (isPinching && (!e.touches || e.touches.length < 2)) {
-          isPinching = false;
-        }
-      }
-
-      [window, document, document.body].forEach(function(target) {
-        if (!target) return;
-        target.addEventListener('touchstart', onTouchStart, { passive: true });
-        target.addEventListener('touchmove', onTouchMove, { passive: true });
-        target.addEventListener('touchend', onTouchEnd, { passive: true });
-        target.addEventListener('touchcancel', onTouchEnd, { passive: true });
-      });
-
-      try {
-        setTimeout(function() { applyScale(currentScale); }, 100);
-      } catch(e) {}
-    })();
+    } catch(e) {}
 
     // Ripple Effect Logic
     document.addEventListener('click', function(e) {
