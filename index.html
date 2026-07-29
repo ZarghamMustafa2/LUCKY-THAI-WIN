@@ -884,10 +884,14 @@
     
     <!-- TOP HEADER -->
     <header class="min-h-[60px] md:h-[90px] bg-bgDark/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-2 sm:px-4 lg:px-10 z-30 flex-shrink-0 sticky top-0 py-1.5 sm:py-0">
-      <div class="flex items-center gap-1.5 sm:gap-4">
+      <div class="flex items-center gap-1.5 sm:gap-3">
         <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" class="xl:hidden text-gray-400 hover:text-white transition-colors p-1 sm:p-2 cursor-pointer"><i class="fa-solid fa-bars text-xl sm:text-2xl"></i></button>
         <button id="mobileRefreshBtn" onclick="if(typeof triggerAppRefresh==='function') triggerAppRefresh(); else window.location.reload();" class="text-gold hover:text-white bg-gold/10 hover:bg-gold/20 border border-gold/30 p-1.5 sm:p-2 rounded-xl transition-all cursor-pointer flex items-center justify-center shadow-sm active:scale-95" title="Refresh Page">
           <i class="fa-solid fa-arrows-rotate text-xs sm:text-sm"></i>
+        </button>
+        <button id="mobileZoomOutBtn" onclick="toggleAppZoomOut()" class="text-gold hover:text-white bg-gold/10 hover:bg-gold/20 border border-gold/30 p-1.5 sm:p-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 shadow-sm active:scale-95" title="Toggle Zoom Out View">
+          <i class="fa-solid fa-magnifying-glass-minus text-xs sm:text-sm"></i>
+          <span id="zoomOutBtnText" class="text-[9px] font-mono font-bold hidden sm:inline">Zoom Out</span>
         </button>
         
         <!-- Active Users Indicator -->
@@ -2930,14 +2934,47 @@
       sidebarOverlay.addEventListener('click', window.toggleMobileSidebar);
     }
 
-    // Clear any residual zoom scaling to ensure 100% full screen fit
-    try {
-      localStorage.removeItem('appZoomScale');
+    // Zoom Out Mode Logic (Pinch / Toggle Compact View without side gaps)
+    window.isZoomedOut = (localStorage.getItem('appZoomOutState') === 'true');
+
+    window.applyZoomOutState = function() {
       var mainEl = document.querySelector('main') || document.getElementById('appMainWrapper');
-      if (mainEl) {
-        mainEl.style.zoom = '1.0';
-        mainEl.style.transform = 'none';
+      var btnText = document.getElementById('zoomOutBtnText');
+      var btn = document.getElementById('mobileZoomOutBtn');
+
+      if (window.isZoomedOut) {
+        if (mainEl) {
+          mainEl.style.zoom = '0.88';
+          mainEl.style.width = '113.63%';
+        }
+        if (btnText) btnText.innerText = 'Reset View';
+        if (btn) {
+          btn.classList.add('bg-gold/30', 'border-gold');
+          btn.classList.remove('bg-gold/10');
+        }
+      } else {
+        if (mainEl) {
+          mainEl.style.zoom = '1.0';
+          mainEl.style.width = '100%';
+        }
+        if (btnText) btnText.innerText = 'Zoom Out';
+        if (btn) {
+          btn.classList.remove('bg-gold/30', 'border-gold');
+          btn.classList.add('bg-gold/10');
+        }
       }
+      try {
+        localStorage.setItem('appZoomOutState', String(window.isZoomedOut));
+      } catch(e) {}
+    };
+
+    window.toggleAppZoomOut = function() {
+      window.isZoomedOut = !window.isZoomedOut;
+      window.applyZoomOutState();
+    };
+
+    try {
+      setTimeout(window.applyZoomOutState, 50);
     } catch(e) {}
 
     // Ripple Effect Logic
