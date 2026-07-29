@@ -53,7 +53,8 @@
   </script>
   <script>
     window.sheetState = {
-      number: '0',
+      number: '',
+      isNumberSelected: false,
       round: 1,
       type: 'figure',
       extraDigits: '',
@@ -257,10 +258,11 @@
         var sheetInputVal = (sheetInput && sheetInput.value) ? sheetInput.value.trim() : '';
         var inputVal = customInputVal || sheetInputVal || '';
         
-        var num = String((window.sheetState && window.sheetState.number) || inputVal || '').trim();
+        var isSelected = window.sheetState && window.sheetState.isNumberSelected;
+        var num = isSelected ? String(window.sheetState.number || '').trim() : inputVal;
 
         // Require number selection before bet can be placed!
-        if (!num) {
+        if ((!isSelected && !inputVal) || !num) {
           if (typeof window.showToast === 'function') {
             window.showToast('Pehle koi number select ki jiye ya enter ki jiye!', 'warning');
           }
@@ -311,6 +313,14 @@
         window.isBetPlaced = true;
         if (typeof window.setBetButtonState === 'function') window.setBetButtonState(true);
         if (typeof window.renderActiveBetsList === 'function') window.renderActiveBetsList();
+
+        // Reset selection for next bet!
+        if (window.sheetState) {
+          window.sheetState.number = '';
+          window.sheetState.isNumberSelected = false;
+        }
+        if (bannerInput) bannerInput.value = '';
+        if (sheetInput) sheetInput.value = '';
 
         if (typeof window.showToast === 'function') {
           window.showToast('Bet Placed Successfully! Rs ' + amount.toLocaleString() + ' deducted from wallet.', 'success');
@@ -368,6 +378,7 @@
       if (sheetNumberInput) sheetNumberInput.value = cleanVal;
       if (sheetSelectedNumber) sheetSelectedNumber.innerText = cleanVal || '-';
       window.sheetState.number = cleanVal;
+      window.sheetState.isNumberSelected = !!cleanVal;
     };
 
     window.appendQuickDigit = function(digit) {
@@ -385,6 +396,7 @@
       }
       
       window.sheetState.number = current;
+      window.sheetState.isNumberSelected = !!current;
       ['sheetNumberInput', 'bannerNumberInput'].forEach(function(id) {
         var inp = document.getElementById(id);
         if (inp) inp.value = current;
@@ -2052,7 +2064,8 @@
     }
 
     window.sheetState = window.sheetState || {
-      number: '0',
+      number: '',
+      isNumberSelected: false,
       round: '1',
       type: 'figure',
       extraDigits: '',
@@ -2063,7 +2076,7 @@
 
     function updateSummary() {
       const state = window.sheetState || sheetState;
-      let fullSeq = state.number || '0';
+      let fullSeq = state.isNumberSelected ? (state.number || '') : '';
       if (state.type === 'akada' || state.type === 'ring') {
          fullSeq += (state.extraDigits || '');
       } else if (state.type === 'packet') {
@@ -2090,6 +2103,7 @@
         btn.addEventListener('click', (e) => {
           const num = (e.currentTarget.getAttribute('data-num') || e.currentTarget.innerText || e.target.innerText).trim().replace(/\D/g, '').slice(0, 1);
           sheetState.number = num;
+          sheetState.isNumberSelected = true;
           if (sheetSelectedNumber) sheetSelectedNumber.innerText = num;
           
           const sheetNumberInput = document.getElementById('sheetNumberInput');
