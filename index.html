@@ -2419,8 +2419,8 @@
     function getRemainingSeconds() {
       const nowSec = Math.floor(Date.now() / 1000);
       const cycleSec = nowSec % DRAW_INTERVAL_SEC;
-      if (cycleSec < 1620) {
-        return 1620 - cycleSec;
+      if (cycleSec < 1680) {
+        return 1800 - cycleSec;
       } else {
         return 1800 - cycleSec;
       }
@@ -2491,11 +2491,11 @@
         const nowSec = Math.floor(Date.now() / 1000);
         const cycleSec = nowSec % 1800; // Wall clock 30-minute slot (:00 to :30, :30 to :00)
         
-        if (cycleSec < 1620) {
-          // Phase 1: Betting Phase (Counts down directly to spin time at :27 / :57)
-          const remainingSecs = 1620 - cycleSec;
+        if (cycleSec < 1680) {
+          // Phase 1: Betting Phase (Starts at 30:00 down to 02:00)
+          const remainingSecs = 1800 - cycleSec;
           const time = formatTime(remainingSecs);
-          const percent = (remainingSecs / 1620) * 100;
+          const percent = (remainingSecs / 1800) * 100;
           setProgress(percent);
 
           const wEl = document.getElementById('wheelText');
@@ -2509,11 +2509,11 @@
           window.isBettingLocked = false;
           window.hasTriggeredSpinThisCycle = false;
           isDrawing = false;
-        } else if (cycleSec < 1740) {
-          // Phase 2: Active 3-Minute Wheel Spinning Phase (1620s -> 1740s, e.g. :27 to :29)
-          const remainingSecs = 1740 - cycleSec;
+        } else if (cycleSec < 1760) {
+          // Phase 2: Active 3-Minute Wheel Spinning Phase (1680s -> 1760s)
+          const remainingSecs = 1760 - cycleSec;
           const time = formatTime(remainingSecs);
-          const percent = (remainingSecs / 120) * 100;
+          const percent = (remainingSecs / 80) * 100;
           setProgress(percent);
 
           const wEl = document.getElementById('wheelText');
@@ -2537,10 +2537,10 @@
             }
           }
         } else {
-          // Phase 3: Winner Payout & Result Stage (1740s to 1800s, e.g. :29 to :30)
+          // Phase 3: Winner Payout & Result Stage (1760s to 1800s)
           const remainingSecs = 1800 - cycleSec;
           const time = formatTime(remainingSecs);
-          const percent = (remainingSecs / 60) * 100;
+          const percent = (remainingSecs / 40) * 100;
           setProgress(percent);
 
           const wEl = document.getElementById('wheelText');
