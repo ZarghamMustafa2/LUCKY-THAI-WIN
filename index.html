@@ -3067,56 +3067,62 @@
       container.innerHTML = html;
     })();
 
-    // Native Physical Rubberband Pull To Refresh (Super Responsive Mobile Touch Drag)
+    // Native Physical Rubberband Pull To Refresh (Universal Mobile Touch Handler)
     (function initPullToRefresh() {
       var startY = 0;
       var currentY = 0;
       var isPulling = false;
       var isRefreshing = false;
-      var threshold = 35;
+      var threshold = 30;
 
       var indicator = document.getElementById('pullToRefreshIndicator');
       var spinnerIcon = document.getElementById('pullSpinnerIcon');
       var pullText = document.getElementById('pullText');
-      var appWrapper = document.getElementById('appMainWrapper') || document.querySelector('main') || document.body;
-      var mainEl = document.querySelector('main') || document.body;
+      var appWrapper = document.getElementById('appMainWrapper') || document.body;
 
-      if (!indicator || !appWrapper) return;
+      if (!indicator) return;
 
       function isAtTop() {
+        var mainEl = document.querySelector('main');
         var mainTop = mainEl ? mainEl.scrollTop : 0;
         var winTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        return mainTop <= 15 && winTop <= 15;
+        return mainTop <= 5 && winTop <= 5;
       }
 
-      function handleStart(clientY) {
-        if (isRefreshing) return;
-        if (isAtTop()) {
-          startY = clientY;
-          currentY = clientY;
+      function handleTouchStart(e) {
+        if (isRefreshing || !e.touches || e.touches.length !== 1) return;
+        startY = e.touches[0].clientY;
+        currentY = startY;
+        isPulling = isAtTop();
+      }
+
+      function handleTouchMove(e) {
+        if (isRefreshing || !e.touches || e.touches.length !== 1) return;
+        currentY = e.touches[0].clientY;
+
+        // If top is reached while dragging down, activate pull mode dynamically
+        if (!isPulling && isAtTop() && currentY > startY) {
+          startY = currentY;
           isPulling = true;
-        } else {
-          isPulling = false;
         }
-      }
 
-      function handleMove(clientY, e) {
-        if (!isPulling || isRefreshing) return;
-        currentY = clientY;
+        if (!isPulling) return;
+
         var diff = currentY - startY;
+        if (diff > 0 && isAtTop()) {
+          if (e.cancelable) e.preventDefault();
 
-        if (diff > 5 && isAtTop()) {
-          if (e && e.cancelable) e.preventDefault();
+          var pullDistance = Math.min(diff * 0.55, 95);
 
-          var pullDistance = Math.min(diff * 0.55, 100);
-
-          appWrapper.style.transition = 'none';
-          appWrapper.style.transform = 'translateY(' + pullDistance + 'px)';
+          if (appWrapper) {
+            appWrapper.style.transition = 'none';
+            appWrapper.style.transform = 'translateY(' + pullDistance + 'px)';
+          }
 
           indicator.style.opacity = '1';
-          indicator.style.transform = 'translate(-50%, ' + (pullDistance - 5) + 'px)';
+          indicator.style.transform = 'translate(-50%, ' + (pullDistance + 10) + 'px)';
 
-          var rot = Math.min(diff * 6, 360);
+          var rot = Math.min(diff * 7, 360);
           if (spinnerIcon) spinnerIcon.style.transform = 'rotate(' + rot + 'deg)';
 
           if (diff >= threshold) {
@@ -3130,12 +3136,12 @@
           }
         } else if (diff < 0) {
           isPulling = false;
-          appWrapper.style.transform = 'translateY(0px)';
+          if (appWrapper) appWrapper.style.transform = 'translateY(0px)';
           indicator.style.opacity = '0';
         }
       }
 
-      function handleEnd() {
+      function handleTouchEnd() {
         if (!isPulling || isRefreshing) return;
         var diff = currentY - startY;
         isPulling = false;
@@ -3143,13 +3149,13 @@
         if (diff >= threshold && isAtTop()) {
           triggerRefresh();
         } else {
-          appWrapper.style.transition = 'transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-          appWrapper.style.transform = 'translateY(0px)';
+          if (appWrapper) {
+            appWrapper.style.transition = 'transform 0.3s ease-out';
+            appWrapper.style.transform = 'translateY(0px)';
+          }
           indicator.style.opacity = '0';
           indicator.style.transform = 'translate(-50%, -96px)';
         }
-        startY = 0;
-        currentY = 0;
       }
 
       function triggerRefresh() {
@@ -3161,8 +3167,10 @@
           spinnerIcon.classList.add('animate-spin');
         }
 
-        appWrapper.style.transition = 'transform 0.25s ease-out';
-        appWrapper.style.transform = 'translateY(60px)';
+        if (appWrapper) {
+          appWrapper.style.transition = 'transform 0.25s ease-out';
+          appWrapper.style.transform = 'translateY(60px)';
+        }
         indicator.style.opacity = '1';
         indicator.style.transform = 'translate(-50%, 55px)';
 
@@ -3177,41 +3185,16 @@
 
       window.triggerAppRefresh = triggerRefresh;
 
-      indicator.addEventListener('click', triggerRefresh);
+      // Register non-passive touchmove listener directly on window and document
+      window.addEventListener('touchstart', handleTouchStart, { passive: true });
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+      window.addEventListener('touchend', handleTouchEnd, { passive: true });
+      window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
 
-      window.addEventListener('touchstart', function(e) {
-        if (e.touches && e.touches.length === 1) handleStart(e.touches[0].clientY);
-      }, { passive: true });
-
-      window.addEventListener('touchmove', function(e) {
-        if (e.touches && e.touches.length === 1) handleMove(e.touches[0].clientY, e);
-      }, { passive: false });
-
-      window.addEventListener('touchend', handleEnd, { passive: true });
-
-      if (mainEl) {
-        mainEl.addEventListener('touchstart', function(e) {
-          if (e.touches && e.touches.length === 1) handleStart(e.touches[0].clientY);
-        }, { passive: true });
-
-        mainEl.addEventListener('touchmove', function(e) {
-          if (e.touches && e.touches.length === 1) handleMove(e.touches[0].clientY, e);
-        }, { passive: false });
-
-        mainEl.addEventListener('touchend', handleEnd, { passive: true });
-      }
-
-      window.addEventListener('mousedown', function(e) {
-        if (e.button === 0 && isAtTop()) handleStart(e.clientY);
-      }, { passive: true });
-
-      window.addEventListener('mousemove', function(e) {
-        if (isPulling) handleMove(e.clientY, e);
-      }, { passive: false });
-
-      window.addEventListener('mouseup', function(e) {
-        if (isPulling) handleEnd();
-      }, { passive: true });
+      document.addEventListener('touchstart', handleTouchStart, { passive: true });
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd, { passive: true });
+      document.addEventListener('touchcancel', handleTouchEnd, { passive: true });
     })();
 
   </script>
