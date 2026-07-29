@@ -884,14 +884,10 @@
     
     <!-- TOP HEADER -->
     <header class="min-h-[60px] md:h-[90px] bg-bgDark/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-2 sm:px-4 lg:px-10 z-30 flex-shrink-0 sticky top-0 py-1.5 sm:py-0">
-      <div class="flex items-center gap-1.5 sm:gap-3">
+      <div class="flex items-center gap-1.5 sm:gap-4">
         <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" class="xl:hidden text-gray-400 hover:text-white transition-colors p-1 sm:p-2 cursor-pointer"><i class="fa-solid fa-bars text-xl sm:text-2xl"></i></button>
         <button id="mobileRefreshBtn" onclick="if(typeof triggerAppRefresh==='function') triggerAppRefresh(); else window.location.reload();" class="text-gold hover:text-white bg-gold/10 hover:bg-gold/20 border border-gold/30 p-1.5 sm:p-2 rounded-xl transition-all cursor-pointer flex items-center justify-center shadow-sm active:scale-95" title="Refresh Page">
           <i class="fa-solid fa-arrows-rotate text-xs sm:text-sm"></i>
-        </button>
-        <button id="mobileZoomOutBtn" onclick="toggleAppZoomOut()" class="text-gold hover:text-white bg-gold/10 hover:bg-gold/20 border border-gold/30 p-1.5 sm:p-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1 shadow-sm active:scale-95" title="Toggle Zoom Out View">
-          <i class="fa-solid fa-magnifying-glass-minus text-xs sm:text-sm"></i>
-          <span id="zoomOutBtnText" class="text-[9px] font-mono font-bold hidden sm:inline">Zoom Out</span>
         </button>
         
         <!-- Active Users Indicator -->
@@ -2934,48 +2930,60 @@
       sidebarOverlay.addEventListener('click', window.toggleMobileSidebar);
     }
 
-    // Zoom Out Mode Logic (Pinch / Toggle Compact View without side gaps)
-    window.isZoomedOut = (localStorage.getItem('appZoomOutState') === 'true');
+    // Universal 2-Finger Touch Pinch-to-Zoom-Out Engine (Without Side Gaps)
+    (function initPinchToZoom() {
+      var initialDistance = 0;
+      var isPinching = false;
+      var currentScale = parseFloat(localStorage.getItem('appPinchScale') || '1.0');
+      if (isNaN(currentScale) || currentScale < 0.85 || currentScale > 1.0) currentScale = 1.0;
 
-    window.applyZoomOutState = function() {
-      var mainEl = document.querySelector('main') || document.getElementById('appMainWrapper');
-      var btnText = document.getElementById('zoomOutBtnText');
-      var btn = document.getElementById('mobileZoomOutBtn');
-
-      if (window.isZoomedOut) {
-        if (mainEl) {
-          mainEl.style.zoom = '0.88';
-          mainEl.style.width = '113.63%';
-        }
-        if (btnText) btnText.innerText = 'Reset View';
-        if (btn) {
-          btn.classList.add('bg-gold/30', 'border-gold');
-          btn.classList.remove('bg-gold/10');
-        }
-      } else {
-        if (mainEl) {
-          mainEl.style.zoom = '1.0';
-          mainEl.style.width = '100%';
-        }
-        if (btnText) btnText.innerText = 'Zoom Out';
-        if (btn) {
-          btn.classList.remove('bg-gold/30', 'border-gold');
-          btn.classList.add('bg-gold/10');
-        }
+      function getDistance(t1, t2) {
+        var dx = t1.clientX - t2.clientX;
+        var dy = t1.clientY - t2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
       }
+
+      function applyScale(scale) {
+        currentScale = Math.round(Math.max(0.85, Math.min(1.0, scale)) * 100) / 100;
+        var mainEl = document.querySelector('main') || document.getElementById('appMainWrapper');
+        if (mainEl) {
+          mainEl.style.zoom = String(currentScale);
+          mainEl.style.width = (100 / currentScale) + '%';
+        }
+        try {
+          localStorage.setItem('appPinchScale', String(currentScale));
+        } catch(e) {}
+      }
+
+      window.addEventListener('touchstart', function(e) {
+        if (e.touches && e.touches.length === 2) {
+          isPinching = true;
+          initialDistance = getDistance(e.touches[0], e.touches[1]);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', function(e) {
+        if (!isPinching || !e.touches || e.touches.length !== 2) return;
+        var newDistance = getDistance(e.touches[0], e.touches[1]);
+        var diff = newDistance - initialDistance;
+
+        if (Math.abs(diff) > 15) {
+          var scaleDelta = (diff / 350);
+          applyScale(currentScale + scaleDelta);
+          initialDistance = newDistance;
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', function(e) {
+        if (isPinching && (!e.touches || e.touches.length < 2)) {
+          isPinching = false;
+        }
+      }, { passive: true });
+
       try {
-        localStorage.setItem('appZoomOutState', String(window.isZoomedOut));
+        setTimeout(function() { applyScale(currentScale); }, 100);
       } catch(e) {}
-    };
-
-    window.toggleAppZoomOut = function() {
-      window.isZoomedOut = !window.isZoomedOut;
-      window.applyZoomOutState();
-    };
-
-    try {
-      setTimeout(window.applyZoomOutState, 50);
-    } catch(e) {}
+    })();
 
     // Ripple Effect Logic
     document.addEventListener('click', function(e) {
