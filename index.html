@@ -261,10 +261,89 @@
       if (typeof window.showToast === 'function') window.showToast('Welcome, ' + val + '!', 'success');
     };
 
+    window.checkUserAuthStatus = function() {
+      try {
+        var isLoggedIn = localStorage.getItem('isUserLoggedIn') === 'true';
+        var overlay = document.getElementById('fullAppLoginOverlay');
+        if (!overlay) return;
+
+        if (isLoggedIn) {
+          overlay.classList.add('opacity-0', 'pointer-events-none');
+          setTimeout(function() { overlay.style.display = 'none'; }, 500);
+        } else {
+          overlay.style.display = 'flex';
+          overlay.classList.remove('opacity-0', 'pointer-events-none');
+        }
+      } catch(e) {}
+    };
+
+    window.switchLoginAuthMode = function(mode) {
+      var loginBtn = document.getElementById('loginTabBtn');
+      var regBtn = document.getElementById('registerTabBtn');
+      var submitText = document.getElementById('authSubmitBtnText');
+      if (!loginBtn || !regBtn || !submitText) return;
+
+      if (mode === 'register') {
+        regBtn.className = 'py-2.5 rounded-xl bg-gold text-black font-black uppercase tracking-wider transition-all shadow-md cursor-pointer';
+        loginBtn.className = 'py-2.5 rounded-xl text-gray-400 hover:text-white uppercase tracking-wider transition-all cursor-pointer';
+        submitText.innerText = 'CREATE ACCOUNT & ENTER';
+      } else {
+        loginBtn.className = 'py-2.5 rounded-xl bg-gold text-black font-black uppercase tracking-wider transition-all shadow-md cursor-pointer';
+        regBtn.className = 'py-2.5 rounded-xl text-gray-400 hover:text-white uppercase tracking-wider transition-all cursor-pointer';
+        submitText.innerText = 'LOGIN TO THAI WIN';
+      }
+    };
+
+    window.handleAppLoginSubmit = function(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      var nameInput = document.getElementById('authUsernameInput');
+      var username = (nameInput && nameInput.value) ? nameInput.value.trim() : '';
+
+      if (!username) {
+        if (typeof window.showToast === 'function') window.showToast('Please enter your username / full name!', 'warning');
+        return;
+      }
+
+      try {
+        localStorage.setItem('userLoginName', username);
+        localStorage.setItem('isUserLoggedIn', 'true');
+      } catch(err) {}
+
+      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
+      window.checkUserAuthStatus();
+      if (typeof window.showToast === 'function') window.showToast('Login Successful! Welcome, ' + username + '!', 'success');
+    };
+
+    window.handleQuickGuestLogin = function() {
+      var guestName = 'Alex_Winner';
+      try {
+        localStorage.setItem('userLoginName', guestName);
+        localStorage.setItem('isUserLoggedIn', 'true');
+      } catch(err) {}
+
+      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
+      window.checkUserAuthStatus();
+      if (typeof window.showToast === 'function') window.showToast('Guest Demo Login Successful!', 'success');
+    };
+
+    window.performUserLogout = function() {
+      try {
+        localStorage.setItem('isUserLoggedIn', 'false');
+      } catch(e) {}
+      window.checkUserAuthStatus();
+      if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
+    };
+
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() { window.updateUserProfileUI(); });
+      document.addEventListener('DOMContentLoaded', function() {
+        window.updateUserProfileUI();
+        window.checkUserAuthStatus();
+      });
     } else {
-      setTimeout(function() { window.updateUserProfileUI(); }, 50);
+      setTimeout(function() {
+        window.updateUserProfileUI();
+        window.checkUserAuthStatus();
+      }, 50);
     }
 
     window.sheetState = {
@@ -1269,12 +1348,12 @@
           
           <!-- Profile Dropdown -->
           <div id="profileDropdown" class="hidden absolute top-14 right-0 w-56 bg-cardDark border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 flex flex-col overflow-hidden py-2">
-            <button onclick="openUserLoginModal()" class="w-full text-left px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors cursor-pointer"><i class="fa-solid fa-user-pen w-4 text-gray-500"></i> Change Login Name</button>
+            <button onclick="openUserLoginModal()" class="w-full text-left px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors cursor-pointer"><i class="fa-solid fa-user-pen w-4 text-gray-500"></i> Change Profile Name</button>
             <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-wallet w-4 text-gray-500"></i> Wallet</a>
             <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-arrow-down w-4 text-gray-500"></i> Deposit</a>
             <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-arrow-up w-4 text-gray-500"></i> Withdraw</a>
             <div class="h-px bg-white/5 my-1"></div>
-            <button onclick="openUserLoginModal()" class="w-full text-left px-4 py-2 hover:bg-white/5 text-danger hover:text-danger flex items-center gap-3 font-bold text-sm transition-colors cursor-pointer"><i class="fa-solid fa-sign-out-alt w-4"></i> Switch User / Login</button>
+            <button onclick="performUserLogout()" class="w-full text-left px-4 py-2 hover:bg-white/5 text-danger hover:text-danger flex items-center gap-3 font-bold text-sm transition-colors cursor-pointer"><i class="fa-solid fa-right-from-bracket w-4"></i> Logout / Switch User</button>
           </div>
         </div>
         
@@ -1806,6 +1885,105 @@
   <div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] bg-cardDark border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] px-6 py-4 rounded-2xl flex items-center gap-4 transform -translate-y-10 opacity-0 transition-all duration-300 pointer-events-none backdrop-blur-xl">
     <div id="toastIcon" class="text-primary text-2xl drop-shadow-[0_0_8px_rgba(0,255,136,0.6)]"><i class="fa-solid fa-circle-check"></i></div>
     <span id="toastMsg" class="font-bold text-white tracking-wide text-sm">Bet Placed Successfully!</span>
+  </div>
+
+  <!-- FULL SCREEN LUXURY LOGIN & REGISTER OVERLAY -->
+  <div id="fullAppLoginOverlay" class="fixed inset-0 z-[999999] bg-[#090d16]/95 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6 transition-all duration-500 overflow-y-auto">
+    <!-- Glowing Background Ambient Effects -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-gold/15 blur-[120px] rounded-full pointer-events-none"></div>
+    <div class="absolute bottom-10 right-10 w-[250px] h-[250px] bg-cyanLight/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+    <div class="relative w-full max-w-md bg-cardDark/95 border-2 border-gold/40 rounded-3xl p-6 sm:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(255,212,0,0.15)] backdrop-blur-xl flex flex-col gap-5 my-auto">
+      
+      <!-- Brand Logo Header -->
+      <div class="flex flex-col items-center text-center gap-2 border-b border-white/10 pb-5">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-gold/30 via-yellow-500/20 to-amber-500/10 border-2 border-gold/60 flex items-center justify-center text-gold text-3xl sm:text-4xl shadow-[0_0_25px_rgba(255,212,0,0.3)] animate-pulse">
+          <i class="fa-solid fa-crown"></i>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-display font-black text-white tracking-wider uppercase mt-1">
+          THAI<span class="text-gold">NXT</span> CASINO
+        </h1>
+        <p class="text-xs sm:text-sm text-gray-400 font-bold tracking-wide">
+          Official Thailand Live Draw Platform
+        </p>
+      </div>
+
+      <!-- Mode Selector Tabs (Login / Register) -->
+      <div class="grid grid-cols-2 bg-bgDark p-1 rounded-2xl border border-white/10 text-xs sm:text-sm font-bold">
+        <button type="button" id="loginTabBtn" onclick="switchLoginAuthMode('login')" class="py-2.5 rounded-xl bg-gold text-black font-black uppercase tracking-wider transition-all shadow-md cursor-pointer">
+          Login
+        </button>
+        <button type="button" id="registerTabBtn" onclick="switchLoginAuthMode('register')" class="py-2.5 rounded-xl text-gray-400 hover:text-white uppercase tracking-wider transition-all cursor-pointer">
+          Register
+        </button>
+      </div>
+
+      <!-- Auth Form Fields -->
+      <form id="appAuthForm" onsubmit="handleAppLoginSubmit(event)" class="flex flex-col gap-4">
+        
+        <!-- Username / Display Name Field -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-gold uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-user text-gold text-xs"></i> Username / Full Name
+          </label>
+          <div class="relative flex items-center">
+            <input 
+              id="authUsernameInput" 
+              type="text" 
+              required
+              placeholder="e.g. Zargham or Alex_Winner" 
+              class="w-full bg-bgDark/90 border border-gold/40 focus:border-gold px-4 py-3 sm:py-3.5 rounded-xl text-white font-mono font-bold text-sm sm:text-base outline-none tracking-wide transition-all focus:shadow-[0_0_15px_rgba(255,212,0,0.2)]" 
+            />
+          </div>
+        </div>
+
+        <!-- Phone / Account ID Field -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-gold uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-mobile-screen text-gold text-xs"></i> Phone Number / Account ID
+          </label>
+          <input 
+            id="authPhoneInput" 
+            type="text" 
+            placeholder="e.g. +92 300 1234567" 
+            class="w-full bg-bgDark/90 border border-white/10 focus:border-gold px-4 py-3 sm:py-3.5 rounded-xl text-white font-mono font-bold text-sm sm:text-base outline-none tracking-wide transition-all focus:shadow-[0_0_15px_rgba(255,212,0,0.2)]" 
+          />
+        </div>
+
+        <!-- Password Field -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-bold text-gold uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-lock text-gold text-xs"></i> Password
+          </label>
+          <input 
+            id="authPasswordInput" 
+            type="password" 
+            placeholder="Enter your security password" 
+            class="w-full bg-bgDark/90 border border-white/10 focus:border-gold px-4 py-3 sm:py-3.5 rounded-xl text-white font-mono font-bold text-sm sm:text-base outline-none tracking-wide transition-all focus:shadow-[0_0_15px_rgba(255,212,0,0.2)]" 
+          />
+        </div>
+
+        <!-- Primary Action Button -->
+        <button 
+          type="submit" 
+          id="authSubmitBtn" 
+          class="w-full py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold via-yellow-500 to-amber-500 text-black font-black text-sm sm:text-base uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 mt-2">
+          <i class="fa-solid fa-right-to-bracket text-base"></i> <span id="authSubmitBtnText">LOGIN TO THAI WIN</span>
+        </button>
+      </form>
+
+      <!-- Quick Demo Guest Access Button -->
+      <div class="flex flex-col items-center gap-2 border-t border-white/10 pt-4">
+        <button 
+          type="button" 
+          onclick="handleQuickGuestLogin()" 
+          class="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white font-bold text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+          <i class="fa-solid fa-bolt text-gold"></i> Quick Demo Guest Login (Rs 10,450 Balance)
+        </button>
+        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Safe & Secure 256-Bit SSL Encrypted</span>
+      </div>
+
+    </div>
   </div>
 
   <!-- USER LOGIN / PROFILE NAME MODAL -->
