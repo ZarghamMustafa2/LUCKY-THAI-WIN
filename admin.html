@@ -71,141 +71,379 @@
     
     <div class="flex-1 py-6 px-4 flex flex-col gap-2">
       <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 px-4">Core Settings</div>
-      <button class="w-full px-4 py-3 bg-white/5 rounded-xl text-white font-bold border border-white/10 flex items-center gap-3 border-l-2 border-l-danger text-sm">
+      
+      <!-- Option 1: Revenue & Analytics -->
+      <button id="adminTabBtn_revenue" onclick="switchAdminTab('revenue')" class="w-full px-4 py-3 bg-white/5 rounded-xl text-white font-bold border border-white/10 flex items-center gap-3 border-l-2 border-l-danger text-sm cursor-pointer shadow-sm">
         <i class="fa-solid fa-chart-pie text-danger"></i> Revenue & Analytics
       </button>
-      <button class="w-full px-4 py-3 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-3 transition-colors text-sm">
+
+      <!-- Option 2: User Management -->
+      <button id="adminTabBtn_users" onclick="switchAdminTab('users')" class="w-full px-4 py-3 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-3 transition-colors text-sm cursor-pointer">
         <i class="fa-solid fa-users text-cyanLight"></i> User Management
       </button>
-      <button class="w-full px-4 py-3 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-3 transition-colors text-sm">
+
+      <!-- Option 3: Deposits / Withdrawals -->
+      <button id="adminTabBtn_deposits" onclick="switchAdminTab('deposits')" class="w-full px-4 py-3 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-3 transition-colors text-sm cursor-pointer">
         <i class="fa-solid fa-money-bill-transfer text-primary"></i> Deposits / Withdrawals
       </button>
       
       <div class="w-full h-px bg-white/5 my-2"></div>
       <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 px-4">Game Control</div>
       
-      <button class="w-full px-4 py-3 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-3 transition-colors text-sm">
+      <!-- Option 4: RNG & House Edge -->
+      <button id="adminTabBtn_rng" onclick="switchAdminTab('rng')" class="w-full px-4 py-3 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-3 transition-colors text-sm cursor-pointer">
         <i class="fa-solid fa-sliders text-gold"></i> RNG & House Edge
       </button>
-      <button class="w-full px-4 py-3 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-3 transition-colors text-sm">
+
+      <!-- Option 5: Announcement System -->
+      <button id="adminTabBtn_announcements" onclick="switchAdminTab('announcements')" class="w-full px-4 py-3 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-3 transition-colors text-sm cursor-pointer">
         <i class="fa-solid fa-bullhorn text-purpleDark"></i> Announcement System
       </button>
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
+  <!-- MAIN CONTENT PANELS -->
   <main class="flex-1 overflow-y-auto custom-scrollbar p-3 sm:p-6 md:p-10 relative bg-[#090E18] w-full">
     <div class="max-w-6xl mx-auto flex flex-col gap-6 sm:gap-8">
       
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <h2 class="text-2xl sm:text-3xl font-display font-black text-white">System Overview</h2>
-        <div class="flex items-center gap-2.5 bg-danger/10 border border-danger/30 text-danger px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest animate-pulse">
-          <div class="w-2 h-2 rounded-full bg-danger shadow-[0_0_8px_rgba(255,77,79,0.8)]"></div>
-          Live Mode Active
-        </div>
-      </div>
-
-      <!-- Quick Stats Grid (1 Col Mobile, 2 Col Tablet, 4 Col Desktop) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-        <div class="glass-panel p-4 sm:p-5 flex flex-col border-t-2 border-t-primary">
-          <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Total Revenue (24h)</span>
-          <span class="text-xl sm:text-2xl font-mono font-black text-white mt-1">฿ 1.42M</span>
-          <span class="text-primary text-[10px] font-bold mt-2"><i class="fa-solid fa-arrow-up"></i> 4.2%</span>
-        </div>
-        <div class="glass-panel p-4 sm:p-5 flex flex-col border-t-2 border-t-cyanLight">
-          <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Active Users</span>
-          <span class="text-xl sm:text-2xl font-mono font-black text-white mt-1">8,492</span>
-          <span class="text-cyanLight text-[10px] font-bold mt-2"><i class="fa-solid fa-arrow-up"></i> 124 new signups</span>
-        </div>
-        <div class="glass-panel p-4 sm:p-5 flex flex-col border-t-2 border-t-danger">
-          <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Pending Withdrawals</span>
-          <span class="text-xl sm:text-2xl font-mono font-black text-white mt-1">14</span>
-          <span class="text-danger text-[10px] font-bold mt-2">Requires Approval</span>
-        </div>
-        <div class="glass-panel p-4 sm:p-5 flex flex-col border-t-2 border-t-gold">
-          <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">House Edge Profit</span>
-          <span class="text-xl sm:text-2xl font-mono font-black text-white mt-1">฿ 84K</span>
-          <span class="text-gray-500 text-[10px] font-bold mt-2">Calculated at 2.5%</span>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mt-2">
-        
-        <!-- Live Bet Monitoring -->
-        <div class="col-span-1 lg:col-span-2 glass-panel p-4 sm:p-6 flex flex-col h-[450px] sm:h-[500px]">
-          <div class="flex items-center justify-between mb-4 sm:mb-6">
-            <h3 class="text-lg sm:text-xl font-display font-bold text-white"><i class="fa-solid fa-satellite-dish text-primary mr-2 animate-pulse"></i> Live Bet Monitoring</h3>
+      <!-- SECTION 1: REVENUE & ANALYTICS (DEFAULT) -->
+      <div id="adminSec_revenue" class="flex flex-col gap-6 sm:gap-8">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h2 class="text-2xl sm:text-3xl font-display font-black text-white">System Overview</h2>
+          <div class="flex items-center gap-2.5 bg-danger/10 border border-danger/30 text-danger px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest animate-pulse">
+            <div class="w-2 h-2 rounded-full bg-danger shadow-[0_0_8px_rgba(255,77,79,0.8)]"></div>
+            Live Mode Active
           </div>
+        </div>
+
+        <!-- Quick Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+          <div class="glass-panel p-4 sm:p-5 flex flex-col border-t-2 border-t-primary">
+            <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Total Revenue (24h)</span>
+            <span class="text-xl sm:text-2xl font-mono font-black text-white mt-1">฿ 1.42M</span>
+            <span class="text-primary text-[10px] font-bold mt-2"><i class="fa-solid fa-arrow-up"></i> 4.2%</span>
+          </div>
+          <div class="glass-panel p-4 sm:p-5 flex flex-col border-t-2 border-t-cyanLight">
+            <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Active Users</span>
+            <span class="text-xl sm:text-2xl font-mono font-black text-white mt-1">8,492</span>
+            <span class="text-cyanLight text-[10px] font-bold mt-2"><i class="fa-solid fa-arrow-up"></i> 124 new signups</span>
+          </div>
+          <div class="glass-panel p-4 sm:p-5 flex flex-col border-t-2 border-t-danger">
+            <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Pending Withdrawals</span>
+            <span class="text-xl sm:text-2xl font-mono font-black text-white mt-1">14</span>
+            <span class="text-danger text-[10px] font-bold mt-2">Requires Approval</span>
+          </div>
+          <div class="glass-panel p-4 sm:p-5 flex flex-col border-t-2 border-t-gold">
+            <span class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">House Edge Profit</span>
+            <span class="text-xl sm:text-2xl font-mono font-black text-white mt-1">฿ 84K</span>
+            <span class="text-gray-500 text-[10px] font-bold mt-2">Calculated at 2.5%</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mt-2">
           
-          <div class="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar border border-white/5 rounded-xl bg-bgDark">
-            <table class="w-full text-left text-xs whitespace-nowrap min-w-[500px]">
-              <thead class="bg-cardDark border-b border-white/5 sticky top-0">
+          <!-- Live Bet Monitoring -->
+          <div class="col-span-1 lg:col-span-2 glass-panel p-4 sm:p-6 flex flex-col h-[450px] sm:h-[500px]">
+            <div class="flex items-center justify-between mb-4 sm:mb-6">
+              <h3 class="text-lg sm:text-xl font-display font-bold text-white"><i class="fa-solid fa-satellite-dish text-primary mr-2 animate-pulse"></i> Live Bet Monitoring</h3>
+            </div>
+            
+            <div class="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar border border-white/5 rounded-xl bg-bgDark">
+              <table class="w-full text-left text-xs whitespace-nowrap min-w-[500px]">
+                <thead class="bg-cardDark border-b border-white/5 sticky top-0">
+                  <tr class="text-gray-500 uppercase text-[9px] tracking-widest">
+                    <th class="p-3 sm:p-4 font-bold">Time</th>
+                    <th class="p-3 sm:p-4 font-bold">User</th>
+                    <th class="p-3 sm:p-4 font-bold">Target</th>
+                    <th class="p-3 sm:p-4 font-bold text-right">Amount</th>
+                    <th class="p-3 sm:p-4 font-bold text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-300 font-bold">
+                  <tr class="border-b border-white/5 hover:bg-white/5">
+                    <td class="p-3 sm:p-4 text-gray-500">14:32:01</td>
+                    <td class="p-3 sm:p-4 text-cyanLight">Alex_Winner</td>
+                    <td class="p-3 sm:p-4 font-mono text-white">8888</td>
+                    <td class="p-3 sm:p-4 font-mono text-right">฿ 500.00</td>
+                    <td class="p-3 sm:p-4 text-center"><span class="bg-gold/20 text-gold px-2 py-1 rounded text-[9px] uppercase tracking-wider">Pending</span></td>
+                  </tr>
+                  <tr class="border-b border-white/5 hover:bg-white/5">
+                    <td class="p-3 sm:p-4 text-gray-500">14:31:45</td>
+                    <td class="p-3 sm:p-4 text-white">CryptoKing</td>
+                    <td class="p-3 sm:p-4 font-mono text-white">12</td>
+                    <td class="p-3 sm:p-4 font-mono text-right">฿ 1,000.00</td>
+                    <td class="p-3 sm:p-4 text-center"><span class="bg-danger/20 text-danger px-2 py-1 rounded text-[9px] uppercase tracking-wider">Lost</span></td>
+                  </tr>
+                  <tr class="border-b border-white/5 hover:bg-white/5">
+                    <td class="p-3 sm:p-4 text-gray-500">14:31:10</td>
+                    <td class="p-3 sm:p-4 text-white">Whale99</td>
+                    <td class="p-3 sm:p-4 font-mono text-white">4</td>
+                    <td class="p-3 sm:p-4 font-mono text-right">฿ 10,000.00</td>
+                    <td class="p-3 sm:p-4 text-center"><span class="bg-primary/20 text-primary px-2 py-1 rounded text-[9px] uppercase tracking-wider">Won</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Game Controls & Jackpot -->
+          <div class="glass-panel p-4 sm:p-6 flex flex-col gap-5 sm:gap-6">
+            <h3 class="text-lg sm:text-xl font-display font-bold text-white border-b border-white/5 pb-3 sm:pb-4"><i class="fa-solid fa-gamepad text-gold mr-2"></i> Game Settings</h3>
+            
+            <div class="flex flex-col gap-2">
+              <label class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Mega Jackpot Size</label>
+              <div class="flex items-center gap-2 bg-bgDark rounded-lg border border-white/5 p-2">
+                <input type="text" value="5100000" class="bg-transparent text-white font-mono font-bold w-full outline-none text-sm px-2">
+                <button onclick="adminShowToast('Mega Jackpot Updated to ฿ 5,100,000', 'success')" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded text-xs text-white font-bold transition-colors">Update</button>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">House Edge %</label>
+              <div class="flex items-center gap-2 bg-bgDark rounded-lg border border-white/5 p-2">
+                <input type="number" value="2.5" class="bg-transparent text-white font-mono font-bold w-full outline-none text-sm px-2">
+                <button onclick="adminShowToast('House Edge Updated to 2.5%', 'success')" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded text-xs text-white font-bold transition-colors">Update</button>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2 mt-2 sm:mt-4 pt-4 border-t border-white/5">
+              <label class="text-gray-500 text-[10px] uppercase tracking-widest font-bold text-danger">Emergency Controls</label>
+              <button onclick="adminShowToast('All Betting Paused by Admin!', 'warning')" class="w-full bg-danger/20 hover:bg-danger/30 text-danger border border-danger/50 py-3 rounded-lg font-bold text-xs uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
+                <i class="fa-solid fa-power-off"></i> Pause All Betting
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION 2: USER MANAGEMENT -->
+      <div id="adminSec_users" class="hidden flex flex-col gap-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h2 class="text-2xl sm:text-3xl font-display font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-users text-cyanLight"></i> Registered Players & User Management
+          </h2>
+          <div class="flex items-center gap-2 bg-bgDark border border-white/10 px-3 py-1.5 rounded-xl">
+            <i class="fa-solid fa-magnifying-glass text-gray-500 text-xs"></i>
+            <input type="text" placeholder="Search Player Name..." class="bg-transparent text-xs font-bold text-white outline-none w-36 sm:w-48" />
+          </div>
+        </div>
+
+        <div class="glass-panel p-4 sm:p-6 flex flex-col">
+          <div class="overflow-x-auto overflow-y-auto custom-scrollbar border border-white/5 rounded-xl bg-bgDark">
+            <table class="w-full text-left text-xs whitespace-nowrap min-w-[600px]">
+              <thead class="bg-cardDark border-b border-white/5">
                 <tr class="text-gray-500 uppercase text-[9px] tracking-widest">
-                  <th class="p-3 sm:p-4 font-bold">Time</th>
-                  <th class="p-3 sm:p-4 font-bold">User</th>
-                  <th class="p-3 sm:p-4 font-bold">Target</th>
-                  <th class="p-3 sm:p-4 font-bold text-right">Amount</th>
+                  <th class="p-3 sm:p-4 font-bold">Player Name</th>
+                  <th class="p-3 sm:p-4 font-bold">Wallet Balance</th>
+                  <th class="p-3 sm:p-4 font-bold">VIP Tier</th>
                   <th class="p-3 sm:p-4 font-bold text-center">Status</th>
+                  <th class="p-3 sm:p-4 font-bold text-right">Actions</th>
                 </tr>
               </thead>
               <tbody class="text-gray-300 font-bold">
                 <tr class="border-b border-white/5 hover:bg-white/5">
-                  <td class="p-3 sm:p-4 text-gray-500">14:32:01</td>
-                  <td class="p-3 sm:p-4 text-cyanLight">Alex_Winner</td>
-                  <td class="p-3 sm:p-4 font-mono text-white">8888</td>
-                  <td class="p-3 sm:p-4 font-mono text-right">฿ 500.00</td>
-                  <td class="p-3 sm:p-4 text-center"><span class="bg-gold/20 text-gold px-2 py-1 rounded text-[9px] uppercase tracking-wider">Pending</span></td>
+                  <td class="p-3 sm:p-4 text-cyanLight flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-gold/20 text-gold flex items-center justify-center font-black text-xs">AW</div>
+                    Alex_Winner
+                  </td>
+                  <td class="p-3 sm:p-4 font-mono text-white">Rs 10,450.00</td>
+                  <td class="p-3 sm:p-4 text-gold"><i class="fa-solid fa-crown text-xs mr-1"></i> VIP Platinum</td>
+                  <td class="p-3 sm:p-4 text-center"><span class="bg-primary/20 text-primary px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider">Active</span></td>
+                  <td class="p-3 sm:p-4 text-right flex items-center justify-end gap-2">
+                    <button onclick="adminShowToast('Added +Rs 5,000 to Alex_Winner Wallet!', 'success')" class="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 px-3 py-1 rounded-lg text-xs transition-all cursor-pointer">+ Balance</button>
+                    <button onclick="adminShowToast('Player Alex_Winner status toggled.', 'info')" class="bg-white/5 hover:bg-white/10 text-gray-300 px-3 py-1 rounded-lg text-xs transition-all cursor-pointer">Edit</button>
+                  </td>
                 </tr>
                 <tr class="border-b border-white/5 hover:bg-white/5">
-                  <td class="p-3 sm:p-4 text-gray-500">14:31:45</td>
-                  <td class="p-3 sm:p-4 text-white">CryptoKing</td>
-                  <td class="p-3 sm:p-4 font-mono text-white">12</td>
-                  <td class="p-3 sm:p-4 font-mono text-right">฿ 1,000.00</td>
-                  <td class="p-3 sm:p-4 text-center"><span class="bg-danger/20 text-danger px-2 py-1 rounded text-[9px] uppercase tracking-wider">Lost</span></td>
+                  <td class="p-3 sm:p-4 text-white flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-cyanLight/20 text-cyanLight flex items-center justify-center font-black text-xs">CK</div>
+                    CryptoKing
+                  </td>
+                  <td class="p-3 sm:p-4 font-mono text-white">Rs 45,000.00</td>
+                  <td class="p-3 sm:p-4 text-cyanLight"><i class="fa-solid fa-gem text-xs mr-1"></i> VIP Gold</td>
+                  <td class="p-3 sm:p-4 text-center"><span class="bg-primary/20 text-primary px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider">Active</span></td>
+                  <td class="p-3 sm:p-4 text-right flex items-center justify-end gap-2">
+                    <button onclick="adminShowToast('Added +Rs 5,000 to CryptoKing Wallet!', 'success')" class="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 px-3 py-1 rounded-lg text-xs transition-all cursor-pointer">+ Balance</button>
+                    <button onclick="adminShowToast('Player CryptoKing status toggled.', 'info')" class="bg-white/5 hover:bg-white/10 text-gray-300 px-3 py-1 rounded-lg text-xs transition-all cursor-pointer">Edit</button>
+                  </td>
                 </tr>
                 <tr class="border-b border-white/5 hover:bg-white/5">
-                  <td class="p-3 sm:p-4 text-gray-500">14:31:10</td>
-                  <td class="p-3 sm:p-4 text-white">Whale99</td>
-                  <td class="p-3 sm:p-4 font-mono text-white">4</td>
-                  <td class="p-3 sm:p-4 font-mono text-right">฿ 10,000.00</td>
-                  <td class="p-3 sm:p-4 text-center"><span class="bg-primary/20 text-primary px-2 py-1 rounded text-[9px] uppercase tracking-wider">Won</span></td>
+                  <td class="p-3 sm:p-4 text-white flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-purpleDark/20 text-purpleDark flex items-center justify-center font-black text-xs">W9</div>
+                    Whale99
+                  </td>
+                  <td class="p-3 sm:p-4 font-mono text-white">Rs 120,000.00</td>
+                  <td class="p-3 sm:p-4 text-purpleDark"><i class="fa-solid fa-star text-xs mr-1"></i> VIP Diamond</td>
+                  <td class="p-3 sm:p-4 text-center"><span class="bg-primary/20 text-primary px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider">Active</span></td>
+                  <td class="p-3 sm:p-4 text-right flex items-center justify-end gap-2">
+                    <button onclick="adminShowToast('Added +Rs 5,000 to Whale99 Wallet!', 'success')" class="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 px-3 py-1 rounded-lg text-xs transition-all cursor-pointer">+ Balance</button>
+                    <button onclick="adminShowToast('Player Whale99 status toggled.', 'info')" class="bg-white/5 hover:bg-white/10 text-gray-300 px-3 py-1 rounded-lg text-xs transition-all cursor-pointer">Edit</button>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
+      </div>
 
-        <!-- Game Controls & Jackpot -->
-        <div class="glass-panel p-4 sm:p-6 flex flex-col gap-5 sm:gap-6">
-          <h3 class="text-lg sm:text-xl font-display font-bold text-white border-b border-white/5 pb-3 sm:pb-4"><i class="fa-solid fa-gamepad text-gold mr-2"></i> Game Settings</h3>
-          
-          <div class="flex flex-col gap-2">
-            <label class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Mega Jackpot Size</label>
-            <div class="flex items-center gap-2 bg-bgDark rounded-lg border border-white/5 p-2">
-              <input type="text" value="5100000" class="bg-transparent text-white font-mono font-bold w-full outline-none text-sm px-2">
-              <button class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded text-xs text-white font-bold transition-colors">Update</button>
+      <!-- SECTION 3: DEPOSITS / WITHDRAWALS -->
+      <div id="adminSec_deposits" class="hidden flex flex-col gap-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h2 class="text-2xl sm:text-3xl font-display font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-money-bill-transfer text-primary"></i> Deposits & Withdrawals Requests
+          </h2>
+          <span class="bg-primary/10 text-primary border border-primary/30 px-3 py-1 rounded-full text-xs font-bold">14 Pending Requests</span>
+        </div>
+
+        <div class="glass-panel p-4 sm:p-6 flex flex-col">
+          <div class="overflow-x-auto overflow-y-auto custom-scrollbar border border-white/5 rounded-xl bg-bgDark">
+            <table class="w-full text-left text-xs whitespace-nowrap min-w-[650px]">
+              <thead class="bg-cardDark border-b border-white/5">
+                <tr class="text-gray-500 uppercase text-[9px] tracking-widest">
+                  <th class="p-3 sm:p-4 font-bold">Time</th>
+                  <th class="p-3 sm:p-4 font-bold">User</th>
+                  <th class="p-3 sm:p-4 font-bold">Type</th>
+                  <th class="p-3 sm:p-4 font-bold">Payment Gateway</th>
+                  <th class="p-3 sm:p-4 font-bold text-right">Amount</th>
+                  <th class="p-3 sm:p-4 font-bold text-center">Status</th>
+                  <th class="p-3 sm:p-4 font-bold text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="text-gray-300 font-bold">
+                <tr class="border-b border-white/5 hover:bg-white/5">
+                  <td class="p-3 sm:p-4 text-gray-500">14:40:12</td>
+                  <td class="p-3 sm:p-4 text-cyanLight">Alex_Winner</td>
+                  <td class="p-3 sm:p-4 text-primary font-bold"><i class="fa-solid fa-arrow-down mr-1"></i> Deposit</td>
+                  <td class="p-3 sm:p-4 text-gray-300">JazzCash / EasyPaisa</td>
+                  <td class="p-3 sm:p-4 font-mono text-white text-right">Rs 5,000.00</td>
+                  <td class="p-3 sm:p-4 text-center"><span class="bg-gold/20 text-gold px-2 py-1 rounded text-[9px] uppercase tracking-wider">Pending</span></td>
+                  <td class="p-3 sm:p-4 text-right flex items-center justify-end gap-2">
+                    <button onclick="adminShowToast('Deposit of Rs 5,000 APPROVED for Alex_Winner!', 'success')" class="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 px-3 py-1 rounded-lg text-xs transition-all cursor-pointer">Approve</button>
+                    <button onclick="adminShowToast('Deposit request rejected.', 'error')" class="bg-danger/20 hover:bg-danger/30 text-danger border border-danger/30 px-3 py-1 rounded-lg text-xs transition-all cursor-pointer">Reject</button>
+                  </td>
+                </tr>
+                <tr class="border-b border-white/5 hover:bg-white/5">
+                  <td class="p-3 sm:p-4 text-gray-500">14:28:30</td>
+                  <td class="p-3 sm:p-4 text-white">CryptoKing</td>
+                  <td class="p-3 sm:p-4 text-danger font-bold"><i class="fa-solid fa-arrow-up mr-1"></i> Withdrawal</td>
+                  <td class="p-3 sm:p-4 text-gray-300">Bank Transfer / USDT</td>
+                  <td class="p-3 sm:p-4 font-mono text-white text-right">Rs 12,000.00</td>
+                  <td class="p-3 sm:p-4 text-center"><span class="bg-gold/20 text-gold px-2 py-1 rounded text-[9px] uppercase tracking-wider">Pending</span></td>
+                  <td class="p-3 sm:p-4 text-right flex items-center justify-end gap-2">
+                    <button onclick="adminShowToast('Withdrawal of Rs 12,000 APPROVED for CryptoKing!', 'success')" class="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 px-3 py-1 rounded-lg text-xs transition-all cursor-pointer">Approve</button>
+                    <button onclick="adminShowToast('Withdrawal request rejected.', 'error')" class="bg-danger/20 hover:bg-danger/30 text-danger border border-danger/30 px-3 py-1 rounded-lg text-xs transition-all cursor-pointer">Reject</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: RNG & HOUSE EDGE -->
+      <div id="adminSec_rng" class="hidden flex flex-col gap-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h2 class="text-2xl sm:text-3xl font-display font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-gold"></i> RNG & House Edge Controls
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="glass-panel p-6 flex flex-col gap-5">
+            <h3 class="text-lg font-bold text-white border-b border-white/5 pb-3">House Edge Configuration</h3>
+            <div class="flex flex-col gap-2">
+              <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">House Edge Margin (%)</label>
+              <input type="number" step="0.1" value="2.5" class="w-full bg-bgDark border border-white/10 rounded-xl px-4 py-3 text-white font-mono font-bold text-base outline-none focus:border-gold" />
             </div>
+            <div class="flex flex-col gap-2">
+              <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">RNG Mode</label>
+              <select class="w-full bg-bgDark border border-white/10 rounded-xl px-4 py-3 text-white font-bold text-sm outline-none focus:border-gold">
+                <option value="fair">100% Provably Fair Cryptographic RNG</option>
+                <option value="boost">House Edge Profit Maximizer Mode</option>
+              </select>
+            </div>
+            <button onclick="adminShowToast('RNG & House Edge settings saved!', 'success')" class="w-full py-3.5 rounded-xl bg-gold text-black font-black uppercase tracking-wider shadow-md hover:scale-[1.01] active:scale-95 transition-all cursor-pointer">
+              Save House Edge Settings
+            </button>
           </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="text-gray-500 text-[10px] uppercase tracking-widest font-bold">House Edge %</label>
-            <div class="flex items-center gap-2 bg-bgDark rounded-lg border border-white/5 p-2">
-              <input type="number" value="2.5" class="bg-transparent text-white font-mono font-bold w-full outline-none text-sm px-2">
-              <button class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded text-xs text-white font-bold transition-colors">Update</button>
+          <div class="glass-panel p-6 flex flex-col gap-5">
+            <h3 class="text-lg font-bold text-white border-b border-white/5 pb-3">Preset Draw Winner Control</h3>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-gold uppercase">1st Draw (4 Digits)</label>
+                <input type="text" value="7492" maxlength="4" class="w-full bg-bgDark border border-gold/30 rounded-xl px-3 py-2.5 text-gold font-mono font-bold text-sm outline-none text-center" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-cyanLight uppercase">2nd Draw #1</label>
+                <input type="text" value="3185" maxlength="4" class="w-full bg-bgDark border border-cyanLight/30 rounded-xl px-3 py-2.5 text-cyanLight font-mono font-bold text-sm outline-none text-center" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-cyanLight uppercase">2nd Draw #2</label>
+                <input type="text" value="5921" maxlength="4" class="w-full bg-bgDark border border-cyanLight/30 rounded-xl px-3 py-2.5 text-cyanLight font-mono font-bold text-sm outline-none text-center" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-cyanLight uppercase">2nd Draw #3</label>
+                <input type="text" value="8304" maxlength="4" class="w-full bg-bgDark border border-cyanLight/30 rounded-xl px-3 py-2.5 text-cyanLight font-mono font-bold text-sm outline-none text-center" />
+              </div>
             </div>
-          </div>
-
-          <div class="flex flex-col gap-2 mt-2 sm:mt-4 pt-4 border-t border-white/5">
-            <label class="text-gray-500 text-[10px] uppercase tracking-widest font-bold text-danger">Emergency Controls</label>
-            <button class="w-full bg-danger/20 hover:bg-danger/30 text-danger border border-danger/50 py-3 rounded-lg font-bold text-xs uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
-              <i class="fa-solid fa-power-off"></i> Pause All Betting
+            <button onclick="adminShowToast('Next Draw Winner Digits Locked!', 'success')" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyanLight to-blue-500 text-black font-black uppercase tracking-wider shadow-md hover:scale-[1.01] active:scale-95 transition-all cursor-pointer">
+              Lock Preset Winning Numbers
             </button>
           </div>
         </div>
-
       </div>
+
+      <!-- SECTION 5: ANNOUNCEMENT SYSTEM -->
+      <div id="adminSec_announcements" class="hidden flex flex-col gap-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h2 class="text-2xl sm:text-3xl font-display font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-bullhorn text-purpleDark"></i> Broadcast Announcement System
+          </h2>
+        </div>
+
+        <div class="glass-panel p-6 flex flex-col gap-5 max-w-2xl">
+          <h3 class="text-lg font-bold text-white border-b border-white/5 pb-3">Create Player Ticker Announcement</h3>
+          
+          <div class="flex flex-col gap-2">
+            <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Announcement Text</label>
+            <textarea id="adminAnnouncementText" rows="3" placeholder="e.g. 🎉 Mega Bonus: Deposit Rs 1,000 & Get 100% Instant Match Bonus Today!" class="w-full bg-bgDark border border-white/10 rounded-xl p-4 text-white font-medium text-sm outline-none focus:border-purpleDark custom-scrollbar"></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-2">
+              <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Banner Type</label>
+              <select class="w-full bg-bgDark border border-white/10 rounded-xl px-4 py-3 text-white font-bold text-sm outline-none focus:border-purpleDark">
+                <option value="promo">🎁 Promotion / Bonus</option>
+                <option value="alert">⚠️ Maintenance Alert</option>
+                <option value="winner">🏆 Big Winner Celebration</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Active Duration</label>
+              <select class="w-full bg-bgDark border border-white/10 rounded-xl px-4 py-3 text-white font-bold text-sm outline-none focus:border-purpleDark">
+                <option value="24h">24 Hours</option>
+                <option value="48h">48 Hours</option>
+                <option value="perm">Permanent</option>
+              </select>
+            </div>
+          </div>
+
+          <button onclick="publishAnnouncement()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-purpleDark to-indigo-600 text-white font-black uppercase tracking-wider shadow-lg hover:scale-[1.01] active:scale-95 transition-all cursor-pointer">
+            Broadcast Announcement to Live Players
+          </button>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- ADMIN TOAST NOTIFICATION -->
+  <div id="adminToast" class="fixed top-6 right-6 z-[100] bg-cardDark border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.8)] px-5 py-3.5 rounded-2xl flex items-center gap-3 transform translate-y-[-100px] opacity-0 transition-all duration-300 pointer-events-none backdrop-blur-xl">
+    <div id="adminToastIcon" class="text-primary text-xl"><i class="fa-solid fa-circle-check"></i></div>
+    <span id="adminToastMsg" class="font-bold text-white tracking-wide text-sm">Action completed.</span>
+  </div>
 
   <script>
     function toggleAdminSidebar() {
@@ -213,6 +451,78 @@
       if (sidebar) {
         sidebar.classList.toggle('hidden');
       }
+    }
+
+    function adminShowToast(msg, type) {
+      var toast = document.getElementById('adminToast');
+      var toastMsg = document.getElementById('adminToastMsg');
+      var toastIcon = document.getElementById('adminToastIcon');
+      if (!toast || !toastMsg) return;
+
+      toastMsg.innerText = msg;
+      if (type === 'error') {
+        toastIcon.className = 'text-danger text-xl';
+        toastIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+      } else if (type === 'warning') {
+        toastIcon.className = 'text-gold text-xl';
+        toastIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+      } else if (type === 'info') {
+        toastIcon.className = 'text-cyanLight text-xl';
+        toastIcon.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+      } else {
+        toastIcon.className = 'text-primary text-xl';
+        toastIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+      }
+
+      toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      if (window.adminToastTimer) clearTimeout(window.adminToastTimer);
+      window.adminToastTimer = setTimeout(function() {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-[-100px]', 'opacity-0');
+      }, 3000);
+    }
+
+    function switchAdminTab(tabName) {
+      var sections = ['revenue', 'users', 'deposits', 'rng', 'announcements'];
+      sections.forEach(function(sec) {
+        var el = document.getElementById('adminSec_' + sec);
+        var btn = document.getElementById('adminTabBtn_' + sec);
+        if (el) {
+          if (sec === tabName) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        }
+        if (btn) {
+          if (sec === tabName) {
+            btn.className = 'w-full px-4 py-3 bg-white/5 rounded-xl text-white font-bold border border-white/10 flex items-center gap-3 border-l-2 border-l-danger text-sm cursor-pointer shadow-sm';
+          } else {
+            btn.className = 'w-full px-4 py-3 hover:bg-white/5 rounded-xl text-gray-400 hover:text-white font-bold flex items-center gap-3 transition-colors text-sm cursor-pointer';
+          }
+        }
+      });
+
+      // Auto collapse sidebar on mobile screen when a tab is clicked
+      if (window.innerWidth < 768) {
+        var sidebar = document.getElementById('adminSidebar');
+        if (sidebar) sidebar.classList.add('hidden');
+      }
+    }
+
+    function publishAnnouncement() {
+      var textInput = document.getElementById('adminAnnouncementText');
+      var text = (textInput && textInput.value) ? textInput.value.trim() : '';
+      if (!text) {
+        adminShowToast('Please enter announcement text!', 'warning');
+        return;
+      }
+      try {
+        localStorage.setItem('adminBroadcastMsg', text);
+      } catch(e) {}
+      adminShowToast('Announcement broadcasted to live players!', 'success');
+      if (textInput) textInput.value = '';
     }
   </script>
 </body>
