@@ -773,56 +773,58 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* Light Mode Luxury Palette Overrides */
+    /* Light Mode Luxury Porcelain Palette Overrides */
+    html.light, body.light {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+    }
     html.light body {
       background-color: #f1f5f9 !important;
-      color: #1e293b !important;
-    }
-    html.light .bg-bgDark,
-    html.light .bg-bgDark\/90,
-    html.light .bg-bgDark\/80 {
-      background-color: #f8fafc !important;
-    }
-    html.light .bg-cardDark,
-    html.light .bg-cardDark\/90,
-    html.light .bg-cardDark\/95 {
-      background-color: #ffffff !important;
       color: #0f172a !important;
-      border-color: #cbd5e1 !important;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
-    }
-    html.light .glass-panel {
-      background: rgba(255, 255, 255, 0.95) !important;
-      border-color: rgba(217, 119, 6, 0.3) !important;
-      color: #0f172a !important;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
     }
     html.light header {
       background-color: rgba(255, 255, 255, 0.95) !important;
-      border-bottom-color: #e2e8f0 !important;
+      border-bottom-color: #cbd5e1 !important;
     }
     html.light aside {
       background-color: #ffffff !important;
-      border-right-color: #e2e8f0 !important;
+      border-right-color: #cbd5e1 !important;
+    }
+    html.light main {
+      background-color: #f1f5f9 !important;
+    }
+    html.light [class*="bg-bgDark"] {
+      background-color: #f8fafc !important;
+      border-color: #cbd5e1 !important;
+    }
+    html.light [class*="bg-cardDark"] {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    }
+    html.light .glass-panel,
+    html.light [class*="glass-panel"] {
+      background: rgba(255, 255, 255, 0.98) !important;
+      color: #0f172a !important;
+      border-color: rgba(217, 119, 6, 0.4) !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06) !important;
     }
     html.light .text-white {
       color: #0f172a !important;
     }
+    html.light .text-gray-300,
     html.light .text-gray-400 {
       color: #475569 !important;
     }
-    html.light .text-gray-300 {
-      color: #334155 !important;
-    }
     html.light .text-gold {
-      color: #d97706 !important;
+      color: #b45309 !important;
     }
-    html.light .border-gold,
-    html.light .border-gold\/40,
-    html.light .border-gold\/30 {
+    html.light [class*="border-gold"] {
       border-color: rgba(217, 119, 6, 0.5) !important;
     }
-    html.light .bg-gold\/10 {
+    html.light [class*="bg-gold/10"],
+    html.light [class*="bg-gold/20"] {
       background-color: rgba(217, 119, 6, 0.12) !important;
     }
   </style>
@@ -3000,27 +3002,32 @@
 
     // Light & Dark Theme Switcher Logic
     window.setTheme = function(theme) {
-      var html = document.documentElement || document.body;
+      var html = document.documentElement;
+      var body = document.body;
       var themeIcon = document.getElementById('themeToggleIcon');
-      if (html && html.classList) {
-        if (theme === 'light') {
-          html.classList.remove('dark');
-          html.classList.add('light');
-        } else {
-          html.classList.remove('light');
-          html.classList.add('dark');
+
+      if (theme === 'light') {
+        if (html) { html.classList.remove('dark'); html.classList.add('light'); }
+        if (body) { body.classList.remove('dark'); body.classList.add('light'); }
+        if (themeIcon) {
+          themeIcon.className = 'fa-solid fa-sun text-amber-500 text-xs sm:text-sm';
         }
-      }
-      if (themeIcon) {
-        themeIcon.className = theme === 'light' ? 'fa-solid fa-sun text-amber-500 text-xs sm:text-sm' : 'fa-solid fa-moon text-gold text-xs sm:text-sm';
+      } else {
+        if (html) { html.classList.remove('light'); html.classList.add('dark'); }
+        if (body) { body.classList.remove('light'); body.classList.add('dark'); }
+        if (themeIcon) {
+          themeIcon.className = 'fa-solid fa-moon text-gold text-xs sm:text-sm';
+        }
       }
       try {
         localStorage.setItem('appTheme', theme);
       } catch(e) {}
     };
 
-    window.toggleTheme = function() {
-      var isDark = document.documentElement.classList.contains('dark');
+    window.toggleTheme = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      var html = document.documentElement || document.body;
+      var isDark = html ? html.classList.contains('dark') : true;
       window.setTheme(isDark ? 'light' : 'dark');
     };
 
