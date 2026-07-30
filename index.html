@@ -772,6 +772,59 @@
       from { transform: translateY(-20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+
+    /* Light Mode Luxury Palette Overrides */
+    html.light body {
+      background-color: #f1f5f9 !important;
+      color: #1e293b !important;
+    }
+    html.light .bg-bgDark,
+    html.light .bg-bgDark\/90,
+    html.light .bg-bgDark\/80 {
+      background-color: #f8fafc !important;
+    }
+    html.light .bg-cardDark,
+    html.light .bg-cardDark\/90,
+    html.light .bg-cardDark\/95 {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+    }
+    html.light .glass-panel {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border-color: rgba(217, 119, 6, 0.3) !important;
+      color: #0f172a !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+    }
+    html.light header {
+      background-color: rgba(255, 255, 255, 0.95) !important;
+      border-bottom-color: #e2e8f0 !important;
+    }
+    html.light aside {
+      background-color: #ffffff !important;
+      border-right-color: #e2e8f0 !important;
+    }
+    html.light .text-white {
+      color: #0f172a !important;
+    }
+    html.light .text-gray-400 {
+      color: #475569 !important;
+    }
+    html.light .text-gray-300 {
+      color: #334155 !important;
+    }
+    html.light .text-gold {
+      color: #d97706 !important;
+    }
+    html.light .border-gold,
+    html.light .border-gold\/40,
+    html.light .border-gold\/30 {
+      border-color: rgba(217, 119, 6, 0.5) !important;
+    }
+    html.light .bg-gold\/10 {
+      background-color: rgba(217, 119, 6, 0.12) !important;
+    }
   </style>
 </head>
 <body class="flex h-screen overflow-hidden bg-bgDark bg-particles relative text-gray-300">
@@ -893,6 +946,10 @@
 
         <button id="mobileRefreshBtn" onclick="if(typeof triggerAppRefresh==='function') triggerAppRefresh(); else window.location.reload();" class="text-gold hover:text-white bg-gold/10 hover:bg-gold/20 border border-gold/30 p-1 sm:p-2 rounded-lg sm:rounded-xl transition-all cursor-pointer flex items-center justify-center shadow-sm active:scale-95" title="Refresh Page">
           <i class="fa-solid fa-arrows-rotate text-xs sm:text-sm"></i>
+        </button>
+
+        <button id="headerThemeBtn" onclick="toggleTheme()" class="text-gold hover:text-white bg-gold/10 hover:bg-gold/20 border border-gold/30 p-1 sm:p-2 rounded-lg sm:rounded-xl transition-all cursor-pointer flex items-center justify-center shadow-sm active:scale-95" title="Toggle Light/Dark Theme">
+          <i id="themeToggleIcon" class="fa-solid fa-moon text-xs sm:text-sm text-gold"></i>
         </button>
         
         <!-- Active Users Indicator (Desktop Only) -->
@@ -2940,6 +2997,38 @@
         mainEl.style.transform = 'none';
       }
     } catch(e) {}
+
+    // Light & Dark Theme Switcher Logic
+    window.setTheme = function(theme) {
+      var html = document.documentElement || document.body;
+      var themeIcon = document.getElementById('themeToggleIcon');
+      if (html && html.classList) {
+        if (theme === 'light') {
+          html.classList.remove('dark');
+          html.classList.add('light');
+        } else {
+          html.classList.remove('light');
+          html.classList.add('dark');
+        }
+      }
+      if (themeIcon) {
+        themeIcon.className = theme === 'light' ? 'fa-solid fa-sun text-amber-500 text-xs sm:text-sm' : 'fa-solid fa-moon text-gold text-xs sm:text-sm';
+      }
+      try {
+        localStorage.setItem('appTheme', theme);
+      } catch(e) {}
+    };
+
+    window.toggleTheme = function() {
+      var isDark = document.documentElement.classList.contains('dark');
+      window.setTheme(isDark ? 'light' : 'dark');
+    };
+
+    // Initialize saved theme on load
+    (function initSavedTheme() {
+      var saved = localStorage.getItem('appTheme') || 'dark';
+      window.setTheme(saved);
+    })();
 
     // Ripple Effect Logic
     document.addEventListener('click', function(e) {
