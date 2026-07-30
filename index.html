@@ -142,7 +142,80 @@
           window.setTheme(saved);
         }
       } catch(e) {}
-    })();
+    // Render 48 Draws for the Last 24 Hours History (Compact Single-Row Format)
+    window.init24HoursDrawHistory = function() {
+      var container = document.getElementById('last10WinningDrawsList');
+      if (!container) return;
+
+      var savedHistory = [];
+      try {
+        savedHistory = JSON.parse(localStorage.getItem('winningDraws24hHistory') || '[]');
+      } catch(e) {}
+
+      var now = new Date();
+      var html = '';
+      
+      for (var i = 0; i < 48; i++) {
+        var drawTime = new Date(now.getTime() - i * 30 * 60 * 1000);
+        var drawNum = 4828 - i;
+        var isLatest = (i === 0);
+        var timeStr = drawTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        var num1 = String((7492 + i * 137) % 10000).padStart(4, '0');
+        var num2 = String((3185 + i * 243) % 10000).padStart(4, '0');
+        var num3 = String((5921 + i * 189) % 10000).padStart(4, '0');
+        var num4 = String((8304 + i * 312) % 10000).padStart(4, '0');
+
+        if (savedHistory && savedHistory[i]) {
+          var rec = savedHistory[i];
+          if (rec.drawNum) drawNum = rec.drawNum;
+          if (rec.timeStr) timeStr = rec.timeStr;
+          if (rec.num1) num1 = rec.num1;
+          if (rec.num2) num2 = rec.num2;
+          if (rec.num3) num3 = rec.num3;
+          if (rec.num4) num4 = rec.num4;
+        }
+
+        var cardBorder = isLatest ? 'border-gold/40 hover:border-gold shadow-[0_0_10px_rgba(255,212,0,0.15)]' : 'border-white/5 hover:border-white/20';
+        var badgeBg = isLatest ? 'bg-gold/10 border-gold/30 text-gold' : 'bg-white/5 border-white/10 text-gray-400';
+
+        html += '<div class="bg-bgDark/90 p-1.5 sm:p-2 rounded-xl border ' + cardBorder + ' flex flex-nowrap items-center justify-between gap-1.5 group transition-all">' +
+          '<div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">' +
+            '<div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg ' + badgeBg + ' border flex items-center justify-center font-bold text-[9px] sm:text-[10px]">#' + (48 - i) + '</div>' +
+            '<div class="flex flex-col">' +
+              '<span class="text-[10px] sm:text-xs font-bold text-white tracking-wider">Draw #' + drawNum + '</span>' +
+              '<span class="text-[8px] font-mono text-gray-400"><i class="fa-regular fa-clock mr-0.5"></i>' + timeStr + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="flex items-center gap-1 sm:gap-1.5 flex-nowrap">' +
+            '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-gold/30 min-w-[42px] sm:min-w-[48px]">' +
+              '<span class="text-[7px] font-bold text-gold uppercase tracking-tighter">1ST</span>' +
+              '<span class="font-mono text-[10px] sm:text-xs font-black text-gold tracking-wider">' + num1 + '</span>' +
+            '</div>' +
+            '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
+              '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #1</span>' +
+              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num2 + '</span>' +
+            '</div>' +
+            '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
+              '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #2</span>' +
+              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num3 + '</span>' +
+            '</div>' +
+            '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
+              '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #3</span>' +
+              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num4 + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+      
+      container.innerHTML = html;
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() { window.init24HoursDrawHistory(); });
+    } else {
+      setTimeout(function() { window.init24HoursDrawHistory(); }, 50);
+    }
 
     window.sheetState = {
       number: '',
@@ -1465,7 +1538,7 @@
             </span>
           </div>
 
-          <div class="space-y-1.5 max-h-[360px] overflow-y-auto custom-scrollbar pr-1" id="last10WinningDrawsList">
+          <div class="space-y-1.5 max-h-[360px] min-h-[220px] overflow-y-auto custom-scrollbar pr-1" id="last10WinningDrawsList">
             <!-- Dynamic 48-Draw 24h History Rendered via JavaScript -->
           </div>
         </div>
