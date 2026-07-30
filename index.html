@@ -2556,13 +2556,19 @@
       const targetDigits = winningNumStr.split('');
       const totalDigitsInDraw = targetDigits.length;
 
+      const multiContainer = document.getElementById('multiResultsContainer');
+      if (multiContainer && phaseNum === 1) {
+        multiContainer.classList.add('opacity-0', 'translate-y-4');
+        multiContainer.innerHTML = '';
+      }
+
       for(let i=0; i<4; i++) {
         const d = document.getElementById(`digit-${i}`);
         if (d) {
           if (i < totalDigitsInDraw) {
             d.style.display = 'flex';
             d.innerText = '?';
-            d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
+            d.className = 'w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
           } else {
             d.style.display = 'none';
           }
@@ -2576,14 +2582,19 @@
 
       function spinForDigit(digitIndex) {
         if (digitIndex >= totalDigitsInDraw) {
-          const multiContainer = document.getElementById('multiResultsContainer');
+          // Hide digit boxes so they don't overlap behind winner cards!
+          for(let i=0; i<4; i++) {
+            const d = document.getElementById(`digit-${i}`);
+            if (d) d.style.display = 'none';
+          }
+
           if (multiContainer) {
             multiContainer.classList.remove('opacity-0', 'translate-y-4');
             const badgeBorder = drawLabel.indexOf('1ST') > -1 ? 'border-gold text-gold shadow-[0_0_15px_rgba(255,212,0,0.3)]' : 'border-cyanLight text-cyanLight shadow-[0_0_15px_rgba(0,212,255,0.3)]';
             multiContainer.innerHTML += `
-               <div class="bg-cardDark px-4 py-2 md:px-6 md:py-3 rounded-xl border ${badgeBorder} text-center animate-bounce">
-                  <div class="text-[9px] md:text-[11px] text-gray-400 font-bold mb-1">${drawLabel} WINNER</div>
-                  <div class="text-xl md:text-3xl font-mono font-black">${winningNumStr}</div>
+               <div class="bg-cardDark px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border ${badgeBorder} text-center shadow-lg">
+                  <div class="text-[9px] sm:text-xs text-gray-400 font-bold mb-0.5">${drawLabel} WINNER</div>
+                  <div class="text-base sm:text-2xl font-mono font-black">${winningNumStr}</div>
                </div>
             `;
           }
