@@ -179,13 +179,14 @@
     // Global Wallet State Initializer
     try {
       var savedBal = localStorage.getItem('userWalletBalance');
-      window.currentBalance = (savedBal !== null && !isNaN(parseFloat(savedBal))) ? parseFloat(savedBal) : 10450;
+      var parsed = (savedBal !== null && !isNaN(parseFloat(savedBal))) ? parseFloat(savedBal) : 10450;
+      window.currentBalance = (parsed < 10) ? 10450 : parsed;
     } catch(e) {
       window.currentBalance = 10450;
     }
 
     window.updateWalletUI = function() {
-      var bal = (typeof window.currentBalance === 'number' && !isNaN(window.currentBalance)) ? window.currentBalance : 10450;
+      var bal = (typeof window.currentBalance === 'number' && !isNaN(window.currentBalance) && window.currentBalance >= 10) ? window.currentBalance : 10450;
       window.currentBalance = bal;
       var formatted = 'Rs ' + bal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
       var walletEls = document.querySelectorAll('#walletBalance, .wallet-balance-text, [data-wallet-balance]');
@@ -196,7 +197,12 @@
         localStorage.setItem('userWalletBalance', String(bal));
       } catch(e) {}
     };
-    window.updateWalletUI();
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() { window.updateWalletUI(); });
+    } else {
+      window.updateWalletUI();
+    }
 
     window.setBetButtonState = function(isPlaced) {
       var btn = document.getElementById('inlinePlaceBetBtn');
@@ -274,8 +280,12 @@
         if (isNaN(amount) || amount <= 0) amount = 10;
 
         if (window.currentBalance < amount) {
-          if (typeof window.showToast === 'function') window.showToast('Insufficient Wallet Balance! Balance is Rs ' + window.currentBalance.toLocaleString(), 'error');
-          return;
+          // Auto refill demo balance if insufficient!
+          window.currentBalance = 10450;
+          if (typeof window.updateWalletUI === 'function') window.updateWalletUI();
+          if (typeof window.showToast === 'function') {
+            window.showToast('Demo Wallet Refilled to Rs 10,450!', 'success');
+          }
         }
 
         // Automatically Deduct Wallet Balance!
