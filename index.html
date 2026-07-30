@@ -1887,88 +1887,59 @@
     <span id="toastMsg" class="font-bold text-white tracking-wide text-sm">Bet Placed Successfully!</span>
   </div>
 
-  <!-- FULL SCREEN LUXURY LOGIN & REGISTER OVERLAY -->
-  <div id="fullAppLoginOverlay" class="fixed inset-0 z-[999999] bg-[#090d16]/95 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6 transition-all duration-500 overflow-y-auto">
-    <!-- Glowing Background Ambient Effects -->
-    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-gold/15 blur-[120px] rounded-full pointer-events-none"></div>
-    <div class="absolute bottom-10 right-10 w-[250px] h-[250px] bg-cyanLight/10 blur-[100px] rounded-full pointer-events-none"></div>
-
-    <div class="relative w-full max-w-md bg-cardDark/95 border-2 border-gold/40 rounded-3xl p-6 sm:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(255,212,0,0.15)] backdrop-blur-xl flex flex-col gap-5 my-auto">
+  <!-- FULL SCREEN LUXURY LOGIN OVERLAY (EXACT USER DESIGN MATCH) -->
+  <div id="fullAppLoginOverlay" class="fixed inset-0 z-[999999] bg-[#12161f] flex items-center justify-center p-4 transition-all duration-500 overflow-y-auto" style="background-image: radial-gradient(circle at 50% 50%, #1e2430 0%, #0d1017 100%);">
+    
+    <!-- Deep Slate Blue Rounded Login Card -->
+    <div class="relative w-full max-w-[360px] sm:max-w-[400px] bg-gradient-to-b from-[#2b587b] via-[#1b3d57] to-[#112638] rounded-3xl p-8 shadow-[0_30px_80px_rgba(0,0,0,0.9),0_0_30px_rgba(40,100,140,0.3)] border border-cyan-300/20 flex flex-col items-center gap-6 my-auto">
       
-      <!-- Brand Logo Header -->
-      <div class="flex flex-col items-center text-center gap-2 border-b border-white/10 pb-5">
-        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-gold/30 via-yellow-500/20 to-amber-500/10 border-2 border-gold/60 flex items-center justify-center text-gold text-3xl sm:text-4xl shadow-[0_0_25px_rgba(255,212,0,0.3)] animate-pulse">
-          <i class="fa-solid fa-crown"></i>
-        </div>
-        <h1 class="text-2xl sm:text-3xl font-display font-black text-white tracking-wider uppercase mt-1">
-          THAI<span class="text-gold">NXT</span> CASINO
-        </h1>
-        <p class="text-xs sm:text-sm text-gray-400 font-bold tracking-wide">
-          Official Thailand Live Draw Platform
-        </p>
+      <!-- Cyan Brand Logo Circle -->
+      <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-[#40e0d0] shadow-[0_0_30px_rgba(64,224,208,0.5)] flex flex-col items-center justify-center text-[#112435] my-1 transition-transform hover:scale-105">
+        <span class="font-serif italic font-black text-4xl sm:text-5xl tracking-tighter drop-shadow-sm">TN</span>
+        <span class="text-[9px] font-mono font-black uppercase tracking-widest -mt-1 text-[#112435]/90">THAI WIN</span>
       </div>
 
-      <!-- Mode Selector Tabs (Login / Register) -->
-      <div class="grid grid-cols-2 bg-bgDark p-1 rounded-2xl border border-white/10 text-xs sm:text-sm font-bold">
-        <button type="button" id="loginTabBtn" onclick="switchLoginAuthMode('login')" class="py-2.5 rounded-xl bg-gold text-black font-black uppercase tracking-wider transition-all shadow-md cursor-pointer">
-          Login
-        </button>
-        <button type="button" id="registerTabBtn" onclick="switchLoginAuthMode('register')" class="py-2.5 rounded-xl text-gray-400 hover:text-white uppercase tracking-wider transition-all cursor-pointer">
-          Register
-        </button>
-      </div>
-
-      <!-- Auth Form Fields -->
-      <form id="appAuthForm" onsubmit="handleAppLoginSubmit(event)" class="flex flex-col gap-4">
+      <!-- Auth Form -->
+      <form id="appAuthForm" onsubmit="handleAppLoginSubmit(event)" class="w-full flex flex-col gap-6 mt-1">
         
-        <!-- Username / Display Name Field -->
-        <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-gold uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-user text-gold text-xs"></i> Username / Full Name
-          </label>
-          <div class="relative flex items-center">
-            <input 
-              id="authUsernameInput" 
-              type="text" 
-              required
-              placeholder="e.g. Zargham or Alex_Winner" 
-              class="w-full bg-bgDark/90 border border-gold/40 focus:border-gold px-4 py-3 sm:py-3.5 rounded-xl text-white font-mono font-bold text-sm sm:text-base outline-none tracking-wide transition-all focus:shadow-[0_0_15px_rgba(255,212,0,0.2)]" 
-            />
-          </div>
-        </div>
-
-        <!-- Password Field -->
-        <div class="flex flex-col gap-1.5">
-          <label class="text-xs font-bold text-gold uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-lock text-gold text-xs"></i> Password
-          </label>
+        <!-- Username Underline Field -->
+        <div class="flex items-center gap-3 border-b border-gray-300/40 pb-2 px-1 focus-within:border-cyan-300 transition-colors">
+          <i class="fa-solid fa-user text-gray-200 text-lg w-5 text-center"></i>
           <input 
-            id="authPasswordInput" 
-            type="password" 
-            placeholder="Enter your security password" 
-            class="w-full bg-bgDark/90 border border-white/10 focus:border-gold px-4 py-3 sm:py-3.5 rounded-xl text-white font-mono font-bold text-sm sm:text-base outline-none tracking-wide transition-all focus:shadow-[0_0_15px_rgba(255,212,0,0.2)]" 
+            id="authUsernameInput" 
+            type="text" 
+            required
+            placeholder="Username" 
+            class="w-full bg-transparent text-white font-medium text-base outline-none placeholder:text-gray-300 tracking-wide" 
           />
         </div>
 
-        <!-- Primary Action Button -->
-        <button 
-          type="submit" 
-          id="authSubmitBtn" 
-          class="w-full py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gold via-yellow-500 to-amber-500 text-black font-black text-sm sm:text-base uppercase tracking-widest shadow-[0_10px_30px_rgba(255,212,0,0.3)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 mt-2">
-          <i class="fa-solid fa-right-to-bracket text-base"></i> <span id="authSubmitBtnText">LOGIN TO THAI WIN</span>
-        </button>
+        <!-- Password Underline Field -->
+        <div class="flex items-center gap-3 border-b border-gray-300/40 pb-2 px-1 focus-within:border-cyan-300 transition-colors">
+          <i class="fa-solid fa-lock text-gray-200 text-lg w-5 text-center"></i>
+          <input 
+            id="authPasswordInput" 
+            type="password" 
+            placeholder="Password" 
+            class="w-full bg-transparent text-white font-medium text-base outline-none placeholder:text-gray-300 tracking-wide" 
+          />
+        </div>
+
+        <!-- 3D Glossy Pill Login Button -->
+        <div class="flex justify-center mt-3">
+          <button 
+            type="submit" 
+            id="authSubmitBtn" 
+            class="w-44 py-3 rounded-full bg-gradient-to-b from-[#4e8bb7] via-[#2f668f] to-[#1a4463] text-white font-bold text-lg tracking-wide shadow-[0_8px_20px_rgba(0,0,0,0.6),inset_0_1px_2px_rgba(255,255,255,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer border border-cyan-300/30 flex items-center justify-center">
+            Login
+          </button>
+        </div>
       </form>
 
-      <!-- Quick Demo Guest Access Button -->
-      <div class="flex flex-col items-center gap-2 border-t border-white/10 pt-4">
-        <button 
-          type="button" 
-          onclick="handleQuickGuestLogin()" 
-          class="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white font-bold text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95">
-          <i class="fa-solid fa-bolt text-gold"></i> Quick Demo Guest Login (Rs 10,450 Balance)
-        </button>
-        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Safe & Secure 256-Bit SSL Encrypted</span>
-      </div>
+      <!-- Quick Demo Access Link -->
+      <button type="button" onclick="handleQuickGuestLogin()" class="text-xs font-medium text-cyan-200/80 hover:text-white underline cursor-pointer mt-1 active:scale-95 transition-all">
+        Quick Demo Play (Guest Access)
+      </button>
 
     </div>
   </div>
