@@ -1630,16 +1630,19 @@
               </div>
             </div>
             
-            <!-- Result Digits Display -->
-            <div class="absolute bottom-10 flex gap-1.5 sm:gap-4 md:gap-8 justify-center w-full z-20 perspective-1000">
-              <div id="digit-0" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
-              <div id="digit-1" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
-              <div id="digit-2" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
-              <div id="digit-3" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
-            </div>
-            
-            <!-- Multi-Results Display -->
-            <div id="multiResultsContainer" class="flex gap-2 sm:gap-4 justify-center w-full mt-4 z-40 transition-all duration-500 opacity-0 translate-y-4 min-h-[60px]">
+            <!-- Result Digits & Winner Badges Container (Non-Overlapping Flex Stack) -->
+            <div class="absolute bottom-2 left-0 right-0 flex flex-col items-center gap-3 z-30 pointer-events-none px-4">
+              <!-- Digits Row -->
+              <div id="digitsContainerRow" class="flex gap-2 sm:gap-4 md:gap-6 justify-center items-center pointer-events-auto transition-all">
+                <div id="digit-0" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
+                <div id="digit-1" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
+                <div id="digit-2" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
+                <div id="digit-3" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
+              </div>
+              
+              <!-- Multi-Results Winner Badges (Positioned BELOW Digits Container with Clear Separation) -->
+              <div id="multiResultsContainer" class="flex flex-wrap gap-3 sm:gap-6 justify-center items-center w-full z-40 transition-all duration-500 opacity-0 translate-y-2 pointer-events-auto min-h-[50px] mt-1">
+              </div>
             </div>
           </div>
 
