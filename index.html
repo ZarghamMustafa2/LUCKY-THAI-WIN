@@ -250,37 +250,34 @@
     window.openProfileStatementModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
-      if (typeof window.showToast === 'function') {
-        window.showToast('Account Statement: Total Deposits Rs 10,000 | Balance Rs 10,450', 'info');
-      }
+      var modal = document.getElementById('profileStatementModal');
+      if (modal) modal.classList.remove('hidden');
     };
 
     window.openProfileResultModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
-      var list = document.getElementById('last10WinningDrawsList');
-      if (list) list.scrollIntoView({ behavior: 'smooth' });
-      if (typeof window.showToast === 'function') {
-        window.showToast('Viewing Last 24 Hours Winning Draws History', 'success');
-      }
+      var modal = document.getElementById('profileResultModal');
+      if (modal) modal.classList.remove('hidden');
     };
 
     window.openProfileProfitLossModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
-      if (typeof window.showToast === 'function') {
-        window.showToast('Profit & Loss Summary: Total Won Rs 14,200 (+Rs 9,700 Net P/L)', 'success');
-      }
+      var modal = document.getElementById('profileProfitLossModal');
+      if (modal) modal.classList.remove('hidden');
     };
 
     window.openProfileBetHistoryModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
-      var modal = document.getElementById('allBetsModal');
+      var modal = document.getElementById('profileBetHistoryModal');
       if (modal) modal.classList.remove('hidden');
-      if (typeof window.showToast === 'function') {
-        window.showToast('Viewing Complete Player Bet History', 'info');
-      }
+    };
+
+    window.closeProfileModal = function(modalId) {
+      var modal = document.getElementById(modalId);
+      if (modal) modal.classList.add('hidden');
     };
 
     window.closeUserLoginModal = function() {
@@ -2025,19 +2022,278 @@
           <i class="fa-solid fa-user-gear"></i>
         </div>
         <div class="flex flex-col">
-          <h3 class="text-lg font-bold text-white font-display">Player Login / Profile Name</h3>
-          <span class="text-xs text-gray-400">Enter your name to show on your profile</span>
+          <h3 class="text-lg font-bold text-white font-display">Player Profile & Security</h3>
+          <span class="text-xs text-gray-400">View and update profile information</span>
         </div>
       </div>
 
-      <div class="flex flex-col gap-2 my-2">
-        <label class="text-xs font-bold text-gold uppercase tracking-wider">Your Username</label>
-        <input id="userLoginNameInput" type="text" placeholder="Enter your name (e.g. Zargham)..." class="w-full bg-bgDark border border-gold/40 focus:border-gold px-4 py-3 rounded-xl text-white font-mono font-bold text-base outline-none tracking-wide" />
+      <div class="flex flex-col gap-3 my-1">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-bold text-gold uppercase tracking-wider">Your Username</label>
+          <input id="userLoginNameInput" type="text" placeholder="Enter your name (e.g. Zargham)..." class="w-full bg-bgDark border border-gold/40 focus:border-gold px-4 py-3 rounded-xl text-white font-mono font-bold text-base outline-none tracking-wide" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">VIP Tier Level</label>
+          <div class="w-full bg-bgDark border border-white/10 px-4 py-2.5 rounded-xl text-gold font-bold text-sm flex items-center gap-2">
+            <i class="fa-solid fa-crown"></i> VIP Platinum Member
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Change Password</label>
+          <input type="password" placeholder="Enter new password..." class="w-full bg-bgDark border border-white/10 px-4 py-2.5 rounded-xl text-white font-mono text-sm outline-none focus:border-gold" />
+        </div>
       </div>
 
       <button onclick="saveUserLoginName()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-base uppercase tracking-wider shadow-lg hover:scale-[1.01] active:scale-95 transition-all">
-        Save Profile Name
+        Save Profile Settings
       </button>
+    </div>
+  </div>
+
+  <!-- 1. STATEMENT MODAL -->
+  <div id="profileStatementModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all">
+    <div class="bg-cardDark border border-white/10 rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-[0_25px_60px_rgba(0,0,0,0.9)] relative flex flex-col gap-5 max-h-[85vh] overflow-hidden">
+      <button onclick="closeProfileModal('profileStatementModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+        <div class="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-2xl">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+        </div>
+        <div class="flex flex-col">
+          <h3 class="text-lg font-bold text-white font-display">Account Financial Statement</h3>
+          <span class="text-xs text-gray-400">Complete breakdown of deposits, wagers & payouts</span>
+        </div>
+      </div>
+
+      <!-- Quick Summary Cards -->
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-bgDark p-3 rounded-xl border border-white/5 flex flex-col">
+          <span class="text-[10px] text-gray-400 font-bold uppercase">Total Deposited</span>
+          <span class="text-sm sm:text-base font-mono font-bold text-white mt-1">Rs 10,000.00</span>
+        </div>
+        <div class="bg-bgDark p-3 rounded-xl border border-white/5 flex flex-col">
+          <span class="text-[10px] text-gray-400 font-bold uppercase">Total Wagered</span>
+          <span class="text-sm sm:text-base font-mono font-bold text-amber-400 mt-1">Rs 4,500.00</span>
+        </div>
+        <div class="bg-bgDark p-3 rounded-xl border border-white/5 flex flex-col">
+          <span class="text-[10px] text-gray-400 font-bold uppercase">Current Balance</span>
+          <span class="text-sm sm:text-base font-mono font-bold text-primary mt-1">Rs 10,450.00</span>
+        </div>
+      </div>
+
+      <!-- Statement Table -->
+      <div class="overflow-x-auto overflow-y-auto custom-scrollbar border border-white/5 rounded-xl bg-bgDark max-h-[300px]">
+        <table class="w-full text-left text-xs whitespace-nowrap">
+          <thead class="bg-cardDark border-b border-white/5 sticky top-0">
+            <tr class="text-gray-500 uppercase text-[9px] font-bold">
+              <th class="p-3">Date & Time</th>
+              <th class="p-3">Transaction Type</th>
+              <th class="p-3 text-right">Amount</th>
+              <th class="p-3 text-right">Running Balance</th>
+              <th class="p-3 text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-300 font-bold">
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-3 text-gray-400">2026-07-31 10:14</td>
+              <td class="p-3 text-primary">Win Payout (Round #8492)</td>
+              <td class="p-3 font-mono text-primary text-right">+Rs 14,200.00</td>
+              <td class="p-3 font-mono text-white text-right">Rs 10,450.00</td>
+              <td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">SUCCESS</span></td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-3 text-gray-400">2026-07-31 09:45</td>
+              <td class="p-3 text-amber-400">Bet Wager (Figure #7)</td>
+              <td class="p-3 font-mono text-amber-400 text-right">-Rs 50.00</td>
+              <td class="p-3 font-mono text-white text-right">Rs 10,400.00</td>
+              <td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">SUCCESS</span></td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-3 text-gray-400">2026-07-30 18:30</td>
+              <td class="p-3 text-cyanLight">Deposit (JazzCash)</td>
+              <td class="p-3 font-mono text-cyanLight text-right">+Rs 10,000.00</td>
+              <td class="p-3 font-mono text-white text-right">Rs 10,450.00</td>
+              <td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">SUCCESS</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. RESULT MODAL -->
+  <div id="profileResultModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all">
+    <div class="bg-cardDark border border-white/10 rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-[0_25px_60px_rgba(0,0,0,0.9)] relative flex flex-col gap-5 max-h-[85vh] overflow-hidden">
+      <button onclick="closeProfileModal('profileResultModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+        <div class="w-12 h-12 rounded-2xl bg-gold/10 border border-gold/40 flex items-center justify-center text-gold text-2xl">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <div class="flex flex-col">
+          <h3 class="text-lg font-bold text-white font-display">Winning Draws History & Results</h3>
+          <span class="text-xs text-gray-400">Past 24 hours (48 draws) verified draw results</span>
+        </div>
+      </div>
+
+      <!-- Results Table -->
+      <div class="overflow-x-auto overflow-y-auto custom-scrollbar border border-white/5 rounded-xl bg-bgDark max-h-[350px]">
+        <table class="w-full text-left text-xs whitespace-nowrap">
+          <thead class="bg-cardDark border-b border-white/5 sticky top-0">
+            <tr class="text-gray-500 uppercase text-[9px] font-bold">
+              <th class="p-3">Draw Time</th>
+              <th class="p-3">Round ID</th>
+              <th class="p-3 text-center">1st Draw Winner</th>
+              <th class="p-3 text-center">2nd Draw Winners</th>
+              <th class="p-3 text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-300 font-bold">
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-3 text-gray-400">10:30 PM</td>
+              <td class="p-3 font-mono text-white">#8492</td>
+              <td class="p-3 text-center font-mono text-gold font-black">3692</td>
+              <td class="p-3 text-center font-mono text-cyanLight">0627 • 8145 • 9201</td>
+              <td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">CONFIRMED</span></td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-3 text-gray-400">10:00 PM</td>
+              <td class="p-3 font-mono text-white">#8491</td>
+              <td class="p-3 text-center font-mono text-gold font-black">7410</td>
+              <td class="p-3 text-center font-mono text-cyanLight">5829 • 1403 • 3928</td>
+              <td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">CONFIRMED</span></td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-3 text-gray-400">09:30 PM</td>
+              <td class="p-3 font-mono text-white">#8490</td>
+              <td class="p-3 text-center font-mono text-gold font-black">1834</td>
+              <td class="p-3 text-center font-mono text-cyanLight">9281 • 4012 • 7741</td>
+              <td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">CONFIRMED</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. PROFIT LOSS MODAL -->
+  <div id="profileProfitLossModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all">
+    <div class="bg-cardDark border border-white/10 rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-[0_25px_60px_rgba(0,0,0,0.9)] relative flex flex-col gap-5 max-h-[85vh] overflow-hidden">
+      <button onclick="closeProfileModal('profileProfitLossModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-2xl">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div class="flex flex-col">
+          <h3 class="text-lg font-bold text-white font-display">Player Profit & Loss Summary</h3>
+          <span class="text-xs text-gray-400">Detailed game-by-game net profit calculation</span>
+        </div>
+      </div>
+
+      <!-- Net P/L Card -->
+      <div class="bg-bgDark p-5 rounded-2xl border border-primary/30 flex items-center justify-between">
+        <div class="flex flex-col">
+          <span class="text-xs font-bold text-gray-400 uppercase">Net Profit / Loss</span>
+          <span class="text-2xl sm:text-3xl font-mono font-black text-primary drop-shadow-[0_0_15px_rgba(0,255,136,0.6)] mt-1">+Rs 9,700.00</span>
+        </div>
+        <div class="flex items-center gap-2 bg-primary/10 border border-primary/30 px-3 py-1.5 rounded-xl text-primary font-bold text-xs uppercase">
+          <i class="fa-solid fa-arrow-up"></i> Profit Margin 215%
+        </div>
+      </div>
+
+      <!-- Breakdown Table -->
+      <div class="overflow-x-auto overflow-y-auto custom-scrollbar border border-white/5 rounded-xl bg-bgDark max-h-[250px]">
+        <table class="w-full text-left text-xs whitespace-nowrap">
+          <thead class="bg-cardDark border-b border-white/5 sticky top-0">
+            <tr class="text-gray-500 uppercase text-[9px] font-bold">
+              <th class="p-3">Bet Type Category</th>
+              <th class="p-3 text-center">Total Bets</th>
+              <th class="p-3 text-right">Total Wagered</th>
+              <th class="p-3 text-right">Total Payout</th>
+              <th class="p-3 text-right">Net P/L</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-300 font-bold">
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-3 text-gold">1st Draw • FIGURE (8x)</td>
+              <td class="p-3 text-center font-mono text-white">12</td>
+              <td class="p-3 font-mono text-gray-400 text-right">Rs 1,200.00</td>
+              <td class="p-3 font-mono text-primary text-right">Rs 8,400.00</td>
+              <td class="p-3 font-mono text-primary text-right font-black">+Rs 7,200.00</td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-3 text-cyanLight">2nd Draw • AKADA (80x)</td>
+              <td class="p-3 text-center font-mono text-white">4</td>
+              <td class="p-3 font-mono text-gray-400 text-right">Rs 800.00</td>
+              <td class="p-3 font-mono text-primary text-right">Rs 3,300.00</td>
+              <td class="p-3 font-mono text-primary text-right font-black">+Rs 2,500.00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. BET HISTORY MODAL -->
+  <div id="profileBetHistoryModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all">
+    <div class="bg-cardDark border border-white/10 rounded-3xl p-6 sm:p-8 max-w-3xl w-full shadow-[0_25px_60px_rgba(0,0,0,0.9)] relative flex flex-col gap-5 max-h-[85vh] overflow-hidden">
+      <button onclick="closeProfileModal('profileBetHistoryModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+        <div class="flex flex-col">
+          <h3 class="text-lg font-bold text-white font-display">Player Bet History Ledger</h3>
+          <span class="text-xs text-gray-400">Complete record of placed bets, multipliers & outcomes</span>
+        </div>
+      </div>
+
+      <!-- History Table -->
+      <div class="overflow-x-auto overflow-y-auto custom-scrollbar border border-white/5 rounded-xl bg-bgDark max-h-[350px]">
+        <table class="w-full text-left text-xs whitespace-nowrap">
+          <thead class="bg-cardDark border-b border-white/5 sticky top-0">
+            <tr class="text-gray-500 uppercase text-[9px] font-bold">
+              <th class="p-3">Bet ID</th>
+              <th class="p-3">Draw Round</th>
+              <th class="p-3">Category</th>
+              <th class="p-3 text-center">Selected #</th>
+              <th class="p-3 text-right">Stake (Rs)</th>
+              <th class="p-3 text-right">Payout (Rs)</th>
+              <th class="p-3 text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-300 font-bold">
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-3 font-mono text-gray-500">#BET-9821</td>
+              <td class="p-3 font-mono text-white">#8492</td>
+              <td class="p-3 text-gold">1st Draw • FIGURE</td>
+              <td class="p-3 text-center font-mono text-gold font-bold">7</td>
+              <td class="p-3 font-mono text-white text-right">Rs 50.00</td>
+              <td class="p-3 font-mono text-primary text-right font-black">Rs 400.00</td>
+              <td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">WON</span></td>
+            </tr>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="p-3 font-mono text-gray-500">#BET-9822</td>
+              <td class="p-3 font-mono text-white">#8492</td>
+              <td class="p-3 text-cyanLight">2nd Draw • AKADA</td>
+              <td class="p-3 text-center font-mono text-cyanLight font-bold">42</td>
+              <td class="p-3 font-mono text-white text-right">Rs 100.00</td>
+              <td class="p-3 font-mono text-gray-400 text-right">Rs 0.00</td>
+              <td class="p-3 text-center"><span class="bg-danger/20 text-danger px-2 py-0.5 rounded text-[9px]">LOST</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
