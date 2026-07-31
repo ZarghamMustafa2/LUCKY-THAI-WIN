@@ -47,6 +47,47 @@
 </head>
 <body class="flex flex-col md:flex-row min-h-screen md:h-screen overflow-x-hidden overflow-y-auto md:overflow-hidden bg-bgDark relative text-gray-200">
 
+  <!-- FULL SCREEN LUXURY ADMIN SECURITY OVERLAY -->
+  <div id="adminAuthOverlay" class="fixed inset-0 z-[99999] bg-[#0b101c]/95 backdrop-blur-2xl flex items-center justify-center p-4 transition-all duration-500 overflow-y-auto">
+    <div class="relative w-full max-w-[360px] sm:max-w-[400px] bg-gradient-to-b from-[#1e293b] via-[#111827] to-[#0b101c] rounded-3xl p-8 shadow-[0_30px_80px_rgba(0,0,0,0.9),0_0_40px_rgba(37,99,235,0.2)] border border-brandBlue/30 flex flex-col items-center gap-6 my-auto">
+      
+      <!-- Security Icon Badge -->
+      <div class="w-24 h-24 rounded-full bg-brandBlue/20 border-2 border-brandBlue/50 shadow-[0_0_30px_rgba(37,99,235,0.4)] flex items-center justify-center text-brandBlue text-4xl my-1 animate-pulse">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+
+      <div class="flex flex-col items-center text-center gap-1">
+        <h2 class="text-xl sm:text-2xl font-display font-extrabold text-white tracking-wider">ADMIN SECURITY LOCK</h2>
+        <p class="text-xs text-textMuted font-semibold">Enter Password to Access SaaS Admin Panel</p>
+      </div>
+
+      <!-- Auth Form -->
+      <form onsubmit="handleAdminPasswordSubmit(event)" class="w-full flex flex-col gap-5 mt-2">
+        <div class="flex items-center gap-3 border-b border-gray-400/30 pb-2 px-1 focus-within:border-brandBlue transition-colors">
+          <i class="fa-solid fa-key text-brandBlue text-lg w-5 text-center"></i>
+          <input 
+            id="adminPinInput" 
+            type="password" 
+            required
+            placeholder="Enter Password (Default: admin123)" 
+            class="w-full bg-transparent text-white font-mono font-bold text-base outline-none placeholder:text-textMuted tracking-widest" 
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brandBlue via-blue-600 to-indigo-600 text-white font-extrabold text-sm uppercase tracking-widest shadow-[0_8px_25px_rgba(37,99,235,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2">
+          <i class="fa-solid fa-unlock text-sm"></i> Unlock Admin Panel
+        </button>
+      </form>
+
+      <button onclick="window.location.href='index.html'" class="text-xs font-semibold text-textMuted hover:text-white underline cursor-pointer">
+        ← Return to Main Website
+      </button>
+
+    </div>
+  </div>
+
   <!-- MOBILE TOP STICKY HEADER -->
   <header class="flex md:hidden items-center justify-between px-4 py-3 bg-sidebarDark border-b border-borderSubtle sticky top-0 z-50 shadow-md">
     <div class="flex items-center gap-3" onclick="window.location.href='index.html'">
@@ -59,9 +100,8 @@
       </div>
     </div>
     <div class="flex items-center gap-3">
-      <button onclick="toggleNotificationsModal()" class="relative p-2 text-gray-400 hover:text-white">
-        <i class="fa-solid fa-bell text-lg"></i>
-        <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-brandDanger animate-pulse"></span>
+      <button onclick="lockAdminPanel()" title="Lock Admin Panel" class="text-brandDanger p-2 hover:scale-110 transition-transform">
+        <i class="fa-solid fa-lock text-lg"></i>
       </button>
       <button onclick="toggleAdminSidebar()" class="text-gray-300 p-2 hover:text-white focus:outline-none">
         <i class="fa-solid fa-bars text-xl"></i>
@@ -177,6 +217,10 @@
 
         <button onclick="triggerExportCSV()" class="px-3.5 py-2 rounded-xl bg-cardDark border border-borderSubtle hover:bg-white/5 text-xs font-bold text-gray-200 flex items-center gap-2 transition-all cursor-pointer">
           <i class="fa-solid fa-file-export text-brandGreen"></i> Export Data
+        </button>
+
+        <button onclick="lockAdminPanel()" title="Lock Admin Panel" class="px-3.5 py-2 rounded-xl bg-brandDanger/10 border border-brandDanger/30 hover:bg-brandDanger/20 text-xs font-bold text-brandDanger flex items-center gap-2 transition-all cursor-pointer">
+          <i class="fa-solid fa-lock"></i> Lock Panel
         </button>
       </div>
     </header>
@@ -1037,6 +1081,47 @@
         btn.className = 'px-4 py-2 rounded-xl bg-cardDark text-textMuted font-bold text-xs border border-borderSubtle hover:border-white/20 transition-all cursor-pointer';
         showAdminToast('Maintenance mode disabled. Site is live!', 'success');
       }
+    }
+
+    // Admin Security PIN Lock System
+    (function checkAdminSecurityStatus() {
+      var defaultPass = 'admin123';
+      var savedPass = localStorage.getItem('adminSecurityPass') || defaultPass;
+      var isAuth = localStorage.getItem('isAdminAuth') === 'true';
+      
+      var overlay = document.getElementById('adminAuthOverlay');
+      if (overlay) {
+        if (isAuth) {
+          overlay.classList.add('hidden');
+        } else {
+          overlay.classList.remove('hidden');
+        }
+      }
+    })();
+
+    function handleAdminPasswordSubmit(e) {
+      e.preventDefault();
+      var input = document.getElementById('adminPinInput');
+      var pin = input ? input.value : '';
+      var defaultPass = 'admin123';
+      var savedPass = localStorage.getItem('adminSecurityPass') || defaultPass;
+
+      if (pin === savedPass) {
+        localStorage.setItem('isAdminAuth', 'true');
+        var overlay = document.getElementById('adminAuthOverlay');
+        if (overlay) overlay.classList.add('hidden');
+        showAdminToast('Admin Panel Unlocked Successfully!', 'success');
+      } else {
+        showAdminToast('Invalid Security Password! Please try again.', 'error');
+        if (input) input.value = '';
+      }
+    }
+
+    function lockAdminPanel() {
+      localStorage.removeItem('isAdminAuth');
+      var overlay = document.getElementById('adminAuthOverlay');
+      if (overlay) overlay.classList.remove('hidden');
+      showAdminToast('Admin Panel Locked!', 'warning');
     }
   </script>
 </body>
