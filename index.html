@@ -3111,38 +3111,29 @@
         const nowSec = Math.floor(Date.now() / 1000);
         const cycleSec = nowSec % 1800; // Wall clock 30-minute slot (:00 to :30, :30 to :00)
         
-        if (cycleSec < 1680) {
-          // Phase 1: Betting Phase (Starts at 30:00 down to 02:00)
-          const remainingSecs = 1800 - cycleSec;
-          const time = formatTime(remainingSecs);
-          const percent = (remainingSecs / 1800) * 100;
-          setProgress(percent);
+        // Always calculate exact remaining seconds until the NEXT scheduled spin (:00 and :30)
+        const remainingSecs = 1800 - cycleSec;
+        const time = formatTime(remainingSecs);
+        const percent = (remainingSecs / 1800) * 100;
 
+        // Update countdown text across banner and header displays:
+        // Automatically subtracts whatever time the spinner took to complete and stays 100% locked to schedule!
+        const bannerCountdownText = document.getElementById('bannerCountdownText');
+        if (bannerCountdownText) bannerCountdownText.innerText = time.formatted;
+        const headerTimerText = document.getElementById('headerTimerText');
+        if (headerTimerText) headerTimerText.innerText = time.digital;
+        
+        if (!isDrawing) {
           const wEl = document.getElementById('wheelText');
           if (wEl) wEl.innerText = time.digital;
-          const headerTimerText = document.getElementById('headerTimerText');
-          if (headerTimerText) headerTimerText.innerText = time.digital;
-          const bannerCountdownText = document.getElementById('bannerCountdownText');
-          if (bannerCountdownText) bannerCountdownText.innerText = time.formatted;
+          setProgress(percent);
+        }
 
+        if (cycleSec < 1680) {
           window.currentPhase = 'betting';
           window.isBettingLocked = false;
           window.hasTriggeredSpinThisCycle = false;
-          isDrawing = false;
         } else if (cycleSec < 1760) {
-          // Phase 2: Active 3-Minute Wheel Spinning Phase (1680s -> 1760s)
-          const remainingSecs = 1760 - cycleSec;
-          const time = formatTime(remainingSecs);
-          const percent = (remainingSecs / 80) * 100;
-          setProgress(percent);
-
-          const wEl = document.getElementById('wheelText');
-          if (wEl) wEl.innerText = time.digital;
-          const headerTimerText = document.getElementById('headerTimerText');
-          if (headerTimerText) headerTimerText.innerText = time.digital;
-          const bannerCountdownText = document.getElementById('bannerCountdownText');
-          if (bannerCountdownText) bannerCountdownText.innerText = time.formatted;
-
           window.currentPhase = 'spinning';
           window.isBettingLocked = true;
 
@@ -3157,19 +3148,6 @@
             }
           }
         } else {
-          // Phase 3: Winner Payout & Result Stage (1760s to 1800s)
-          const remainingSecs = 1800 - cycleSec;
-          const time = formatTime(remainingSecs);
-          const percent = (remainingSecs / 40) * 100;
-          setProgress(percent);
-
-          const wEl = document.getElementById('wheelText');
-          if (wEl) wEl.innerText = time.digital;
-          const headerTimerText = document.getElementById('headerTimerText');
-          if (headerTimerText) headerTimerText.innerText = time.digital;
-          const bannerCountdownText = document.getElementById('bannerCountdownText');
-          if (bannerCountdownText) bannerCountdownText.innerText = time.formatted;
-
           window.currentPhase = 'winner_stage';
         }
       } catch (e) {
@@ -3389,6 +3367,7 @@
         
         window.hasExpandedForThisPreDraw = true;
         isDrawing = false;
+        if (typeof gameLoop === 'function') gameLoop();
         if (gridNumBtns) {
           gridNumBtns.forEach(btn => {
              btn.disabled = false;
