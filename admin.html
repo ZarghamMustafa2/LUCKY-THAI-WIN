@@ -394,6 +394,9 @@
               <p class="text-xs text-textMuted mt-0.5">Manage player accounts, wallet balances, credentials & statuses</p>
             </div>
             <div class="flex items-center gap-3">
+              <button onclick="loadAdminUsers(); showAdminToast('User list refreshed!', 'success');" class="px-3.5 py-2.5 rounded-xl bg-cardDark hover:bg-white/10 text-white text-xs font-bold flex items-center gap-2 border border-borderSubtle transition-all cursor-pointer">
+                <i class="fa-solid fa-arrows-rotate"></i> Refresh List
+              </button>
               <button onclick="openAddUserModal()" class="px-4 py-2.5 rounded-xl bg-brandBlue hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-2 shadow-lg transition-all cursor-pointer">
                 <i class="fa-solid fa-user-plus"></i> Add New User
               </button>
@@ -911,6 +914,10 @@
 
       var breadEl = document.getElementById('breadcrumbSectionName');
       if (breadEl && breadcrumbs[modName]) breadEl.innerText = breadcrumbs[modName];
+
+      if (modName === 'users' && typeof loadAdminUsers === 'function') {
+        loadAdminUsers();
+      }
 
       if (window.innerWidth < 768) {
         var sidebar = document.getElementById('adminSidebar');

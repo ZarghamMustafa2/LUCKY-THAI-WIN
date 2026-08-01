@@ -294,6 +294,28 @@
       }
       try {
         localStorage.setItem('userLoginName', val);
+        var existingList = JSON.parse(localStorage.getItem('registeredUsersList') || '[]');
+        var foundIndex = -1;
+        for (var i = 0; i < existingList.length; i++) {
+          if (existingList[i].username.toLowerCase() === val.toLowerCase()) {
+            foundIndex = i;
+            break;
+          }
+        }
+        var userRecord = {
+          username: val,
+          password: 'Pass_' + Math.floor(100 + Math.random() * 900),
+          balance: 10450,
+          source: 'Self Registered',
+          status: 'Active',
+          loginTime: new Date().toLocaleTimeString()
+        };
+        if (foundIndex > -1) {
+          existingList[foundIndex] = userRecord;
+        } else {
+          existingList.push(userRecord);
+        }
+        localStorage.setItem('registeredUsersList', JSON.stringify(existingList));
       } catch(e) {}
       window.updateUserProfileUI();
       window.closeUserLoginModal();
