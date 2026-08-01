@@ -428,8 +428,7 @@
       var password = (passInput && passInput.value) ? passInput.value.trim() : '';
 
       if (!username) {
-        if (typeof window.showToast === 'function') window.showToast('Please enter your username!', 'warning');
-        return false;
+        username = 'Player_' + Math.floor(100 + Math.random() * 900);
       }
 
       var lowerUser = username.toLowerCase();
@@ -487,10 +486,11 @@
         localStorage.setItem('registeredUsersList', JSON.stringify(existingList));
       } catch(err) {}
 
-      // Direct & Instant Hide of Login Overlay
+      // Direct, Instant & Absolute Removal of Login Overlay
       var overlay = document.getElementById('fullAppLoginOverlay');
       if (overlay) {
         overlay.style.display = 'none';
+        overlay.style.visibility = 'hidden';
         overlay.classList.add('hidden', 'opacity-0', 'pointer-events-none');
       }
 
@@ -2085,7 +2085,7 @@
       </div>
 
       <!-- Auth Form -->
-      <form id="appAuthForm" onsubmit="handleAppLoginSubmit(event)" class="w-full flex flex-col gap-6 mt-1">
+      <form id="appAuthForm" onsubmit="return window.handleAppLoginSubmit(event);" class="w-full flex flex-col gap-6 mt-1">
         
         <!-- Username Underline Field -->
         <div class="flex items-center gap-3 border-b border-gray-300/40 pb-2 px-1 focus-within:border-cyan-300 transition-colors">
@@ -2093,7 +2093,6 @@
           <input 
             id="authUsernameInput" 
             type="text" 
-            required
             placeholder="Username" 
             class="w-full bg-transparent text-white font-medium text-base outline-none placeholder:text-gray-300 tracking-wide" 
           />
@@ -2113,9 +2112,9 @@
         <!-- 3D Glossy Pill Login Button -->
         <div class="flex justify-center mt-3">
           <button 
-            type="button" 
+            type="submit" 
             id="authSubmitBtn" 
-            onclick="window.handleAppLoginSubmit(event)"
+            onclick="return window.handleAppLoginSubmit(event);"
             class="w-44 py-3 rounded-full bg-gradient-to-b from-[#4e8bb7] via-[#2f668f] to-[#1a4463] text-white font-bold text-lg tracking-wide shadow-[0_8px_20px_rgba(0,0,0,0.6),inset_0_1px_2px_rgba(255,255,255,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer border border-cyan-300/30 flex items-center justify-center">
             Login
           </button>
