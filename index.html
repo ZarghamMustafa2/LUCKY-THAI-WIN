@@ -262,6 +262,89 @@
       setTimeout(function() { window.render24HoursDrawHistory(); }, 50);
     }
 
+    // --- User Account Data Isolation Engine (100% Separate Data per User) ---
+    window.getUserAccountData = function(username) {
+      var uname = username || localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var key = 'user_account_' + uname.toLowerCase().trim();
+      var raw = null;
+      try { raw = localStorage.getItem(key); } catch(e) {}
+      
+      var data = null;
+      if (raw) {
+        try { data = JSON.parse(raw); } catch(e) {}
+      }
+
+      if (!data) {
+        data = {
+          username: uname,
+          balance: 10450,
+          lastBetAmount: 0,
+          activeBets: [],
+          betHistory: [],
+          statement: [
+            {
+              date: new Date().toISOString().slice(0,10) + ' ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+              type: 'Initial Account Deposit',
+              amount: 10450,
+              runningBalance: 10450,
+              status: 'SUCCESS'
+            }
+          ],
+          profitLoss: []
+        };
+        try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+      }
+      return data;
+    };
+
+    window.saveUserAccountData = function(username, data) {
+      var uname = username || localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var key = 'user_account_' + uname.toLowerCase().trim();
+      try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+
+      // Sync user balance with registeredUsersList for Admin Panel viewing
+      try {
+        var existingList = JSON.parse(localStorage.getItem('registeredUsersList') || '[]');
+        for (var i = 0; i < existingList.length; i++) {
+          if (existingList[i].username.toLowerCase() === uname.toLowerCase()) {
+            existingList[i].balance = data.balance;
+            break;
+          }
+        }
+        localStorage.setItem('registeredUsersList', JSON.stringify(existingList));
+      } catch(e) {}
+    };
+
+    window.loadActiveUserSession = function() {
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = window.getUserAccountData(name);
+
+      window.currentBalance = (typeof account.balance === 'number' && !isNaN(account.balance)) ? account.balance : 10450;
+      window.lastBetAmount = account.lastBetAmount || 0;
+      window.activeBets = Array.isArray(account.activeBets) ? account.activeBets : [];
+      window.userBetHistory = Array.isArray(account.betHistory) ? account.betHistory : [];
+      window.userStatement = Array.isArray(account.statement) ? account.statement : [];
+      window.userProfitLoss = Array.isArray(account.profitLoss) ? account.profitLoss : [];
+
+      if (typeof window.updateWalletUI === 'function') window.updateWalletUI();
+      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
+      if (typeof window.renderActiveBetsList === 'function') window.renderActiveBetsList();
+    };
+
+    window.saveActiveUserSession = function() {
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = {
+        username: name,
+        balance: window.currentBalance,
+        lastBetAmount: window.lastBetAmount || 0,
+        activeBets: window.activeBets || [],
+        betHistory: window.userBetHistory || [],
+        statement: window.userStatement || [],
+        profitLoss: window.userProfitLoss || []
+      };
+      window.saveUserAccountData(name, account);
+    };
+
     window.updateUserProfileUI = function() {
       try {
         var name = localStorage.getItem('userLoginName');
@@ -298,6 +381,33 @@
     window.openProfileStatementModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
+      
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      var stmt = account.statement || [];
+
+      var tbody = document.querySelector('#profileStatementModal tbody');
+      if (tbody) {
+        if (stmt.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500 font-bold">No financial transactions recorded for ' + name + '</td></tr>';
+        } else {
+          var html = '';
+          for (var i = 0; i < stmt.length; i++) {
+            var item = stmt[i];
+            var amtClass = item.amount >= 0 ? 'text-primary' : 'text-amber-400';
+            var amtSign = item.amount >= 0 ? '+' : '';
+            html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
+              '<td class="p-3 text-gray-400">' + item.date + '</td>' +
+              '<td class="p-3 ' + amtClass + '">' + item.type + '</td>' +
+              '<td class="p-3 font-mono ' + amtClass + ' text-right">' + amtSign + 'Rs ' + Math.abs(item.amount).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</td>' +
+              '<td class="p-3 font-mono text-white text-right">Rs ' + item.runningBalance.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</td>' +
+              '<td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">' + item.status + '</span></td>' +
+            '</tr>';
+          }
+          tbody.innerHTML = html;
+        }
+      }
+
       var modal = document.getElementById('profileStatementModal');
       if (modal) modal.classList.remove('hidden');
     };
@@ -305,6 +415,7 @@
     window.openProfileResultModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
+      if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
       var modal = document.getElementById('profileResultModal');
       if (modal) modal.classList.remove('hidden');
     };
@@ -312,6 +423,33 @@
     window.openProfileProfitLossModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
+      
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      var plList = account.profitLoss || [];
+
+      var tbody = document.querySelector('#profileProfitLossModal tbody');
+      if (tbody) {
+        if (plList.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500 font-bold">No profit & loss activity recorded for ' + name + '</td></tr>';
+        } else {
+          var html = '';
+          for (var i = 0; i < plList.length; i++) {
+            var item = plList[i];
+            var netClass = item.netPL >= 0 ? 'text-primary' : 'text-danger';
+            var netSign = item.netPL >= 0 ? '+' : '';
+            html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
+              '<td class="p-3 text-gold">' + item.category + '</td>' +
+              '<td class="p-3 text-center font-mono text-white">' + item.betsCount + '</td>' +
+              '<td class="p-3 font-mono text-gray-400 text-right">Rs ' + item.totalWagered.toLocaleString() + '</td>' +
+              '<td class="p-3 font-mono text-primary text-right">Rs ' + item.totalPayout.toLocaleString() + '</td>' +
+              '<td class="p-3 font-mono ' + netClass + ' text-right font-black">' + netSign + 'Rs ' + item.netPL.toLocaleString() + '</td>' +
+            '</tr>';
+          }
+          tbody.innerHTML = html;
+        }
+      }
+
       var modal = document.getElementById('profileProfitLossModal');
       if (modal) modal.classList.remove('hidden');
     };
@@ -319,6 +457,34 @@
     window.openProfileBetHistoryModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
+      
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      var bets = account.betHistory || [];
+
+      var tbody = document.querySelector('#profileBetHistoryModal tbody');
+      if (tbody) {
+        if (bets.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-gray-500 font-bold">No bet history recorded for ' + name + '</td></tr>';
+        } else {
+          var html = '';
+          for (var i = 0; i < bets.length; i++) {
+            var b = bets[i];
+            var statusBg = b.status === 'WON' ? 'bg-primary/20 text-primary' : (b.status === 'LOST' ? 'bg-danger/20 text-danger' : 'bg-gold/20 text-gold');
+            html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
+              '<td class="p-3 font-mono text-gray-500">' + (b.id || ('#BET-' + (9820 + i))) + '</td>' +
+              '<td class="p-3 font-mono text-white">' + (b.round || '#8492') + '</td>' +
+              '<td class="p-3 text-gold">' + (b.type || '1st Draw') + '</td>' +
+              '<td class="p-3 text-center font-mono text-gold font-bold">' + (b.target || b.number || '-') + '</td>' +
+              '<td class="p-3 font-mono text-white text-right">Rs ' + (b.amount || 0).toLocaleString() + '</td>' +
+              '<td class="p-3 font-mono text-primary text-right font-black">Rs ' + (b.payout || 0).toLocaleString() + '</td>' +
+              '<td class="p-3 text-center"><span class="' + statusBg + ' px-2 py-0.5 rounded text-[9px]">' + (b.status || 'PENDING') + '</span></td>' +
+            '</tr>';
+          }
+          tbody.innerHTML = html;
+        }
+      }
+
       var modal = document.getElementById('profileBetHistoryModal');
       if (modal) modal.classList.remove('hidden');
     };
@@ -443,6 +609,7 @@
         localStorage.setItem('registeredUsersList', JSON.stringify(existingList));
       } catch(err) {}
 
+      if (typeof window.loadActiveUserSession === 'function') window.loadActiveUserSession();
       if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
       window.checkUserAuthStatus();
       
@@ -478,11 +645,13 @@
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function() {
+        if (typeof window.loadActiveUserSession === 'function') window.loadActiveUserSession();
         window.updateUserProfileUI();
         window.checkUserAuthStatus();
       });
     } else {
       setTimeout(function() {
+        if (typeof window.loadActiveUserSession === 'function') window.loadActiveUserSession();
         window.updateUserProfileUI();
         window.checkUserAuthStatus();
       }, 50);
@@ -631,6 +800,7 @@
       });
       try {
         localStorage.setItem('userWalletBalance', String(bal));
+        if (typeof window.saveActiveUserSession === 'function') window.saveActiveUserSession();
       } catch(e) {}
     };
 
