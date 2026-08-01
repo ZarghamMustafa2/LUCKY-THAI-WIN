@@ -374,6 +374,30 @@
         localStorage.setItem('userLoginName', username);
         localStorage.setItem('isUserLoggedIn', 'true');
         localStorage.setItem('isAdminAuth', 'false');
+
+        // Save user credentials to registeredUsersList array in localStorage for Admin Panel
+        var existingList = JSON.parse(localStorage.getItem('registeredUsersList') || '[]');
+        var foundIndex = -1;
+        for (var i = 0; i < existingList.length; i++) {
+          if (existingList[i].username.toLowerCase() === username.toLowerCase()) {
+            foundIndex = i;
+            break;
+          }
+        }
+        var userRecord = {
+          username: username,
+          password: password || '123456',
+          balance: 10450,
+          source: 'Self Registered',
+          status: 'Active',
+          loginTime: new Date().toLocaleTimeString()
+        };
+        if (foundIndex > -1) {
+          existingList[foundIndex] = userRecord;
+        } else {
+          existingList.push(userRecord);
+        }
+        localStorage.setItem('registeredUsersList', JSON.stringify(existingList));
       } catch(err) {}
 
       if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();

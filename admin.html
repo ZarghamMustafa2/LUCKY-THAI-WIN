@@ -425,9 +425,10 @@
               <table class="w-full text-left text-xs whitespace-nowrap min-w-[700px]">
                 <thead class="bg-cardDark border-b border-borderSubtle">
                   <tr class="text-textMuted uppercase text-[10px] font-extrabold tracking-wider">
-                    <th class="p-4">User Info</th>
+                    <th class="p-4">User Account</th>
+                    <th class="p-4">Login Password</th>
                     <th class="p-4">Wallet Balance</th>
-                    <th class="p-4">Agent Info</th>
+                    <th class="p-4">Agent / Source</th>
                     <th class="p-4 text-center">Status</th>
                     <th class="p-4 text-right">Actions</th>
                   </tr>
@@ -1116,6 +1117,92 @@
         if (input) input.value = '';
       }
     }
+
+    function togglePasswordVisibility(passId, realPassword) {
+      var el = document.getElementById(passId);
+      if (!el) return;
+      if (el.getAttribute('data-hidden') === 'true') {
+        el.innerText = realPassword;
+        el.setAttribute('data-hidden', 'false');
+      } else {
+        el.innerText = '••••••••';
+        el.setAttribute('data-hidden', 'true');
+      }
+    }
+
+    function loadAdminUsers() {
+      var tbody = document.getElementById('usersTableBody');
+      if (!tbody) return;
+
+      var defaultUsers = [
+        { username: 'Alex_Winner', password: 'Password123', balance: '10,450.00', source: 'Direct Sign-Up', status: 'Active' },
+        { username: 'Zargham_Pro', password: 'Zargham@2026', balance: '25,000.00', source: 'Master_Agent_01', status: 'Active' },
+        { username: 'Amir_VIP', password: 'Qwer1234', balance: '50,000.00', source: 'Direct Sign-Up', status: 'Active' },
+        { username: 'CryptoKing', password: 'CryptoPass#1', balance: '45,000.00', source: 'Super_Agent_02', status: 'Active' },
+        { username: 'Whale99', password: 'WhaleSecret99', balance: '120,000.00', source: 'Master_Agent_01', status: 'Active' }
+      ];
+
+      var customUsers = [];
+      try {
+        customUsers = JSON.parse(localStorage.getItem('registeredUsersList') || '[]');
+      } catch(e) {}
+
+      var allUsersMap = {};
+      defaultUsers.forEach(function(u) { allUsersMap[u.username.toLowerCase()] = u; });
+      customUsers.forEach(function(u) {
+        allUsersMap[u.username.toLowerCase()] = {
+          username: u.username,
+          password: u.password || '123456',
+          balance: (typeof u.balance === 'number' ? u.balance.toLocaleString() + '.00' : (u.balance || '10,000.00')),
+          source: u.source || 'Self Registered',
+          status: u.status || 'Active'
+        };
+      });
+
+      var userList = Object.values(allUsersMap);
+      tbody.innerHTML = '';
+
+      userList.forEach(function(u, idx) {
+        var tr = document.createElement('tr');
+        tr.className = 'border-b border-borderSubtle hover:bg-white/5';
+        var passId = 'pass_' + idx;
+        tr.innerHTML = `
+          <td class="p-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-brandBlue/20 text-brandBlue flex items-center justify-center font-black">${u.username.substring(0,2).toUpperCase()}</div>
+            <div class="flex flex-col">
+              <span class="text-white font-bold">${u.username}</span>
+              <span class="text-[10px] text-textMuted font-mono">ID: #USR-${1000 + idx * 37}</span>
+            </div>
+          </td>
+          <td class="p-4 font-mono text-amber-300">
+            <div class="flex items-center gap-2">
+              <span id="${passId}" data-hidden="false" class="tracking-wider bg-black/40 px-2.5 py-1 rounded border border-white/10 text-xs font-bold text-amber-300 font-mono">${u.password}</span>
+              <button type="button" onclick="togglePasswordVisibility('${passId}', '${u.password}')" class="text-textMuted hover:text-white text-xs p-1 cursor-pointer" title="Show/Hide Password">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </td>
+          <td class="p-4 font-mono text-brandGreen text-sm">Rs ${u.balance}</td>
+          <td class="p-4 text-textMuted text-xs font-semibold">${u.source}</td>
+          <td class="p-4 text-center">
+            <span class="${u.status === 'Active' ? 'bg-brandGreen/20 text-brandGreen border border-brandGreen/30' : 'bg-brandDanger/20 text-brandDanger border border-brandDanger/30'} px-2.5 py-1 rounded-full text-[10px] uppercase">${u.status}</span>
+          </td>
+          <td class="p-4 text-right flex items-center justify-end gap-2">
+            <button onclick="viewUserProfile('${u.username}', '${u.balance}', '${u.status}')" class="bg-cardDark hover:bg-white/10 text-white px-2.5 py-1.5 rounded-lg text-[11px] cursor-pointer">Profile</button>
+            <button onclick="openAdjustWalletModal('${u.username}')" class="bg-brandGreen/20 text-brandGreen hover:bg-brandGreen/30 px-2.5 py-1.5 rounded-lg text-[11px] cursor-pointer">Adjust ฿</button>
+            <button onclick="toggleUserStatus(this)" class="bg-brandDanger/20 text-brandDanger hover:bg-brandDanger/30 px-2.5 py-1.5 rounded-lg text-[11px] cursor-pointer">Suspend</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      var countLabel = document.getElementById('usersCountLabel');
+      if (countLabel) countLabel.innerText = userList.length;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      loadAdminUsers();
+    });
 
     function lockAdminPanel() {
       localStorage.removeItem('isAdminAuth');
