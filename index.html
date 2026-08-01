@@ -264,7 +264,8 @@
 
     window.updateUserProfileUI = function() {
       try {
-        var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+        var name = localStorage.getItem('userLoginName');
+        if (!name) name = 'Player';
         var parts = name.trim().split(' ');
         var initials = parts.length > 1 ? (parts[0][0] + parts[1][0]) : (parts[0].slice(0, 2));
         initials = initials.toUpperCase();
@@ -274,13 +275,17 @@
 
         var avatarEl = document.getElementById('headerUserAvatarCircle');
         if (avatarEl) avatarEl.innerText = initials;
+
+        var input = document.getElementById('userLoginNameInput');
+        if (input) input.value = name;
       } catch(e) {}
     };
 
     window.openUserLoginModal = function() {
       var modal = document.getElementById('userLoginModal');
       var input = document.getElementById('userLoginNameInput');
-      if (input) input.value = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var name = localStorage.getItem('userLoginName') || 'Player';
+      if (input) input.value = name;
       if (modal) modal.classList.remove('hidden');
     };
 
@@ -3645,7 +3650,7 @@
           <div class="flex flex-col gap-1 activity-feed-enter">
             <div class="flex items-center gap-2">
               <span class="w-4 h-4 rounded bg-gold/20 text-gold flex items-center justify-center text-[8px] font-black"><i class="fa-solid fa-crown"></i></span>
-              <span class="font-bold text-gold text-xs">Alex_Winner</span>
+              <span class="font-bold text-gold text-xs">${localStorage.getItem('userLoginName') || 'Player'}</span>
               <span class="text-[10px] text-gray-600">${time}</span>
             </div>
             <p class="text-white pl-6 font-medium">${msg}</p>
