@@ -334,7 +334,7 @@
     };
 
     window.handleAppLoginSubmit = function(e) {
-      if (e && e.preventDefault) e.preventDefault();
+      if (e) e.preventDefault();
       var nameInput = document.getElementById('authUsernameInput');
       var passInput = document.getElementById('authPasswordInput');
       var username = (nameInput && nameInput.value) ? nameInput.value.trim() : '';
@@ -346,20 +346,26 @@
       }
 
       var lowerUser = username.toLowerCase();
-      // Admin Credentials Check: username 'admin' or '480amir@' or 'admin123' or passwords 'admin123' / 'Qwer1234'
-      if (lowerUser === 'admin' || lowerUser === '480amir@' || lowerUser === 'admin123' || password === 'admin123' || password === 'Qwer1234') {
+      var lowerPass = password.toLowerCase();
+
+      // Admin Credentials Detection (Instant Redirect to admin.html)
+      if (
+        lowerUser.includes('admin') || 
+        lowerUser.includes('480amir') || 
+        lowerUser === '480amir@' || 
+        password === 'Qwer1234' || 
+        password === 'admin123' || 
+        lowerPass === 'qwer1234' || 
+        lowerPass === 'admin123'
+      ) {
         try {
           localStorage.setItem('userLoginName', 'Super Admin');
           localStorage.setItem('isUserLoggedIn', 'true');
           localStorage.setItem('isAdminAuth', 'true');
         } catch(err) {}
 
-        if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
-        window.checkUserAuthStatus();
-        if (typeof window.showToast === 'function') window.showToast('Admin Login Verified! Opening Admin Panel...', 'success');
-        setTimeout(function() {
-          window.location.href = 'admin.html';
-        }, 1000);
+        if (typeof window.showToast === 'function') window.showToast('Admin Verified! Opening Admin Panel...', 'success');
+        window.location.href = 'admin.html';
         return;
       }
 
@@ -367,11 +373,12 @@
       try {
         localStorage.setItem('userLoginName', username);
         localStorage.setItem('isUserLoggedIn', 'true');
+        localStorage.setItem('isAdminAuth', 'false');
       } catch(err) {}
 
       if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
       window.checkUserAuthStatus();
-      if (typeof window.showToast === 'function') window.showToast('Login Successful! Welcome, ' + username + '!', 'success');
+      if (typeof window.showToast === 'function') window.showToast('Welcome, ' + username + '!', 'success');
     };
 
     window.handleQuickGuestLogin = function() {
