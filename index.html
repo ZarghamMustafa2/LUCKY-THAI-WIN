@@ -144,67 +144,102 @@
       } catch(e) {}
     })();
 
-    // Render 48 Draws for the Last 24 Hours History (Compact Single-Row Format)
-    window.init24HoursDrawHistory = function() {
+    // --- Real-Time 24-Hour Winning Draws History Engine (48 Draws Total, Scheduled :00 & :30) ---
+    window.getScheduledDrawTimestamp = function(stepsBack) {
+      var now = new Date();
+      var minutes = now.getMinutes();
+      var slotMinutes = minutes >= 30 ? 30 : 0;
+      var latestSlot = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), slotMinutes, 0, 0);
+      var targetTime = new Date(latestSlot.getTime() - stepsBack * 30 * 60 * 1000);
+      return {
+        timeStr: targetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: targetTime.getTime()
+      };
+    };
+
+    window.render24HoursDrawHistory = function() {
       var container = document.getElementById('last10WinningDrawsList');
       if (!container) return;
 
-      var savedHistory = [];
+      var saved = [];
       try {
-        savedHistory = JSON.parse(localStorage.getItem('winningDraws24hHistory') || '[]');
+        saved = JSON.parse(localStorage.getItem('winningDraws24hHistory') || '[]');
       } catch(e) {}
 
-      var now = new Date();
-      var html = '';
-      
-      for (var i = 0; i < 48; i++) {
-        var drawTime = new Date(now.getTime() - i * 30 * 60 * 1000);
-        var drawNum = 4828 - i;
-        var isLatest = (i === 0);
-        var timeStr = drawTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        
-        var num1 = String((7492 + i * 137) % 10000).padStart(4, '0');
-        var num2 = String((3185 + i * 243) % 10000).padStart(4, '0');
-        var num3 = String((5921 + i * 189) % 10000).padStart(4, '0');
-        var num4 = String((8304 + i * 312) % 10000).padStart(4, '0');
+      // If saved history is empty or missing, seed the 48-item real 30-minute schedule array
+      if (!saved || saved.length < 48) {
+        saved = [];
+        var baseDrawNum = 8492;
+        for (var i = 0; i < 48; i++) {
+          var drawSlot = window.getScheduledDrawTimestamp(i);
+          var seed1 = String((3692 + i * 149) % 10000).padStart(4, '0');
+          var seed2 = String((627 + i * 283) % 10000).padStart(4, '0');
+          var seed3 = String((8145 + i * 197) % 10000).padStart(4, '0');
+          var seed4 = String((9201 + i * 353) % 10000).padStart(4, '0');
 
-        if (savedHistory && savedHistory[i]) {
-          var rec = savedHistory[i];
-          if (rec.drawNum) drawNum = rec.drawNum;
-          if (rec.timeStr) timeStr = rec.timeStr;
-          if (rec.num1) num1 = rec.num1;
-          if (rec.num2) num2 = rec.num2;
-          if (rec.num3) num3 = rec.num3;
-          if (rec.num4) num4 = rec.num4;
+          saved.push({
+            drawNum: baseDrawNum - i,
+            timeStr: drawSlot.timeStr,
+            timestamp: drawSlot.timestamp,
+            num1: seed1,
+            num2: seed2,
+            num3: seed3,
+            num4: seed4,
+            isLatest: (i === 0)
+          });
         }
+        try {
+          localStorage.setItem('winningDraws24hHistory', JSON.stringify(saved));
+        } catch(e) {}
+      }
 
-        var cardBorder = isLatest ? 'border-gold/40 hover:border-gold shadow-[0_0_10px_rgba(255,212,0,0.15)]' : 'border-white/5 hover:border-white/20';
-        var badgeBg = isLatest ? 'bg-gold/10 border-gold/30 text-gold' : 'bg-white/5 border-white/10 text-gray-400';
+      // Sort newest to oldest by timestamp
+      saved.sort(function(a, b) {
+        return (b.timestamp || 0) - (a.timestamp || 0);
+      });
 
-        html += '<div class="bg-bgDark/90 p-1.5 sm:p-2 rounded-xl border ' + cardBorder + ' flex flex-nowrap items-center justify-between gap-1.5 group transition-all">' +
+      // Keep only last 24 hours of draws (48 total)
+      if (saved.length > 48) {
+        saved = saved.slice(0, 48);
+        try {
+          localStorage.setItem('winningDraws24hHistory', JSON.stringify(saved));
+        } catch(e) {}
+      }
+
+      var html = '';
+      for (var i = 0; i < saved.length; i++) {
+        var rec = saved[i];
+        var isLatest = (i === 0);
+        var cardBorder = isLatest 
+          ? 'border-gold/50 hover:border-gold shadow-[0_0_12px_rgba(255,212,0,0.2)] bg-gold/5' 
+          : 'border-white/5 hover:border-white/20 bg-bgDark/90';
+        var badgeBg = isLatest ? 'bg-gold/20 border-gold/40 text-gold font-black' : 'bg-white/5 border-white/10 text-gray-400';
+        var badgeText = rec.isNew ? 'NEW' : ('#' + (saved.length - i));
+
+        html += '<div class="p-1.5 sm:p-2 rounded-xl border ' + cardBorder + ' flex flex-nowrap items-center justify-between gap-1.5 group transition-all">' +
           '<div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">' +
-            '<div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg ' + badgeBg + ' border flex items-center justify-center font-bold text-[9px] sm:text-[10px]">#' + (48 - i) + '</div>' +
+            '<div class="px-1.5 py-0.5 rounded-lg ' + badgeBg + ' border flex items-center justify-center font-bold text-[9px] sm:text-[10px]">' + badgeText + '</div>' +
             '<div class="flex flex-col">' +
-              '<span class="text-[10px] sm:text-xs font-bold text-white tracking-wider">Draw #' + drawNum + '</span>' +
-              '<span class="text-[8px] font-mono text-gray-400"><i class="fa-regular fa-clock mr-0.5"></i>' + timeStr + '</span>' +
+              '<span class="text-[10px] sm:text-xs font-bold text-white tracking-wider">Draw #' + rec.drawNum + '</span>' +
+              '<span class="text-[8px] font-mono text-gray-400"><i class="fa-regular fa-clock mr-0.5"></i>' + rec.timeStr + '</span>' +
             '</div>' +
           '</div>' +
           '<div class="flex items-center gap-1 sm:gap-1.5 flex-nowrap">' +
             '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-gold/30 min-w-[42px] sm:min-w-[48px]">' +
               '<span class="text-[7px] font-bold text-gold uppercase tracking-tighter">1ST</span>' +
-              '<span class="font-mono text-[10px] sm:text-xs font-black text-gold tracking-wider">' + num1 + '</span>' +
+              '<span class="font-mono text-[10px] sm:text-xs font-black text-gold tracking-wider">' + rec.num1 + '</span>' +
             '</div>' +
             '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
               '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #1</span>' +
-              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num2 + '</span>' +
+              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + rec.num2 + '</span>' +
             '</div>' +
             '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
               '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #2</span>' +
-              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num3 + '</span>' +
+              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + rec.num3 + '</span>' +
             '</div>' +
             '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
               '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #3</span>' +
-              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num4 + '</span>' +
+              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + rec.num4 + '</span>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -213,10 +248,12 @@
       container.innerHTML = html;
     };
 
+    window.init24HoursDrawHistory = window.render24HoursDrawHistory;
+
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() { window.init24HoursDrawHistory(); });
+      document.addEventListener('DOMContentLoaded', function() { window.render24HoursDrawHistory(); });
     } else {
-      setTimeout(function() { window.init24HoursDrawHistory(); }, 50);
+      setTimeout(function() { window.render24HoursDrawHistory(); }, 50);
     }
 
     window.updateUserProfileUI = function() {
@@ -3832,142 +3869,62 @@
     } catch(e) {}
 
     window.prependWinningDrawToHistory = function(results) {
-      var container = document.getElementById('last10WinningDrawsList');
-      if (!container || !results || !Array.isArray(results) || results.length < 4) return;
+      if (!results || !Array.isArray(results) || results.length < 4) return;
 
-      window.latestDrawNumber = (window.latestDrawNumber || 4828) + 1;
-      var drawNum = window.latestDrawNumber;
-      var now = new Date();
-      var timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      var saved = [];
+      try {
+        saved = JSON.parse(localStorage.getItem('winningDraws24hHistory') || '[]');
+      } catch(e) {}
 
-      var num1 = results[0];
-      var num2 = results[1];
-      var num3 = results[2];
-      var num4 = results[3];
+      // Find max drawNum
+      var maxDrawNum = 8492;
+      if (saved && saved.length > 0) {
+        for (var i = 0; i < saved.length; i++) {
+          if (saved[i].drawNum && saved[i].drawNum > maxDrawNum) {
+            maxDrawNum = saved[i].drawNum;
+          }
+        }
+      }
+      var newDrawNum = maxDrawNum + 1;
+      var slotTime = (typeof window.getScheduledDrawTimestamp === 'function') 
+        ? window.getScheduledDrawTimestamp(0) 
+        : { timeStr: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), timestamp: Date.now() };
 
       var newRecord = {
-        drawNum: drawNum,
-        timeStr: timeStr,
-        num1: num1,
-        num2: num2,
-        num3: num3,
-        num4: num4,
+        drawNum: newDrawNum,
+        timeStr: slotTime.timeStr,
+        timestamp: Date.now(),
+        num1: String(results[0]),
+        num2: String(results[1]),
+        num3: String(results[2]),
+        num4: String(results[3]),
         isNew: true
       };
 
+      // Prepend to top of list
+      saved.unshift(newRecord);
+
+      // Keep ONLY last 24 hours of draws (48 total)
+      if (saved.length > 48) {
+        saved = saved.slice(0, 48);
+      }
+
       try {
-        var saved = JSON.parse(localStorage.getItem('winningDraws24hHistory') || '[]');
-        saved.unshift(newRecord);
-        if (saved.length > 48) saved = saved.slice(0, 48);
         localStorage.setItem('winningDraws24hHistory', JSON.stringify(saved));
       } catch(e) {}
 
-      var cardHtml = '<div class="bg-bgDark/90 p-1.5 sm:p-2 rounded-xl border border-gold/50 hover:border-gold flex flex-nowrap items-center justify-between gap-1.5 group transition-all shadow-[0_0_12px_rgba(255,212,0,0.2)]">' +
-        '<div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">' +
-          '<div class="px-1.5 py-0.5 rounded-lg bg-gold/20 border border-gold/40 text-gold font-bold text-[9px] sm:text-[10px]">NEW</div>' +
-          '<div class="flex flex-col">' +
-            '<span class="text-[10px] sm:text-xs font-bold text-white tracking-wider">Draw #' + drawNum + '</span>' +
-            '<span class="text-[8px] font-mono text-gray-400"><i class="fa-regular fa-clock mr-0.5"></i>' + timeStr + '</span>' +
-          '</div>' +
-        '</div>' +
-        '<div class="flex items-center gap-1 sm:gap-1.5 flex-nowrap">' +
-          '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-gold/30 min-w-[42px] sm:min-w-[48px]">' +
-            '<span class="text-[7px] font-bold text-gold uppercase tracking-tighter">1ST</span>' +
-            '<span class="font-mono text-[10px] sm:text-xs font-black text-gold tracking-wider">' + num1 + '</span>' +
-          '</div>' +
-          '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
-            '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #1</span>' +
-            '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num2 + '</span>' +
-          '</div>' +
-          '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
-            '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #2</span>' +
-            '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num3 + '</span>' +
-          '</div>' +
-          '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
-            '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #3</span>' +
-            '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num4 + '</span>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-
-      container.insertAdjacentHTML('afterbegin', cardHtml);
-    };
-
-    // Render 48 Draws for the Last 24 Hours History (Compact Single-Row Format)
-    window.init24HoursDrawHistory = function() {
-      var container = document.getElementById('last10WinningDrawsList');
-      if (!container) return;
-
-      var savedHistory = [];
-      try {
-        savedHistory = JSON.parse(localStorage.getItem('winningDraws24hHistory') || '[]');
-      } catch(e) {}
-
-      var now = new Date();
-      var html = '';
-      
-      // Render 48 draws for last 24 hours
-      for (var i = 0; i < 48; i++) {
-        var drawTime = new Date(now.getTime() - i * 30 * 60 * 1000);
-        var drawNum = 4828 - i;
-        var isLatest = (i === 0);
-        var timeStr = drawTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        
-        var num1 = String((7492 + i * 137) % 10000).padStart(4, '0');
-        var num2 = String((3185 + i * 243) % 10000).padStart(4, '0');
-        var num3 = String((5921 + i * 189) % 10000).padStart(4, '0');
-        var num4 = String((8304 + i * 312) % 10000).padStart(4, '0');
-
-        // Check if we have saved live draw for this index
-        if (savedHistory && savedHistory[i]) {
-          var rec = savedHistory[i];
-          if (rec.drawNum) drawNum = rec.drawNum;
-          if (rec.timeStr) timeStr = rec.timeStr;
-          if (rec.num1) num1 = rec.num1;
-          if (rec.num2) num2 = rec.num2;
-          if (rec.num3) num3 = rec.num3;
-          if (rec.num4) num4 = rec.num4;
-        }
-
-        var cardBorder = isLatest ? 'border-gold/40 hover:border-gold' : 'border-white/5 hover:border-white/20';
-        var badgeBg = isLatest ? 'bg-gold/10 border-gold/30 text-gold' : 'bg-white/5 border-white/10 text-gray-400';
-
-        html += '<div class="bg-bgDark/90 p-1.5 sm:p-2 rounded-xl border ' + cardBorder + ' flex flex-nowrap items-center justify-between gap-1.5 group transition-all">' +
-          '<div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">' +
-            '<div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg ' + badgeBg + ' border flex items-center justify-center font-bold text-[9px] sm:text-[10px]">#' + (48 - i) + '</div>' +
-            '<div class="flex flex-col">' +
-              '<span class="text-[10px] sm:text-xs font-bold text-white tracking-wider">Draw #' + drawNum + '</span>' +
-              '<span class="text-[8px] font-mono text-gray-400"><i class="fa-regular fa-clock mr-0.5"></i>' + timeStr + '</span>' +
-            '</div>' +
-          '</div>' +
-          '<div class="flex items-center gap-1 sm:gap-1.5 flex-nowrap">' +
-            '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-gold/30 min-w-[42px] sm:min-w-[48px]">' +
-              '<span class="text-[7px] font-bold text-gold uppercase tracking-tighter">1ST</span>' +
-              '<span class="font-mono text-[10px] sm:text-xs font-black text-gold tracking-wider">' + num1 + '</span>' +
-            '</div>' +
-            '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
-              '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #1</span>' +
-              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num2 + '</span>' +
-            '</div>' +
-            '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
-              '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #2</span>' +
-              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num3 + '</span>' +
-            '</div>' +
-            '<div class="flex flex-col items-center bg-cardDark/90 px-1.5 py-0.5 rounded-lg border border-cyanLight/30 min-w-[42px] sm:min-w-[48px]">' +
-              '<span class="text-[7px] font-bold text-cyanLight uppercase tracking-tighter">2ND #3</span>' +
-              '<span class="font-mono text-[10px] sm:text-xs font-black text-cyanLight tracking-wider">' + num4 + '</span>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
+      // Live refresh UI without page reload!
+      if (typeof window.render24HoursDrawHistory === 'function') {
+        window.render24HoursDrawHistory();
       }
-      
-      container.innerHTML = html;
     };
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() { window.init24HoursDrawHistory(); });
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
+      });
     } else {
-      window.init24HoursDrawHistory();
+      if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
     }
 
     // Native Physical Rubberband Pull To Refresh (100% Passive & Non-Blocking Touch Handler)
