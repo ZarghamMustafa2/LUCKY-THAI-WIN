@@ -166,7 +166,7 @@
         saved = JSON.parse(localStorage.getItem('winningDraws24hHistory') || '[]');
       } catch(e) {}
 
-      // If saved history is missing or empty, seed real schedule slot history for past 24h
+      // Seed ONLY if history is completely empty
       if (!saved || saved.length === 0) {
         saved = [];
         var baseDrawNum = 8492;
@@ -176,12 +176,12 @@
         var latestSlotTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), slotMinutes, 0, 0).getTime();
 
         for (var i = 0; i < 48; i++) {
-          var slotTime = new Date(latestSlotTime - i * 30 * 60 * 1000);
+          var slotTime = new Date(latestSlotTime - (i + 1) * 30 * 60 * 1000);
           var timeStr = slotTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          var seed1 = String((7492 + i * 137) % 10000).padStart(4, '0');
-          var seed2 = String((3185 + i * 243) % 10000).padStart(4, '0');
-          var seed3 = String((5921 + i * 189) % 10000).padStart(4, '0');
-          var seed4 = String((8304 + i * 312) % 10000).padStart(4, '0');
+          var seed1 = String((3692 + i * 149) % 10000).padStart(4, '0');
+          var seed2 = String((627 + i * 283) % 10000).padStart(4, '0');
+          var seed3 = String((8145 + i * 197) % 10000).padStart(4, '0');
+          var seed4 = String((9201 + i * 353) % 10000).padStart(4, '0');
 
           saved.push({
             drawNum: baseDrawNum - i,
@@ -199,12 +199,12 @@
         } catch(e) {}
       }
 
-      // Sort strictly by timestamp descending (newest to oldest)
+      // Sort newest to oldest by timestamp
       saved.sort(function(a, b) {
         return (b.timestamp || 0) - (a.timestamp || 0);
       });
 
-      // Keep strictly last 24 hours of draws (48 total)
+      // Keep only last 24 hours of draws (48 total)
       if (saved.length > 48) {
         saved = saved.slice(0, 48);
         try {
@@ -217,10 +217,10 @@
         var rec = saved[i];
         var isLatest = (i === 0);
         var cardBorder = isLatest 
-          ? 'border-gold/60 hover:border-gold shadow-[0_0_20px_rgba(255,212,0,0.3)] bg-gold/10' 
+          ? 'border-gold/60 hover:border-gold shadow-[0_0_15px_rgba(255,212,0,0.25)] bg-gold/10' 
           : 'border-white/5 hover:border-white/20 bg-bgDark/90';
-        var badgeBg = isLatest ? 'bg-gold/30 border-gold/60 text-gold font-black shadow-[0_0_10px_rgba(255,212,0,0.5)]' : 'bg-white/5 border-white/10 text-gray-400';
-        var badgeText = rec.isNew ? 'LIVE DRAW' : ('#' + (saved.length - i));
+        var badgeBg = isLatest ? 'bg-gold/30 border-gold/60 text-gold font-black shadow-[0_0_8px_rgba(255,212,0,0.4)]' : 'bg-white/5 border-white/10 text-gray-400';
+        var badgeText = rec.isNew ? 'LIVE NEW' : ('#' + (saved.length - i));
 
         html += '<div class="p-1.5 sm:p-2 rounded-xl border ' + cardBorder + ' flex flex-nowrap items-center justify-between gap-1.5 group transition-all">' +
           '<div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">' +
@@ -252,48 +252,6 @@
       }
       
       container.innerHTML = html;
-    window.prependWinningDrawToHistory = function(results) {
-      if (!results || !Array.isArray(results) || results.length < 4) return;
-
-      var saved = [];
-      try {
-        saved = JSON.parse(localStorage.getItem('winningDraws24hHistory') || '[]');
-      } catch(e) {}
-
-      var maxDrawNum = 8492;
-      for (var i = 0; i < saved.length; i++) {
-        if (saved[i] && saved[i].drawNum && Number(saved[i].drawNum) > maxDrawNum) {
-          maxDrawNum = Number(saved[i].drawNum);
-        }
-      }
-      var newDrawNum = maxDrawNum + 1;
-      var now = new Date();
-      var timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      var newRecord = {
-        drawNum: newDrawNum,
-        timeStr: timeStr,
-        timestamp: Date.now() + 100000,
-        num1: String(results[0]),
-        num2: String(results[1]),
-        num3: String(results[2]),
-        num4: String(results[3]),
-        isNew: true
-      };
-
-      saved.unshift(newRecord);
-
-      if (saved.length > 48) {
-        saved = saved.slice(0, 48);
-      }
-
-      try {
-        localStorage.setItem('winningDraws24hHistory', JSON.stringify(saved));
-      } catch(e) {}
-
-      if (typeof window.render24HoursDrawHistory === 'function') {
-        window.render24HoursDrawHistory();
-      }
     };
 
     window.init24HoursDrawHistory = window.render24HoursDrawHistory;
@@ -391,11 +349,11 @@
         if (!overlay) return;
 
         if (isLoggedIn) {
+          overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
           overlay.style.display = 'none';
-          overlay.classList.add('hidden', 'opacity-0', 'pointer-events-none');
         } else {
           overlay.style.display = 'flex';
-          overlay.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+          overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
         }
       } catch(e) {}
     };
@@ -418,17 +376,15 @@
     };
 
     window.handleAppLoginSubmit = function(e) {
-      if (e) {
-        if (typeof e.preventDefault === 'function') e.preventDefault();
-        if (typeof e.stopPropagation === 'function') e.stopPropagation();
-      }
+      if (e && e.preventDefault) e.preventDefault();
       var nameInput = document.getElementById('authUsernameInput');
       var passInput = document.getElementById('authPasswordInput');
       var username = (nameInput && nameInput.value) ? nameInput.value.trim() : '';
       var password = (passInput && passInput.value) ? passInput.value.trim() : '';
 
       if (!username) {
-        username = 'Player_' + Math.floor(100 + Math.random() * 900);
+        if (typeof window.showToast === 'function') window.showToast('Please enter your username!', 'warning');
+        return false;
       }
 
       var lowerUser = username.toLowerCase();
@@ -479,22 +435,23 @@
           loginTime: new Date().toLocaleTimeString()
         };
         if (foundIndex > -1) {
-          existingList[foundIndex] = userRecord;
+          existingList[foundIndex].loginTime = new Date().toLocaleTimeString();
+          if (password) existingList[foundIndex].password = password;
         } else {
           existingList.push(userRecord);
         }
         localStorage.setItem('registeredUsersList', JSON.stringify(existingList));
       } catch(err) {}
 
-      // Direct, Instant & Absolute Removal of Login Overlay
+      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
+      window.checkUserAuthStatus();
+      
       var overlay = document.getElementById('fullAppLoginOverlay');
       if (overlay) {
+        overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
         overlay.style.display = 'none';
-        overlay.style.visibility = 'hidden';
-        overlay.classList.add('hidden', 'opacity-0', 'pointer-events-none');
       }
 
-      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
       if (typeof window.showToast === 'function') window.showToast('Welcome, ' + username + '!', 'success');
       return false;
     };
@@ -2085,7 +2042,7 @@
       </div>
 
       <!-- Auth Form -->
-      <form id="appAuthForm" onsubmit="return window.handleAppLoginSubmit(event);" class="w-full flex flex-col gap-6 mt-1">
+      <form id="appAuthForm" onsubmit="handleAppLoginSubmit(event); return false;" class="w-full flex flex-col gap-6 mt-1">
         
         <!-- Username Underline Field -->
         <div class="flex items-center gap-3 border-b border-gray-300/40 pb-2 px-1 focus-within:border-cyan-300 transition-colors">
@@ -2093,6 +2050,7 @@
           <input 
             id="authUsernameInput" 
             type="text" 
+            required
             placeholder="Username" 
             class="w-full bg-transparent text-white font-medium text-base outline-none placeholder:text-gray-300 tracking-wide" 
           />
@@ -2113,8 +2071,8 @@
         <div class="flex justify-center mt-3">
           <button 
             type="submit" 
+            onclick="handleAppLoginSubmit(event)"
             id="authSubmitBtn" 
-            onclick="return window.handleAppLoginSubmit(event);"
             class="w-44 py-3 rounded-full bg-gradient-to-b from-[#4e8bb7] via-[#2f668f] to-[#1a4463] text-white font-bold text-lg tracking-wide shadow-[0_8px_20px_rgba(0,0,0,0.6),inset_0_1px_2px_rgba(255,255,255,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer border border-cyan-300/30 flex items-center justify-center">
             Login
           </button>
