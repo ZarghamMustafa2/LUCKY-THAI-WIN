@@ -418,7 +418,10 @@
     };
 
     window.handleAppLoginSubmit = function(e) {
-      if (e) e.preventDefault();
+      if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      }
       var nameInput = document.getElementById('authUsernameInput');
       var passInput = document.getElementById('authPasswordInput');
       var username = (nameInput && nameInput.value) ? nameInput.value.trim() : '';
@@ -426,7 +429,7 @@
 
       if (!username) {
         if (typeof window.showToast === 'function') window.showToast('Please enter your username!', 'warning');
-        return;
+        return false;
       }
 
       var lowerUser = username.toLowerCase();
@@ -450,7 +453,7 @@
 
         if (typeof window.showToast === 'function') window.showToast('Admin Verified! Opening Admin Panel...', 'success');
         window.location.href = 'admin.html';
-        return;
+        return false;
       }
 
       // Standard Player Login
@@ -484,9 +487,16 @@
         localStorage.setItem('registeredUsersList', JSON.stringify(existingList));
       } catch(err) {}
 
+      // Direct & Instant Hide of Login Overlay
+      var overlay = document.getElementById('fullAppLoginOverlay');
+      if (overlay) {
+        overlay.style.display = 'none';
+        overlay.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+      }
+
       if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
-      window.checkUserAuthStatus();
       if (typeof window.showToast === 'function') window.showToast('Welcome, ' + username + '!', 'success');
+      return false;
     };
 
     window.handleQuickGuestLogin = function() {
@@ -2103,9 +2113,9 @@
         <!-- 3D Glossy Pill Login Button -->
         <div class="flex justify-center mt-3">
           <button 
-            type="submit" 
+            type="button" 
             id="authSubmitBtn" 
-            onclick="handleAppLoginSubmit(event)"
+            onclick="window.handleAppLoginSubmit(event)"
             class="w-44 py-3 rounded-full bg-gradient-to-b from-[#4e8bb7] via-[#2f668f] to-[#1a4463] text-white font-bold text-lg tracking-wide shadow-[0_8px_20px_rgba(0,0,0,0.6),inset_0_1px_2px_rgba(255,255,255,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer border border-cyan-300/30 flex items-center justify-center">
             Login
           </button>
