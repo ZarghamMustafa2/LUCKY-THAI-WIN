@@ -3400,9 +3400,9 @@
         const headerTimerText = document.getElementById('headerTimerText');
         if (headerTimerText) headerTimerText.innerText = time.digital;
         
+        const wEl = document.getElementById('wheelText');
+        if (wEl) wEl.innerText = time.digital;
         if (!isDrawing) {
-          const wEl = document.getElementById('wheelText');
-          if (wEl) wEl.innerText = time.digital;
           setProgress(percent);
         }
 
@@ -3592,9 +3592,6 @@
           statusDot.style.boxShadow = '0 0 12px rgba(255,212,0,0.8)';
         }
 
-        const wheelText = document.getElementById('wheelText');
-        if (wheelText) wheelText.innerText = `DIGIT ${digitIndex + 1}`;
-
         const currentAngle = ((currentRotation % 360) + 360) % 360;
         const targetAngle = (360 - (digitVal * 36)) % 360;
         let addedRotation = 1440 + (targetAngle - currentAngle);
@@ -3619,7 +3616,6 @@
             d.className = 'w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_30px_rgba(0,255,136,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform scale-105';
             playSound('pop');
           }
-          if (wheelText) wheelText.innerText = `#${digitIndex + 1}: ${digitChar}`;
 
           setTimeout(() => {
             spinForDigit(digitIndex + 1);
