@@ -455,12 +455,10 @@
     };
 
     window.openRitmuLiveTvPlayer = function() {
-      var modal = document.getElementById('ritmuTvStreamModal');
-      if (modal) modal.classList.remove('hidden');
-      try {
-        window.open('https://www.ritmu.tv', '_blank', 'noopener,noreferrer');
-      } catch(e) {}
-      if (typeof window.showToast === 'function') window.showToast('Opening Official Ritmu TV Broadcast Channel...', 'success');
+      if (typeof window.startDraw === 'function') {
+        window.startDraw(true);
+      }
+      if (typeof window.showToast === 'function') window.showToast('Starting Ritmu TV Live Draw Broadcast on screen...', 'success');
     };
 
     window.closeRitmuLiveTvPlayer = function() {
