@@ -1931,41 +1931,76 @@
               <!-- Ambient TV Backlight Glow -->
               <div id="wheelGlow" class="absolute inset-0 bg-[#36d7b7] opacity-[0.25] rounded-3xl blur-[120px] pointer-events-none w-full max-w-4xl h-80 sm:h-96 mx-auto transition-colors duration-500"></div>
 
-              <!-- Ritmu Live Broadcast TV Screen Bezel (100% Native Guaranteed Stream Canvas) -->
-              <div id="ritmuTvStageBezel" class="w-full max-w-md sm:max-w-2xl md:max-w-4xl lg:max-w-5xl rounded-3xl border-4 border-cyan-400/40 bg-black shadow-[0_25px_80px_rgba(0,0,0,0.95),0_0_60px_rgba(54,215,183,0.35)] overflow-hidden relative flex flex-col transition-all">
+              <!-- Ritmu Live Broadcast TV Screen Bezel (Exact Ritmu TV Kuwait Interface Match) -->
+              <div id="ritmuTvStageBezel" class="w-full max-w-xs sm:max-w-md md:max-w-xl lg:max-w-2xl rounded-3xl border-4 border-cyan-400/40 bg-[#0a121e] shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_50px_rgba(54,215,183,0.35)] overflow-hidden relative flex flex-col transition-all">
                 
-                <!-- Native Edge-to-Edge Live TV Screen Viewport -->
-                <div id="ritmuTvViewport" class="relative w-full h-[320px] sm:h-[450px] md:h-[540px] lg:h-[600px] bg-black flex flex-col items-center justify-center overflow-hidden p-0">
-                  
-                  <!-- CONTINUOUS NATIVE RITMU LIVE VIDEO BROADCAST STREAM PLAYER -->
-                  <video id="ritmuLiveBroadcastVideo" class="w-full h-full object-cover relative z-10 block shadow-2xl bg-black" autoplay loop muted playsinline onloadeddata="this.play()" oncanplay="this.play()">
-                    <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
-                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-                  </video>
-
-                  <!-- Top-Left Playing Now Badge (Exact Match to User Screenshot) -->
-                  <div class="absolute top-4 left-4 z-20 flex items-center gap-1.5 shadow-2xl pointer-events-none">
-                    <span class="bg-gradient-to-r from-pink-600 to-red-600 text-white font-black text-[10px] sm:text-xs px-2.5 py-1 rounded uppercase tracking-wider">PLAYING NOW</span>
-                    <span class="bg-black/80 backdrop-blur-md text-white font-bold text-[10px] sm:text-xs px-3 py-1 rounded border border-white/20">Al Safah • THAI DRAW</span>
-                  </div>
-
-                  <!-- Top-Right Ritmu Mascot Watermark (Exact Match to User Screenshot) -->
-                  <div class="absolute top-4 right-4 z-20 flex flex-col items-center bg-black/60 backdrop-blur-md p-2 rounded-2xl border border-white/15 pointer-events-none shadow-2xl">
-                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-lg border border-gold">
+                <!-- Ritmu TV Official Kuwait Header Bar -->
+                <div class="bg-[#091524] px-4 py-2.5 border-b border-white/10 flex items-center justify-between z-20">
+                  <div class="flex items-center gap-3">
+                    <!-- Mascot Circle Avatar -->
+                    <div class="w-10 h-10 rounded-full bg-white border-2 border-gold shadow-[0_0_15px_rgba(255,212,0,0.6)] flex flex-col items-center justify-center relative overflow-hidden shrink-0">
                       <span class="text-xl leading-none">😎</span>
                     </div>
-                    <span class="text-[8px] font-bold text-gold tracking-tighter mt-1">رتموتي في الكويت</span>
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-1.5">
+                        <span class="font-display font-black text-white text-sm sm:text-base tracking-wide">Ritmu TV</span>
+                        <span class="text-gold font-bold text-xs">الكويت</span>
+                      </div>
+                      <span class="text-[9px] font-mono text-gray-400 -mt-0.5">OFFICIAL BROADCAST</span>
+                    </div>
                   </div>
 
-                  <!-- Bottom Ticker Bar (Exact Match to User Screenshot) -->
-                  <div class="absolute bottom-0 inset-x-0 bg-black/90 backdrop-blur-md px-4 py-2 border-t border-white/15 flex justify-between items-center z-20 text-[10px] sm:text-xs font-mono text-white pointer-events-none">
-                    <span class="truncate">03/08/2026 ------ KEEP WATCHING RITMU.TV</span>
-                    <span id="ritmuLiveClock" class="text-white font-bold shrink-0 ml-2">11:55:09</span>
+                  <div class="flex items-center gap-2 bg-[#122338] px-3 py-1 rounded-full border border-cyan-400/30">
+                    <i class="fa-solid fa-[#36d7b7] fa-rss text-cyanLight text-xs animate-pulse"></i>
+                    <span class="text-xs font-display font-black text-cyanLight tracking-wider uppercase">LIVE TV</span>
+                  </div>
+                </div>
+
+                <!-- Main TV Video Screen Viewport -->
+                <div class="relative w-full h-64 sm:h-76 md:h-88 bg-gradient-to-b from-[#0e1626] via-[#090d16] to-[#05080f] flex flex-col items-center justify-center overflow-hidden p-0">
+                  
+                  <!-- CONTINUOUS LIVE VIDEO BROADCAST STREAM PLAYER -->
+                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 opacity-90 block" autoplay loop muted playsinline onloadeddata="this.play()" oncanplay="this.play()">
+                    <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4">
+                  </video>
+
+                  <!-- DIRECT RITMU TV LIVE STREAM EMBED -->
+                  <iframe id="ritmuEmbedIframe" src="https://www.ritmu.tv" class="absolute inset-0 w-full h-full border-0 z-0 bg-black opacity-100 hidden" allow="autoplay; fullscreen; picture-in-picture" title="Ritmu TV Live Stream"></iframe>
+
+                  <!-- Top-Left Playing Now Badge (Exact Match to Screenshot) -->
+                  <div class="absolute top-3 left-3 z-20 flex items-center gap-1 shadow-md pointer-events-none">
+                    <span class="bg-gradient-to-r from-pink-600 to-red-600 text-white font-black text-[9px] sm:text-[10px] px-2 py-0.5 rounded uppercase tracking-wider">PLAYING NOW</span>
+                    <span class="bg-red-900/90 text-white font-bold text-[9px] sm:text-[10px] px-2 py-0.5 rounded border border-white/20">Al Safah • THAI DRAW</span>
                   </div>
 
-                  <!-- Hidden Spin Wheel & Timer elements to preserve JS compatibility -->
+                  <!-- Top-Right Ritmu Watermark (Exact Match to Screenshot) -->
+                  <div class="absolute top-3 right-3 z-20 flex flex-col items-center bg-black/60 backdrop-blur-sm p-1.5 rounded-xl border border-white/10 pointer-events-none">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md">
+                      <span class="text-base leading-none">😎</span>
+                    </div>
+                    <span class="text-[7px] font-bold text-gold tracking-tighter mt-0.5">رتمو TV الكويت</span>
+                  </div>
+
+                  <!-- Scanlines Effect -->
+                  <div class="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] pointer-events-none opacity-20 z-10"></div>
+
+                  <!-- Hidden Spin Wheel Element to preserve JS compatibility -->
                   <div id="spinWheelElement" class="hidden"></div>
-                  <div id="tvScreenContent" class="hidden"><span id="wheelText"></span></div>
+
+                  <!-- Center TV Broadcast HUD Overlay -->
+                  <div id="tvScreenContent" class="relative z-20 flex flex-col items-center justify-center text-center gap-2 w-full max-w-xs bg-black/60 backdrop-blur-[3px] p-3 rounded-2xl border border-white/15 shadow-2xl">
+                    <div class="flex flex-col items-center">
+                      <span class="text-[10px] sm:text-xs font-black text-cyanLight uppercase tracking-widest drop-shadow">NEXT RITMU HOURLY DRAW IN</span>
+                      <span id="wheelText" class="font-mono text-2xl sm:text-3xl font-black text-gold drop-shadow tracking-widest mt-0.5">30:00</span>
+                    </div>
+                  </div>
+
+                  <!-- TV Screen Bottom Info Ticker (Exact Match to Screenshot) -->
+                  <div class="absolute bottom-0 inset-x-0 bg-black/90 backdrop-blur-md px-3 py-1 border-t border-white/15 flex justify-between items-center z-20 text-[9px] sm:text-[10px] font-mono text-white pointer-events-none">
+                    <span class="truncate">03/08/2026 EMAIL INFO@RITMU.TV ---- HOURLY THAI DRAW</span>
+                    <span class="text-gold font-bold shrink-0 ml-2">LIVE 10:07:32</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3413,13 +3448,6 @@
         
         const wEl = document.getElementById('wheelText');
         if (wEl) wEl.innerText = time.digital;
-
-        const liveClock = document.getElementById('ritmuLiveClock');
-        if (liveClock) {
-          const d = new Date();
-          liveClock.innerText = d.toTimeString().split(' ')[0];
-        }
-
         if (!isDrawing) {
           setProgress(percent);
         }
