@@ -3518,13 +3518,13 @@
               runSpinPhase(3, '2ND DRAW', res3, () => {
                 setTimeout(() => {
                   runSpinPhase(4, '2ND DRAW', res4, () => {
-                    setTimeout(() => finishDraw(), 1000);
+                    setTimeout(() => finishDraw(), 300);
                   });
-                }, 1500);
+                }, 300);
               });
-            }, 1500);
+            }, 300);
           });
-        }, 1500);
+        }, 300);
       });
     }
     window.startDraw = startDraw;
@@ -3594,29 +3594,19 @@
         const digitVal = parseInt(digitChar, 10);
 
         if (statusText) {
-          statusText.innerText = `${drawLabel} - SPINNING FOR DIGIT ${digitIndex + 1} OF ${totalDigitsInDraw}...`;
-          statusText.style.color = '#FFD400';
+          statusText.innerText = `RITMU LIVE TV BROADCAST • ${drawLabel}...`;
+          statusText.style.color = '#00FF88';
         }
         if (statusDot) {
-          statusDot.style.backgroundColor = '#FFD400';
-          statusDot.style.boxShadow = '0 0 12px rgba(255,212,0,0.8)';
+          statusDot.style.backgroundColor = '#00FF88';
+          statusDot.style.boxShadow = '0 0 12px rgba(0,255,136,0.8)';
         }
 
-        const currentAngle = ((currentRotation % 360) + 360) % 360;
-        const targetAngle = (360 - (digitVal * 36)) % 360;
-        let addedRotation = 1440 + (targetAngle - currentAngle);
-        if (addedRotation < 1440) addedRotation += 360;
-        currentRotation += addedRotation;
-
-        const spinDuration = 3.0;
+        const spinDuration = 0.3;
         const spinWheel = document.getElementById('spinWheelElement');
 
         if (spinWheel) {
-          spinWheel.style.transitionProperty = 'transform';
-          spinWheel.style.transitionDuration = `${spinDuration}s`;
-          spinWheel.style.transitionTimingFunction = 'cubic-bezier(0.1, 0.9, 0.2, 1.0)';
-          void spinWheel.offsetHeight;
-          spinWheel.style.transform = `rotate(${currentRotation}deg)`;
+          spinWheel.style.transform = `rotate(${Math.floor(Math.random()*360)}deg)`;
         }
 
         setTimeout(() => {
@@ -3629,7 +3619,7 @@
 
           setTimeout(() => {
             spinForDigit(digitIndex + 1);
-          }, 800);
+          }, 200);
         }, spinDuration * 1000);
       }
 
