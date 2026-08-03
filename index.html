@@ -1929,7 +1929,7 @@
                 <div class="relative w-full h-[360px] sm:h-[480px] md:h-[560px] lg:h-[620px] bg-black flex flex-col items-center justify-center overflow-hidden p-0">
                   
                   <!-- CONTINUOUS PURE RITMU LIVE VIDEO BROADCAST STREAM PLAYER -->
-                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 opacity-100 block" autoplay loop muted playsinline poster="https://www.ritmu.tv/Icon.png">
+                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 opacity-100 block" autoplay loop muted playsinline onloadeddata="this.play()" oncanplay="this.play()">
                     <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4">
                   </video>
 
