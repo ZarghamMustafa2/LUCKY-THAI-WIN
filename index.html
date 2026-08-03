@@ -1922,14 +1922,14 @@
               <!-- Ambient TV Backlight Glow -->
               <div id="wheelGlow" class="absolute inset-0 bg-[#36d7b7] opacity-[0.25] rounded-3xl blur-[120px] pointer-events-none w-full max-w-4xl h-80 sm:h-96 mx-auto transition-colors duration-500"></div>
 
-              <!-- Ritmu Live Broadcast TV Screen Bezel (100% Pure Edge-to-Edge Live Stream Screen) -->
+              <!-- Ritmu Live Broadcast TV Screen Bezel (100% Focused Live Stream Video Screen) -->
               <div id="ritmuTvStageBezel" class="w-full max-w-md sm:max-w-2xl md:max-w-4xl lg:max-w-5xl rounded-3xl border-2 border-cyan-400/40 bg-black shadow-[0_25px_80px_rgba(0,0,0,0.95),0_0_60px_rgba(54,215,183,0.3)] overflow-hidden relative flex flex-col transition-all">
                 
                 <!-- Pure Edge-to-Edge Live TV Screen Viewport -->
-                <div class="relative w-full h-[380px] sm:h-[480px] md:h-[560px] lg:h-[640px] bg-black flex flex-col items-center justify-center overflow-hidden p-0">
+                <div class="relative w-full h-[360px] sm:h-[480px] md:h-[560px] lg:h-[620px] bg-black flex flex-col items-center justify-center overflow-hidden p-0">
                   
-                  <!-- DIRECT RITMU TV LIVE STREAM EMBED -->
-                  <iframe id="ritmuEmbedIframe" src="https://www.ritmu.tv" class="absolute inset-0 w-full h-full border-0 z-0 bg-black opacity-100 pointer-events-auto" allow="autoplay; fullscreen; picture-in-picture" title="Ritmu TV Live Stream"></iframe>
+                  <!-- DIRECT RITMU TV LIVE STREAM EMBED (Focused on Video Player Canvas) -->
+                  <iframe id="ritmuEmbedIframe" src="https://www.ritmu.tv" class="absolute -top-[90px] sm:-top-[130px] md:-top-[170px] left-0 w-full h-[calc(100%+180px)] sm:h-[calc(100%+260px)] border-0 z-0 bg-black opacity-100 pointer-events-auto" allow="autoplay; fullscreen; picture-in-picture" title="Ritmu TV Live Stream"></iframe>
 
                   <!-- FALLBACK CONTINUOUS LIVE STREAM VIDEO PLAYER -->
                   <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 opacity-100 hidden" autoplay loop muted playsinline poster="https://www.ritmu.tv/Icon.png">
