@@ -1928,13 +1928,13 @@
                 <!-- Pure Edge-to-Edge Live TV Screen Viewport -->
                 <div class="relative w-full h-[360px] sm:h-[480px] md:h-[560px] lg:h-[620px] bg-black flex flex-col items-center justify-center overflow-hidden p-0">
                   
-                  <!-- DIRECT RITMU TV LIVE STREAM EMBED (Focused on Video Player Canvas) -->
-                  <iframe id="ritmuEmbedIframe" src="https://www.ritmu.tv" class="absolute -top-[90px] sm:-top-[130px] md:-top-[170px] left-0 w-full h-[calc(100%+180px)] sm:h-[calc(100%+260px)] border-0 z-0 bg-black opacity-100 pointer-events-auto" allow="autoplay; fullscreen; picture-in-picture" title="Ritmu TV Live Stream"></iframe>
-
-                  <!-- FALLBACK CONTINUOUS LIVE STREAM VIDEO PLAYER -->
-                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 opacity-100 hidden" autoplay loop muted playsinline poster="https://www.ritmu.tv/Icon.png">
+                  <!-- CONTINUOUS PURE RITMU LIVE VIDEO BROADCAST STREAM PLAYER -->
+                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 opacity-100 block" autoplay loop muted playsinline poster="https://www.ritmu.tv/Icon.png">
                     <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4">
                   </video>
+
+                  <!-- FALLBACK RITMU TV LIVE STREAM EMBED -->
+                  <iframe id="ritmuEmbedIframe" src="https://www.ritmu.tv" class="absolute inset-0 w-full h-full border-0 z-0 bg-black opacity-100 hidden" allow="autoplay; fullscreen; picture-in-picture" title="Ritmu TV Live Stream"></iframe>
 
                   <!-- Hidden Spin Wheel & Timer elements to preserve JS compatibility -->
                   <div id="spinWheelElement" class="hidden"></div>
