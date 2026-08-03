@@ -171,12 +171,10 @@
         saved = [];
         var baseDrawNum = 8492;
         var now = new Date();
-        var minutes = now.getMinutes();
-        var slotMinutes = minutes >= 30 ? 30 : 0;
-        var latestSlotTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), slotMinutes, 0, 0).getTime();
+        var latestSlotTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0, 0).getTime();
 
-        for (var i = 0; i < 48; i++) {
-          var slotTime = new Date(latestSlotTime - (i + 1) * 30 * 60 * 1000);
+        for (var i = 0; i < 24; i++) {
+          var slotTime = new Date(latestSlotTime - (i + 1) * 60 * 60 * 1000);
           var timeStr = slotTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           var seed1 = String((3692 + i * 149) % 10000).padStart(4, '0');
           var seed2 = String((627 + i * 283) % 10000).padStart(4, '0');
@@ -3325,17 +3323,13 @@
         liveActivityBody.removeChild(liveActivityBody.lastChild);
       }
     }
-    // --- Real-Time Wall Clock 30-Minute Draw Cycle Engine (Spins at :30 and :00) ---
-    const DRAW_INTERVAL_SEC = 1800; // 30 Minutes Total Cycle (1800s)
+    // --- Real-Time Wall Clock 1-Hour Draw Cycle Engine (Spins at :00:00 Sharp Every Hour) ---
+    const DRAW_INTERVAL_SEC = 3600; // 60 Minutes (1 Hour) Total Cycle
 
     function getRemainingSeconds() {
       const nowSec = Math.floor(Date.now() / 1000);
       const cycleSec = nowSec % DRAW_INTERVAL_SEC;
-      if (cycleSec < 1680) {
-        return 1800 - cycleSec;
-      } else {
-        return 1800 - cycleSec;
-      }
+      return DRAW_INTERVAL_SEC - cycleSec;
     }
 
     const sheetNumberInput = document.getElementById('sheetNumberInput');
@@ -3401,15 +3395,14 @@
     function gameLoop() {
       try {
         const nowSec = Math.floor(Date.now() / 1000);
-        const cycleSec = nowSec % 1800; // Wall clock 30-minute slot (:00 to :30, :30 to :00)
+        const cycleSec = nowSec % 3600; // Wall clock 1-Hour slot (:00:00 sharp every hour, e.g. 11:00 AM)
         
-        // Always calculate exact remaining seconds until the NEXT scheduled spin (:00 and :30)
-        const remainingSecs = 1800 - cycleSec;
+        // Always calculate exact remaining seconds until the NEXT scheduled spin (at :00:00 sharp)
+        const remainingSecs = 3600 - cycleSec;
         const time = formatTime(remainingSecs);
-        const percent = (remainingSecs / 1800) * 100;
+        const percent = (remainingSecs / 3600) * 100;
 
         // Update countdown text across banner and header displays:
-        // Automatically subtracts whatever time the spinner took to complete and stays 100% locked to schedule!
         const bannerCountdownText = document.getElementById('bannerCountdownText');
         if (bannerCountdownText) bannerCountdownText.innerText = time.formatted;
         const headerTimerText = document.getElementById('headerTimerText');
@@ -3421,14 +3414,13 @@
           setProgress(percent);
         }
 
-        // Spin MUST ONLY trigger at the EXACT scheduled draw time (:00 and :30, i.e. cycleSec < 30)
-        // It must NEVER start at 28 minutes (cycleSec >= 1680) or any earlier time!
+        // Spin MUST ONLY trigger at the EXACT scheduled draw time (:00:00 sharp every hour)
         if (cycleSec >= 30) {
           window.currentPhase = 'betting';
           window.isBettingLocked = false;
           window.hasTriggeredSpinThisCycle = false;
         } else {
-          // Scheduled Spin Trigger Window (cycleSec from 0s to 29s at :00:00 or :30:00 sharp)
+          // Scheduled Spin Trigger Window (cycleSec from 0s to 29s at :00:00 sharp)
           window.currentPhase = 'spinning';
           window.isBettingLocked = true;
 
