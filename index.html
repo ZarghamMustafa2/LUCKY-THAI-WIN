@@ -3563,10 +3563,9 @@
 
       function spinForDigit(digitIndex) {
         if (digitIndex >= totalDigitsInDraw) {
-          // Hide digit boxes so they don't overlap behind winner cards!
           for(let i=0; i<4; i++) {
             const d = document.getElementById(`digit-${i}`);
-            if (d) d.style.display = 'none';
+            if (d) d.style.display = 'flex';
           }
 
           if (multiContainer) {
