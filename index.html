@@ -3618,19 +3618,26 @@
           } catch(e) {}
           var headerLast = document.getElementById('headerLastBet');
           if (headerLast) headerLast.innerText = 'Rs ' + totalAmount.toLocaleString();
-
-          window.activeBets = [];
-          const countEl = document.getElementById('headerActiveBetsCount');
-          if (countEl) countEl.innerText = '0';
-          
-          var headerCurrent = document.getElementById('headerCurrentBet');
-          if (headerCurrent) headerCurrent.innerText = 'Rs 0';
-
-          if (typeof window.setBetButtonState === 'function') window.setBetButtonState(false);
-          if (typeof window.renderActiveBetsList === 'function') window.renderActiveBetsList();
         } else {
           setTimeout(() => showModal(null, window.generatedResults), 400);
         }
+
+        // Automatic hourly active bets cleanup (Clears active bets array & updates user account session)
+        window.activeBets = [];
+        var activeUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
+        if (typeof window.getUserAccountData === 'function' && typeof window.saveUserAccountData === 'function') {
+          var acc = window.getUserAccountData(activeUser);
+          acc.activeBets = [];
+          window.saveUserAccountData(activeUser, acc);
+        }
+
+        const countEl = document.getElementById('headerActiveBetsCount');
+        if (countEl) countEl.innerText = '0';
+        var headerCurrent = document.getElementById('headerCurrentBet');
+        if (headerCurrent) headerCurrent.innerText = 'Rs 0';
+
+        if (typeof window.setBetButtonState === 'function') window.setBetButtonState(false);
+        if (typeof window.renderActiveBetsList === 'function') window.renderActiveBetsList();
 
         // Live prepend new winning draw results to 24 Hours History List
         if (typeof window.prependWinningDrawToHistory === 'function' && window.generatedResults) {
