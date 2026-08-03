@@ -1895,53 +1895,64 @@
               <!-- Ambient TV Backlight Glow -->
               <div id="wheelGlow" class="absolute inset-0 bg-[#36d7b7] opacity-[0.25] rounded-3xl blur-[100px] pointer-events-none w-full max-w-2xl h-64 sm:h-80 mx-auto transition-colors duration-500"></div>
 
-              <!-- Ritmu Live Broadcast TV Screen Bezel -->
-              <div class="w-full max-w-xs sm:max-w-md md:max-w-xl lg:max-w-2xl rounded-3xl border-4 border-[#36d7b7]/50 bg-[#0b1019] shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_50px_rgba(54,215,183,0.35)] overflow-hidden relative flex flex-col transition-all">
+              <!-- Ritmu Live Broadcast TV Screen Bezel (Exact Ritmu TV Kuwait Match) -->
+              <div class="w-full max-w-xs sm:max-w-md md:max-w-xl lg:max-w-2xl rounded-3xl border-4 border-cyan-400/40 bg-[#0a121e] shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_50px_rgba(54,215,183,0.35)] overflow-hidden relative flex flex-col transition-all">
                 
-                <!-- TV Screen Top Status Header Bar -->
-                <div class="bg-[#121926]/90 backdrop-blur-md px-3 sm:px-5 py-2 sm:py-2.5 border-b border-white/10 flex items-center justify-between z-20">
-                  <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 -ml-4"></span>
-                    <span class="text-[10px] sm:text-xs font-black text-red-500 tracking-wider uppercase drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]">LIVE BROADCAST</span>
+                <!-- Ritmu TV Official Kuwait Header Bar -->
+                <div class="bg-[#091524] px-4 py-2.5 border-b border-white/10 flex items-center justify-between z-20">
+                  <div class="flex items-center gap-3">
+                    <!-- Mascot Circle Avatar -->
+                    <div class="w-10 h-10 rounded-full bg-white border-2 border-gold shadow-[0_0_15px_rgba(255,212,0,0.6)] flex flex-col items-center justify-center relative overflow-hidden shrink-0">
+                      <span class="text-xl leading-none">😎</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-1.5">
+                        <span class="font-display font-black text-white text-sm sm:text-base tracking-wide">Ritmu TV</span>
+                        <span class="text-gold font-bold text-xs">الكويت</span>
+                      </div>
+                      <span class="text-[9px] font-mono text-gray-400 -mt-0.5">OFFICIAL BROADCAST</span>
+                    </div>
                   </div>
 
-                  <div class="flex items-center gap-1.5 bg-cardDark/80 px-3 py-1 rounded-full border border-gold/30">
-                    <i class="fa-solid fa-tv text-gold text-xs"></i>
-                    <span class="text-xs sm:text-sm font-display font-black text-gold tracking-wider">RITMU TV HD</span>
-                  </div>
-
-                  <div class="flex items-center gap-2">
-                    <span class="text-[9px] sm:text-[10px] font-mono text-cyanLight font-bold bg-cyanLight/10 px-2 py-0.5 rounded border border-cyanLight/30">CH-01 • 1080P</span>
+                  <div class="flex items-center gap-2 bg-[#122338] px-3 py-1 rounded-full border border-cyan-400/30">
+                    <i class="fa-solid fa-[#36d7b7] fa-rss text-cyanLight text-xs animate-pulse"></i>
+                    <span class="text-xs font-display font-black text-cyanLight tracking-wider uppercase">LIVE TV</span>
                   </div>
                 </div>
 
                 <!-- Main TV Video Screen Viewport -->
-                <div class="relative w-full h-56 sm:h-72 md:h-80 bg-gradient-to-b from-[#0e1626] via-[#090d16] to-[#05080f] flex flex-col items-center justify-center overflow-hidden p-4">
+                <div class="relative w-full h-60 sm:h-72 md:h-84 bg-gradient-to-b from-[#0e1626] via-[#090d16] to-[#05080f] flex flex-col items-center justify-center overflow-hidden p-4">
                   
                   <!-- CONTINUOUS LIVE VIDEO BROADCAST STREAM PLAYER -->
-                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 opacity-80" autoplay loop muted playsinline poster="https://www.ritmu.tv/Icon.png">
+                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 opacity-85" autoplay loop muted playsinline poster="https://www.ritmu.tv/Icon.png">
                     <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4">
                   </video>
 
-                  <!-- Scanlines & CRT Grid TV Overlay Effect -->
-                  <div class="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] pointer-events-none opacity-40 z-10"></div>
+                  <!-- Top-Left Playing Now Badge (Exact Match to Screenshot) -->
+                  <div class="absolute top-3 left-3 z-20 flex items-center gap-1 shadow-md">
+                    <span class="bg-gradient-to-r from-pink-600 to-red-600 text-white font-black text-[9px] sm:text-[10px] px-2 py-0.5 rounded uppercase tracking-wider">PLAYING NOW</span>
+                    <span class="bg-red-900/90 text-white font-bold text-[9px] sm:text-[10px] px-2 py-0.5 rounded border border-white/20">Al Safah • THAI DRAW</span>
+                  </div>
+
+                  <!-- Top-Right Ritmu Watermark (Exact Match to Screenshot) -->
+                  <div class="absolute top-3 right-3 z-20 flex flex-col items-center bg-black/50 backdrop-blur-sm p-1.5 rounded-xl border border-white/10 pointer-events-none">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md">
+                      <span class="text-base leading-none">😎</span>
+                    </div>
+                    <span class="text-[7px] font-bold text-gold tracking-tighter mt-0.5">رتمو TV الكويت</span>
+                  </div>
+
+                  <!-- Scanlines Effect -->
+                  <div class="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] pointer-events-none opacity-30 z-10"></div>
 
                   <!-- Hidden Spin Wheel Element to preserve JS compatibility -->
                   <div id="spinWheelElement" class="hidden"></div>
 
-                  <!-- TV Screen Broadcast HUD Overlay / Timer / Live Draw Content -->
-                  <div id="tvScreenContent" class="relative z-20 flex flex-col items-center justify-center text-center gap-3 w-full bg-black/40 backdrop-blur-[2px] p-4 rounded-2xl border border-white/10">
-                    
-                    <!-- Live Channel Crest Logo -->
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-[#36d7b7] via-[#40e0d0] to-[#00f2fe] shadow-[0_0_30px_rgba(64,224,208,0.6)] flex flex-col items-center justify-center text-[#091522] border-2 border-white/50 mb-0.5">
-                      <span class="font-display font-black italic text-xl sm:text-2xl tracking-tighter leading-none">RITMU</span>
-                      <span class="text-[6px] font-mono font-black uppercase tracking-widest text-[#091522] -mt-0.5">TV DRAW</span>
-                    </div>
-
+                  <!-- Center TV Broadcast HUD Overlay -->
+                  <div id="tvScreenContent" class="relative z-20 flex flex-col items-center justify-center text-center gap-3 w-full max-w-sm bg-black/50 backdrop-blur-[3px] p-4 rounded-2xl border border-white/15 shadow-2xl">
                     <div class="flex flex-col items-center">
-                      <span class="text-[10px] sm:text-xs font-black text-gray-200 uppercase tracking-widest drop-shadow">NEXT RITMU HOURLY DRAW IN</span>
-                      <span id="wheelText" class="font-mono text-2xl sm:text-4xl md:text-5xl font-black text-gold drop-shadow-[0_0_20px_rgba(255,212,0,0.9)] tracking-widest mt-0.5">30:00</span>
+                      <span class="text-[10px] sm:text-xs font-black text-cyanLight uppercase tracking-widest drop-shadow">NEXT RITMU HOURLY DRAW IN</span>
+                      <span id="wheelText" class="font-mono text-3xl sm:text-4xl md:text-5xl font-black text-gold drop-shadow-[0_0_20px_rgba(255,212,0,0.9)] tracking-widest mt-0.5">30:00</span>
                     </div>
 
                     <!-- TV Interactive Watch / Trigger Button -->
@@ -1950,10 +1961,10 @@
                     </button>
                   </div>
 
-                  <!-- TV Screen Bottom Info Ticker -->
-                  <div class="absolute bottom-0 inset-x-0 bg-black/75 backdrop-blur-md px-4 py-1.5 border-t border-white/10 flex justify-between items-center z-20 text-[9px] sm:text-[10px] font-mono text-gray-300">
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-satellite-dish text-cyanLight animate-pulse"></i> LIVE SATELLITE BROADCAST</span>
-                    <span class="text-gold font-bold">HOURLY THAI DRAW STREAM</span>
+                  <!-- TV Screen Bottom Info Ticker (Exact Match to Screenshot) -->
+                  <div class="absolute bottom-0 inset-x-0 bg-black/90 backdrop-blur-md px-3 py-1 border-t border-white/15 flex justify-between items-center z-20 text-[9px] sm:text-[10px] font-mono text-white">
+                    <span class="truncate">03/08/2026 EMAIL INFO@RITMU.TV ---- HOURLY THAI DRAW</span>
+                    <span class="text-gold font-bold shrink-0 ml-2">LIVE 10:07:32</span>
                   </div>
                 </div>
               </div>
