@@ -454,6 +454,17 @@
       if (modal) modal.classList.remove('hidden');
     };
 
+    window.openRitmuLiveTvPlayer = function() {
+      var modal = document.getElementById('ritmuTvStreamModal');
+      if (modal) modal.classList.remove('hidden');
+      if (typeof window.showToast === 'function') window.showToast('Connecting to Live Ritmu TV Broadcast...', 'success');
+    };
+
+    window.closeRitmuLiveTvPlayer = function() {
+      var modal = document.getElementById('ritmuTvStreamModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
     window.openProfileBetHistoryModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
@@ -1934,7 +1945,7 @@
                     </div>
 
                     <!-- TV Interactive Watch / Trigger Button -->
-                    <button id="centerSpinBtn" onclick="if(typeof startDraw==='function'){ showToast('Opening Ritmu Live TV Draw...', 'success'); startDraw(true); }" class="mt-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-gold via-yellow-400 to-amber-500 text-black font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_25px_rgba(255,212,0,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 border border-white/30">
+                    <button id="centerSpinBtn" onclick="if(typeof openRitmuLiveTvPlayer==='function'){ openRitmuLiveTvPlayer(); } else if(typeof startDraw==='function'){ startDraw(true); }" class="mt-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-gold via-yellow-400 to-amber-500 text-black font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_25px_rgba(255,212,0,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 border border-white/30">
                       <i class="fa-solid fa-play text-xs"></i> WATCH LIVE DRAW
                     </button>
                   </div>
@@ -2308,6 +2319,35 @@
       <button onclick="saveUserLoginName()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-gold to-yellow-500 text-black font-black text-base uppercase tracking-wider shadow-lg hover:scale-[1.01] active:scale-95 transition-all">
         Save Profile Settings
       </button>
+    </div>
+  </div>
+
+  <!-- RITMU TV LIVE BROADCAST STREAM MODAL -->
+  <div id="ritmuTvStreamModal" class="hidden fixed inset-0 z-[999999] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 transition-all">
+    <div class="bg-[#0b1019] border-2 border-cyan-400/40 rounded-3xl p-4 sm:p-6 max-w-4xl w-full shadow-[0_30px_80px_rgba(0,0,0,0.95),0_0_50px_rgba(54,215,183,0.3)] relative flex flex-col gap-4 overflow-hidden">
+      <button onclick="closeRitmuLiveTvPlayer()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 text-xl z-30">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#36d7b7] to-[#00f2fe] text-[#091522] flex items-center justify-center font-black italic text-lg shadow-md">
+            TN
+          </div>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+              <span class="text-sm font-bold text-white font-display uppercase tracking-wider">Ritmu Live TV Broadcast</span>
+            </div>
+            <span class="text-xs text-cyanLight font-mono">Official Thai Draw Live Channel • www.ritmu.tv</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live TV Iframe Embed Container -->
+      <div class="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-inner">
+        <iframe src="https://www.ritmu.tv" title="Ritmu TV Live Broadcast" class="w-full h-full border-0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      </div>
     </div>
   </div>
 
