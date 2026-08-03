@@ -1877,55 +1877,72 @@
               </div>
             </div>
 
-            <!-- Wheel Element -->
-            <div class="w-full flex justify-center items-center py-10 mt-16 mb-24 relative z-10">
+            <!-- Live Broadcast TV Display Screen Container (Replaces Spinner Wheel Stage) -->
+            <div class="w-full flex justify-center items-center py-4 sm:py-6 mt-4 sm:mt-6 mb-20 sm:mb-24 relative z-10">
               
-              <!-- Ambient Back Glow -->
-              <div id="wheelGlow" class="absolute inset-0 bg-primary opacity-[0.15] rounded-full blur-[100px] pointer-events-none w-72 h-72 md:w-80 md:h-80 mx-auto transition-colors duration-500"></div>
-              
-              <!-- Pointer -->
-              <div class="absolute top-[-10px] left-1/2 -translate-x-1/2 z-30 drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
-                <div class="w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[35px] border-t-gold relative">
-                  <div class="absolute -top-[35px] -left-[10px] w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[25px] border-t-white opacity-40"></div>
-                </div>
-              </div>
-              
-              <!-- Wheel Frame (3D Depth) -->
-              <div class="w-[220px] h-[220px] sm:w-[300px] sm:h-[300px] md:w-[380px] md:h-[380px] rounded-full border-[10px] md:border-[14px] border-cardDark wheel-shadow overflow-hidden relative bg-bgDark" style="transform: perspective(1000px) rotateX(10deg);">
-                
-                <!-- Inner Shadow Overlay -->
-                <div class="absolute inset-0 rounded-full shadow-[inset_0_0_60px_rgba(0,0,0,0.9)] z-20 pointer-events-none"></div>
+              <!-- Ambient TV Backlight Glow -->
+              <div id="wheelGlow" class="absolute inset-0 bg-[#36d7b7] opacity-[0.2] rounded-3xl blur-[100px] pointer-events-none w-full max-w-2xl h-64 sm:h-80 mx-auto transition-colors duration-500"></div>
 
-                <!-- Spinning Content -->
-                <div id="spinWheelElement" class="w-full h-full relative rounded-full will-change-transform" style="transform: rotate(0deg);">
-                  <!-- Conic Gradient Slices -->
-                  <div class="absolute -inset-10" style="background: conic-gradient(from -18deg, #2A3B54 0deg 36deg, #151E2E 36deg 72deg, #2A3B54 72deg 108deg, #151E2E 108deg 144deg, #2A3B54 144deg 180deg, #151E2E 180deg 216deg, #2A3B54 216deg 252deg, #151E2E 252deg 288deg, #2A3B54 288deg 324deg, #151E2E 324deg 360deg)"></div>
-                  
-                  <!-- Slice Texts -->
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(0deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">0</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(36deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">1</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(72deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">2</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(108deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">3</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(144deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">4</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(180deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">5</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(216deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">6</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(252deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">7</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(288deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">8</div></div>
-                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(324deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">9</div></div>
-                </div>
+              <!-- Ritmu Live Broadcast TV Screen Bezel -->
+              <div class="w-full max-w-xs sm:max-w-md md:max-w-xl lg:max-w-2xl rounded-3xl border-4 border-[#36d7b7]/40 bg-[#0b1019] shadow-[0_25px_70px_rgba(0,0,0,0.9),0_0_40px_rgba(54,215,183,0.25)] overflow-hidden relative flex flex-col transition-all">
                 
-                <!-- Central Hub & Circular Countdown -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center">
-                  <!-- SVG Progress -->
-                  <svg class="absolute w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 drop-shadow-[0_0_15px_rgba(0,0,0,1)]" viewBox="0 0 120 120">
-                    <circle cx="60" cy="60" r="54" fill="#0B1220" stroke="rgba(255,255,255,0.05)" stroke-width="12" />
-                    <circle id="timerCircle" class="progress-ring__circle" cx="60" cy="60" r="54" fill="transparent" stroke="#00FF88" stroke-width="12" stroke-dasharray="339.292" stroke-dashoffset="0" stroke-linecap="round" />
-                  </svg>
+                <!-- TV Screen Top Status Header Bar -->
+                <div class="bg-[#121926] px-3 sm:px-5 py-2 sm:py-2.5 border-b border-white/10 flex items-center justify-between z-20">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 -ml-4"></span>
+                    <span class="text-[10px] sm:text-xs font-black text-red-500 tracking-wider uppercase drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]">LIVE BROADCAST</span>
+                  </div>
+
+                  <div class="flex items-center gap-1.5 bg-cardDark/80 px-3 py-1 rounded-full border border-gold/30">
+                    <i class="fa-solid fa-tv text-gold text-xs"></i>
+                    <span class="text-xs sm:text-sm font-display font-black text-gold tracking-wider">RITMU TV HD</span>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <span class="text-[9px] sm:text-[10px] font-mono text-cyanLight font-bold bg-cyanLight/10 px-2 py-0.5 rounded border border-cyanLight/30">CH-01 • 1080P</span>
+                  </div>
+                </div>
+
+                <!-- Main TV Video Screen Viewport -->
+                <div class="relative w-full h-56 sm:h-72 md:h-80 bg-gradient-to-b from-[#0e1626] via-[#090d16] to-[#05080f] flex flex-col items-center justify-center overflow-hidden p-4">
                   
-                  <!-- Glowing Center Hub Display with Large Automatic Real-Time Timer & Manual Spin Trigger -->
-                  <div id="centerSpinBtn" onclick="if(typeof startDraw==='function'){ showToast('Spinning Wheel...', 'success'); startDraw(true); }" class="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-full border-4 md:border-8 border-gold shadow-[0_0_30px_rgba(255,212,0,0.5),inset_0_0_20px_rgba(0,0,0,0.8)] flex flex-col items-center justify-center relative z-10 bg-gradient-to-b from-[#121B2F] to-[#0D0D0D] cursor-pointer hover:scale-105 active:scale-95 transition-all">
-                    <span class="text-[9px] sm:text-[11px] font-black text-gray-400 uppercase tracking-widest pointer-events-none mb-0.5">NEXT DRAW IN</span>
-                    <span id="wheelText" class="font-mono text-base sm:text-2xl md:text-3xl font-black text-gold drop-shadow-[0_0_15px_rgba(255,212,0,0.9)] tracking-wider pointer-events-none">30:00</span>
+                  <!-- Scanlines & CRT Grid TV Overlay Effect -->
+                  <div class="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] pointer-events-none opacity-40 z-10"></div>
+
+                  <!-- TV Signal Waves Background Graphic -->
+                  <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                    <div class="w-72 h-72 rounded-full border-2 border-cyan-400 animate-ping"></div>
+                    <div class="w-96 h-96 rounded-full border-2 border-gold animate-pulse"></div>
+                  </div>
+
+                  <!-- Hidden Spin Wheel Element to preserve JS compatibility -->
+                  <div id="spinWheelElement" class="hidden"></div>
+
+                  <!-- TV Screen Broadcast Banner / Timer / Live Draw Content -->
+                  <div id="tvScreenContent" class="relative z-20 flex flex-col items-center justify-center text-center gap-3 w-full">
+                    
+                    <!-- Live Channel Crest Logo -->
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-[#36d7b7] via-[#40e0d0] to-[#00f2fe] shadow-[0_0_30px_rgba(64,224,208,0.5)] flex flex-col items-center justify-center text-[#091522] border-2 border-white/50 mb-1">
+                      <span class="font-display font-black italic text-2xl sm:text-3xl tracking-tighter leading-none">RITMU</span>
+                      <span class="text-[7px] font-mono font-black uppercase tracking-widest text-[#091522] -mt-0.5">TV DRAW</span>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                      <span class="text-[10px] sm:text-xs font-black text-gray-400 uppercase tracking-widest">NEXT RITMU HOURLY DRAW IN</span>
+                      <span id="wheelText" class="font-mono text-2xl sm:text-4xl md:text-5xl font-black text-gold drop-shadow-[0_0_20px_rgba(255,212,0,0.9)] tracking-widest mt-1">30:00</span>
+                    </div>
+
+                    <!-- TV Interactive Watch / Trigger Button -->
+                    <button id="centerSpinBtn" onclick="if(typeof startDraw==='function'){ showToast('Opening Ritmu Live TV Draw...', 'success'); startDraw(true); }" class="mt-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-gold via-yellow-400 to-amber-500 text-black font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_25px_rgba(255,212,0,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 border border-white/30">
+                      <i class="fa-solid fa-play text-xs"></i> WATCH LIVE DRAW
+                    </button>
+                  </div>
+
+                  <!-- TV Screen Bottom Info Ticker -->
+                  <div class="absolute bottom-0 inset-x-0 bg-black/60 backdrop-blur-sm px-4 py-1.5 border-t border-white/10 flex justify-between items-center z-20 text-[9px] sm:text-[10px] font-mono text-gray-400">
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-satellite-dish text-cyanLight"></i> STREAM: SATELLITE ACTIVE</span>
+                    <span class="text-gold font-bold">HOURLY THAI DRAW BROADCAST</span>
                   </div>
                 </div>
               </div>
