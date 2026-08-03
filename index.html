@@ -1937,15 +1937,13 @@
                 <!-- Pure Edge-to-Edge Live TV Screen Viewport -->
                 <div id="ritmuTvViewport" class="relative w-full h-[320px] sm:h-[450px] md:h-[540px] lg:h-[600px] bg-[#080d1a] flex flex-col items-center justify-center overflow-hidden p-0">
                   
-                  <!-- MULTI-SOURCE CONTINUOUS RITMU LIVE VIDEO BROADCAST STREAM PLAYER -->
-                  <video id="ritmuLiveBroadcastVideo" class="w-full h-full object-cover relative z-10 block shadow-2xl bg-black" autoplay loop muted playsinline onloadeddata="this.play()" oncanplay="this.play()" onerror="if(typeof handleTvVideoError==='function') handleTvVideoError(this)">
-                    <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
-                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4">
-                  </video>
+                  <!-- DIRECT RITMU TV OFFICIAL LIVE STREAM EMBED (PRIMARY) -->
+                  <iframe id="ritmuEmbedIframe" src="https://www.ritmu.tv" class="w-full h-full border-0 relative z-10 bg-black opacity-100 block pointer-events-auto" allow="autoplay; fullscreen; picture-in-picture" title="Ritmu TV Official Live Broadcast"></iframe>
 
-                  <!-- DIRECT RITMU TV LIVE STREAM EMBED -->
-                  <iframe id="ritmuEmbedIframe" src="https://www.ritmu.tv" class="absolute inset-0 w-full h-full border-0 z-0 bg-black opacity-100 hidden" allow="autoplay; fullscreen; picture-in-picture" title="Ritmu TV Live Stream"></iframe>
+                  <!-- FALLBACK CONTINUOUS LIVE BROADCAST PLAYER -->
+                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 hidden shadow-2xl bg-black" autoplay loop muted playsinline>
+                    <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+                  </video>
 
                   <!-- HIGH-TECH CANVAS BROADCAST FALLBACK (Guarantees 0% Blank Screen) -->
                   <div id="ritmuCanvasFallback" class="absolute inset-0 z-20 flex-col items-center justify-center bg-gradient-to-b from-[#091322] via-[#050b14] to-[#02050a] p-6 hidden">
