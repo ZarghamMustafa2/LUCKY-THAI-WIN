@@ -1944,8 +1944,8 @@
                     <span>100% AUTOMATIC RITMU TV LIVE SYNC ACTIVE</span>
                   </div>
 
-                  <!-- CONTINUOUS HD VIDEO BROADCAST STREAM PLAYER (FALLBACK) -->
-                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 hidden shadow-2xl bg-black" autoplay loop muted playsinline onloadeddata="this.play()" oncanplay="this.play()">
+                  <!-- CONTINUOUS HD VIDEO BROADCAST STREAM PLAYER (MANUAL PLAY CONTROL) -->
+                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 hidden shadow-2xl bg-black" controls preload="metadata" playsinline>
                     <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
                     <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4">
                   </video>
