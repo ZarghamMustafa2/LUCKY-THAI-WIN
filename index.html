@@ -1997,15 +1997,13 @@
               </div>
             </div>
             
-            <!-- Result Digits & Winner Badges Container (Positioned BELOW TV Screen with Zero Overlap) -->
-            <div class="relative w-full flex flex-col items-center gap-3 z-30 pointer-events-none px-4 mt-4">
-              <!-- Digits Row -->
-              <div id="digitsContainerRow" class="flex gap-2 sm:gap-4 md:gap-6 justify-center items-center pointer-events-auto transition-all">
-                <div id="digit-0" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_30px_rgba(0,255,136,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform scale-105">3</div>
-                <div id="digit-1" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_30px_rgba(0,255,136,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform scale-105">6</div>
-                <div id="digit-2" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_30px_rgba(0,255,136,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform scale-105">2</div>
-                <div id="digit-3" class="w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_30px_rgba(0,255,136,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform scale-105">9</div>
-              </div>
+            <!-- Hidden Digits Row to preserve JS compatibility -->
+            <div id="digitsContainerRow" class="hidden">
+              <div id="digit-0"></div>
+              <div id="digit-1"></div>
+              <div id="digit-2"></div>
+              <div id="digit-3"></div>
+            </div>
               
               <!-- Multi-Results Winner Badges (Positioned BELOW Digits Container with Clear Separation) -->
               <div id="multiResultsContainer" class="flex flex-wrap gap-3 sm:gap-6 justify-center items-center w-full z-40 transition-all duration-500 opacity-0 translate-y-2 pointer-events-auto min-h-[50px] mt-1">
