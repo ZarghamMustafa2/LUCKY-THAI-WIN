@@ -461,21 +461,24 @@
       }
     };
 
-    window.toggleRitmuTvChannel = function() {
+    window.toggleRitmuTvStage = function(show) {
+      var bezel = document.getElementById('ritmuTvStageBezel');
+      var openBtn = document.getElementById('openRitmuTvBtn');
       var iframe = document.getElementById('ritmuEmbedIframe');
-      var video = document.getElementById('ritmuLiveBroadcastVideo');
-      var tag = document.getElementById('channelNameTag');
-      if (iframe && video) {
-        if (video.classList.contains('hidden')) {
-          video.classList.remove('hidden');
-          iframe.classList.add('hidden');
-          if (tag) tag.innerText = 'CH-02 • RITMU SATELLITE HD STREAM';
-          if (typeof window.showToast === 'function') window.showToast('Switched to CH-02 Satellite Broadcast Stream', 'success');
+      
+      if (bezel) {
+        if (show) {
+          bezel.classList.remove('hidden');
+          bezel.classList.add('flex');
+          if (openBtn) openBtn.classList.add('hidden');
+          if (iframe) iframe.src = 'https://www.ritmu.tv';
+          if (typeof window.showToast === 'function') window.showToast('Ritmu TV Live Broadcast Stream Opened', 'success');
         } else {
-          video.classList.add('hidden');
-          iframe.classList.remove('hidden');
-          if (tag) tag.innerText = 'CH-01 • RITMU LIVE WEB STREAM';
-          if (typeof window.showToast === 'function') window.showToast('Switched to CH-01 Official Live Web Stream', 'success');
+          bezel.classList.add('hidden');
+          bezel.classList.remove('flex');
+          if (openBtn) openBtn.classList.remove('hidden');
+          if (iframe) iframe.src = 'about:blank';
+          if (typeof window.showToast === 'function') window.showToast('Ritmu TV Stream Closed & Off', 'info');
         }
       }
     };
@@ -1923,20 +1926,36 @@
               </div>
             </div>
 
-            <!-- Live Broadcast TV Display Screen Container (Replaces Spinner Wheel Stage) -->
-            <div class="w-full flex justify-center items-center py-4 sm:py-6 mt-4 sm:mt-6 mb-8 sm:mb-12 relative z-10">
+            <!-- Live Broadcast TV Display Screen Container (Manual Toggle On/Off Engine) -->
+            <div class="w-full flex flex-col items-center justify-center py-4 sm:py-6 mt-4 sm:mt-6 mb-8 sm:mb-12 relative z-10">
               
               <!-- Ambient TV Backlight Glow -->
-              <div id="wheelGlow" class="absolute inset-0 bg-[#36d7b7] opacity-[0.25] rounded-3xl blur-[120px] pointer-events-none w-full max-w-4xl h-80 sm:h-96 mx-auto transition-colors duration-500"></div>
+              <div id="wheelGlow" class="absolute inset-0 bg-[#36d7b7] opacity-[0.15] rounded-3xl blur-[120px] pointer-events-none w-full max-w-4xl h-80 sm:h-96 mx-auto transition-colors duration-500"></div>
 
-              <!-- Ritmu Live Broadcast TV Screen Bezel (100% Focused Live Stream Video Screen) -->
-              <div id="ritmuTvStageBezel" class="w-full max-w-md sm:max-w-2xl md:max-w-4xl lg:max-w-5xl rounded-3xl border-2 border-cyan-400/40 bg-black shadow-[0_25px_80px_rgba(0,0,0,0.95),0_0_60px_rgba(54,215,183,0.3)] overflow-hidden relative flex flex-col transition-all">
+              <!-- Open Ritmu TV Broadcast Trigger Button -->
+              <button id="openRitmuTvBtn" onclick="toggleRitmuTvStage(true)" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-black font-extrabold text-xs sm:text-sm uppercase tracking-widest shadow-[0_0_30px_rgba(54,215,183,0.5)] transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-3 border border-cyan-300/40">
+                <i class="fa-solid fa-tv text-base animate-pulse"></i>
+                <span>📺 OPEN RITMU TV LIVE STREAM</span>
+              </button>
+
+              <!-- Ritmu Live Broadcast TV Screen Bezel (Initially Closed/OFF) -->
+              <div id="ritmuTvStageBezel" class="w-full max-w-md sm:max-w-2xl md:max-w-4xl lg:max-w-5xl rounded-3xl border-2 border-cyan-400/40 bg-black shadow-[0_25px_80px_rgba(0,0,0,0.95),0_0_60px_rgba(54,215,183,0.3)] overflow-hidden relative flex-col transition-all mt-4 hidden">
                 
+                <!-- TV Header Controls Bar -->
+                <div class="bg-[#0b1220] px-4 py-2 flex items-center justify-between border-b border-cyan-400/20 relative z-20">
+                  <span class="text-xs font-mono font-bold text-cyan-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> RITMU TV OFFICIAL LIVE STREAM BROADCAST
+                  </span>
+                  <button onclick="toggleRitmuTvStage(false)" class="text-xs font-bold text-gray-300 hover:text-white bg-red-500/20 px-3 py-1 rounded-lg border border-red-500/40 hover:bg-red-600 transition-all cursor-pointer flex items-center gap-1">
+                    <i class="fa-solid fa-xmark"></i> Close TV
+                  </button>
+                </div>
+
                 <!-- Pure Edge-to-Edge Live TV Screen Viewport -->
                 <div id="ritmuTvViewport" class="relative w-full h-[320px] sm:h-[450px] md:h-[540px] lg:h-[600px] bg-[#080d1a] flex flex-col items-center justify-center overflow-hidden p-0">
                   
-                  <!-- COMPLETE RITMU TV OFFICIAL WEBSITE EMBED (PRIMARY) -->
-                  <iframe id="ritmuEmbedIframe" src="https://www.ritmu.tv" class="w-full h-full border-0 relative z-10 bg-black opacity-100 block pointer-events-auto shadow-2xl" allow="autoplay; fullscreen; picture-in-picture" title="Ritmu TV Official Website"></iframe>
+                  <!-- COMPLETE RITMU TV OFFICIAL WEBSITE EMBED (ON DEMAND ONLY) -->
+                  <iframe id="ritmuEmbedIframe" src="about:blank" class="w-full h-full border-0 relative z-10 bg-black opacity-100 block pointer-events-auto shadow-2xl" allow="autoplay; fullscreen; picture-in-picture" title="Ritmu TV Official Website"></iframe>
 
                   <!-- 100% AUTOMATIC RITMU TV LIVE SYNC STATUS BADGE -->
                   <div class="absolute top-3 left-3 z-30 pointer-events-none bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-500/40 shadow-xl flex items-center gap-2 text-[10px] sm:text-xs font-mono font-bold text-emerald-400">
