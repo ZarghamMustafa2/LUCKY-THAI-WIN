@@ -256,9 +256,15 @@
                   <p class="text-xs text-textMuted">Enter official winning numbers as drawn on Ritmu TV live broadcast to sync website instantly</p>
                 </div>
               </div>
-              <button onclick="broadcastRitmuTvDrawResults()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-extrabold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2">
-                <i class="fa-solid fa-tower-broadcast text-sm"></i> Broadcast Winning Numbers
-              </button>
+              <div class="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+                <button onclick="triggerInstantRitmuTvDraw()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs uppercase tracking-wider shadow-[0_0_25px_rgba(239,68,68,0.5)] transition-all cursor-pointer flex items-center justify-center gap-2 border border-red-400/40 animate-pulse">
+                  <i class="fa-solid fa-[#000] fa-bolt text-sm"></i> 🔴 INSTANT EXECUTE DRAW NOW
+                </button>
+
+                <button onclick="broadcastRitmuTvDrawResults()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-extrabold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-floppy-disk text-sm"></i> Save Numbers
+                </button>
+              </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-1">
@@ -1118,6 +1124,27 @@
 
     function triggerExportCSV() {
       showAdminToast('Exporting table data to CSV...', 'success');
+    }
+
+    function triggerInstantRitmuTvDraw() {
+      var r1 = document.getElementById('ritmuRes1') ? document.getElementById('ritmuRes1').value.trim() : '3629';
+      var r2 = document.getElementById('ritmuRes2') ? document.getElementById('ritmuRes2').value.trim() : '5584';
+      var r3 = document.getElementById('ritmuRes3') ? document.getElementById('ritmuRes3').value.trim() : '8071';
+      var r4 = document.getElementById('ritmuRes4') ? document.getElementById('ritmuRes4').value.trim() : '9142';
+
+      if (!r1 || !r2 || !r3 || !r4) {
+        showAdminToast('Please fill all 4 winning numbers from Ritmu TV!', 'error');
+        return;
+      }
+
+      var winningArray = [r1, r2, r3, r4];
+      try {
+        localStorage.setItem('ritmuTvWinningNumbers', JSON.stringify(winningArray));
+        localStorage.setItem('adminSetDrawNumbers', JSON.stringify(winningArray));
+        localStorage.setItem('instantDrawTriggerTime', String(Date.now()));
+      } catch(e) {}
+
+      showAdminToast('🔴 LIVE DRAW EXECUTED INSTANTLY AT RITMU TV BROADCAST TIME!', 'success');
     }
 
     function broadcastRitmuTvDrawResults() {

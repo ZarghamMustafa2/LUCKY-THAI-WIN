@@ -3413,12 +3413,21 @@
         if (!isDrawing) {
           setProgress(percent);
         }
+        // Check for instant Admin Live Broadcast Trigger signal
+        var lastInstantTrigger = parseInt(localStorage.getItem('instantDrawTriggerTime') || '0', 10);
+        if (lastInstantTrigger > 0 && (Date.now() - lastInstantTrigger < 10000) && !window.hasProcessedInstantDraw) {
+          window.hasProcessedInstantDraw = true;
+          if (typeof startDraw === 'function') startDraw(true);
+        }
 
         // Spin MUST ONLY trigger at the EXACT scheduled draw time (:00:00 sharp every hour)
         if (cycleSec >= 30) {
           window.currentPhase = 'betting';
           window.isBettingLocked = false;
           window.hasTriggeredSpinThisCycle = false;
+          if (Date.now() - lastInstantTrigger >= 10000) {
+            window.hasProcessedInstantDraw = false;
+          }
         } else {
           // Scheduled Spin Trigger Window (cycleSec from 0s to 29s at :00:00 sharp)
           window.currentPhase = 'spinning';
