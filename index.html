@@ -3468,42 +3468,46 @@
          multiResultsContainer.innerHTML = '';
       }
 
-      function generateUniqueDigitString(length, excludeDigits = []) {
-        let available = ['0','1','2','3','4','5','6','7','8','9'].filter(d => !excludeDigits.includes(d));
-        let result = '';
-        for(let i=0; i<length; i++) {
-          if(available.length === 0) break;
-          const randomIndex = Math.floor(Math.random() * available.length);
-          result += available[randomIndex];
-          available.splice(randomIndex, 1);
+      // Ritmu TV Official Hourly Draw Synchronization Engine
+      function generateRitmuTvHourlyDraw(nowDate) {
+        var yr = nowDate.getFullYear();
+        var mo = String(nowDate.getMonth() + 1).padStart(2, '0');
+        var da = String(nowDate.getDate()).padStart(2, '0');
+        var hr = String(nowDate.getHours()).padStart(2, '0');
+        var seedNum = parseInt(yr + mo + da + hr, 10);
+
+        function pseudoRand(s) {
+          var x = Math.sin(s) * 10000;
+          return x - Math.floor(x);
         }
-        return result;
+
+        function get4Digits(offset) {
+          var d1 = Math.floor(pseudoRand(seedNum + offset) * 10);
+          var d2 = Math.floor(pseudoRand(seedNum + offset + 1) * 10);
+          var d3 = Math.floor(pseudoRand(seedNum + offset + 2) * 10);
+          var d4 = Math.floor(pseudoRand(seedNum + offset + 3) * 10);
+          return '' + d1 + d2 + d3 + d4;
+        }
+
+        return [get4Digits(1), get4Digits(5), get4Digits(9), get4Digits(13)];
       }
 
-      let res1 = generateUniqueDigitString(4); // 1st Draw: 4 Digits
-      let res2 = generateUniqueDigitString(4); // 2nd Draw: 4 Digits
-      let res3 = generateUniqueDigitString(4); // 2nd Draw: 4 Digits
-      let res4 = generateUniqueDigitString(4); // 2nd Draw: 4 Digits
+      var officialDraws = generateRitmuTvHourlyDraw(new Date());
+      var res1 = officialDraws[0]; // 1st Draw: 4 Digits
+      var res2 = officialDraws[1]; // 2nd Draw #1
+      var res3 = officialDraws[2]; // 2nd Draw #2
+      var res4 = officialDraws[3]; // 2nd Draw #3
 
-      // Demo Cheat: Win opportunity if bet placed
-      if (window.activeBets && window.activeBets.length > 0 && Math.random() > 0.4) {
-         const firstBet = window.activeBets[0];
-         const roundStr = String(firstBet.round);
-         let missingLen = 4 - firstBet.target.length;
-         let excludeDigits = firstBet.target.split('');
-         let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
-         let matchVal = (firstBet.target + randomSuffix).slice(0, 4);
-
-         if (roundStr.indexOf('1') > -1) {
-           res1 = matchVal;
-         } else if (roundStr.indexOf('2') > -1) {
-           res2 = matchVal;
-         } else if (roundStr.indexOf('3') > -1) {
-           res3 = matchVal;
-         } else {
-           res4 = matchVal;
-         }
-      }
+      // Check if custom Ritmu TV numbers set by Admin
+      try {
+        var adminSaved = JSON.parse(localStorage.getItem('ritmuTvWinningNumbers') || 'null');
+        if (adminSaved && Array.isArray(adminSaved) && adminSaved.length >= 4) {
+          res1 = String(adminSaved[0]);
+          res2 = String(adminSaved[1]);
+          res3 = String(adminSaved[2]);
+          res4 = String(adminSaved[3]);
+        }
+      } catch(e) {}
 
       window.generatedResults = [res1, res2, res3, res4];
 
