@@ -241,6 +241,54 @@
             </div>
           </div>
 
+          <!-- RITMU TV OFFICIAL LIVE DRAW WINNING NUMBERS CONTROL PANEL -->
+          <div class="glass-card p-6 border-2 border-amber-500/40 bg-gradient-to-r from-slate-900 via-amber-950/20 to-slate-900 shadow-2xl flex flex-col gap-4">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 text-lg font-black">
+                  <i class="fa-solid fa-satellite-dish animate-pulse"></i>
+                </div>
+                <div class="flex flex-col">
+                  <h3 class="text-base sm:text-lg font-display font-black text-white flex items-center gap-2">
+                    RITMU TV LIVE DRAW SYNC CONTROLLER
+                    <span class="text-[10px] font-mono bg-red-500/20 text-red-400 border border-red-500/40 px-2 py-0.5 rounded-full uppercase">LIVE BROADCAST CONTROL</span>
+                  </h3>
+                  <p class="text-xs text-textMuted">Enter official winning numbers as drawn on Ritmu TV live broadcast to sync website instantly</p>
+                </div>
+              </div>
+              <button onclick="broadcastRitmuTvDrawResults()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-extrabold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2">
+                <i class="fa-solid fa-tower-broadcast text-sm"></i> Broadcast Winning Numbers
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-1">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                  <i class="fa-solid fa-trophy text-amber-400"></i> 1st Draw Winner (4 Digits)
+                </label>
+                <input id="ritmuRes1" type="text" maxlength="4" placeholder="e.g. 3629" value="3629" class="w-full bg-cardDark border border-amber-500/40 focus:border-amber-400 px-3.5 py-2.5 rounded-xl text-base font-mono font-black text-amber-400 outline-none transition-all placeholder:text-gray-600" />
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1">
+                  <i class="fa-solid fa-medal text-cyan-400"></i> 2nd Draw Winner #1
+                </label>
+                <input id="ritmuRes2" type="text" maxlength="4" placeholder="e.g. 5584" value="5584" class="w-full bg-cardDark border border-cyan-400/40 focus:border-cyan-400 px-3.5 py-2.5 rounded-xl text-base font-mono font-black text-cyan-400 outline-none transition-all placeholder:text-gray-600" />
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1">
+                  <i class="fa-solid fa-medal text-cyan-400"></i> 2nd Draw Winner #2
+                </label>
+                <input id="ritmuRes3" type="text" maxlength="4" placeholder="e.g. 8071" value="8071" class="w-full bg-cardDark border border-cyan-400/40 focus:border-cyan-400 px-3.5 py-2.5 rounded-xl text-base font-mono font-black text-cyan-400 outline-none transition-all placeholder:text-gray-600" />
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1">
+                  <i class="fa-solid fa-medal text-cyan-400"></i> 2nd Draw Winner #3
+                </label>
+                <input id="ritmuRes4" type="text" maxlength="4" placeholder="e.g. 9142" value="9142" class="w-full bg-cardDark border border-cyan-400/40 focus:border-cyan-400 px-3.5 py-2.5 rounded-xl text-base font-mono font-black text-cyan-400 outline-none transition-all placeholder:text-gray-600" />
+              </div>
+            </div>
+          </div>
+
           <!-- 10 Enterprise Stats Cards Grid -->
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             <div class="glass-card p-4 flex flex-col border-l-4 border-l-brandBlue">
@@ -1070,6 +1118,26 @@
 
     function triggerExportCSV() {
       showAdminToast('Exporting table data to CSV...', 'success');
+    }
+
+    function broadcastRitmuTvDrawResults() {
+      var r1 = document.getElementById('ritmuRes1') ? document.getElementById('ritmuRes1').value.trim() : '3629';
+      var r2 = document.getElementById('ritmuRes2') ? document.getElementById('ritmuRes2').value.trim() : '5584';
+      var r3 = document.getElementById('ritmuRes3') ? document.getElementById('ritmuRes3').value.trim() : '8071';
+      var r4 = document.getElementById('ritmuRes4') ? document.getElementById('ritmuRes4').value.trim() : '9142';
+
+      if (!r1 || !r2 || !r3 || !r4) {
+        showAdminToast('Please fill all 4 winning numbers from Ritmu TV!', 'error');
+        return;
+      }
+
+      var winningArray = [r1, r2, r3, r4];
+      try {
+        localStorage.setItem('ritmuTvWinningNumbers', JSON.stringify(winningArray));
+        localStorage.setItem('adminSetDrawNumbers', JSON.stringify(winningArray));
+      } catch(e) {}
+
+      showAdminToast('🔴 RITMU TV WINNING NUMBERS BROADCASTED: 1st [' + r1 + '] 2nd [' + r2 + ', ' + r3 + ', ' + r4 + ']', 'success');
     }
 
     function handleGlobalSearch(e) {

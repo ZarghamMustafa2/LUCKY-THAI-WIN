@@ -176,10 +176,10 @@
         for (var i = 0; i < 24; i++) {
           var slotTime = new Date(latestSlotTime - (i + 1) * 60 * 60 * 1000);
           var timeStr = slotTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          var seed1 = String((3692 + i * 149) % 10000).padStart(4, '0');
-          var seed2 = String((627 + i * 283) % 10000).padStart(4, '0');
-          var seed3 = String((8145 + i * 197) % 10000).padStart(4, '0');
-          var seed4 = String((9201 + i * 353) % 10000).padStart(4, '0');
+          var seed1 = (i === 0) ? '3629' : String((3629 + i * 149) % 10000).padStart(4, '0');
+          var seed2 = (i === 0) ? '5584' : String((5584 + i * 283) % 10000).padStart(4, '0');
+          var seed3 = (i === 0) ? '8071' : String((8071 + i * 197) % 10000).padStart(4, '0');
+          var seed4 = (i === 0) ? '9142' : String((9142 + i * 353) % 10000).padStart(4, '0');
 
           saved.push({
             drawNum: baseDrawNum - i,
