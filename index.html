@@ -376,38 +376,205 @@
       if (dropdown) dropdown.classList.toggle('hidden');
     };
 
+    window.switchBpExchReportTab = function(tabName) {
+      ['ledger', 'bets', 'pnl', 'market'].forEach(function(t) {
+        var v = document.getElementById('bpexchView_' + t);
+        var b = document.getElementById('bpexchTabBtn_' + t);
+        if (v) {
+          if (t === tabName) {
+            v.classList.remove('hidden');
+            v.classList.add('flex');
+          } else {
+            v.classList.add('hidden');
+            v.classList.remove('flex');
+          }
+        }
+        if (b) {
+          if (t === tabName) {
+            b.className = 'px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-emerald-500 text-black shadow-md';
+          } else {
+            b.className = 'px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-white/5 text-gray-300 hover:text-white hover:bg-white/10';
+          }
+        }
+      });
+
+      if (tabName === 'ledger') window.renderBpExchLedgerTable();
+      if (tabName === 'bets') window.renderBpExchBetsTable();
+      if (tabName === 'pnl') window.renderBpExchPnlSummary();
+      if (tabName === 'market') window.renderBpExchMarketTable();
+    };
+
     window.openProfileStatementModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
       
       var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
       var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
-      var stmt = account.statement || [];
+      
+      var uHeader = document.getElementById('bpexchUserSubHeader');
+      if (uHeader) uHeader.innerHTML = 'B: ' + (account.balance || 0).toLocaleString() + ' | L: 0 | Logged in as <span class="text-brandGreen font-bold">' + name + '</span>';
 
-      var tbody = document.querySelector('#profileStatementModal tbody');
-      if (tbody) {
-        if (stmt.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500 font-bold">No financial transactions recorded for ' + name + '</td></tr>';
-        } else {
-          var html = '';
-          for (var i = 0; i < stmt.length; i++) {
-            var item = stmt[i];
-            var amtClass = item.amount >= 0 ? 'text-primary' : 'text-amber-400';
-            var amtSign = item.amount >= 0 ? '+' : '';
-            html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
-              '<td class="p-3 text-gray-400">' + item.date + '</td>' +
-              '<td class="p-3 ' + amtClass + '">' + item.type + '</td>' +
-              '<td class="p-3 font-mono ' + amtClass + ' text-right">' + amtSign + 'Rs ' + Math.abs(item.amount).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</td>' +
-              '<td class="p-3 font-mono text-white text-right">Rs ' + item.runningBalance.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</td>' +
-              '<td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">' + item.status + '</span></td>' +
-            '</tr>';
-          }
-          tbody.innerHTML = html;
-        }
-      }
-
+      window.switchBpExchReportTab('ledger');
       var modal = document.getElementById('profileStatementModal');
       if (modal) modal.classList.remove('hidden');
+    };
+
+    window.renderBpExchLedgerTable = function() {
+      var tbody = document.getElementById('bpexchLedgerTbody');
+      if (!tbody) return;
+
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      var stmt = account.statement || [];
+      var searchVal = (document.getElementById('ledgerSearchInput') ? document.getElementById('ledgerSearchInput').value : '').toLowerCase();
+
+      var list = stmt.slice();
+      if (list.length === 0) {
+        list.push({
+          date: '08/04/2026 12:00:00 AM',
+          type: 'Opening Balance',
+          amount: account.balance || 10000,
+          runningBalance: account.balance || 10000,
+          status: 'Opening Balance'
+        });
+      }
+
+      var filtered = list.filter(function(item) {
+        if (!searchVal) return true;
+        return (item.type || '').toLowerCase().includes(searchVal) || (item.date || '').toLowerCase().includes(searchVal);
+      });
+
+      var html = '';
+      filtered.forEach(function(item, idx) {
+        var amtClass = item.amount >= 0 ? 'text-emerald-400' : 'text-amber-400';
+        var amtSign = item.amount >= 0 ? '+' : '';
+        html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
+          '<td class="p-3 text-gray-500 font-mono">' + (idx + 1) + '</td>' +
+          '<td class="p-3 text-gray-400 font-mono">' + item.date + '</td>' +
+          '<td class="p-3 ' + amtClass + ' font-bold">' + item.type + '</td>' +
+          '<td class="p-3 font-mono ' + amtClass + ' text-right">' + amtSign + 'Rs ' + Math.abs(item.amount).toLocaleString(undefined, {minimumFractionDigits:2}) + '</td>' +
+          '<td class="p-3 font-mono text-white text-right font-bold">Rs ' + (item.runningBalance || 0).toLocaleString(undefined, {minimumFractionDigits:2}) + '</td>' +
+          '<td class="p-3 text-center"><span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[9px] uppercase font-bold">' + (item.status || 'Success') + '</span></td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    };
+
+    window.renderBpExchBetsTable = function() {
+      var tbody = document.getElementById('bpexchBetsTbody');
+      if (!tbody) return;
+
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      var bets = account.betHistory || window.activeBets || [];
+      var searchVal = (document.getElementById('betsSearchInput') ? document.getElementById('betsSearchInput').value : '').toLowerCase();
+
+      var filtered = bets.filter(function(bet) {
+        if (!searchVal) return true;
+        return (bet.target || bet.number || '').toLowerCase().includes(searchVal) || (bet.type || '').toLowerCase().includes(searchVal);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-gray-500 font-bold uppercase tracking-widest">No bet records found for selected filter</td></tr>';
+        return;
+      }
+
+      var html = '';
+      filtered.forEach(function(bet, idx) {
+        var num = bet.target || bet.number || '0';
+        var isWin = bet.payout > 0;
+        var pnlClass = isWin ? 'text-emerald-400 font-bold' : 'text-gray-400';
+        var statusBadge = isWin 
+          ? '<span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-[9px]">WIN</span>'
+          : '<span class="bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded text-[9px]">SETTLED</span>';
+
+        html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
+          '<td class="p-3 text-gray-500 font-mono">' + (idx + 1) + '</td>' +
+          '<td class="p-3 text-white font-bold">' + (bet.round || 'Thai Draw #8492') + '</td>' +
+          '<td class="p-3 text-cyan-400 font-mono font-bold">' + num + '</td>' +
+          '<td class="p-3 text-gray-300 uppercase text-[11px]">' + (bet.type || 'figure') + '</td>' +
+          '<td class="p-3 font-mono text-white text-right">Rs ' + (bet.amount || 10).toLocaleString() + '</td>' +
+          '<td class="p-3 font-mono ' + pnlClass + ' text-right">' + (isWin ? ('+Rs ' + (bet.payout || 0).toLocaleString()) : 'Rs 0.00') + '</td>' +
+          '<td class="p-3 text-center">' + statusBadge + '</td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    };
+
+    window.renderBpExchPnlSummary = function() {
+      var grid = document.getElementById('bpexchPnlCardsGrid');
+      if (!grid) return;
+
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      var stmt = account.statement || [];
+
+      var totalStake = 0;
+      var totalWon = 0;
+      stmt.forEach(function(s) {
+        if (s.amount < 0) totalStake += Math.abs(s.amount);
+        if (s.amount > 0 && String(s.type).toLowerCase().includes('win')) totalWon += s.amount;
+      });
+
+      var netPnl = totalWon - totalStake;
+      var pnlClass = netPnl >= 0 ? 'text-emerald-400' : 'text-amber-400';
+
+      grid.innerHTML = '<div class="bg-bgDark p-3.5 rounded-xl border border-white/5 flex flex-col">' +
+          '<span class="text-[10px] text-gray-400 font-bold uppercase">Total Wagered</span>' +
+          '<span class="text-base font-mono font-bold text-amber-400 mt-1">Rs ' + totalStake.toLocaleString() + '.00</span>' +
+        '</div>' +
+        '<div class="bg-bgDark p-3.5 rounded-xl border border-white/5 flex flex-col">' +
+          '<span class="text-[10px] text-gray-400 font-bold uppercase">Total Payouts Won</span>' +
+          '<span class="text-base font-mono font-bold text-emerald-400 mt-1">Rs ' + totalWon.toLocaleString() + '.00</span>' +
+        '</div>' +
+        '<div class="bg-bgDark p-3.5 rounded-xl border border-white/5 flex flex-col">' +
+          '<span class="text-[10px] text-gray-400 font-bold uppercase">Net Profit / Loss</span>' +
+          '<span class="text-base font-mono font-extrabold ' + pnlClass + ' mt-1">' + (netPnl >= 0 ? '+' : '') + 'Rs ' + netPnl.toLocaleString() + '.00</span>' +
+        '</div>';
+    };
+
+    window.filterBpExchMarketPill = function(cat, btn) {
+      document.querySelectorAll('.bpexchPillBtn').forEach(function(b) {
+        b.className = 'bpexchPillBtn px-3 py-1.5 rounded-xl bg-slate-700 text-gray-300 hover:text-white font-bold text-xs';
+      });
+      if (btn) btn.className = 'bpexchPillBtn px-3 py-1.5 rounded-xl bg-emerald-500 text-black font-bold text-xs shadow-md';
+      window.renderBpExchMarketTable();
+    };
+
+    window.renderBpExchMarketTable = function() {
+      var tbody = document.getElementById('bpexchMarketTbody');
+      if (!tbody) return;
+
+      var draws = [
+        { id: 1, name: 'Ritmu TV Thai 4D Live Stream #8492', date: '08/04/2026 12:00 AM', res: '1st: 3629 • 2nd: 5584, 8071, 9142' },
+        { id: 2, name: 'Ritmu TV Thai 4D Live Stream #8491', date: '08/03/2026 11:00 PM', res: '1st: 1492 • 2nd: 6270, 8145, 9201' },
+        { id: 3, name: 'Ritmu TV Thai 4D Live Stream #8490', date: '08/03/2026 10:00 PM', res: '1st: 7304 • 2nd: 4182, 9036, 2518' },
+        { id: 4, name: 'Ritmu TV Thai 4D Live Stream #8489', date: '08/03/2026 09:00 PM', res: '1st: 8521 • 2nd: 3609, 1475, 6842' }
+      ];
+
+      var html = '';
+      draws.forEach(function(d) {
+        html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
+          '<td class="p-3 text-gray-500 font-mono">' + d.id + '</td>' +
+          '<td class="p-3 text-white font-bold">' + d.name + '</td>' +
+          '<td class="p-3 text-gray-400 font-mono">' + d.date + '</td>' +
+          '<td class="p-3 text-gold font-mono font-bold text-right">' + d.res + '</td>' +
+          '<td class="p-3 text-center"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-[9px] uppercase font-bold">COMPLETED</span></td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    };
+
+    window.exportBpExchReport = function(type) {
+      if (typeof window.showToast === 'function') window.showToast('Exporting report to ' + type.toUpperCase() + ' format...', 'success');
+    };
+
+    window.applyBpExchLedgerFilter = function() {
+      window.renderBpExchLedgerTable();
+      if (typeof window.showToast === 'function') window.showToast('Ledger Report Filter Applied Successfully', 'success');
     };
 
     window.openProfileResultModal = function() {
@@ -2387,76 +2554,260 @@
     </div>
   </div>
 
-  <!-- 1. STATEMENT MODAL -->
-  <div id="profileStatementModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-all">
-    <div class="bg-cardDark border border-white/10 rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-[0_25px_60px_rgba(0,0,0,0.9)] relative flex flex-col gap-5 max-h-[85vh] overflow-hidden">
-      <button onclick="closeProfileModal('profileStatementModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 text-lg">
+  <!-- 1. BPEXCH LUXURY CUSTOMER REPORTS & ACCOUNT LEDGER MODAL -->
+  <div id="profileStatementModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/85 backdrop-blur-xl p-2 sm:p-4 transition-all">
+    <div class="bg-gradient-to-b from-[#1e293b] via-[#0f172a] to-[#0b101d] border border-cyan-500/30 rounded-3xl p-4 sm:p-6 max-w-4xl w-full shadow-[0_30px_90px_rgba(0,0,0,0.95)] relative flex flex-col gap-4 max-h-[90vh] overflow-hidden">
+      
+      <!-- Top Close Button -->
+      <button onclick="closeProfileModal('profileStatementModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 text-lg z-50 cursor-pointer">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <div class="flex items-center gap-3 border-b border-white/10 pb-4">
-        <div class="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/40 flex items-center justify-center text-primary text-2xl">
-          <i class="fa-solid fa-file-invoice-dollar"></i>
-        </div>
-        <div class="flex flex-col">
-          <h3 class="text-lg font-bold text-white font-display">Account Financial Statement</h3>
-          <span class="text-xs text-gray-400">Complete breakdown of deposits, wagers & payouts</span>
-        </div>
-      </div>
-
-      <!-- Quick Summary Cards -->
-      <div class="grid grid-cols-3 gap-3">
-        <div class="bg-bgDark p-3 rounded-xl border border-white/5 flex flex-col">
-          <span class="text-[10px] text-gray-400 font-bold uppercase">Total Deposited</span>
-          <span class="text-sm sm:text-base font-mono font-bold text-white mt-1">Rs 10,000.00</span>
-        </div>
-        <div class="bg-bgDark p-3 rounded-xl border border-white/5 flex flex-col">
-          <span class="text-[10px] text-gray-400 font-bold uppercase">Total Wagered</span>
-          <span class="text-sm sm:text-base font-mono font-bold text-amber-400 mt-1">Rs 4,500.00</span>
-        </div>
-        <div class="bg-bgDark p-3 rounded-xl border border-white/5 flex flex-col">
-          <span class="text-[10px] text-gray-400 font-bold uppercase">Current Balance</span>
-          <span class="text-sm sm:text-base font-mono font-bold text-primary mt-1">Rs 10,450.00</span>
+      <!-- BpExch Customer Bar Header -->
+      <div class="bg-[#111827] px-4 py-3 rounded-2xl border border-white/10 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-brandGreen/20 border border-brandGreen/40 flex items-center justify-center text-brandGreen text-lg font-black">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div class="flex flex-col">
+            <h3 id="bpexchWelcomeHeader" class="text-sm sm:text-base font-display font-extrabold text-white">Welcome to BpExch Customer Reports</h3>
+            <span id="bpexchUserSubHeader" class="text-[10px] text-gray-400 font-mono">B: 0 | L: 0 | Logged in as <span id="bpexchModalUsername" class="text-brandGreen font-bold">Alex_Winner</span></span>
+          </div>
         </div>
       </div>
 
-      <!-- Statement Table -->
-      <div class="overflow-x-auto overflow-y-auto custom-scrollbar border border-white/5 rounded-xl bg-bgDark max-h-[300px]">
-        <table class="w-full text-left text-xs whitespace-nowrap">
-          <thead class="bg-cardDark border-b border-white/5 sticky top-0">
-            <tr class="text-gray-500 uppercase text-[9px] font-bold">
-              <th class="p-3">Date & Time</th>
-              <th class="p-3">Transaction Type</th>
-              <th class="p-3 text-right">Amount</th>
-              <th class="p-3 text-right">Running Balance</th>
-              <th class="p-3 text-center">Status</th>
-            </tr>
-          </thead>
-          <tbody class="text-gray-300 font-bold">
-            <tr class="border-b border-white/5 hover:bg-white/5">
-              <td class="p-3 text-gray-400">2026-07-31 10:14</td>
-              <td class="p-3 text-primary">Win Payout (Round #8492)</td>
-              <td class="p-3 font-mono text-primary text-right">+Rs 14,200.00</td>
-              <td class="p-3 font-mono text-white text-right">Rs 10,450.00</td>
-              <td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">SUCCESS</span></td>
-            </tr>
-            <tr class="border-b border-white/5 hover:bg-white/5">
-              <td class="p-3 text-gray-400">2026-07-31 09:45</td>
-              <td class="p-3 text-amber-400">Bet Wager (Figure #7)</td>
-              <td class="p-3 font-mono text-amber-400 text-right">-Rs 50.00</td>
-              <td class="p-3 font-mono text-white text-right">Rs 10,400.00</td>
-              <td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">SUCCESS</span></td>
-            </tr>
-            <tr class="border-b border-white/5 hover:bg-white/5">
-              <td class="p-3 text-gray-400">2026-07-30 18:30</td>
-              <td class="p-3 text-cyanLight">Deposit (JazzCash)</td>
-              <td class="p-3 font-mono text-cyanLight text-right">+Rs 10,000.00</td>
-              <td class="p-3 font-mono text-white text-right">Rs 10,450.00</td>
-              <td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px]">SUCCESS</span></td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Reports Navigation Tabs (Matching BpExch Suite) -->
+      <div class="flex items-center gap-1 sm:gap-2 border-b border-white/10 pb-2 overflow-x-auto custom-scrollbar">
+        <button id="bpexchTabBtn_ledger" onclick="switchBpExchReportTab('ledger')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-emerald-500 text-black shadow-md">
+          <i class="fa-solid fa-file-invoice-dollar"></i> Account Ledger
+        </button>
+        <button id="bpexchTabBtn_bets" onclick="switchBpExchReportTab('bets')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-white/5 text-gray-300 hover:text-white hover:bg-white/10">
+          <i class="fa-solid fa-[#000] fa-list-check"></i> Bets History
+        </button>
+        <button id="bpexchTabBtn_pnl" onclick="switchBpExchReportTab('pnl')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-white/5 text-gray-300 hover:text-white hover:bg-white/10">
+          <i class="fa-solid fa-chart-pie"></i> Profit & Loss
+        </button>
+        <button id="bpexchTabBtn_market" onclick="switchBpExchReportTab('market')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-white/5 text-gray-300 hover:text-white hover:bg-white/10">
+          <i class="fa-solid fa-trophy"></i> Market Results
+        </button>
       </div>
+
+      <!-- TAB 1: ACCOUNT LEDGER VIEW (Matching Screenshot 2) -->
+      <div id="bpexchView_ledger" class="flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
+        
+        <!-- Report Filter Box -->
+        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-3">
+          <div class="flex items-center gap-2 text-xs font-bold text-gray-300 border-b border-white/5 pb-2">
+            <i class="fa-solid fa-filter text-emerald-400"></i> Report Filter
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] text-gray-400 font-bold uppercase">From Date & Time</label>
+              <input id="ledgerStartDate" type="datetime-local" value="2026-08-04T00:00" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-400" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] text-gray-400 font-bold uppercase">To Date & Time</label>
+              <input id="ledgerEndDate" type="datetime-local" value="2026-08-04T23:59" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-400" />
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button onclick="applyBpExchLedgerFilter()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center gap-2">
+              <i class="fa-solid fa-check"></i> Submit
+            </button>
+          </div>
+        </div>
+
+        <!-- Account Ledger Card -->
+        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-3">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-3">
+            <div class="flex items-center gap-2 text-xs font-bold text-white">
+              <i class="fa-solid fa-receipt text-gold"></i> Account Ledger
+            </div>
+            <!-- Export Buttons (Print, Excel, PDF) -->
+            <div class="flex items-center gap-2">
+              <button onclick="exportBpExchReport('print')" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-bold text-[11px] transition-all cursor-pointer">Print</button>
+              <button onclick="exportBpExchReport('excel')" class="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-[11px] transition-all cursor-pointer">Excel</button>
+              <button onclick="exportBpExchReport('pdf')" class="px-3 py-1.5 rounded-lg bg-red-700 hover:bg-red-600 text-white font-bold text-[11px] transition-all cursor-pointer">PDF</button>
+            </div>
+          </div>
+
+          <!-- Entries & Search Control -->
+          <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2 text-gray-400 font-medium">
+              <span>Show</span>
+              <select id="ledgerEntriesPerPage" onchange="renderBpExchLedgerTable()" class="bg-bgDark border border-white/10 rounded-lg px-2.5 py-1 text-white font-bold outline-none">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+              <span>entries per page</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-gray-400 font-medium">Search:</span>
+              <input id="ledgerSearchInput" type="text" onkeyup="renderBpExchLedgerTable()" placeholder="Search transactions..." class="bg-bgDark border border-white/10 rounded-lg px-3 py-1 text-xs text-white outline-none focus:border-emerald-400 w-40 sm:w-56" />
+            </div>
+          </div>
+
+          <!-- Ledger Table -->
+          <div class="overflow-x-auto border border-white/5 rounded-xl bg-bgDark max-h-[260px] custom-scrollbar">
+            <table class="w-full text-left text-xs whitespace-nowrap">
+              <thead class="bg-[#111827] border-b border-white/10 sticky top-0 text-gray-400 uppercase text-[10px] font-extrabold">
+                <tr>
+                  <th class="p-3">#</th>
+                  <th class="p-3">Date & Time</th>
+                  <th class="p-3">Description</th>
+                  <th class="p-3 text-right">Amount (P&L)</th>
+                  <th class="p-3 text-right">Balance</th>
+                  <th class="p-3 text-center">Remark</th>
+                </tr>
+              </thead>
+              <tbody id="bpexchLedgerTbody" class="text-gray-300 font-semibold">
+                <!-- Dynamically populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 2: BETS HISTORY VIEW (Matching Screenshot 1) -->
+      <div id="bpexchView_bets" class="hidden flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
+        <!-- Filter Card -->
+        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-3">
+          <div class="flex items-center gap-2 text-xs font-bold text-gray-300 border-b border-white/5 pb-2">
+            <i class="fa-solid fa-filter text-cyan-400"></i> Bets History Filter
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] text-gray-400 font-bold uppercase">Category</label>
+              <select id="betsFilterCat" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none">
+                <option value="all">All</option>
+                <option value="thai">Thai Lottery 4D</option>
+                <option value="casino">Ritmu TV Casino</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] text-gray-400 font-bold uppercase">Status</label>
+              <select id="betsFilterStatus" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none">
+                <option value="active">Active</option>
+                <option value="settled">Settled</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] text-gray-400 font-bold uppercase">From Date</label>
+              <input id="betsStartDate" type="datetime-local" value="2026-08-04T00:00" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] text-gray-400 font-bold uppercase">To Date</label>
+              <input id="betsEndDate" type="datetime-local" value="2026-08-04T23:59" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button onclick="renderBpExchBetsTable()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center gap-2">
+              <i class="fa-solid fa-check"></i> Submit
+            </button>
+          </div>
+        </div>
+
+        <!-- Bets History Table Card -->
+        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-3">
+          <div class="flex items-center justify-between border-b border-white/5 pb-2">
+            <h4 class="text-xs font-bold text-white flex items-center gap-2"><i class="fa-solid fa-[#000] fa-list text-cyan-400"></i> Bets History - Star Casino / Thai Win</h4>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="text-gray-400">Search:</span>
+              <input id="betsSearchInput" type="text" onkeyup="renderBpExchBetsTable()" placeholder="Search bets..." class="bg-bgDark border border-white/10 rounded-lg px-3 py-1 text-xs text-white outline-none focus:border-cyan-400 w-40" />
+            </div>
+          </div>
+          <div class="overflow-x-auto border border-white/5 rounded-xl bg-bgDark max-h-[260px] custom-scrollbar">
+            <table class="w-full text-left text-xs whitespace-nowrap">
+              <thead class="bg-[#111827] border-b border-white/10 sticky top-0 text-gray-400 uppercase text-[10px] font-extrabold">
+                <tr>
+                  <th class="p-3">#</th>
+                  <th class="p-3">Event / Round</th>
+                  <th class="p-3">Runner / Selection</th>
+                  <th class="p-3">Type</th>
+                  <th class="p-3 text-right">Stake</th>
+                  <th class="p-3 text-right">Profit / Loss</th>
+                  <th class="p-3 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody id="bpexchBetsTbody" class="text-gray-300 font-semibold">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: PROFIT LOSS VIEW (Matching Screenshot 3) -->
+      <div id="bpexchView_pnl" class="hidden flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
+        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-3">
+          <div class="flex items-center gap-2 text-xs font-bold text-gray-300 border-b border-white/5 pb-2">
+            <i class="fa-solid fa-filter text-amber-400"></i> Report Filter
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] text-gray-400 font-bold uppercase">From Date</label>
+              <input type="datetime-local" value="2026-08-04T00:00" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] text-gray-400 font-bold uppercase">To Date</label>
+              <input type="datetime-local" value="2026-08-04T23:59" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button onclick="renderBpExchPnlSummary()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center gap-2">
+              <i class="fa-solid fa-check"></i> Submit
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-4">
+          <div class="flex items-center gap-2 text-xs font-bold text-white border-b border-white/5 pb-2">
+            <i class="fa-solid fa-chart-line text-emerald-400"></i> Exchange Sports & Casino ProfitLoss Summary
+          </div>
+          <div id="bpexchPnlCardsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: MARKET RESULTS VIEW (Matching Screenshot 4) -->
+      <div id="bpexchView_market" class="hidden flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
+        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-3">
+          <div class="flex items-center justify-between border-b border-white/5 pb-2">
+            <div class="flex items-center gap-2 text-xs font-bold text-white">
+              <i class="fa-solid fa-trophy text-gold"></i> Market Results Filter
+            </div>
+          </div>
+          <!-- Category Pills Bar (Matching Screenshot 4) -->
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="filterBpExchMarketPill('all', this)" class="bpexchPillBtn px-3 py-1.5 rounded-xl bg-emerald-500 text-black font-bold text-xs shadow-md">All</button>
+            <button onclick="filterBpExchMarketPill('thai', this)" class="bpexchPillBtn px-3 py-1.5 rounded-xl bg-slate-700 text-gray-300 hover:text-white font-bold text-xs">Thai 4D</button>
+            <button onclick="filterBpExchMarketPill('ritmu', this)" class="bpexchPillBtn px-3 py-1.5 rounded-xl bg-slate-700 text-gray-300 hover:text-white font-bold text-xs">Ritmu TV</button>
+            <button onclick="filterBpExchMarketPill('casino', this)" class="bpexchPillBtn px-3 py-1.5 rounded-xl bg-slate-700 text-gray-300 hover:text-white font-bold text-xs">Casino</button>
+            <button onclick="filterBpExchMarketPill('fancy', this)" class="bpexchPillBtn px-3 py-1.5 rounded-xl bg-slate-700 text-gray-300 hover:text-white font-bold text-xs">Fancy</button>
+          </div>
+          <div class="overflow-x-auto border border-white/5 rounded-xl bg-bgDark max-h-[260px] custom-scrollbar mt-2">
+            <table class="w-full text-left text-xs whitespace-nowrap">
+              <thead class="bg-[#111827] border-b border-white/10 sticky top-0 text-gray-400 uppercase text-[10px] font-extrabold">
+                <tr>
+                  <th class="p-3">#</th>
+                  <th class="p-3">Market / Event Name</th>
+                  <th class="p-3">Draw Date & Time</th>
+                  <th class="p-3 text-right">Winning Results</th>
+                  <th class="p-3 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody id="bpexchMarketTbody" class="text-gray-300 font-semibold">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
