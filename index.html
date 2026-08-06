@@ -709,41 +709,6 @@
       }
     };
 
-    window.openProfileBetHistoryModal = function() {
-      var dropdown = document.getElementById('profileDropdown');
-      if (dropdown) dropdown.classList.add('hidden');
-      
-      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
-      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
-      var bets = account.betHistory || [];
-
-      var tbody = document.querySelector('#profileBetHistoryModal tbody');
-      if (tbody) {
-        if (bets.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-gray-500 font-bold">No bet history recorded for ' + name + '</td></tr>';
-        } else {
-          var html = '';
-          for (var i = 0; i < bets.length; i++) {
-            var b = bets[i];
-            var statusBg = b.status === 'WON' ? 'bg-primary/20 text-primary' : (b.status === 'LOST' ? 'bg-danger/20 text-danger' : 'bg-gold/20 text-gold');
-            html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
-              '<td class="p-3 font-mono text-gray-500">' + (b.id || ('#BET-' + (9820 + i))) + '</td>' +
-              '<td class="p-3 font-mono text-white">' + (b.round || '#8492') + '</td>' +
-              '<td class="p-3 text-gold">' + (b.type || '1st Draw') + '</td>' +
-              '<td class="p-3 text-center font-mono text-gold font-bold">' + (b.target || b.number || '-') + '</td>' +
-              '<td class="p-3 font-mono text-white text-right">Rs ' + (b.amount || 0).toLocaleString() + '</td>' +
-              '<td class="p-3 font-mono text-primary text-right font-black">Rs ' + (b.payout || 0).toLocaleString() + '</td>' +
-              '<td class="p-3 text-center"><span class="' + statusBg + ' px-2 py-0.5 rounded text-[9px]">' + (b.status || 'PENDING') + '</span></td>' +
-            '</tr>';
-          }
-          tbody.innerHTML = html;
-        }
-      }
-
-      var modal = document.getElementById('profileBetHistoryModal');
-      if (modal) modal.classList.remove('hidden');
-    };
-
     window.closeProfileModal = function(modalId) {
       var modal = document.getElementById(modalId);
       if (modal) modal.classList.add('hidden');
