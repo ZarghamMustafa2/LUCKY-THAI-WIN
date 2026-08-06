@@ -419,6 +419,51 @@
       if (modal) modal.classList.remove('hidden');
     };
 
+    window.openProfileResultModal = function() {
+      var dropdown = document.getElementById('profileDropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+      
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      
+      var uHeader = document.getElementById('bpexchUserSubHeader');
+      if (uHeader) uHeader.innerHTML = 'B: ' + (account.balance || 0).toLocaleString() + ' | L: 0 | Logged in as <span class="text-brandGreen font-bold">' + name + '</span>';
+
+      window.switchBpExchReportTab('market');
+      var modal = document.getElementById('profileStatementModal');
+      if (modal) modal.classList.remove('hidden');
+    };
+
+    window.openProfileProfitLossModal = function() {
+      var dropdown = document.getElementById('profileDropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+      
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      
+      var uHeader = document.getElementById('bpexchUserSubHeader');
+      if (uHeader) uHeader.innerHTML = 'B: ' + (account.balance || 0).toLocaleString() + ' | L: 0 | Logged in as <span class="text-brandGreen font-bold">' + name + '</span>';
+
+      window.switchBpExchReportTab('pnl');
+      var modal = document.getElementById('profileStatementModal');
+      if (modal) modal.classList.remove('hidden');
+    };
+
+    window.openProfileBetHistoryModal = function() {
+      var dropdown = document.getElementById('profileDropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+      
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      
+      var uHeader = document.getElementById('bpexchUserSubHeader');
+      if (uHeader) uHeader.innerHTML = 'B: ' + (account.balance || 0).toLocaleString() + ' | L: 0 | Logged in as <span class="text-brandGreen font-bold">' + name + '</span>';
+
+      window.switchBpExchReportTab('bets');
+      var modal = document.getElementById('profileStatementModal');
+      if (modal) modal.classList.remove('hidden');
+    };
+
     window.renderBpExchLedgerTable = function() {
       var tbody = document.getElementById('bpexchLedgerTbody');
       if (!tbody) return;
