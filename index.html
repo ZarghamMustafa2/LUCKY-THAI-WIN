@@ -625,42 +625,36 @@
     window.openProfileResultModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
-      if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
-      var modal = document.getElementById('profileResultModal');
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      var uHeader = document.getElementById('bpexchUserSubHeader');
+      if (uHeader) uHeader.innerHTML = 'B: ' + (account.balance || 0).toLocaleString() + ' | L: 0 | Logged in as <span class="text-brandGreen font-bold">' + name + '</span>';
+      window.switchBpExchReportTab('market');
+      var modal = document.getElementById('profileStatementModal');
       if (modal) modal.classList.remove('hidden');
     };
 
     window.openProfileProfitLossModal = function() {
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
-      
       var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
       var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
-      var plList = account.profitLoss || [];
+      var uHeader = document.getElementById('bpexchUserSubHeader');
+      if (uHeader) uHeader.innerHTML = 'B: ' + (account.balance || 0).toLocaleString() + ' | L: 0 | Logged in as <span class="text-brandGreen font-bold">' + name + '</span>';
+      window.switchBpExchReportTab('pnl');
+      var modal = document.getElementById('profileStatementModal');
+      if (modal) modal.classList.remove('hidden');
+    };
 
-      var tbody = document.querySelector('#profileProfitLossModal tbody');
-      if (tbody) {
-        if (plList.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500 font-bold">No profit & loss activity recorded for ' + name + '</td></tr>';
-        } else {
-          var html = '';
-          for (var i = 0; i < plList.length; i++) {
-            var item = plList[i];
-            var netClass = item.netPL >= 0 ? 'text-primary' : 'text-danger';
-            var netSign = item.netPL >= 0 ? '+' : '';
-            html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
-              '<td class="p-3 text-gold">' + item.category + '</td>' +
-              '<td class="p-3 text-center font-mono text-white">' + item.betsCount + '</td>' +
-              '<td class="p-3 font-mono text-gray-400 text-right">Rs ' + item.totalWagered.toLocaleString() + '</td>' +
-              '<td class="p-3 font-mono text-primary text-right">Rs ' + item.totalPayout.toLocaleString() + '</td>' +
-              '<td class="p-3 font-mono ' + netClass + ' text-right font-black">' + netSign + 'Rs ' + item.netPL.toLocaleString() + '</td>' +
-            '</tr>';
-          }
-          tbody.innerHTML = html;
-        }
-      }
-
-      var modal = document.getElementById('profileProfitLossModal');
+    window.openProfileBetHistoryModal = function() {
+      var dropdown = document.getElementById('profileDropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
+      var uHeader = document.getElementById('bpexchUserSubHeader');
+      if (uHeader) uHeader.innerHTML = 'B: ' + (account.balance || 0).toLocaleString() + ' | L: 0 | Logged in as <span class="text-brandGreen font-bold">' + name + '</span>';
+      window.switchBpExchReportTab('bets');
+      var modal = document.getElementById('profileStatementModal');
       if (modal) modal.classList.remove('hidden');
     };
 
