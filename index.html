@@ -3771,9 +3771,9 @@
           if (typeof startDraw === 'function') startDraw(true);
         }
 
-        // AUTOMATIC SCHEDULED RITMU TV DRAW ENGINE:
-        // When timer countdown reaches scheduled draw time (remainingSecs <= 10 or cycleSec < 10), trigger draw automatically!
-        if (remainingSecs <= 10 || cycleSec < 10) {
+        // STRICT RITMU TV SYNCHRONIZED DRAW ENGINE:
+        // Trigger draw ONLY when timer countdown reaches 00:00 sharp (remainingSecs === 0 or cycleSec === 0)
+        if (remainingSecs === 0 || cycleSec === 0) {
           window.currentPhase = 'spinning';
           window.isBettingLocked = true;
           if (!window.hasProcessedScheduledDraw && !isDrawing) {
@@ -3783,7 +3783,9 @@
         } else {
           window.currentPhase = 'betting';
           window.isBettingLocked = false;
-          window.hasProcessedScheduledDraw = false;
+          if (cycleSec > 5) {
+            window.hasProcessedScheduledDraw = false;
+          }
           if (Date.now() - lastInstantTrigger >= 10000) {
             window.hasProcessedInstantDraw = false;
           }
