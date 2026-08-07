@@ -1,6 +1,17 @@
 import fetch from 'node-fetch';
 
+export interface StreamSourceStatus {
+  STREAM_SOURCE_STATUS: 'AVAILABLE' | 'UNAVAILABLE';
+  sourceType: 'HLS_DIRECT_MEDIA_STREAM' | 'PAGE_URL_ANCHOR' | 'UNRESOLVED';
+  lastSuccessfulFrameTimestamp: number | null;
+  decodedFrameCount: number;
+  lastFrameChecksum: string | null;
+  lastOcrAttempt: string | null;
+  message: string;
+}
+
 export interface RitmuStreamOcrTelemetry {
+  streamSourceStatus: StreamSourceStatus;
   streamConnectionStatus: 'CONNECTED' | 'SEARCHING' | 'PENDING' | 'STANDBY';
   streamUrlAvailable: boolean;
   streamUrl: string | null;
@@ -32,6 +43,9 @@ class RitmuStreamOcrWorkerService {
   private streamConnectionStatus: 'CONNECTED' | 'SEARCHING' | 'PENDING' | 'STANDBY' = 'PENDING';
   private frameExtractionCount: number = 0;
   private ocrInvocationCount: number = 0;
+  private lastSuccessfulFrameTimestamp: number | null = null;
+  private lastFrameChecksum: string | null = null;
+  private lastOcrAttempt: string | null = null;
   private rawOcrReadings: string[] = [];
   private cleanedOcrReadings: string[] = [];
   private candidateHistory: Array<{ res1: string; res2: string; res3: string; res4: string }> = [];
@@ -39,7 +53,6 @@ class RitmuStreamOcrWorkerService {
   private lastSubmittedDrawId: string | null = null;
   private lastSuccessfulResult: { drawId: string; winningNumbers: string[]; confirmedAt: string } | null = null;
   private lastError: string | null = null;
-  private workerInterval: NodeJS.Timeout | null = null;
 
   constructor() {
     this.initStreamDiscovery();
@@ -48,10 +61,10 @@ class RitmuStreamOcrWorkerService {
   // Discover accessible Ritmu TV HLS Stream
   public initStreamDiscovery() {
     this.streamConnectionStatus = 'SEARCHING';
-    // Inspect public HLS stream endpoints
-    this.streamUrl = 'https://www.ritmu.tv/'; // Ingestion Source Anchor
-    this.streamConnectionStatus = 'CONNECTED';
-    console.log('[Ritmu Stream OCR Service] Initialized HLS Ingestion Worker anchored to Ritmu TV broadcast.');
+    // Anchored to official Ritmu TV broadcast domain
+    this.streamUrl = 'https://www.ritmu.tv/';
+    this.streamConnectionStatus = 'PENDING';
+    console.log('[Ritmu Stream OCR Service] Stream Ingestion Source Status Evaluated: PAGE_URL_ANCHOR');
   }
 
   // Validate strict 4-digit numeric string format
@@ -96,7 +109,6 @@ class RitmuStreamOcrWorkerService {
     };
 
     try {
-      // Local internal call to backend endpoint handler logic
       this.lastSuccessfulResult = {
         drawId,
         winningNumbers: payload.winningNumbers,
@@ -110,25 +122,33 @@ class RitmuStreamOcrWorkerService {
     }
   }
 
-  // Controlled Processing Interval
-  public processFrameCycle(currentDrawId: string, isDrawPhaseActive: boolean) {
-    if (!isDrawPhaseActive) return;
-
-    this.frameExtractionCount++;
-    this.ocrInvocationCount++;
-
-    // Stream frame extraction logs
+  // Get Stream Source Status
+  public getStreamSourceStatus(): StreamSourceStatus {
+    const isAvailable = this.frameExtractionCount > 0 && !!this.lastFrameChecksum;
+    return {
+      STREAM_SOURCE_STATUS: isAvailable ? 'AVAILABLE' : 'UNAVAILABLE',
+      sourceType: isAvailable ? 'HLS_DIRECT_MEDIA_STREAM' : 'PAGE_URL_ANCHOR',
+      lastSuccessfulFrameTimestamp: this.lastSuccessfulFrameTimestamp,
+      decodedFrameCount: this.frameExtractionCount,
+      lastFrameChecksum: this.lastFrameChecksum,
+      lastOcrAttempt: this.lastOcrAttempt,
+      message: isAvailable 
+        ? 'Direct media stream successfully decoded and active.'
+        : 'NO AUTHORIZED MEDIA INGESTION SOURCE AVAILABLE (Page URL anchor active; direct unauthenticated .m3u8 stream manifest is restricted by client application).'
+    };
   }
 
   // Get Detailed Monitoring Diagnostics Telemetry
   public getTelemetry(currentDrawId?: string, currentPhase?: 'betting' | 'spinning' | 'idle'): RitmuStreamOcrTelemetry {
+    const streamStatus = this.getStreamSourceStatus();
     return {
+      streamSourceStatus: streamStatus,
       streamConnectionStatus: this.streamConnectionStatus,
       streamUrlAvailable: !!this.streamUrl,
       streamUrl: this.streamUrl,
       mediaStreamType: 'PAGE_URL_ANCHOR',
       isDirectMediaDecoded: this.frameExtractionCount > 0,
-      frameSha256Checksum: this.frameExtractionCount > 0 ? 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' : null,
+      frameSha256Checksum: this.lastFrameChecksum,
       hasHardcodedFallbacks: false,
       frameExtractionCount: this.frameExtractionCount,
       ocrInvocationCount: this.ocrInvocationCount,
