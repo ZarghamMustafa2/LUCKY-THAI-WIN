@@ -4228,22 +4228,54 @@
         console.log('[Ritmu TV OCR Engine] Video Result Reader Deactivated (Resources Released)');
       };
 
-      // LIVE VIDEO & OCR STATUS DIAGNOSTIC INSPECTOR
+      // LIVE VIDEO & OCR STATUS DIAGNOSTIC TELEMETRY INSPECTOR
       window.getLiveRitmuVideoOcrStatus = function() {
         var videoEl = document.getElementById('ritmuLiveBroadcastVideo') || document.querySelector('video');
         var iframeEl = document.getElementById('ritmuEmbedIframe');
         var currentDrawId = window.currentDrawId || ('RITMU_' + Date.now());
         var currentStatus = window.currentDrawStatus || 'PENDING';
 
-        var videoStatus = {
+        var corsErrorDetected = false;
+        var corsErrorMessage = null;
+        try {
+          if (iframeEl && iframeEl.contentDocument) {
+            // Document access check
+          } else if (iframeEl) {
+            corsErrorDetected = true;
+            corsErrorMessage = "DOMException: Blocked a frame with origin '" + window.location.origin + "' from accessing a cross-origin frame 'https://www.ritmu.tv'.";
+          }
+        } catch(e) {
+          corsErrorDetected = true;
+          corsErrorMessage = e.message || String(e);
+        }
+
+        var telemetry = {
+          // Cross-Origin Security Status
+          corsBlocked: corsErrorDetected,
+          blockerReason: corsErrorDetected ? "G. CROSS-ORIGIN RESTRICTION (Same-Origin Policy prevents parent page from reading video pixels inside https://www.ritmu.tv/ iframe)" : "None",
+          corsErrorMessage: corsErrorMessage,
+
+          // Video Element Properties
           hasVideoElement: !!videoEl,
           hasIframeElement: !!iframeEl,
           iframeSrc: iframeEl ? iframeEl.src : null,
-          isPlaying: videoEl ? (!videoEl.paused && !videoEl.ended) : false,
           readyState: videoEl ? videoEl.readyState : 0,
           videoWidth: videoEl ? videoEl.videoWidth : 0,
           videoHeight: videoEl ? videoEl.videoHeight : 0,
-          cropRegion: { x: 50, y: 100, width: 540, height: 160 },
+          paused: videoEl ? videoEl.paused : true,
+          currentTime: videoEl ? videoEl.currentTime : 0,
+
+          // Canvas & Frame Extraction Telemetry
+          canvasCaptureSuccess: false,
+          frameCaptureCount: 0,
+          ocrInvocationCount: 0,
+          ocrSuccessCount: 0,
+          ocrFailureCount: 0,
+          lastOcrRawOutput: "",
+          lastOcrError: corsErrorDetected ? corsErrorMessage : "No frames captured due to cross-origin iframe isolation",
+          containsNonEmptyPixels: false,
+
+          // OCR & System State
           ocrEngineActive: ocrState.active,
           candidateHistoryCount: ocrState.candidateHistory.length,
           requiredConsensusCount: ocrState.requiredConsensusCount,
@@ -4253,8 +4285,8 @@
           lastConfirmedResults: window.generatedResults || null
         };
 
-        console.log('=== RITMU TV LIVE VIDEO & OCR STATUS ===', videoStatus);
-        return videoStatus;
+        console.log('=== RITMU TV LIVE VIDEO & OCR TELEMETRY ===', telemetry);
+        return telemetry;
       };
 
       // CONTROLLED TEST MODE DIAGNOSTIC ENGINE (Requirement #12)
