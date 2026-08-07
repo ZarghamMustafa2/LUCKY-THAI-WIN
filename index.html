@@ -3750,8 +3750,8 @@
         const now = new Date();
         const currentMin = now.getMinutes();
         const currentSec = now.getSeconds();
-        const elapsedSec = (currentMin * 60) + currentSec;
-        let remainingSecs = 3600 - elapsedSec;
+        const cycleSec = (currentMin * 60) + currentSec; // 0 to 3599 seconds
+        let remainingSecs = 3600 - cycleSec;
         if (remainingSecs < 0) remainingSecs = 0;
         
         const time = formatTime(remainingSecs);
