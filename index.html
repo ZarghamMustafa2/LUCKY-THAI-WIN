@@ -1476,7 +1476,7 @@
       var headerChevronIcon = document.getElementById('headerChevronIcon');
 
       if (gameContainer) {
-        gameContainer.style.setProperty('display', 'flex', 'important');
+        gameContainer.style.setProperty('display', 'block', 'important');
         gameContainer.classList.remove('hidden');
       }
       if (nextSpinBanner) {
@@ -1484,6 +1484,9 @@
         nextSpinBanner.classList.add('hidden');
       }
       if (headerChevronIcon) headerChevronIcon.style.transform = 'rotate(0deg)';
+      if (typeof gameLoop === 'function') {
+        try { gameLoop(); } catch(e) {}
+      }
     };
 
     window.collapseWheelStage = function() {
