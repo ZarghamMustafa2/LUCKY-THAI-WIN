@@ -142,4 +142,20 @@ router.get('/status/:drawId', (req, res) => {
   });
 });
 
+// GET /api/round/stream-ocr-status -> Query Server-Side Stream Ingestion & OCR Telemetry
+router.get('/stream-ocr-status', (req, res) => {
+  try {
+    const { ritmuStreamOcrService } = require('../services/ritmuStreamOcr');
+    const drawId = req.query.drawId ? String(req.query.drawId) : undefined;
+    const phase = req.query.phase ? (String(req.query.phase) as any) : undefined;
+    const telemetry = ritmuStreamOcrService.getTelemetry(drawId, phase);
+    res.json({
+      success: true,
+      telemetry
+    });
+  } catch(err) {
+    res.status(500).json({ success: false, message: 'Error fetching server OCR telemetry', error: err });
+  }
+});
+
 export default router;
