@@ -4228,6 +4228,35 @@
         console.log('[Ritmu TV OCR Engine] Video Result Reader Deactivated (Resources Released)');
       };
 
+      // LIVE VIDEO & OCR STATUS DIAGNOSTIC INSPECTOR
+      window.getLiveRitmuVideoOcrStatus = function() {
+        var videoEl = document.getElementById('ritmuLiveBroadcastVideo') || document.querySelector('video');
+        var iframeEl = document.getElementById('ritmuEmbedIframe');
+        var currentDrawId = window.currentDrawId || ('RITMU_' + Date.now());
+        var currentStatus = window.currentDrawStatus || 'PENDING';
+
+        var videoStatus = {
+          hasVideoElement: !!videoEl,
+          hasIframeElement: !!iframeEl,
+          iframeSrc: iframeEl ? iframeEl.src : null,
+          isPlaying: videoEl ? (!videoEl.paused && !videoEl.ended) : false,
+          readyState: videoEl ? videoEl.readyState : 0,
+          videoWidth: videoEl ? videoEl.videoWidth : 0,
+          videoHeight: videoEl ? videoEl.videoHeight : 0,
+          cropRegion: { x: 50, y: 100, width: 540, height: 160 },
+          ocrEngineActive: ocrState.active,
+          candidateHistoryCount: ocrState.candidateHistory.length,
+          requiredConsensusCount: ocrState.requiredConsensusCount,
+          currentDrawId: currentDrawId,
+          currentPhase: window.currentPhase || 'betting',
+          resultStatus: currentStatus,
+          lastConfirmedResults: window.generatedResults || null
+        };
+
+        console.log('=== RITMU TV LIVE VIDEO & OCR STATUS ===', videoStatus);
+        return videoStatus;
+      };
+
       // CONTROLLED TEST MODE DIAGNOSTIC ENGINE (Requirement #12)
       window.runRitmuOcrDiagnosticTest = function() {
         console.log('=== RITMU TV OCR DIAGNOSTIC & CONTROLLED CONSENSUS TEST ===');
