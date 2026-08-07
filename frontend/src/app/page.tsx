@@ -70,9 +70,9 @@ export default function Home() {
 
     newSocket.on('tick', (data: any) => {
       lastTickTime = Date.now();
-      const rawMs = typeof data.remainingMs === 'number' ? data.remainingMs : 120000;
-      const clampedMs = rawMs > 120000 ? (rawMs % 120000) : rawMs;
-      setRemainingMs(clampedMs);
+      if (typeof data.remainingMs === 'number') {
+        setRemainingMs(data.remainingMs);
+      }
       if (data.roundId !== currentRoundId) {
         setCurrentRoundId(data.roundId);
       }
@@ -83,39 +83,22 @@ export default function Home() {
       if(Math.random() > 0.5) setJackpotPool(prev => prev + Math.floor(Math.random() * 5000));
     });
 
-    // 4-Minute Draw Cycle Engine (240,000 ms: 60s Betting + 120s Spinning + 60s Winner Stage)
+    // 1-Hour Real-Time Draw Schedule Engine (Top of the hour: :00:00 sharp)
     const getNextRealClockMs = () => {
-      const nowSec = Math.floor(Date.now() / 1000);
-      const cycleSec = nowSec % 240; // 0 to 239
-      if (cycleSec < 60) {
-        return (60 - cycleSec) * 1000;
-      } else if (cycleSec < 180) {
-        return (180 - cycleSec) * 1000;
-      } else {
-        return (240 - cycleSec) * 1000;
-      }
+      const now = new Date();
+      const nextDrawDate = new Date(now);
+      nextDrawDate.setMinutes(0, 0, 0);
+      nextDrawDate.setHours(nextDrawDate.getHours() + 1);
+      return Math.max(0, nextDrawDate.getTime() - now.getTime());
     };
 
     setRemainingMs(getNextRealClockMs());
 
     const fallbackInterval = setInterval(() => {
-      const nowSec = Math.floor(Date.now() / 1000);
-      const cycleSec = nowSec % 240; // 4-Minute Total Cycle
+      const ms = getNextRealClockMs();
+      setRemainingMs(ms);
       
-      if (cycleSec < 60) {
-        // Phase 1: Place Your Bet Screen (60s: 0s to 59s)
-        const ms = (60 - cycleSec) * 1000;
-        setRemainingMs(ms);
-        if (isDrawingRef.current) {
-          setIsDrawing(false);
-          isDrawingRef.current = false;
-          setPendingWinner(null);
-          setFinalWinner(null);
-        }
-      } else if (cycleSec < 180) {
-        // Phase 2: Active 2-Minute Wheel Spinning (120s: 60s to 179s)
-        const ms = (180 - cycleSec) * 1000;
-        setRemainingMs(ms);
+      if (ms <= 1000) {
         if (!isDrawingRef.current) {
           setIsDrawing(true);
           isDrawingRef.current = true;
@@ -123,12 +106,11 @@ export default function Home() {
           setPendingWinner(num);
         }
       } else {
-        // Phase 3: Winner Payout & Spin Screen (60s: 180s to 239s)
-        const ms = (240 - cycleSec) * 1000;
-        setRemainingMs(ms);
-        if (pendingWinner && !finalWinner) {
-          setFinalWinner(pendingWinner);
-          setRecentResults(r => [{ round_number: 'DRAW-' + Date.now().toString().slice(-4), winning_number: pendingWinner, id: Date.now() }, ...r].slice(0, 20));
+        if (isDrawingRef.current && ms > 5000) {
+          setIsDrawing(false);
+          isDrawingRef.current = false;
+          setPendingWinner(null);
+          setFinalWinner(null);
         }
       }
     }, 1000);
@@ -232,8 +214,10 @@ export default function Home() {
   if (betNumber.length === 4) winChance = 0.01;
 
   const totalSeconds = Math.max(0, Math.floor(remainingMs / 1000));
-  const mins = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+  const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+  const mins = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
   const secs = (totalSeconds % 60).toString().padStart(2, '0');
+  const formattedHHMMSS = `${hours}:${mins}:${secs}`;
 
   // New UI Components inline
   const StatCard = ({ title, value, icon }: any) => (
@@ -323,7 +307,7 @@ export default function Home() {
               <span className="text-[#FFD700] text-base animate-pulse">⏱️</span>
               <div className="flex flex-col text-left">
                 <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Next Spin</span>
-                <span className="font-mono text-xs sm:text-sm font-black text-[#FFD700] leading-none">{mins}:{secs}</span>
+                <span className="font-mono text-xs sm:text-sm font-black text-[#FFD700] leading-none">{formattedHHMMSS}</span>
               </div>
             </div>
           </div>
