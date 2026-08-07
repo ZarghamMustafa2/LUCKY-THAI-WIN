@@ -3854,11 +3854,11 @@
       var res3 = officialDraws[2]; // 2nd Draw #2
       var res4 = officialDraws[3]; // 2nd Draw #3
 
-      // Allow optional admin override if manually pushed, otherwise use 100% automatic draw numbers
+      // STRICT RITMU TV NUMBER SYNC ENGINE:
+      // If Ritmu TV winning numbers are set in system storage, use those EXACT numbers unconditionally!
       try {
         var adminSaved = JSON.parse(localStorage.getItem('ritmuTvWinningNumbers') || 'null');
-        var lastTriggerTime = parseInt(localStorage.getItem('instantDrawTriggerTime') || '0', 10);
-        if (adminSaved && Array.isArray(adminSaved) && adminSaved.length >= 4 && (Date.now() - lastTriggerTime < 1800000)) {
+        if (adminSaved && Array.isArray(adminSaved) && adminSaved.length >= 4) {
           res1 = String(adminSaved[0]);
           res2 = String(adminSaved[1]);
           res3 = String(adminSaved[2]);
