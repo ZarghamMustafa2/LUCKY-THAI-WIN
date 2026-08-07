@@ -3744,15 +3744,17 @@
 
     function gameLoop() {
       try {
-        const nowSec = Math.floor(Date.now() / 1000);
-        const cycleSec = nowSec % 3600; // Real-time 1-HOUR round interval (:00:00 sharp every hour, e.g. 11:00 AM)
+        const now = new Date();
+        const currentMin = now.getMinutes();
+        const currentSec = now.getSeconds();
+        const elapsedSec = (currentMin * 60) + currentSec;
+        let remainingSecs = 3600 - elapsedSec;
+        if (remainingSecs < 0) remainingSecs = 0;
         
-        // Calculate exact remaining seconds until the next 1-HOUR round draw
-        const remainingSecs = 3600 - cycleSec;
         const time = formatTime(remainingSecs);
         const percent = (remainingSecs / 3600) * 100;
 
-        // Update 1-HOUR live countdown text across all header and banner pill displays:
+        // Synchronize live countdown text across all timer displays in real-time
         const headerTimerText = document.getElementById('headerTimerText');
         if (headerTimerText) headerTimerText.innerText = time.digital;
         const bannerCountdownText = document.getElementById('bannerCountdownText');
