@@ -4348,25 +4348,28 @@
       };
     } catch(err) {}
 
-     function startGameLoopTicker() {
+     // Highly reliable, rock-solid 1-second live countdown timer ticker
+     try { gameLoop(); } catch(e) {}
+     setInterval(() => {
        try { gameLoop(); } catch(e) {}
-       if (typeof requestAnimationFrame === 'function') {
-         requestAnimationFrame(startGameLoopTicker);
-       }
+     }, 1000);
+
+     if (document.readyState === 'complete' || document.readyState === 'interactive') {
+       try { gameLoop(); } catch(e) {}
+     } else {
+       document.addEventListener('DOMContentLoaded', () => { try { gameLoop(); } catch(e) {} });
      }
-     startGameLoopTicker();
-     setInterval(gameLoop, 500);
 
      document.addEventListener('visibilitychange', () => {
        if (document.visibilityState === 'visible') {
          isDrawing = false;
-         gameLoop();
+         try { gameLoop(); } catch(e) {}
        }
      });
 
      window.addEventListener('focus', () => {
        isDrawing = false;
-       gameLoop();
+       try { gameLoop(); } catch(e) {}
      });
 
     confirmBetBtn.addEventListener('click', () => {
