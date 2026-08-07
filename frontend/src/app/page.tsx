@@ -375,8 +375,8 @@ export default function Home() {
               {/* The Wheel Game Stage */}
               <div className="glass-panel p-8 lg:p-12 flex flex-col items-center justify-center relative min-h-[650px] overflow-hidden animate-slide-up" style={{ animationDelay: '0.2s' }}>
                 
-                {/* Round Info & Status */}
-                <div className="absolute top-6 left-6 right-6 flex justify-between items-start z-10">
+                {/* Round Info & Status & Live Timer */}
+                <div className="absolute top-6 left-6 right-6 flex flex-wrap justify-between items-center gap-3 z-10">
                   <div className="bg-[#0D0D0D]/80 backdrop-blur-md border border-[rgba(255,255,255,0.05)] px-4 py-2.5 rounded-xl flex items-center gap-3 shadow-lg">
                     <div className={`w-2.5 h-2.5 rounded-full ${isDrawing ? 'bg-[#FFD700] animate-pulse shadow-[0_0_10px_rgba(255,77,109,0.8)]' : 'bg-[#FFD700] shadow-[0_0_10px_rgba(0,255,102,0.8)]'}`}></div>
                     <span className={`font-black uppercase tracking-widest text-[11px] ${isDrawing ? 'text-[#FFD700]' : 'text-[#FFD700]'}`}>
@@ -384,6 +384,15 @@ export default function Home() {
                     </span>
                   </div>
                   
+                  {/* Live Center Ticking Timer Badge */}
+                  <div className="bg-[#121B2F]/90 backdrop-blur-md border border-[#FFD700]/50 px-5 py-2 rounded-xl flex items-center gap-2.5 shadow-[0_0_20px_rgba(255,215,0,0.25)]">
+                    <span className="text-[#FFD700] text-sm animate-pulse">⏱️</span>
+                    <div className="flex flex-col text-center">
+                      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Next Draw In</span>
+                      <span className="font-mono text-base sm:text-lg font-black text-[#FFD700] leading-none">{formattedHHMMSS}</span>
+                    </div>
+                  </div>
+
                   <div className="flex flex-col items-end bg-[#0D0D0D]/80 backdrop-blur-md border border-[rgba(255,255,255,0.05)] px-5 py-2 rounded-xl shadow-lg">
                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Round</span>
                     <span className="font-mono text-xl font-black text-white">#{roundNumberStr.split('-')[1] || roundNumberStr}</span>
