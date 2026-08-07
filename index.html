@@ -3735,39 +3735,50 @@
     let lastDrawStartTime = 0;
 
     function formatTime(totalSecs) {
-      const m = Math.floor(totalSecs / 60);
-      const s = totalSecs % 60;
+      const h = Math.floor(totalSecs / 3600);
+      const m = Math.floor((totalSecs % 3600) / 60);
+      const s = Math.floor(totalSecs % 60);
+      
+      const hStr = h.toString().padStart(2, '0');
       const mStr = m.toString().padStart(2, '0');
       const sStr = s.toString().padStart(2, '0');
+      
       return {
-        digital: `${mStr}:${sStr}`,
-        formatted: m > 0 ? `${m}m ${sStr}s` : `0m ${sStr}s`
+        hhmmss: `${hStr}:${mStr}:${sStr}`,
+        digital: h > 0 ? `${hStr}:${mStr}:${sStr}` : `${mStr}:${sStr}`,
+        formatted: h > 0 ? `${h}h ${m}m ${sStr}s` : (m > 0 ? `${m}m ${sStr}s` : `0m ${sStr}s`)
       };
     }
 
     function gameLoop() {
       try {
         const now = new Date();
-        const currentMin = now.getMinutes();
-        const currentSec = now.getSeconds();
-        const cycleSec = (currentMin * 60) + currentSec; // 0 to 3599 seconds
-        let remainingSecs = 3600 - cycleSec;
-        if (remainingSecs < 0) remainingSecs = 0;
+        const currentMs = now.getTime();
+        
+        // Calculate next scheduled draw time (top of the hour: :00:00 sharp)
+        const nextDrawDate = new Date(now);
+        nextDrawDate.setMinutes(0, 0, 0);
+        nextDrawDate.setHours(nextDrawDate.getHours() + 1);
+        
+        const scheduledDrawTimeMs = nextDrawDate.getTime();
+        const remainingMs = scheduledDrawTimeMs - currentMs;
+        let remainingSecs = Math.max(0, Math.floor(remainingMs / 1000));
         
         const time = formatTime(remainingSecs);
         const percent = (remainingSecs / 3600) * 100;
 
-        // Synchronize live countdown text across all timer displays in real-time
+        // Render real-time HH:MM:SS countdown across all existing UI targets:
         const headerTimerText = document.getElementById('headerTimerText');
-        if (headerTimerText) headerTimerText.innerText = time.digital;
+        if (headerTimerText) headerTimerText.innerText = time.hhmmss;
+        
         const bannerCountdownText = document.getElementById('bannerCountdownText');
         if (bannerCountdownText) bannerCountdownText.innerText = time.formatted;
         
         const wEl = document.getElementById('wheelText');
-        if (wEl) wEl.innerText = time.digital;
+        if (wEl) wEl.innerText = time.hhmmss;
         
         const timerPills = document.querySelectorAll('.timer-text, #timerDisplay, #roundTimerPill, #timeLeftText');
-        timerPills.forEach(el => { if (el) el.innerText = time.digital; });
+        timerPills.forEach(el => { if (el) el.innerText = time.hhmmss; });
 
         if (!isDrawing) {
           setProgress(percent);
@@ -3780,9 +3791,8 @@
           if (typeof startDraw === 'function') startDraw(true);
         }
 
-        // STRICT RITMU TV SYNCHRONIZED DRAW ENGINE:
-        // Trigger draw ONLY when timer countdown reaches 00:00 sharp (remainingSecs === 0 or cycleSec === 0)
-        if (remainingSecs === 0 || cycleSec === 0) {
+        // STRICT SCHEDULED DRAW TRANSITION ENGINE:
+        if (remainingSecs <= 0) {
           window.currentPhase = 'spinning';
           window.isBettingLocked = true;
           if (!window.hasProcessedScheduledDraw && !isDrawing) {
@@ -3792,7 +3802,7 @@
         } else {
           window.currentPhase = 'betting';
           window.isBettingLocked = false;
-          if (cycleSec > 5) {
+          if (remainingSecs > 5) {
             window.hasProcessedScheduledDraw = false;
           }
           if (Date.now() - lastInstantTrigger >= 10000) {
