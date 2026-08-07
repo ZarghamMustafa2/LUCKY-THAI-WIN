@@ -391,9 +391,9 @@
         }
         if (b) {
           if (t === tabName) {
-            b.className = 'px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-emerald-500 text-black shadow-md';
+            b.className = 'px-4 py-2 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-[#00a884] text-white shadow-md';
           } else {
-            b.className = 'px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-white/5 text-gray-300 hover:text-white hover:bg-white/10';
+            b.className = 'px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-[#e2e8f0] text-[#475569] hover:bg-[#cbd5e1] hover:text-[#0f172a]';
           }
         }
       });
@@ -566,17 +566,17 @@
       var netPnl = totalWon - totalStake;
       var pnlClass = netPnl >= 0 ? 'text-emerald-400' : 'text-amber-400';
 
-      grid.innerHTML = '<div class="bg-bgDark p-3.5 rounded-xl border border-white/5 flex flex-col">' +
-          '<span class="text-[10px] text-gray-400 font-bold uppercase">Total Wagered</span>' +
-          '<span class="text-base font-mono font-bold text-amber-400 mt-1">Rs ' + totalStake.toLocaleString() + '.00</span>' +
+      grid.innerHTML = '<div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col">' +
+          '<span class="text-[10px] text-gray-500 font-black uppercase">Total Wagered</span>' +
+          '<span class="text-lg font-mono font-black text-[#b45309] mt-1">Rs ' + totalStake.toLocaleString() + '.00</span>' +
         '</div>' +
-        '<div class="bg-bgDark p-3.5 rounded-xl border border-white/5 flex flex-col">' +
-          '<span class="text-[10px] text-gray-400 font-bold uppercase">Total Payouts Won</span>' +
-          '<span class="text-base font-mono font-bold text-emerald-400 mt-1">Rs ' + totalWon.toLocaleString() + '.00</span>' +
+        '<div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col">' +
+          '<span class="text-[10px] text-gray-500 font-black uppercase">Total Payouts Won</span>' +
+          '<span class="text-lg font-mono font-black text-[#059669] mt-1">Rs ' + totalWon.toLocaleString() + '.00</span>' +
         '</div>' +
-        '<div class="bg-bgDark p-3.5 rounded-xl border border-white/5 flex flex-col">' +
-          '<span class="text-[10px] text-gray-400 font-bold uppercase">Net Profit / Loss</span>' +
-          '<span class="text-base font-mono font-extrabold ' + pnlClass + ' mt-1">' + (netPnl >= 0 ? '+' : '') + 'Rs ' + netPnl.toLocaleString() + '.00</span>' +
+        '<div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col">' +
+          '<span class="text-[10px] text-gray-500 font-black uppercase">Net Profit / Loss</span>' +
+          '<span class="text-lg font-mono font-black ' + (netPnl >= 0 ? 'text-[#059669]' : 'text-red-600') + ' mt-1">' + (netPnl >= 0 ? '+' : '') + 'Rs ' + netPnl.toLocaleString() + '.00</span>' +
         '</div>';
     };
 
@@ -2558,166 +2558,266 @@
     </div>
   </div>
 
-  <!-- 1. BPEXCH LUXURY CUSTOMER REPORTS & ACCOUNT LEDGER MODAL -->
-  <div id="profileStatementModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/85 backdrop-blur-xl p-2 sm:p-4 transition-all">
-    <div class="bg-gradient-to-b from-[#1e293b] via-[#0f172a] to-[#0b101d] border border-cyan-500/30 rounded-3xl p-4 sm:p-6 max-w-4xl w-full shadow-[0_30px_90px_rgba(0,0,0,0.95)] relative flex flex-col gap-4 max-h-[90vh] overflow-hidden">
+  <!-- 1. BPEXCH LUXURY CUSTOMER REPORTS & ACCOUNT LEDGER MODAL (LIGHT BpExch EXCHANGE THEME) -->
+  <div id="profileStatementModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-2 sm:p-4 transition-all">
+    <div class="bg-[#1b3e5d] p-1.5 rounded-3xl border-2 border-[#2b5a88] max-w-4xl w-full shadow-[0_30px_90px_rgba(0,0,0,0.9)] relative flex flex-col gap-0 max-h-[92vh] overflow-hidden">
       
-      <!-- Top Close Button -->
-      <button onclick="closeProfileModal('profileStatementModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 text-lg z-50 cursor-pointer">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+      <!-- Modal Inner Crisp White Body -->
+      <div class="bg-[#f4f7fa] text-[#1e293b] rounded-[22px] p-4 sm:p-6 flex flex-col gap-4 overflow-hidden relative">
 
-      <!-- BpExch Customer Bar Header -->
-      <div class="bg-[#111827] px-4 py-3 rounded-2xl border border-white/10 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-brandGreen/20 border border-brandGreen/40 flex items-center justify-center text-brandGreen text-lg font-black">
-            <i class="fa-solid fa-chart-line"></i>
-          </div>
-          <div class="flex flex-col">
-            <h3 id="bpexchWelcomeHeader" class="text-sm sm:text-base font-display font-extrabold text-white">Welcome to BpExch Customer Reports</h3>
-            <span id="bpexchUserSubHeader" class="text-[10px] text-gray-400 font-mono">B: 0 | L: 0 | Logged in as <span id="bpexchModalUsername" class="text-brandGreen font-bold">Alex_Winner</span></span>
+        <!-- Top Close Button -->
+        <button onclick="closeProfileModal('profileStatementModal')" class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/20 hover:bg-black/40 w-8 h-8 rounded-full flex items-center justify-center text-sm z-50 cursor-pointer transition-all">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <!-- BpExch Customer Bar Header (Deep Blue Exchange Header) -->
+        <div class="bg-gradient-to-r from-[#1b3e5d] via-[#1a3956] to-[#16314a] px-5 py-3.5 rounded-xl border border-[#2b5a88] flex flex-wrap items-center justify-between gap-2 shadow-md">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-[#00a884] text-xl font-black shadow-sm">
+              <i class="fa-solid fa-[#000] fa-chart-line"></i>
+            </div>
+            <div class="flex flex-col">
+              <h3 id="bpexchWelcomeHeader" class="text-base sm:text-lg font-display font-extrabold text-white tracking-wide">Welcome to BpExch Customer Reports</h3>
+              <span id="bpexchUserSubHeader" class="text-xs text-blue-200 font-mono">B: 0 | L: 0 | Logged in as <span id="bpexchModalUsername" class="text-emerald-300 font-bold">Alex_Winner</span></span>
+            </div>
           </div>
         </div>
+
+        <!-- Reports Navigation Tabs (Crisp Light Theme Buttons) -->
+        <div class="flex items-center gap-1.5 sm:gap-2 border-b border-gray-300/80 pb-2 overflow-x-auto custom-scrollbar">
+          <button id="bpexchTabBtn_ledger" onclick="switchBpExchReportTab('ledger')" class="px-4 py-2 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-[#00a884] text-white shadow-md">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Account Ledger
+          </button>
+          <button id="bpexchTabBtn_bets" onclick="switchBpExchReportTab('bets')" class="px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-[#e2e8f0] text-[#475569] hover:bg-[#cbd5e1] hover:text-[#0f172a]">
+            <i class="fa-solid fa-list-check"></i> Bets History
+          </button>
+          <button id="bpexchTabBtn_pnl" onclick="switchBpExchReportTab('pnl')" class="px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-[#e2e8f0] text-[#475569] hover:bg-[#cbd5e1] hover:text-[#0f172a]">
+            <i class="fa-solid fa-chart-pie"></i> Profit & Loss
+          </button>
+          <button id="bpexchTabBtn_market" onclick="switchBpExchReportTab('market')" class="px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-[#e2e8f0] text-[#475569] hover:bg-[#cbd5e1] hover:text-[#0f172a]">
+            <i class="fa-solid fa-trophy"></i> Market Results
+          </button>
+        </div>
+
+        <!-- TAB 1: ACCOUNT LEDGER VIEW -->
+        <div id="bpexchView_ledger" class="flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
+          
+          <!-- Report Filter Box -->
+          <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3">
+            <div class="flex items-center gap-2 text-xs font-black text-[#1e293b] border-b border-gray-200 pb-2">
+              <i class="fa-solid fa-filter text-[#00a884]"></i> Report Filter
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] text-gray-500 font-bold uppercase">From Date & Time</label>
+                <input id="ledgerStartDate" type="datetime-local" value="2026-08-04T00:00" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-[#0f172a] font-bold outline-none focus:border-[#00a884]" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] text-gray-500 font-bold uppercase">To Date & Time</label>
+                <input id="ledgerEndDate" type="datetime-local" value="2026-08-04T23:59" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-[#0f172a] font-bold outline-none focus:border-[#00a884]" />
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button onclick="applyBpExchLedgerFilter()" class="px-6 py-2 rounded-lg bg-[#00a884] hover:bg-[#009273] text-white font-extrabold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center gap-2">
+                <i class="fa-solid fa-check"></i> Submit
+              </button>
+            </div>
+          </div>
+
+          <!-- Account Ledger Card -->
+          <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 pb-3">
+              <div class="flex items-center gap-2 text-xs font-black text-[#1e293b]">
+                <i class="fa-solid fa-receipt text-[#b45309]"></i> Account Ledger
+              </div>
+              <!-- Export Buttons (Print, Excel, PDF) -->
+              <div class="flex items-center gap-2">
+                <button onclick="exportBpExchReport('print')" class="px-3 py-1.5 rounded-md bg-[#475569] hover:bg-[#334155] text-white font-bold text-[11px] transition-all cursor-pointer">Print</button>
+                <button onclick="exportBpExchReport('excel')" class="px-3 py-1.5 rounded-md bg-[#059669] hover:bg-[#047857] text-white font-bold text-[11px] transition-all cursor-pointer">Excel</button>
+                <button onclick="exportBpExchReport('pdf')" class="px-3 py-1.5 rounded-md bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold text-[11px] transition-all cursor-pointer">PDF</button>
+              </div>
+            </div>
+
+            <!-- Entries & Search Control -->
+            <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div class="flex items-center gap-2 text-gray-600 font-bold">
+                <span>Show</span>
+                <select id="ledgerEntriesPerPage" onchange="renderBpExchLedgerTable()" class="bg-white border border-gray-300 rounded-md px-2.5 py-1 text-[#0f172a] font-black outline-none">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+                <span>entries per page</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-gray-600 font-bold">Search:</span>
+                <input id="ledgerSearchInput" type="text" onkeyup="renderBpExchLedgerTable()" placeholder="Search transactions..." class="bg-white border border-gray-300 rounded-md px-3 py-1 text-xs text-[#0f172a] font-bold outline-none focus:border-[#00a884] w-40 sm:w-56" />
+              </div>
+            </div>
+
+            <!-- Ledger Table -->
+            <div class="overflow-x-auto border border-gray-200 rounded-lg bg-white max-h-[260px] custom-scrollbar">
+              <table class="w-full text-left text-xs whitespace-nowrap">
+                <thead class="bg-[#f1f5f9] border-b border-gray-300 sticky top-0 text-[#475569] uppercase text-[10px] font-black">
+                  <tr>
+                    <th class="p-3">#</th>
+                    <th class="p-3">Date & Time</th>
+                    <th class="p-3">Description</th>
+                    <th class="p-3 text-right">Amount (P&L)</th>
+                    <th class="p-3 text-right">Balance</th>
+                    <th class="p-3 text-center">Remark</th>
+                  </tr>
+                </thead>
+                <tbody id="bpexchLedgerTbody" class="text-[#1e293b] font-semibold">
+                  <!-- Dynamically populated by JS -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB 2: BETS HISTORY VIEW -->
+        <div id="bpexchView_bets" class="hidden flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
+          <!-- Filter Card -->
+          <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3">
+            <div class="flex items-center gap-2 text-xs font-black text-[#1e293b] border-b border-gray-200 pb-2">
+              <i class="fa-solid fa-filter text-[#00a884]"></i> Bets History Filter
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] text-gray-500 font-bold uppercase">Category</label>
+                <select id="betsFilterCat" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-[#0f172a] font-bold outline-none">
+                  <option value="all">All</option>
+                  <option value="thai">Thai Lottery 4D</option>
+                  <option value="casino">Ritmu TV Casino</option>
+                </select>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] text-gray-500 font-bold uppercase">Status</label>
+                <select id="betsFilterStatus" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-[#0f172a] font-bold outline-none">
+                  <option value="active">Active</option>
+                  <option value="settled">Settled</option>
+                  <option value="all">All</option>
+                </select>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] text-gray-500 font-bold uppercase">From Date</label>
+                <input id="betsStartDate" type="datetime-local" value="2026-08-04T00:00" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-[#0f172a] font-bold outline-none" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] text-gray-500 font-bold uppercase">To Date</label>
+                <input id="betsEndDate" type="datetime-local" value="2026-08-04T23:59" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-[#0f172a] font-bold outline-none" />
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button onclick="renderBpExchBetsTable()" class="px-6 py-2 rounded-lg bg-[#00a884] hover:bg-[#009273] text-white font-extrabold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center gap-2">
+                <i class="fa-solid fa-check"></i> Submit
+              </button>
+            </div>
+          </div>
+
+          <!-- Bets History Table Card -->
+          <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+              <h4 class="text-xs font-black text-[#1e293b] flex items-center gap-2"><i class="fa-solid fa-list text-[#00a884]"></i> Bets History - Star Casino / Thai Win</h4>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="text-gray-600 font-bold">Search:</span>
+                <input id="betsSearchInput" type="text" onkeyup="renderBpExchBetsTable()" placeholder="Search bets..." class="bg-white border border-gray-300 rounded-md px-3 py-1 text-xs text-[#0f172a] font-bold outline-none focus:border-[#00a884] w-40" />
+              </div>
+            </div>
+            <div class="overflow-x-auto border border-gray-200 rounded-lg bg-white max-h-[260px] custom-scrollbar">
+              <table class="w-full text-left text-xs whitespace-nowrap">
+                <thead class="bg-[#f1f5f9] border-b border-gray-300 sticky top-0 text-[#475569] uppercase text-[10px] font-black">
+                  <tr>
+                    <th class="p-3">#</th>
+                    <th class="p-3">Event / Round</th>
+                    <th class="p-3">Runner / Selection</th>
+                    <th class="p-3">Type</th>
+                    <th class="p-3 text-right">Stake</th>
+                    <th class="p-3 text-right">Profit / Loss</th>
+                    <th class="p-3 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="bpexchBetsTbody" class="text-[#1e293b] font-semibold">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: PROFIT LOSS VIEW -->
+        <div id="bpexchView_pnl" class="hidden flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
+          <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3">
+            <div class="flex items-center gap-2 text-xs font-black text-[#1e293b] border-b border-gray-200 pb-2">
+              <i class="fa-solid fa-filter text-[#b45309]"></i> Report Filter
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] text-gray-500 font-bold uppercase">From Date</label>
+                <input type="datetime-local" value="2026-08-04T00:00" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-[#0f172a] font-bold outline-none" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] text-gray-500 font-bold uppercase">To Date</label>
+                <input type="datetime-local" value="2026-08-04T23:59" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-[#0f172a] font-bold outline-none" />
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button onclick="renderBpExchPnlSummary()" class="px-6 py-2 rounded-lg bg-[#00a884] hover:bg-[#009273] text-white font-extrabold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center gap-2">
+                <i class="fa-solid fa-check"></i> Submit
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-4">
+            <div class="flex items-center gap-2 text-xs font-black text-[#1e293b] border-b border-gray-200 pb-2">
+              <i class="fa-solid fa-chart-line text-[#00a884]"></i> Exchange Sports & Casino ProfitLoss Summary
+            </div>
+            <div id="bpexchPnlCardsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: MARKET RESULTS VIEW -->
+        <div id="bpexchView_market" class="hidden flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
+          <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+              <div class="flex items-center gap-2 text-xs font-black text-[#1e293b]">
+                <i class="fa-solid fa-trophy text-[#b45309]"></i> Market Results Filter
+              </div>
+            </div>
+            <!-- Category Pills Bar -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="filterBpExchMarketPill('all', this)" class="bpexchPillBtn px-3.5 py-1.5 rounded-lg bg-[#00a884] text-white font-extrabold text-xs shadow-sm">All</button>
+              <button onclick="filterBpExchMarketPill('thai', this)" class="bpexchPillBtn px-3.5 py-1.5 rounded-lg bg-[#e2e8f0] text-[#475569] hover:bg-[#cbd5e1] font-bold text-xs">Thai 4D</button>
+              <button onclick="filterBpExchMarketPill('ritmu', this)" class="bpexchPillBtn px-3.5 py-1.5 rounded-lg bg-[#e2e8f0] text-[#475569] hover:bg-[#cbd5e1] font-bold text-xs">Ritmu TV</button>
+              <button onclick="filterBpExchMarketPill('casino', this)" class="bpexchPillBtn px-3.5 py-1.5 rounded-lg bg-[#e2e8f0] text-[#475569] hover:bg-[#cbd5e1] font-bold text-xs">Casino</button>
+              <button onclick="filterBpExchMarketPill('fancy', this)" class="bpexchPillBtn px-3.5 py-1.5 rounded-lg bg-[#e2e8f0] text-[#475569] hover:bg-[#cbd5e1] font-bold text-xs">Fancy</button>
+            </div>
+            <div class="overflow-x-auto border border-gray-200 rounded-lg bg-white max-h-[260px] custom-scrollbar mt-2">
+              <table class="w-full text-left text-xs whitespace-nowrap">
+                <thead class="bg-[#f1f5f9] border-b border-gray-300 sticky top-0 text-[#475569] uppercase text-[10px] font-black">
+                  <tr>
+                    <th class="p-3">#</th>
+                    <th class="p-3">Market / Event Name</th>
+                    <th class="p-3">Draw Date & Time</th>
+                    <th class="p-3 text-right">Winning Results</th>
+                    <th class="p-3 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="bpexchMarketTbody" class="text-[#1e293b] font-semibold">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </div>
-
-      <!-- Reports Navigation Tabs (Matching BpExch Suite) -->
-      <div class="flex items-center gap-1 sm:gap-2 border-b border-white/10 pb-2 overflow-x-auto custom-scrollbar">
-        <button id="bpexchTabBtn_ledger" onclick="switchBpExchReportTab('ledger')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-emerald-500 text-black shadow-md">
-          <i class="fa-solid fa-file-invoice-dollar"></i> Account Ledger
-        </button>
-        <button id="bpexchTabBtn_bets" onclick="switchBpExchReportTab('bets')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-white/5 text-gray-300 hover:text-white hover:bg-white/10">
-          <i class="fa-solid fa-[#000] fa-list-check"></i> Bets History
-        </button>
-        <button id="bpexchTabBtn_pnl" onclick="switchBpExchReportTab('pnl')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-white/5 text-gray-300 hover:text-white hover:bg-white/10">
-          <i class="fa-solid fa-chart-pie"></i> Profit & Loss
-        </button>
-        <button id="bpexchTabBtn_market" onclick="switchBpExchReportTab('market')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap bg-white/5 text-gray-300 hover:text-white hover:bg-white/10">
-          <i class="fa-solid fa-trophy"></i> Market Results
-        </button>
-      </div>
-
-      <!-- TAB 1: ACCOUNT LEDGER VIEW (Matching Screenshot 2) -->
-      <div id="bpexchView_ledger" class="flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
-        
-        <!-- Report Filter Box -->
-        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-3">
-          <div class="flex items-center gap-2 text-xs font-bold text-gray-300 border-b border-white/5 pb-2">
-            <i class="fa-solid fa-filter text-emerald-400"></i> Report Filter
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] text-gray-400 font-bold uppercase">From Date & Time</label>
-              <input id="ledgerStartDate" type="datetime-local" value="2026-08-04T00:00" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-400" />
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] text-gray-400 font-bold uppercase">To Date & Time</label>
-              <input id="ledgerEndDate" type="datetime-local" value="2026-08-04T23:59" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-400" />
-            </div>
-          </div>
-          <div class="flex justify-end">
-            <button onclick="applyBpExchLedgerFilter()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center gap-2">
-              <i class="fa-solid fa-check"></i> Submit
-            </button>
-          </div>
-        </div>
-
-        <!-- Account Ledger Card -->
-        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-3">
-          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-3">
-            <div class="flex items-center gap-2 text-xs font-bold text-white">
-              <i class="fa-solid fa-receipt text-gold"></i> Account Ledger
-            </div>
-            <!-- Export Buttons (Print, Excel, PDF) -->
-            <div class="flex items-center gap-2">
-              <button onclick="exportBpExchReport('print')" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-bold text-[11px] transition-all cursor-pointer">Print</button>
-              <button onclick="exportBpExchReport('excel')" class="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-[11px] transition-all cursor-pointer">Excel</button>
-              <button onclick="exportBpExchReport('pdf')" class="px-3 py-1.5 rounded-lg bg-red-700 hover:bg-red-600 text-white font-bold text-[11px] transition-all cursor-pointer">PDF</button>
-            </div>
-          </div>
-
-          <!-- Entries & Search Control -->
-          <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div class="flex items-center gap-2 text-gray-400 font-medium">
-              <span>Show</span>
-              <select id="ledgerEntriesPerPage" onchange="renderBpExchLedgerTable()" class="bg-bgDark border border-white/10 rounded-lg px-2.5 py-1 text-white font-bold outline-none">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-              </select>
-              <span>entries per page</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-gray-400 font-medium">Search:</span>
-              <input id="ledgerSearchInput" type="text" onkeyup="renderBpExchLedgerTable()" placeholder="Search transactions..." class="bg-bgDark border border-white/10 rounded-lg px-3 py-1 text-xs text-white outline-none focus:border-emerald-400 w-40 sm:w-56" />
-            </div>
-          </div>
-
-          <!-- Ledger Table -->
-          <div class="overflow-x-auto border border-white/5 rounded-xl bg-bgDark max-h-[260px] custom-scrollbar">
-            <table class="w-full text-left text-xs whitespace-nowrap">
-              <thead class="bg-[#111827] border-b border-white/10 sticky top-0 text-gray-400 uppercase text-[10px] font-extrabold">
-                <tr>
-                  <th class="p-3">#</th>
-                  <th class="p-3">Date & Time</th>
-                  <th class="p-3">Description</th>
-                  <th class="p-3 text-right">Amount (P&L)</th>
-                  <th class="p-3 text-right">Balance</th>
-                  <th class="p-3 text-center">Remark</th>
-                </tr>
-              </thead>
-              <tbody id="bpexchLedgerTbody" class="text-gray-300 font-semibold">
-                <!-- Dynamically populated by JS -->
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- TAB 2: BETS HISTORY VIEW (Matching Screenshot 1) -->
-      <div id="bpexchView_bets" class="hidden flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
-        <!-- Filter Card -->
-        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-3">
-          <div class="flex items-center gap-2 text-xs font-bold text-gray-300 border-b border-white/5 pb-2">
-            <i class="fa-solid fa-filter text-cyan-400"></i> Bets History Filter
-          </div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] text-gray-400 font-bold uppercase">Category</label>
-              <select id="betsFilterCat" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none">
-                <option value="all">All</option>
-                <option value="thai">Thai Lottery 4D</option>
-                <option value="casino">Ritmu TV Casino</option>
-              </select>
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] text-gray-400 font-bold uppercase">Status</label>
-              <select id="betsFilterStatus" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none">
-                <option value="active">Active</option>
-                <option value="settled">Settled</option>
-                <option value="all">All</option>
-              </select>
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] text-gray-400 font-bold uppercase">From Date</label>
-              <input id="betsStartDate" type="datetime-local" value="2026-08-04T00:00" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none" />
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] text-gray-400 font-bold uppercase">To Date</label>
-              <input id="betsEndDate" type="datetime-local" value="2026-08-04T23:59" class="bg-bgDark border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none" />
-            </div>
-          </div>
-          <div class="flex justify-end">
-            <button onclick="renderBpExchBetsTable()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center gap-2">
-              <i class="fa-solid fa-check"></i> Submit
-            </button>
-          </div>
-        </div>
-
-        <!-- Bets History Table Card -->
-        <div class="bg-cardDark p-4 rounded-2xl border border-white/10 flex flex-col gap-3">
-          <div class="flex items-center justify-between border-b border-white/5 pb-2">
-            <h4 class="text-xs font-bold text-white flex items-center gap-2"><i class="fa-solid fa-[#000] fa-list text-cyan-400"></i> Bets History - Star Casino / Thai Win</h4>
+    </div>
+  </div>
             <div class="flex items-center gap-2 text-xs">
               <span class="text-gray-400">Search:</span>
               <input id="betsSearchInput" type="text" onkeyup="renderBpExchBetsTable()" placeholder="Search bets..." class="bg-bgDark border border-white/10 rounded-lg px-3 py-1 text-xs text-white outline-none focus:border-cyan-400 w-40" />
