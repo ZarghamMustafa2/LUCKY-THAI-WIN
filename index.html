@@ -3756,14 +3756,20 @@
         const currentMs = now.getTime();
         
         // Calculate next scheduled draw time (top of the hour: :00:00 sharp)
-        const nextDrawDate = new Date(now);
+        let nextDrawDate = new Date(now);
         nextDrawDate.setMinutes(0, 0, 0);
         nextDrawDate.setHours(nextDrawDate.getHours() + 1);
         
-        const scheduledDrawTimeMs = nextDrawDate.getTime();
-        const remainingMs = scheduledDrawTimeMs - currentMs;
-        let remainingSecs = Math.max(0, Math.floor(remainingMs / 1000));
+        let remainingMs = nextDrawDate.getTime() - currentMs;
+        const isExactZero = remainingMs <= 1000;
         
+        // Zero-State Rollover: When zero is reached, trigger draw transition and advance to next scheduled draw
+        if (remainingMs <= 0) {
+          nextDrawDate.setHours(nextDrawDate.getHours() + 1);
+          remainingMs = nextDrawDate.getTime() - currentMs;
+        }
+        
+        let remainingSecs = Math.max(0, Math.floor(remainingMs / 1000));
         const time = formatTime(remainingSecs);
         const percent = (remainingSecs / 3600) * 100;
 
@@ -3806,7 +3812,7 @@
         }
 
         // STRICT SCHEDULED DRAW TRANSITION ENGINE:
-        if (remainingSecs <= 0) {
+        if (isExactZero) {
           window.currentPhase = 'spinning';
           window.isBettingLocked = true;
           if (!window.hasProcessedScheduledDraw && !isDrawing) {

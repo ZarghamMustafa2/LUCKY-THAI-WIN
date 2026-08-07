@@ -136,7 +136,7 @@ export default function Home() {
         if (token) fetchWallet(token);
       }, 22000);
       
-      setRemainingMs(0);
+      setRemainingMs(getNextRealClockMs());
     });
 
     newSocket.on('new_bet', (data: any) => {
