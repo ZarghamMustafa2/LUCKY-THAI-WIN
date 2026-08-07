@@ -3811,11 +3811,11 @@
           if (typeof startDraw === 'function') startDraw(true);
         }
 
-        // STRICT SCHEDULED DRAW TRANSITION ENGINE:
+        // STRICT SCHEDULED DRAW TRANSITION ENGINE (Only trigger wheel animation when TV is ON / Expanded):
         if (isExactZero) {
           window.currentPhase = 'spinning';
           window.isBettingLocked = true;
-          if (!window.hasProcessedScheduledDraw && !isDrawing) {
+          if (!window.hasProcessedScheduledDraw && !isDrawing && !window.isWheelHidden) {
             window.hasProcessedScheduledDraw = true;
             if (typeof startDraw === 'function') startDraw(true);
           }
