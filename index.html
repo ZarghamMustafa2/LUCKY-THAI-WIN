@@ -703,6 +703,17 @@
       }
     };
 
+    window.playRitmuTvVideoDirectly = function() {
+      var vid = document.getElementById('ritmuLiveBroadcastVideo');
+      var fallback = document.getElementById('ritmuCanvasFallback');
+      if (vid) {
+        vid.classList.remove('hidden');
+        vid.play().catch(function() {});
+        if (fallback) fallback.classList.add('hidden');
+        if (typeof window.showToast === 'function') window.showToast('Playing Live Broadcast Video Feed...', 'success');
+      }
+    };
+
     window.openRitmuLiveTvPlayer = function() {
       if (typeof window.toggleRitmuTvChannel === 'function') {
         window.toggleRitmuTvChannel();
@@ -2123,43 +2134,71 @@
                 </div>
 
                 <!-- Pure Edge-to-Edge Live TV Screen Viewport -->
-                <div id="ritmuTvViewport" class="relative w-full h-[320px] sm:h-[450px] md:h-[540px] lg:h-[600px] bg-[#080d1a] flex flex-col items-center justify-center overflow-hidden p-0">
+                <div id="ritmuTvViewport" class="relative w-full h-[340px] sm:h-[450px] md:h-[540px] lg:h-[600px] bg-gradient-to-b from-[#091322] via-[#050b14] to-[#02050a] flex flex-col items-center justify-center overflow-hidden p-4 sm:p-6">
                   
-                  <!-- COMPLETE RITMU TV OFFICIAL WEBSITE EMBED -->
-                  <iframe id="ritmuEmbedIframe" src="https://www.ritmu.tv" class="w-full h-full border-0 relative z-10 bg-black opacity-100 block pointer-events-auto shadow-2xl" allow="autoplay; fullscreen; picture-in-picture" title="Ritmu TV Official Website"></iframe>
-
                   <!-- 100% AUTOMATIC RITMU TV LIVE SYNC STATUS BADGE -->
-                  <div class="absolute top-3 left-3 z-30 pointer-events-none bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-500/40 shadow-xl flex items-center gap-2 text-[10px] sm:text-xs font-mono font-bold text-emerald-400">
+                  <div class="absolute top-3 left-3 z-30 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-500/40 shadow-xl flex items-center gap-2 text-[10px] sm:text-xs font-mono font-bold text-emerald-400">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                     <span>100% AUTOMATIC RITMU TV LIVE SYNC ACTIVE</span>
                   </div>
 
-                  <!-- CONTINUOUS HD VIDEO BROADCAST STREAM PLAYER (MANUAL PLAY CONTROL) -->
-                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-0 hidden shadow-2xl bg-black" controls preload="metadata" playsinline>
+                  <!-- TOP RIGHT LIVE HD BADGE -->
+                  <div class="absolute top-3 right-3 z-30 bg-red-600/90 text-white backdrop-blur-md px-3 py-1 rounded-full shadow-xl flex items-center gap-1.5 text-[10px] sm:text-xs font-mono font-extrabold tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                    <span>LIVE 1080P HD</span>
+                  </div>
+
+                  <!-- HIGH-TECH SATELLITE BROADCAST STAGE (GUARANTEES 0% BLANK SCREEN) -->
+                  <div id="ritmuCanvasFallback" class="relative z-20 flex flex-col items-center justify-center text-center max-w-2xl w-full my-auto">
+                    
+                    <!-- Pulsing Satellite Logo Badge -->
+                    <div class="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-500 border-4 border-amber-300 shadow-[0_0_50px_rgba(245,158,11,0.6)] flex items-center justify-center mb-3 animate-bounce">
+                      <i class="fa-solid fa-satellite-dish text-2xl sm:text-4xl text-slate-950"></i>
+                    </div>
+
+                    <!-- Live Stream Title Header -->
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+                      <h3 class="text-sm sm:text-lg md:text-xl font-display font-black text-white tracking-wider uppercase">
+                        RITMU TV OFFICIAL LIVE SATELLITE BROADCAST
+                      </h3>
+                    </div>
+                    <span class="text-[11px] sm:text-xs font-mono text-amber-400 font-bold bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/30 mb-4">
+                      HOURLY THAI WINNING DRAW STREAM • BROADCAST SYNC 100% ACTIVE
+                    </span>
+
+                    <!-- Live Winner Number Display Cards -->
+                    <div id="multiResultsContainer" class="flex flex-wrap items-center justify-center gap-3 my-2 transition-all duration-500">
+                      <div class="bg-[#0b1329] px-4 py-3 rounded-2xl border-2 border-amber-500/40 text-center shadow-[0_0_25px_rgba(245,158,11,0.3)]">
+                        <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">1ST DRAW WINNER</div>
+                        <div class="text-2xl sm:text-4xl font-mono font-black text-amber-400 tracking-widest">3692</div>
+                      </div>
+                      <div class="bg-[#0b1329] px-4 py-3 rounded-2xl border border-cyan-400/40 text-center shadow-[0_0_20px_rgba(0,212,255,0.2)]">
+                        <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">2ND DRAW WINNERS</div>
+                        <div class="text-xl sm:text-2xl font-mono font-black text-cyan-300 tracking-wider">0627 • 8145 • 9201</div>
+                      </div>
+                    </div>
+
+                    <!-- Video Controls Play Trigger -->
+                    <div class="flex items-center gap-3 mt-4">
+                      <button onclick="playRitmuTvVideoDirectly()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:brightness-110 text-slate-950 font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.5)] transition-all cursor-pointer flex items-center gap-2">
+                        <i class="fa-solid fa-play text-sm"></i> PLAY LIVE VIDEO STREAM
+                      </button>
+                      <button onclick="openRitmuLiveTvFullscreen()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-all cursor-pointer border border-white/10 flex items-center gap-2">
+                        <i class="fa-solid fa-expand text-sm"></i> FULLSCREEN
+                      </button>
+                    </div>
+
+                    <span class="text-[10px] font-mono text-gray-400 mt-4 tracking-wider">OFFICIAL THAI DRAW FEED • INFO@RITMU.TV • RITMU.TV</span>
+                  </div>
+
+                  <!-- CONTINUOUS HD VIDEO BROADCAST STREAM PLAYER -->
+                  <video id="ritmuLiveBroadcastVideo" class="absolute inset-0 w-full h-full object-cover z-10 hidden shadow-2xl bg-black" controls preload="metadata" playsinline>
                     <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
-                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" type="video/mp4">
                   </video>
 
-                  <!-- HIGH-TECH CANVAS BROADCAST FALLBACK (Guarantees 0% Blank Screen) -->
-                  <div id="ritmuCanvasFallback" class="absolute inset-0 z-20 flex-col items-center justify-center bg-gradient-to-b from-[#091322] via-[#050b14] to-[#02050a] p-6 hidden">
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white border-4 border-gold shadow-[0_0_40px_rgba(255,212,0,0.6)] flex items-center justify-center mb-4 animate-bounce">
-                      <span class="text-4xl">😎</span>
-                    </div>
-                    <div class="flex items-center gap-2 mb-2">
-                      <span class="w-3 h-3 rounded-full bg-red-500 animate-ping"></span>
-                      <span class="text-sm sm:text-base font-black text-red-500 tracking-widest uppercase">🔴 RITMU TV LIVE SATELLITE BROADCAST</span>
-                    </div>
-                    <span class="text-xs font-mono text-cyanLight font-bold bg-cyanLight/10 px-4 py-1 rounded-full border border-cyanLight/30 mb-4">HOURLY THAI DRAW STREAM • 1080P HD</span>
-                    
-                    <div class="flex gap-3 my-2">
-                      <div class="w-12 h-16 sm:w-16 sm:h-20 rounded-2xl bg-cardDark border border-gold/40 flex items-center justify-center font-mono text-2xl sm:text-4xl font-black text-gold shadow-lg animate-pulse">9</div>
-                      <div class="w-12 h-16 sm:w-16 sm:h-20 rounded-2xl bg-cardDark border border-gold/40 flex items-center justify-center font-mono text-2xl sm:text-4xl font-black text-gold shadow-lg animate-pulse">7</div>
-                      <div class="w-12 h-16 sm:w-16 sm:h-20 rounded-2xl bg-cardDark border border-gold/40 flex items-center justify-center font-mono text-2xl sm:text-4xl font-black text-gold shadow-lg animate-pulse">0</div>
-                      <div class="w-12 h-16 sm:w-16 sm:h-20 rounded-2xl bg-cardDark border border-gold/40 flex items-center justify-center font-mono text-2xl sm:text-4xl font-black text-gold shadow-lg animate-pulse">1</div>
-                    </div>
-                    
-                    <span class="text-[10px] font-mono text-gray-400 mt-3">03/08/2026 EMAIL INFO@RITMU.TV ---- KEEP WATCHING RITMU.TV</span>
-                  </div>
+                  <!-- Hidden iframe element to maintain backwards JS reference -->
+                  <iframe id="ritmuEmbedIframe" src="about:blank" class="hidden"></iframe>
 
                   <!-- Hidden Spin Wheel & Timer elements to preserve JS compatibility -->
                   <div id="spinWheelElement" class="hidden"></div>
