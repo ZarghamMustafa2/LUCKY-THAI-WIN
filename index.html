@@ -3930,11 +3930,17 @@
         let totalPayout = 0;
         let totalAmount = 0;
         const betsToProcess = window.activeBets || [];
+        var activeUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
+        var acc = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(activeUser) : {};
+        if (!acc.betHistory) acc.betHistory = [];
+        if (!acc.profitLoss) acc.profitLoss = [];
+        if (!acc.ledger) acc.ledger = [];
 
         if (betsToProcess.length > 0) {
           betsToProcess.forEach(bet => {
             if (!bet) return;
-            totalAmount += (bet.amount || 0);
+            var bAmt = bet.amount || 0;
+            totalAmount += bAmt;
             let isWin = false;
             if (window.generatedResults && Array.isArray(window.generatedResults)) {
               for(let i=0; i<window.generatedResults.length; i++) {
@@ -3944,16 +3950,38 @@
                 }
               }
             }
-            if (isWin) {
-              const targetStr = String(bet.target || bet.number || '0');
-              let multiplier = (Math.pow(10, targetStr.length) * 0.9) / 4;
-              let payout = (bet.amount || 0) * multiplier;
-              totalPayout += payout;
-            }
+            var targetStr = String(bet.target || bet.number || '0');
+            var multiplier = (Math.pow(10, targetStr.length) * 0.9) / 4;
+            var payout = isWin ? (bAmt * multiplier) : 0;
+            if (isWin) totalPayout += payout;
+
+            // Push to permanent user bet history
+            var betRecord = {
+              id: '#BET-' + Math.floor(100000 + Math.random() * 900000),
+              round: '#' + (Math.floor(Date.now() / 100000) % 9000 + 1000),
+              target: targetStr,
+              type: bet.type || (targetStr.length === 1 ? '1st Draw • FIGURE' : '2nd Draw • AKADA'),
+              amount: bAmt,
+              payout: payout,
+              status: isWin ? 'WON' : 'LOST',
+              date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            acc.betHistory.unshift(betRecord);
+
+            // Push ledger transaction
+            acc.ledger.unshift({
+              id: acc.ledger.length + 1,
+              date: new Date().toISOString().replace('T', ' ').substring(0, 19),
+              description: isWin ? ('Won Bet #' + betRecord.id + ' (' + targetStr + ')') : ('Placed Bet #' + betRecord.id + ' (' + targetStr + ')'),
+              amount: isWin ? payout : -bAmt,
+              balance: (acc.balance || window.currentBalance || 10450) + (isWin ? payout : 0),
+              remark: isWin ? 'WINNER' : 'SETTLED'
+            });
           });
 
           if (totalPayout > 0) {
             window.currentBalance += totalPayout;
+            acc.balance = window.currentBalance;
             updateWalletUI();
             
             if (typeof confetti === 'function') {
@@ -3967,8 +3995,19 @@
             }
             setTimeout(() => showModal(true, window.generatedResults, totalPayout), 400);
           } else {
+            acc.balance = window.currentBalance;
             setTimeout(() => showModal(false, window.generatedResults, 0, totalAmount), 400);
           }
+          
+          // Save persistent account state
+          if (typeof window.saveUserAccountData === 'function') {
+            window.saveUserAccountData(activeUser, acc);
+          }
+
+          // Refresh BpExch Report tables if open
+          if (typeof window.renderBpExchBetsTable === 'function') window.renderBpExchBetsTable();
+          if (typeof window.renderBpExchPnlSummary === 'function') window.renderBpExchPnlSummary();
+          if (typeof window.renderBpExchLedgerTable === 'function') window.renderBpExchLedgerTable();
           
           // Store total bet amount in lastBetAmount
           window.lastBetAmount = totalAmount;
@@ -3983,10 +4022,8 @@
 
         // Automatic hourly active bets cleanup (Clears active bets array & updates user account session)
         window.activeBets = [];
-        var activeUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
-        if (typeof window.getUserAccountData === 'function' && typeof window.saveUserAccountData === 'function') {
-          var acc = window.getUserAccountData(activeUser);
-          acc.activeBets = [];
+        acc.activeBets = [];
+        if (typeof window.saveUserAccountData === 'function') {
           window.saveUserAccountData(activeUser, acc);
         }
 
@@ -4033,6 +4070,26 @@
         isDrawing = false;
       }
     }
+
+    // Live sync listener for Ritmu TV broadcast events from Admin Panel
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'ritmuTvWinningNumbers' || e.key === 'instantDrawTriggerTime' || e.key === 'adminSetDrawNumbers') {
+        if (typeof window.startDraw === 'function') {
+          window.startDraw();
+        }
+      }
+    });
+
+    try {
+      var broadcastChan = new BroadcastChannel('ritmu_live_channel');
+      broadcastChan.onmessage = function(ev) {
+        if (ev && ev.data && (ev.data.type === 'DRAW_TRIGGERED' || ev.data.type === 'NUMBERS_UPDATED')) {
+          if (typeof window.startDraw === 'function') {
+            window.startDraw();
+          }
+        }
+      };
+    } catch(err) {}
 
      function startGameLoopTicker() {
        try { gameLoop(); } catch(e) {}
