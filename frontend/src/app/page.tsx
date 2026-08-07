@@ -20,8 +20,21 @@ export default function Home() {
   const [betType, setBetType] = useState<string>('figure');
   const [extraDigits, setExtraDigits] = useState('');
   
-  // Existing state
-  const [remainingMs, setRemainingMs] = useState(0);
+  const getNextRealClockMs = () => {
+    const now = new Date();
+    let nextDrawDate = new Date(now);
+    nextDrawDate.setMinutes(0, 0, 0);
+    nextDrawDate.setHours(nextDrawDate.getHours() + 1);
+    let remMs = nextDrawDate.getTime() - now.getTime();
+    if (remMs <= 0) {
+      nextDrawDate.setHours(nextDrawDate.getHours() + 1);
+      remMs = nextDrawDate.getTime() - now.getTime();
+    }
+    return Math.max(1000, remMs);
+  };
+
+  // Existing state with immediate initial real-time clock calculation
+  const [remainingMs, setRemainingMs] = useState<number>(getNextRealClockMs);
   const [currentRoundId, setCurrentRoundId] = useState<number | null>(null);
   const [roundNumberStr, setRoundNumberStr] = useState<string>('WAITING...');
   const [recentResults, setRecentResults] = useState<any[]>([]);
@@ -38,6 +51,31 @@ export default function Home() {
   const [onlinePlayers, setOnlinePlayers] = useState(3204);
   const [totalWagered, setTotalWagered] = useState(45200000);
   const [jackpotPool, setJackpotPool] = useState(5100000);
+
+  // Dedicated un-cancelable 1-second live countdown ticker
+  useEffect(() => {
+    setRemainingMs(getNextRealClockMs());
+    const interval = setInterval(() => {
+      const ms = getNextRealClockMs();
+      setRemainingMs(ms);
+      if (ms <= 1000) {
+        if (!isDrawingRef.current) {
+          setIsDrawing(true);
+          isDrawingRef.current = true;
+          const num = Math.floor(1000 + Math.random() * 9000).toString();
+          setPendingWinner(num);
+        }
+      } else {
+        if (isDrawingRef.current && ms > 5000) {
+          setIsDrawing(false);
+          isDrawingRef.current = false;
+          setPendingWinner(null);
+          setFinalWinner(null);
+        }
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
@@ -66,11 +104,8 @@ export default function Home() {
         if (Array.isArray(data)) setRecentResults(data);
       }).catch(console.error);
 
-    let lastTickTime = Date.now();
-
     newSocket.on('tick', (data: any) => {
-      lastTickTime = Date.now();
-      if (typeof data.remainingMs === 'number') {
+      if (typeof data.remainingMs === 'number' && data.remainingMs > 1000) {
         setRemainingMs(data.remainingMs);
       }
       if (data.roundId !== currentRoundId) {
@@ -82,38 +117,6 @@ export default function Home() {
       if(Math.random() > 0.5) setTotalWagered(prev => prev + Math.floor(Math.random() * 10000));
       if(Math.random() > 0.5) setJackpotPool(prev => prev + Math.floor(Math.random() * 5000));
     });
-
-    // 1-Hour Real-Time Draw Schedule Engine (Top of the hour: :00:00 sharp)
-    const getNextRealClockMs = () => {
-      const now = new Date();
-      const nextDrawDate = new Date(now);
-      nextDrawDate.setMinutes(0, 0, 0);
-      nextDrawDate.setHours(nextDrawDate.getHours() + 1);
-      return Math.max(0, nextDrawDate.getTime() - now.getTime());
-    };
-
-    setRemainingMs(getNextRealClockMs());
-
-    const fallbackInterval = setInterval(() => {
-      const ms = getNextRealClockMs();
-      setRemainingMs(ms);
-      
-      if (ms <= 1000) {
-        if (!isDrawingRef.current) {
-          setIsDrawing(true);
-          isDrawingRef.current = true;
-          const num = Math.floor(1000 + Math.random() * 9000).toString();
-          setPendingWinner(num);
-        }
-      } else {
-        if (isDrawingRef.current && ms > 5000) {
-          setIsDrawing(false);
-          isDrawingRef.current = false;
-          setPendingWinner(null);
-          setFinalWinner(null);
-        }
-      }
-    }, 1000);
 
     newSocket.on('round_started', (data: any) => {
       setCurrentRoundId(data.id);
@@ -144,7 +147,6 @@ export default function Home() {
     });
 
     return () => {
-      clearInterval(fallbackInterval);
       newSocket.disconnect();
     };
   }, [currentRoundId, roundNumberStr, token]);
