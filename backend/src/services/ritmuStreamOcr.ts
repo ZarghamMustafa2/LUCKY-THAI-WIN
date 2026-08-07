@@ -35,6 +35,12 @@ export interface RitmuStreamOcrTelemetry {
   } | null;
   lastError: string | null;
   backendValidationStatus: 'PENDING' | 'CONFIRMED';
+  dashboardStatus: {
+    mediaSource: string;
+    ocrWorker: string;
+    frameDecoding: number;
+    resultConfirmation: string;
+  };
 }
 
 class RitmuStreamOcrWorkerService {
@@ -161,7 +167,13 @@ class RitmuStreamOcrWorkerService {
       currentDrawPhase: currentPhase || 'idle',
       lastSuccessfulResult: this.lastSuccessfulResult,
       lastError: this.lastError,
-      backendValidationStatus: this.lastSuccessfulResult ? 'CONFIRMED' : 'PENDING'
+      backendValidationStatus: this.lastSuccessfulResult ? 'CONFIRMED' : 'PENDING',
+      dashboardStatus: {
+        mediaSource: 'UNAVAILABLE',
+        ocrWorker: 'READY / WAITING FOR SOURCE',
+        frameDecoding: 0,
+        resultConfirmation: 'DISABLED UNTIL VERIFIED SOURCE AVAILABLE'
+      }
     };
   }
 }
