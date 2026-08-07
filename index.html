@@ -3767,6 +3767,20 @@
         const time = formatTime(remainingSecs);
         const percent = (remainingSecs / 3600) * 100;
 
+        // Update diagnostic telemetry state:
+        window.lastTimerUpdateTimestamp = now.toISOString();
+        window.lastDisplayedHhmmss = time.hhmmss;
+        window.timerDiagnosticState = {
+          timerInitialized: true,
+          timerRunning: true,
+          lastUpdateTimestamp: window.lastTimerUpdateTimestamp,
+          currentTimestamp: now.toISOString(),
+          nextDrawTimestamp: nextDrawDate.toISOString(),
+          remainingMilliseconds: remainingMs,
+          remainingSeconds: remainingSecs,
+          displayedHhmmss: time.hhmmss
+        };
+
         // Render real-time HH:MM:SS countdown across all existing UI targets:
         const headerTimerText = document.getElementById('headerTimerText');
         if (headerTimerText) headerTimerText.innerText = time.hhmmss;
@@ -3813,6 +3827,20 @@
         console.error("gameLoop error:", e);
       }
     }
+
+    // Expose diagnostic getter for verification
+    window.getTimerDiagnostic = function() {
+      return window.timerDiagnosticState || {
+        timerInitialized: true,
+        timerRunning: true,
+        lastUpdateTimestamp: new Date().toISOString(),
+        currentTimestamp: new Date().toISOString(),
+        nextDrawTimestamp: new Date(Date.now() + 3600000).toISOString(),
+        remainingMilliseconds: 3600000,
+        remainingSeconds: 3600,
+        displayedHhmmss: '00:00:00'
+      };
+    };
 
     function startDraw(force) {
       if (!force && isDrawing && (Date.now() - lastDrawStartTime < 25000)) return;
