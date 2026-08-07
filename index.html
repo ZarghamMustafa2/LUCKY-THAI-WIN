@@ -3771,6 +3771,7 @@
         if (!isDrawing) {
           setProgress(percent);
         }
+
         // Check for instant Admin Live Broadcast Trigger signal
         var lastInstantTrigger = parseInt(localStorage.getItem('instantDrawTriggerTime') || '0', 10);
         if (lastInstantTrigger > 0 && (Date.now() - lastInstantTrigger < 10000) && !window.hasProcessedInstantDraw) {
@@ -3778,17 +3779,22 @@
           if (typeof startDraw === 'function') startDraw(true);
         }
 
-        // Synchronized Broadcaster Mode: Website waits for Ritmu TV live broadcast trigger
-        if (cycleSec >= 30) {
+        // AUTOMATIC SCHEDULED RITMU TV DRAW ENGINE:
+        // When timer countdown reaches scheduled draw time (remainingSecs <= 10 or cycleSec < 10), trigger draw automatically!
+        if (remainingSecs <= 10 || cycleSec < 10) {
+          window.currentPhase = 'spinning';
+          window.isBettingLocked = true;
+          if (!window.hasProcessedScheduledDraw && !isDrawing) {
+            window.hasProcessedScheduledDraw = true;
+            if (typeof startDraw === 'function') startDraw(true);
+          }
+        } else {
           window.currentPhase = 'betting';
           window.isBettingLocked = false;
+          window.hasProcessedScheduledDraw = false;
           if (Date.now() - lastInstantTrigger >= 10000) {
             window.hasProcessedInstantDraw = false;
           }
-        } else {
-          // At countdown zero, lock betting & wait for Ritmu TV live broadcast draw
-          window.currentPhase = 'spinning';
-          window.isBettingLocked = true;
         }
       } catch (e) {
         console.error("gameLoop error:", e);
