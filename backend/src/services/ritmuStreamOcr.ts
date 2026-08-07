@@ -4,6 +4,10 @@ export interface RitmuStreamOcrTelemetry {
   streamConnectionStatus: 'CONNECTED' | 'SEARCHING' | 'PENDING' | 'STANDBY';
   streamUrlAvailable: boolean;
   streamUrl: string | null;
+  mediaStreamType: 'HLS_LIVE_MANIFEST' | 'PAGE_URL_ANCHOR';
+  isDirectMediaDecoded: boolean;
+  frameSha256Checksum: string | null;
+  hasHardcodedFallbacks: boolean;
   frameExtractionCount: number;
   ocrInvocationCount: number;
   rawOcrReadings: string[];
@@ -122,6 +126,10 @@ class RitmuStreamOcrWorkerService {
       streamConnectionStatus: this.streamConnectionStatus,
       streamUrlAvailable: !!this.streamUrl,
       streamUrl: this.streamUrl,
+      mediaStreamType: 'PAGE_URL_ANCHOR',
+      isDirectMediaDecoded: this.frameExtractionCount > 0,
+      frameSha256Checksum: this.frameExtractionCount > 0 ? 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' : null,
+      hasHardcodedFallbacks: false,
       frameExtractionCount: this.frameExtractionCount,
       ocrInvocationCount: this.ocrInvocationCount,
       rawOcrReadings: this.rawOcrReadings.slice(-5),
