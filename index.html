@@ -4419,36 +4419,38 @@
        try { gameLoop(); } catch(e) {}
      });
 
-    confirmBetBtn.addEventListener('click', () => {
-      const state = window.sheetState || sheetState || {};
-      const amount = parseInt(state.amount, 10) || 10;
-      let target = String(state.number || '0').trim();
-      if (state.type === 'akada' || state.type === 'ring') target += (state.extraDigits || '');
-      else if (state.type === 'packet') target = String(state.number || '0');
-      
-      if(!amount || amount <= 0) return showToast('Enter a valid amount!', 'error');
-      if(amount > window.currentBalance) return showToast('Insufficient balance!', 'error');
-      
-      window.currentBalance -= amount;
-      updateWalletUI();
-      
-      if (!window.activeBets) window.activeBets = [];
-      window.activeBets.push({ amount, target, type: state.type || 'figure', round: state.round || '1', mult: state.multiplier || 9 });
-      
-      const countEl = document.getElementById('headerActiveBetsCount');
-      if (countEl) countEl.innerText = window.activeBets.length;
+    if (confirmBetBtn) {
+      confirmBetBtn.addEventListener('click', () => {
+        const state = window.sheetState || sheetState || {};
+        const amount = parseInt(state.amount, 10) || 10;
+        let target = String(state.number || '0').trim();
+        if (state.type === 'akada' || state.type === 'ring') target += (state.extraDigits || '');
+        else if (state.type === 'packet') target = String(state.number || '0');
+        
+        if(!amount || amount <= 0) return showToast('Enter a valid amount!', 'error');
+        if(amount > window.currentBalance) return showToast('Insufficient balance!', 'error');
+        
+        window.currentBalance -= amount;
+        updateWalletUI();
+        
+        if (!window.activeBets) window.activeBets = [];
+        window.activeBets.push({ amount, target, type: state.type || 'figure', round: state.round || '1', mult: state.multiplier || 9 });
+        
+        const countEl = document.getElementById('headerActiveBetsCount');
+        if (countEl) countEl.innerText = window.activeBets.length;
 
-      // Update header current bet display to total amount
-      let totalAmount = window.activeBets.reduce((sum, b) => sum + b.amount, 0);
-      var headerCurrent = document.getElementById('headerCurrentBet');
-      if (headerCurrent) headerCurrent.innerText = 'Rs ' + totalAmount.toLocaleString();
+        // Update header current bet display to total amount
+        let totalAmount = window.activeBets.reduce((sum, b) => sum + b.amount, 0);
+        var headerCurrent = document.getElementById('headerCurrentBet');
+        if (headerCurrent) headerCurrent.innerText = 'Rs ' + totalAmount.toLocaleString();
 
-      if (typeof window.setBetButtonState === 'function') window.setBetButtonState(true);
-      if (typeof window.renderActiveBetsList === 'function') window.renderActiveBetsList();
+        if (typeof window.setBetButtonState === 'function') window.setBetButtonState(true);
+        if (typeof window.renderActiveBetsList === 'function') window.renderActiveBetsList();
 
-      showToast(`Bet Placed Successfully: Rs ${amount} on sequence ${target}`, 'success');
-      closeBottomSheet();
-    });
+        showToast(`Bet Placed Successfully: Rs ${amount} on sequence ${target}`, 'success');
+        closeBottomSheet();
+      });
+    }
 
     const inlinePlaceBetBtn = document.getElementById('inlinePlaceBetBtn');
     if (inlinePlaceBetBtn) {
