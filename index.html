@@ -3821,13 +3821,14 @@
          multiResultsContainer.innerHTML = '';
       }
 
-      // Ritmu TV Official Hourly Draw Synchronization Engine
+      // 100% AUTOMATIC RITMU TV DRAW GENERATOR & READER ENGINE (ZERO ADMIN INTERVENTION REQUIRED)
       function generateRitmuTvHourlyDraw(nowDate) {
         var yr = nowDate.getFullYear();
         var mo = String(nowDate.getMonth() + 1).padStart(2, '0');
         var da = String(nowDate.getDate()).padStart(2, '0');
         var hr = String(nowDate.getHours()).padStart(2, '0');
-        var seedNum = parseInt(yr + mo + da + hr, 10);
+        var mi = nowDate.getMinutes() >= 30 ? '30' : '00';
+        var seedNum = parseInt(yr + mo + da + hr + mi, 10);
 
         function pseudoRand(s) {
           var x = Math.sin(s) * 10000;
@@ -3851,10 +3852,11 @@
       var res3 = officialDraws[2]; // 2nd Draw #2
       var res4 = officialDraws[3]; // 2nd Draw #3
 
-      // Check if custom Ritmu TV numbers set by Admin
+      // Allow optional admin override if manually pushed, otherwise use 100% automatic draw numbers
       try {
         var adminSaved = JSON.parse(localStorage.getItem('ritmuTvWinningNumbers') || 'null');
-        if (adminSaved && Array.isArray(adminSaved) && adminSaved.length >= 4) {
+        var lastTriggerTime = parseInt(localStorage.getItem('instantDrawTriggerTime') || '0', 10);
+        if (adminSaved && Array.isArray(adminSaved) && adminSaved.length >= 4 && (Date.now() - lastTriggerTime < 1800000)) {
           res1 = String(adminSaved[0]);
           res2 = String(adminSaved[1]);
           res3 = String(adminSaved[2]);
