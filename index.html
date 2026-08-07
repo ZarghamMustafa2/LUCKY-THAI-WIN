@@ -3762,6 +3762,10 @@
         
         const wEl = document.getElementById('wheelText');
         if (wEl) wEl.innerText = time.digital;
+        
+        const timerPills = document.querySelectorAll('.timer-text, #timerDisplay, #roundTimerPill, #timeLeftText');
+        timerPills.forEach(el => { if (el) el.innerText = time.digital; });
+
         if (!isDrawing) {
           setProgress(percent);
         }
