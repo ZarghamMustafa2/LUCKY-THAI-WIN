@@ -3751,6 +3751,10 @@
     }
 
     function gameLoop() {
+      // Background Execution Safeguard: If TV is OFF / Collapsed, do NOT run in background at all
+      if (window.isWheelHidden) {
+        return;
+      }
       try {
         const now = new Date();
         const currentMs = now.getTime();
