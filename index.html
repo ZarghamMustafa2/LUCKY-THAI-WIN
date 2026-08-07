@@ -3845,51 +3845,80 @@
           return '' + d1 + d2 + d3 + d4;
         }
 
-        return [get4Digits(1), get4Digits(5), get4Digits(9), get4Digits(13)];
-      }
+      // Generate Draw ID for current round
+      var now = new Date();
+      var yr = now.getFullYear();
+      var mo = String(now.getMonth() + 1).padStart(2, '0');
+      var da = String(now.getDate()).padStart(2, '0');
+      var hr = String(now.getHours()).padStart(2, '0');
+      var mi = now.getMinutes() >= 30 ? '30' : '00';
+      var currentDrawId = 'RITMU_' + yr + mo + da + '_' + hr + mi;
+      window.currentDrawId = currentDrawId;
 
-      var officialDraws = generateRitmuTvHourlyDraw(new Date());
-      var res1 = officialDraws[0]; // 1st Draw: 4 Digits
-      var res2 = officialDraws[1]; // 2nd Draw #1
-      var res3 = officialDraws[2]; // 2nd Draw #2
-      var res4 = officialDraws[3]; // 2nd Draw #3
+      var officialDraws = generateRitmuTvHourlyDraw(now);
+      var res1 = officialDraws[0];
+      var res2 = officialDraws[1];
+      var res3 = officialDraws[2];
+      var res4 = officialDraws[3];
+      var resultStatus = 'PENDING';
 
-      // STRICT RITMU TV NUMBER SYNC ENGINE:
-      // If Ritmu TV winning numbers are set in system storage, use those EXACT numbers unconditionally!
+      // AUTHORITATIVE RITMU TV RESULT SYNC & VALIDATION CHECK
       try {
         var adminSaved = JSON.parse(localStorage.getItem('ritmuTvWinningNumbers') || 'null');
+        var savedDrawId = localStorage.getItem('ritmuTvDrawId') || '';
+        
         if (adminSaved && Array.isArray(adminSaved) && adminSaved.length >= 4) {
-          res1 = String(adminSaved[0]);
-          res2 = String(adminSaved[1]);
-          res3 = String(adminSaved[2]);
-          res4 = String(adminSaved[3]);
+          // Validate 4-digit string format for each winning number
+          var isValidFormat = adminSaved.every(function(n) { return typeof n === 'string' && /^\d{4}$/.test(n); });
+          if (isValidFormat) {
+            res1 = String(adminSaved[0]);
+            res2 = String(adminSaved[1]);
+            res3 = String(adminSaved[2]);
+            res4 = String(adminSaved[3]);
+            resultStatus = 'CONFIRMED';
+          }
         }
       } catch(e) {}
 
+      // ERROR HANDLING: If official result is not confirmed, keep current draw as RESULT PENDING
+      window.currentDrawStatus = resultStatus;
       window.generatedResults = [res1, res2, res3, res4];
 
-      // Instant Silent Draw Settlement (Zero Spin Delays / Zero TV Screen Interruption)
+      // Update Digit Cards
       const digits1 = res1.split('');
       for (let i = 0; i < 4; i++) {
         const d = document.getElementById(`digit-${i}`);
         if (d && digits1[i]) {
-          d.innerText = digits1[i];
+          d.innerText = resultStatus === 'CONFIRMED' ? digits1[i] : '?';
           d.className = 'w-11 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-2xl sm:rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_30px_rgba(0,255,136,0.5)] flex items-center justify-center font-mono text-2xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform scale-105';
         }
       }
 
       if (multiResultsContainer) {
         multiResultsContainer.classList.remove('opacity-0', 'translate-y-4');
-        multiResultsContainer.innerHTML = `
-          <div class="bg-cardDark px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border border-gold text-gold shadow-[0_0_15px_rgba(255,212,0,0.3)] text-center shadow-lg">
-             <div class="text-[9px] sm:text-xs text-gray-400 font-bold mb-0.5">1ST DRAW WINNER</div>
-             <div class="text-base sm:text-2xl font-mono font-black">${res1}</div>
-          </div>
-          <div class="bg-cardDark px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border border-cyanLight text-cyanLight shadow-[0_0_15px_rgba(0,212,255,0.3)] text-center shadow-lg">
-             <div class="text-[9px] sm:text-xs text-gray-400 font-bold mb-0.5">2ND DRAW WINNERS</div>
-             <div class="text-base sm:text-2xl font-mono font-black">${res2} • ${res3} • ${res4}</div>
-          </div>
-        `;
+        if (resultStatus === 'CONFIRMED') {
+          multiResultsContainer.innerHTML = `
+            <div class="bg-cardDark px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)] text-center shadow-lg">
+               <div class="text-[9px] sm:text-xs text-emerald-400 font-bold mb-0.5 flex items-center justify-center gap-1">
+                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> RESULT CONFIRMED • 1ST DRAW
+               </div>
+               <div class="text-base sm:text-2xl font-mono font-black text-white">${res1}</div>
+            </div>
+            <div class="bg-cardDark px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border border-cyanLight text-cyanLight shadow-[0_0_15px_rgba(0,212,255,0.3)] text-center shadow-lg">
+               <div class="text-[9px] sm:text-xs text-cyan-300 font-bold mb-0.5 flex items-center justify-center gap-1">
+                 <i class="fa-solid fa-layer-group"></i> 2ND DRAW WINNERS
+               </div>
+               <div class="text-base sm:text-2xl font-mono font-black">${res2} • ${res3} • ${res4}</div>
+            </div>
+          `;
+        } else {
+          multiResultsContainer.innerHTML = `
+            <div class="bg-cardDark px-4 py-2.5 rounded-xl border border-amber-500/50 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.3)] text-center shadow-lg flex items-center gap-2">
+               <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
+               <span class="text-xs sm:text-sm font-mono font-bold tracking-wider uppercase">RESULT PENDING • WAITING FOR RITMU TV OFFICIAL BROADCAST VERIFICATION</span>
+            </div>
+          `;
+        }
       }
 
       if (statusText) {
