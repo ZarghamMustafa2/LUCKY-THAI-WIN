@@ -1799,7 +1799,7 @@
         <!-- Wheel Stage Countdown Header Button -->
         <button id="headerTimerBtn" onclick="toggleWheelStage()" class="flex items-center gap-1 sm:gap-2 bg-cardDark/90 hover:bg-cardDark border border-gold/40 hover:border-gold px-1.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-[0_0_12px_rgba(255,212,0,0.15)] whitespace-nowrap">
           <i class="fa-solid fa-stopwatch text-gold animate-pulse text-xs sm:text-base"></i>
-          <span id="headerTimerText" class="font-mono text-[11px] sm:text-sm font-black text-gold leading-none">30:00</span>
+          <span id="headerTimerText" class="font-mono text-[11px] sm:text-sm font-black text-gold leading-none">60:00</span>
           <i id="headerChevronIcon" class="fa-solid fa-chevron-down text-[9px] sm:text-xs text-gray-400 transition-transform duration-300" style="transform: rotate(180deg);"></i>
         </button>
       </div>
@@ -3745,14 +3745,14 @@
     function gameLoop() {
       try {
         const nowSec = Math.floor(Date.now() / 1000);
-        const cycleSec = nowSec % 1800; // Real-time 30-minute round interval (:00 and :30 sharp every hour)
+        const cycleSec = nowSec % 3600; // Real-time 1-HOUR round interval (:00:00 sharp every hour, e.g. 11:00 AM)
         
-        // Calculate exact remaining seconds until the next 30-minute round draw
-        const remainingSecs = 1800 - cycleSec;
+        // Calculate exact remaining seconds until the next 1-HOUR round draw
+        const remainingSecs = 3600 - cycleSec;
         const time = formatTime(remainingSecs);
-        const percent = (remainingSecs / 1800) * 100;
+        const percent = (remainingSecs / 3600) * 100;
 
-        // Update 30:00 live countdown text across all header and banner pill displays:
+        // Update 1-HOUR live countdown text across all header and banner pill displays:
         const headerTimerText = document.getElementById('headerTimerText');
         if (headerTimerText) headerTimerText.innerText = time.digital;
         const bannerCountdownText = document.getElementById('bannerCountdownText');
