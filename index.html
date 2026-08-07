@@ -3745,18 +3745,18 @@
     function gameLoop() {
       try {
         const nowSec = Math.floor(Date.now() / 1000);
-        const cycleSec = nowSec % 3600; // Wall clock 1-Hour slot (:00:00 sharp every hour, e.g. 11:00 AM)
+        const cycleSec = nowSec % 1800; // Real-time 30-minute round interval (:00 and :30 sharp every hour)
         
-        // Always calculate exact remaining seconds until the NEXT scheduled spin (at :00:00 sharp)
-        const remainingSecs = 3600 - cycleSec;
+        // Calculate exact remaining seconds until the next 30-minute round draw
+        const remainingSecs = 1800 - cycleSec;
         const time = formatTime(remainingSecs);
-        const percent = (remainingSecs / 3600) * 100;
+        const percent = (remainingSecs / 1800) * 100;
 
-        // Update countdown text across banner and header displays:
-        const bannerCountdownText = document.getElementById('bannerCountdownText');
-        if (bannerCountdownText) bannerCountdownText.innerText = time.formatted;
+        // Update 30:00 live countdown text across all header and banner pill displays:
         const headerTimerText = document.getElementById('headerTimerText');
         if (headerTimerText) headerTimerText.innerText = time.digital;
+        const bannerCountdownText = document.getElementById('bannerCountdownText');
+        if (bannerCountdownText) bannerCountdownText.innerText = time.formatted;
         
         const wEl = document.getElementById('wheelText');
         if (wEl) wEl.innerText = time.digital;
