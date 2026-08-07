@@ -1142,6 +1142,8 @@
         localStorage.setItem('ritmuTvWinningNumbers', JSON.stringify(winningArray));
         localStorage.setItem('adminSetDrawNumbers', JSON.stringify(winningArray));
         localStorage.setItem('instantDrawTriggerTime', String(Date.now()));
+        var bc = new BroadcastChannel('ritmu_live_channel');
+        bc.postMessage({ type: 'DRAW_TRIGGERED', numbers: winningArray, timestamp: Date.now() });
       } catch(e) {}
 
       showAdminToast('🔴 LIVE DRAW EXECUTED INSTANTLY AT RITMU TV BROADCAST TIME!', 'success');
@@ -1162,6 +1164,8 @@
       try {
         localStorage.setItem('ritmuTvWinningNumbers', JSON.stringify(winningArray));
         localStorage.setItem('adminSetDrawNumbers', JSON.stringify(winningArray));
+        var bc = new BroadcastChannel('ritmu_live_channel');
+        bc.postMessage({ type: 'NUMBERS_UPDATED', numbers: winningArray, timestamp: Date.now() });
       } catch(e) {}
 
       showAdminToast('🔴 RITMU TV WINNING NUMBERS BROADCASTED: 1st [' + r1 + '] 2nd [' + r2 + ', ' + r3 + ', ' + r4 + ']', 'success');
