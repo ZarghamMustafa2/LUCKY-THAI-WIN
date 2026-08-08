@@ -1,0 +1,2099 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ThaiNXT | Premium Crypto Casino</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+            mono: ['Orbitron', 'monospace'],
+          },
+          colors: {
+            primary: '#FFD700',
+            secondary: '#121B2F',
+            bgDark: '#0D0D0D',
+            cardDark: '#121B2F',
+            gold: '#FFD700',
+            cyanLight: '#00D4FF',
+            purpleDark: '#8B5CF6',
+            danger: '#FF4D4F',
+          },
+          animation: {
+            'spin-slow': 'spin 10s linear infinite',
+            'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+          },
+          keyframes: {
+            pulseGlow: {
+              '0%, 100%': { opacity: 1, filter: 'drop-shadow(0 0 15px rgba(0,255,136,0.6))' },
+              '50%': { opacity: .7, filter: 'drop-shadow(0 0 5px rgba(0,255,136,0.3))' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            shake: {
+              '10%, 90%': { transform: 'translate3d(-2px, 0, 0)' },
+              '20%, 80%': { transform: 'translate3d(4px, 0, 0)' },
+              '30%, 50%, 70%': { transform: 'translate3d(-8px, 0, 0)' },
+              '40%, 60%': { transform: 'translate3d(8px, 0, 0)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    body {
+      background-color: #090E18;
+      color: white;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+    
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    
+    .glass-panel:hover {
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+    }
+    
+    .bg-particles {
+      background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    
+    /* Input Styling */
+    input[type="number"]::-webkit-inner-spin-button, 
+    input[type="number"]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; margin: 0; 
+    }
+    
+    .gradient-text {
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .animate-spin-slow {
+      animation: spin 30s linear infinite;
+    }
+    
+    .wheel-shadow {
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 0 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(255,255,255,0.1);
+    }
+    
+    .btn-deposit {
+      background: linear-gradient(135deg, #00FF88, #00D4FF);
+      background-size: 200% 200%;
+      animation: gradientShift 3s ease infinite;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* Circular Progress CSS */
+    .progress-ring__circle {
+      transition: stroke-dashoffset 1s linear;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+    
+    .ticker-wrap {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      box-sizing: border-box;
+      mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+    .ticker {
+      display: inline-block;
+      animation: ticker 20s linear infinite;
+    }
+    .ticker:hover {
+      animation-play-state: paused;
+    }
+    @keyframes ticker {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+    
+    .activity-feed-enter {
+      animation: slideInDown 0.4s ease-out forwards;
+    }
+    @keyframes slideInDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-bgDark bg-particles relative text-gray-300">
+
+  <!-- Ambient Background Glows -->
+  <div class="absolute top-0 left-1/4 w-[800px] h-[800px] bg-primary opacity-[0.03] rounded-full blur-[150px] pointer-events-none z-0"></div>
+  <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-cyanLight opacity-[0.03] rounded-full blur-[150px] pointer-events-none z-0"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-purpleDark opacity-[0.02] rounded-full blur-[150px] pointer-events-none z-0"></div>
+
+  <!-- LEFT SIDEBAR -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] hidden xl:hidden transition-opacity duration-300 opacity-0"></div>
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-[100] transform -translate-x-full xl:relative xl:translate-x-0 w-[280px] bg-cardDark/95 xl:bg-cardDark/80 backdrop-blur-3xl border-r border-white/5 flex flex-col flex-shrink-0 shadow-2xl transition-transform duration-300">
+    
+    <!-- Logo Area -->
+    <div class="h-[90px] flex items-center gap-4 px-8 border-b border-white/5 relative group cursor-pointer">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-cyanLight flex items-center justify-center shadow-[0_0_20px_rgba(0,255,136,0.3)] group-hover:shadow-[0_0_30px_rgba(0,255,136,0.6)] transition-all duration-300 transform group-hover:scale-105">
+        <i class="fa-solid fa-dice-d20 text-bgDark text-xl"></i>
+      </div>
+      <h1 class="text-2xl font-display font-extrabold tracking-wider uppercase text-white">
+        Thai<span class="text-primary">NXT</span>
+      </h1>
+    </div>
+    
+    <!-- Nav Links -->
+    <div class="flex-1 overflow-y-auto py-8 px-5 flex flex-col gap-2 custom-scrollbar">
+      
+      <div class="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3 px-4 flex items-center gap-2">
+        <i class="fa-solid fa-star text-gold text-[10px]"></i> Play
+      </div>
+      
+      <button class="relative flex items-center gap-4 w-full px-5 py-3.5 bg-white/5 rounded-2xl text-white font-bold border border-white/10 shadow-[inset_0_0_20px_rgba(0,255,136,0.05)] transition-all group overflow-hidden">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary shadow-[0_0_10px_#00FF88]"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <i class="fa-solid fa-crosshairs w-6 h-6 text-primary flex justify-center items-center text-lg drop-shadow-[0_0_8px_rgba(0,255,136,0.5)]"></i> 
+        <span class="font-display tracking-wide z-10">Thai Lottery</span>
+      </button>
+      
+      <button class="flex items-center gap-4 w-full px-5 py-3.5 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold transition-all group">
+        <i class="fa-solid fa-fire w-6 h-6 text-danger flex justify-center items-center text-lg group-hover:drop-shadow-[0_0_8px_rgba(255,77,79,0.5)] transition-all"></i> 
+        <span class="font-display tracking-wide">Originals</span>
+        <span class="ml-auto bg-danger/20 text-danger text-[10px] px-2 py-0.5 rounded-full font-black">HOT</span>
+      </button>
+
+      <button class="flex items-center gap-4 w-full px-5 py-3.5 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold transition-all group">
+        <i class="fa-solid fa-bolt w-6 h-6 text-gold flex justify-center items-center text-lg group-hover:drop-shadow-[0_0_8px_rgba(255,212,0,0.5)] transition-all"></i> 
+        <span class="font-display tracking-wide">Slots</span>
+      </button>
+      
+      <button class="flex items-center gap-4 w-full px-5 py-3.5 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold transition-all group">
+        <i class="fa-solid fa-gamepad w-6 h-6 text-cyanLight flex justify-center items-center text-lg group-hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.5)] transition-all"></i> 
+        <span class="font-display tracking-wide">Live Casino</span>
+      </button>
+
+      <div class="w-full h-px bg-white/5 my-4"></div>
+      
+      <div class="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3 px-4 flex items-center gap-2">
+        <i class="fa-solid fa-gem text-purpleDark text-[10px]"></i> Rewards
+      </div>
+
+      <a href="dashboard.html" class="flex items-center gap-4 w-full px-5 py-3.5 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold transition-all group">
+        <i class="fa-solid fa-crown w-6 h-6 text-gold flex justify-center items-center text-lg group-hover:drop-shadow-[0_0_8px_rgba(255,212,0,0.5)] transition-all"></i> 
+        <span class="font-display tracking-wide">VIP & Profile</span>
+      </a>
+
+      <button class="flex items-center gap-4 w-full px-5 py-3.5 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold transition-all group">
+        <i class="fa-solid fa-gift w-6 h-6 text-purpleDark flex justify-center items-center text-lg group-hover:drop-shadow-[0_0_8px_rgba(139,92,246,0.5)] transition-all"></i> 
+        <span class="font-display tracking-wide">Promotions</span>
+      </button>
+
+      <a href="leaderboard.html" class="flex items-center gap-4 w-full px-5 py-3.5 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold transition-all group">
+        <i class="fa-solid fa-trophy w-6 h-6 text-primary flex justify-center items-center text-lg group-hover:drop-shadow-[0_0_8px_rgba(0,255,136,0.5)] transition-all"></i> 
+        <span class="font-display tracking-wide">Leaderboard</span>
+      </a>
+      
+      <a href="admin.html" class="flex items-center gap-4 w-full px-5 py-3.5 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold transition-all group border-l-2 border-danger">
+        <i class="fa-solid fa-shield-halved w-6 h-6 text-danger flex justify-center items-center text-lg group-hover:drop-shadow-[0_0_8px_rgba(255,77,79,0.5)] transition-all"></i> 
+        <span class="font-display tracking-wide">Admin Panel</span>
+      </a>
+
+      <!-- Mini Live Feed Promo -->
+      <div class="mt-auto pt-8">
+        <div class="bg-gradient-to-b from-white/5 to-transparent rounded-2xl p-4 border border-white/5 relative overflow-hidden group cursor-pointer hover:border-primary/30 transition-colors">
+          <div class="absolute -right-4 -top-4 w-16 h-16 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/40 transition-colors"></div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-white uppercase tracking-wider">Mega Jackpot</span>
+            <span class="flex h-2 w-2 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-danger"></span>
+            </span>
+          </div>
+          <div class="font-mono text-xl font-black text-gold drop-shadow-[0_0_8px_rgba(255,212,0,0.4)]">฿ 8.4M</div>
+          <div class="text-[10px] text-gray-500 mt-1 uppercase font-bold">Must drop today!</div>
+        </div>
+      </div>
+      
+    </div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="flex-1 flex flex-col h-full relative overflow-hidden z-10">
+    
+    <!-- TOP HEADER -->
+    <header class="h-[70px] md:h-[90px] bg-bgDark/60 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 lg:px-10 z-30 flex-shrink-0 sticky top-0">
+      <div class="flex items-center gap-6">
+        <button id="mobileMenuBtn" class="xl:hidden text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-bars text-2xl"></i></button>
+        <div class="xl:hidden flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-cyanLight flex items-center justify-center shadow-[0_0_15px_rgba(0,255,136,0.4)]">
+            <i class="fa-solid fa-dice-d20 text-bgDark text-sm"></i>
+          </div>
+        </div>
+        
+        <!-- Active Users Indicator -->
+        <div class="hidden md:flex items-center gap-3 bg-cardDark rounded-2xl px-4 py-2 border border-white/5">
+          <div class="w-3 h-3 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.8)] animate-pulse"></div>
+          <div class="flex flex-col">
+            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Active Users</span>
+            <span class="text-sm font-mono font-bold text-white" id="activeUsersCount">12,458</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Current Bet -->
+      <div class="hidden lg:flex items-center flex-col absolute left-1/2 -translate-x-1/2">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Current Bet</span>
+        <span class="text-xl font-mono font-black text-gold" id="headerCurrentBet">₹0</span>
+      </div>
+      
+      <div class="flex items-center gap-4 lg:gap-8">
+        
+        <button onclick="window.location.reload()" class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-cardDark border border-white/5 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary/50 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.5)]" title="Refresh Page">
+          <i class="fa-solid fa-rotate-right text-base md:text-lg hover:animate-spin"></i>
+        </button>
+
+        <!-- Wallet & Deposit -->
+        <div class="flex items-center bg-cardDark rounded-2xl border border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] overflow-hidden">
+          <div class="px-6 py-3 flex items-center gap-3 bg-gradient-to-r from-bgDark to-transparent">
+            <i class="fa-solid fa-wallet text-gray-500"></i>
+            <span id="walletBalance" class="text-white font-mono font-black text-xs md:text-lg tracking-wider">฿ 10,450.00</span>
+          </div>
+        </div>
+        
+        <div class="hidden sm:flex items-center gap-4 relative">
+          <button id="headerNotifBtn" class="w-12 h-12 rounded-2xl bg-cardDark border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:border-white/20 transition-all relative">
+            <i class="fa-solid fa-bell text-lg"></i>
+            <span class="absolute top-3 right-3 w-2.5 h-2.5 bg-danger rounded-full shadow-[0_0_8px_rgba(255,77,79,0.8)] border border-bgDark"></span>
+          </button>
+          
+          <!-- Notif Dropdown -->
+          <div id="notifDropdown" class="hidden absolute top-14 right-16 w-80 bg-cardDark border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 flex flex-col overflow-hidden">
+            <div class="px-4 py-3 border-b border-white/5 bg-bgDark/50 font-bold text-white flex justify-between items-center">
+              Notifications <span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[10px] uppercase">2 New</span>
+            </div>
+            <div class="p-2 flex flex-col gap-1 max-h-60 overflow-y-auto custom-scrollbar">
+              <div class="px-3 py-2 hover:bg-white/5 rounded-xl cursor-pointer flex gap-3 items-center">
+                <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-gift"></i></div>
+                <div class="flex-1 flex flex-col"><span class="text-sm font-bold text-white">Daily Bonus Ready</span><span class="text-[10px] text-gray-500">Claim your 500 THB bonus</span></div>
+              </div>
+              <div class="px-3 py-2 hover:bg-white/5 rounded-xl cursor-pointer flex gap-3 items-center">
+                <div class="w-8 h-8 rounded-full bg-cyanLight/20 text-cyanLight flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-arrow-down"></i></div>
+                <div class="flex-1 flex flex-col"><span class="text-sm font-bold text-white">Deposit Successful</span><span class="text-[10px] text-gray-500">2,000 THB added to wallet</span></div>
+              </div>
+            </div>
+          </div>
+
+          <button id="headerChatToggleBtn" class="w-12 h-12 rounded-2xl bg-cardDark border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:border-white/20 transition-all">
+            <i class="fa-solid fa-comments text-lg"></i>
+          </button>
+        </div>
+
+        <!-- User Avatar & VIP -->
+        <div class="flex items-center gap-3 pl-2 relative">
+          <div id="headerProfileBtn" class="flex items-center gap-3 cursor-pointer">
+            <div class="hidden lg:flex flex-col items-end mr-1">
+              <span class="text-sm font-bold text-white">Alex_Winner</span>
+              <span class="text-[10px] font-black text-gold uppercase tracking-widest">VIP Platinum</span>
+            </div>
+            <div class="relative">
+              <img src="https://i.pravatar.cc/150?img=11" alt="User" class="w-12 h-12 rounded-full border-2 border-gold object-cover shadow-[0_0_15px_rgba(255,212,0,0.3)]">
+              <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-gold rounded-full flex items-center justify-center border-2 border-bgDark text-bgDark text-[8px] font-black">
+                <i class="fa-solid fa-crown"></i>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Profile Dropdown -->
+          <div id="profileDropdown" class="hidden absolute top-14 right-0 w-56 bg-cardDark border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 flex flex-col overflow-hidden py-2">
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-user w-4 text-gray-500"></i> Profile</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-wallet w-4 text-gray-500"></i> Wallet</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-arrow-down w-4 text-gray-500"></i> Deposit</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-arrow-up w-4 text-gray-500"></i> Withdraw</a>
+            <div class="h-px bg-white/5 my-1"></div>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-history w-4 text-gray-500"></i> Bet History</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-file-invoice w-4 text-gray-500"></i> Transaction History</a>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-gray-300 hover:text-gold flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-cog w-4 text-gray-500"></i> Settings</a>
+            <div class="h-px bg-white/5 my-1"></div>
+            <a href="#" class="px-4 py-2 hover:bg-white/5 text-danger hover:text-danger flex items-center gap-3 font-bold text-sm transition-colors"><i class="fa-solid fa-sign-out-alt w-4"></i> Logout</a>
+          </div>
+        </div>
+        
+      </div>
+    </header>
+
+    <!-- SCROLLABLE MAIN -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-4 lg:p-10 relative scroll-smooth">
+      
+      <div class="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-10">
+        
+        <!-- LEFT COLUMN -->
+        <div class="contents xl:flex xl:flex-col xl:col-span-8 gap-6 lg:gap-10">
+          
+          <!-- Premium Live Stats -->
+          <div class="order-3 xl:order-none w-full grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            <div class="glass-panel p-5 flex items-center gap-4 group">
+              <div class="w-12 h-12 rounded-2xl bg-cyanLight/10 flex items-center justify-center border border-cyanLight/20 group-hover:scale-110 group-hover:bg-cyanLight/20 transition-all shadow-[inset_0_0_15px_rgba(0,212,255,0.1)]">
+                <i class="fa-solid fa-users text-cyanLight text-xl drop-shadow-[0_0_8px_rgba(0,212,255,0.6)]"></i>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">Online</span>
+                <span class="text-white font-mono font-black text-xl">3,204</span>
+              </div>
+            </div>
+            
+            <div class="glass-panel p-5 flex items-center gap-4 group">
+              <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:scale-110 group-hover:bg-primary/20 transition-all shadow-[inset_0_0_15px_rgba(0,255,136,0.1)]">
+                <i class="fa-solid fa-chart-line text-primary text-xl drop-shadow-[0_0_8px_rgba(0,255,136,0.6)]"></i>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">Wagered</span>
+                <span class="text-white font-mono font-black text-xl">฿ 45.2M</span>
+              </div>
+            </div>
+
+            <div class="glass-panel p-5 flex items-center gap-4 group">
+              <div class="w-12 h-12 rounded-2xl bg-gold/10 flex items-center justify-center border border-gold/20 group-hover:scale-110 group-hover:bg-gold/20 transition-all shadow-[inset_0_0_15px_rgba(255,212,0,0.1)]">
+                <i class="fa-solid fa-trophy text-gold text-xl drop-shadow-[0_0_8px_rgba(255,212,0,0.6)]"></i>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">Top Win</span>
+                <span class="text-white font-mono font-black text-xl">฿ 842K</span>
+              </div>
+            </div>
+
+            <div class="glass-panel p-5 flex items-center gap-4 group">
+              <div class="w-12 h-12 rounded-2xl bg-danger/10 flex items-center justify-center border border-danger/20 group-hover:scale-110 group-hover:bg-danger/20 transition-all shadow-[inset_0_0_15px_rgba(255,77,79,0.1)]">
+                <i class="fa-solid fa-fire text-danger text-xl drop-shadow-[0_0_8px_rgba(255,77,79,0.6)]"></i>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">Jackpot</span>
+                <span class="text-white font-mono font-black text-xl text-danger drop-shadow-[0_0_5px_rgba(255,77,79,0.3)]">฿ 5.1M</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- THE 3D WHEEL STAGE -->
+          <div id="gameContainer" class="order-1 xl:order-none glass-panel relative flex flex-col items-center justify-center overflow-hidden min-h-[500px] md:min-h-[600px] lg:min-h-[700px] transition-transform duration-500">
+            <!-- Background effects -->
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvc3ZnPg==')] opacity-50 mix-blend-overlay"></div>
+            
+            <div class="absolute top-8 left-8 right-8 flex justify-between items-start z-10">
+              <div class="bg-cardDark/80 backdrop-blur-md border border-white/10 px-5 py-3 rounded-2xl flex items-center gap-3 shadow-lg">
+                <div id="statusDot" class="w-3 h-3 rounded-full bg-primary shadow-[0_0_12px_rgba(0,255,136,0.8)] animate-pulse"></div>
+                <span id="statusText" class="font-bold uppercase tracking-widest text-xs text-primary font-display">Accepting Bets</span>
+              </div>
+              <div class="flex flex-col items-end bg-cardDark/80 backdrop-blur-md border border-white/10 px-6 py-2.5 rounded-2xl shadow-lg">
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Current Round</span>
+                <span class="font-mono text-xl font-black text-white">#8492</span>
+              </div>
+            </div>
+
+            <!-- Wheel Element -->
+            <div class="w-full flex justify-center items-center py-10 mt-16 mb-24 relative z-10">
+              
+              <!-- Ambient Back Glow -->
+              <div id="wheelGlow" class="absolute inset-0 bg-primary opacity-[0.15] rounded-full blur-[100px] pointer-events-none w-72 h-72 md:w-80 md:h-80 mx-auto transition-colors duration-500"></div>
+              
+              <!-- Pointer -->
+              <div class="absolute top-[-10px] left-1/2 -translate-x-1/2 z-30 drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
+                <div class="w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[35px] border-t-gold relative">
+                  <div class="absolute -top-[35px] -left-[10px] w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[25px] border-t-white opacity-40"></div>
+                </div>
+              </div>
+              
+              <!-- Wheel Frame (3D Depth) -->
+              <div class="w-[220px] h-[220px] sm:w-[300px] sm:h-[300px] md:w-[380px] md:h-[380px] rounded-full border-[10px] md:border-[14px] border-cardDark wheel-shadow overflow-hidden relative bg-bgDark" style="transform: perspective(1000px) rotateX(10deg);">
+                
+                <!-- Inner Shadow Overlay -->
+                <div class="absolute inset-0 rounded-full shadow-[inset_0_0_60px_rgba(0,0,0,0.9)] z-20 pointer-events-none"></div>
+
+                <!-- Spinning Content -->
+                <div id="spinWheelElement" class="w-full h-full relative rounded-full transition-transform will-change-transform" style="transform: rotate(0deg);">
+                  <!-- Conic Gradient Slices -->
+                  <div class="absolute -inset-10" style="background: conic-gradient(from -18deg, #2A3B54 0deg 36deg, #151E2E 36deg 72deg, #2A3B54 72deg 108deg, #151E2E 108deg 144deg, #2A3B54 144deg 180deg, #151E2E 180deg 216deg, #2A3B54 216deg 252deg, #151E2E 252deg 288deg, #2A3B54 288deg 324deg, #151E2E 324deg 360deg)"></div>
+                  
+                  <!-- Slice Texts -->
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(0deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">0</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(36deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">1</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(72deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">2</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(108deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">3</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(144deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">4</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(180deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">5</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(216deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">6</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(252deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">7</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(288deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">8</div></div>
+                  <div class="absolute top-0 left-0 w-full h-full flex justify-center" style="transform: rotate(324deg);"><div class="pt-2 md:pt-6 text-xl md:text-3xl font-mono font-black text-gold drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">9</div></div>
+                </div>
+                
+                <!-- Central Hub & Circular Countdown -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center">
+                  <!-- SVG Progress -->
+                  <svg class="absolute w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 drop-shadow-[0_0_15px_rgba(0,0,0,1)]" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="54" fill="#0B1220" stroke="rgba(255,255,255,0.05)" stroke-width="12" />
+                    <circle id="timerCircle" class="progress-ring__circle" cx="60" cy="60" r="54" fill="transparent" stroke="#00FF88" stroke-width="12" stroke-dasharray="339.292" stroke-dashoffset="0" stroke-linecap="round" />
+                  </svg>
+                  
+                  <!-- Glowing SPIN Button Center -->
+                  <button id="centerSpinBtn" class="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-full border-4 md:border-8 border-gold shadow-[0_0_30px_rgba(255,212,0,0.5),inset_0_0_20px_rgba(0,0,0,0.8)] flex flex-col items-center justify-center relative z-10 bg-gradient-to-b from-[#121B2F] to-[#0D0D0D] cursor-pointer hover:scale-105 transition-transform animate-[pulse_2s_infinite]">
+                    <span class="font-display text-xl md:text-3xl font-black text-gold drop-shadow-[0_0_15px_rgba(255,212,0,0.8)] tracking-widest">SPIN</span>
+                    <span id="wheelText" class="text-[10px] font-mono text-gray-400 mt-1">15:00</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Result Digits Display -->
+            <div class="absolute bottom-10 flex gap-2 sm:gap-4 md:gap-8 justify-center w-full z-20 perspective-1000">
+              <div id="digit-0" class="w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
+              <div id="digit-1" class="w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
+              <div id="digit-2" class="w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
+              <div id="digit-3" class="w-14 h-20 sm:w-20 sm:h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-4xl sm:text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10">?</div>
+            </div>
+            
+            <!-- Multi-Results Display -->
+            <div id="multiResultsContainer" class="flex gap-2 sm:gap-4 justify-center w-full mt-4 z-40 transition-all duration-500 opacity-0 translate-y-4 min-h-[60px]">
+            </div>
+          </div>
+
+          <!-- RECENT WINNERS (Horizontal Scroll) -->
+          <div class="order-4 xl:order-none w-full flex flex-col gap-3 mt-2">
+            <div class="flex items-center justify-between px-2">
+              <span class="text-sm font-bold text-gray-400 uppercase tracking-widest"><i class="fa-solid fa-clock-rotate-left mr-2"></i> Recent Draws</span>
+            </div>
+            <div class="w-full bg-cardDark/50 rounded-2xl p-4 border border-white/5 overflow-hidden relative">
+              <div class="absolute top-0 left-0 bottom-0 w-12 bg-gradient-to-r from-[#0d1421] to-transparent z-10 pointer-events-none"></div>
+              <div class="absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-[#0d1421] to-transparent z-10 pointer-events-none"></div>
+              
+              <div class="ticker-wrap">
+                <div class="ticker flex gap-4 pr-4">
+                  <!-- Mock Data -->
+                  <div class="bg-primary/10 border border-primary/30 text-primary font-mono font-black text-lg px-4 py-2 rounded-xl shadow-[0_0_15px_rgba(0,255,136,0.15)] flex-shrink-0">8492</div>
+                  <div class="bg-white/5 border border-white/10 text-white font-mono font-bold text-lg px-4 py-2 rounded-xl flex-shrink-0">1043</div>
+                  <div class="bg-gold/10 border border-gold/30 text-gold font-mono font-black text-lg px-4 py-2 rounded-xl shadow-[0_0_15px_rgba(255,212,0,0.15)] flex-shrink-0">9999</div>
+                  <div class="bg-white/5 border border-white/10 text-white font-mono font-bold text-lg px-4 py-2 rounded-xl flex-shrink-0">4821</div>
+                  <div class="bg-white/5 border border-white/10 text-white font-mono font-bold text-lg px-4 py-2 rounded-xl flex-shrink-0">3392</div>
+                  <div class="bg-cyanLight/10 border border-cyanLight/30 text-cyanLight font-mono font-black text-lg px-4 py-2 rounded-xl shadow-[0_0_15px_rgba(0,212,255,0.15)] flex-shrink-0">7102</div>
+                  <div class="bg-white/5 border border-white/10 text-white font-mono font-bold text-lg px-4 py-2 rounded-xl flex-shrink-0">5501</div>
+                  <div class="bg-white/5 border border-white/10 text-white font-mono font-bold text-lg px-4 py-2 rounded-xl flex-shrink-0">2948</div>
+                  <div class="bg-primary/10 border border-primary/30 text-primary font-mono font-black text-lg px-4 py-2 rounded-xl shadow-[0_0_15px_rgba(0,255,136,0.15)] flex-shrink-0">8492</div>
+                  <div class="bg-white/5 border border-white/10 text-white font-mono font-bold text-lg px-4 py-2 rounded-xl flex-shrink-0">1043</div>
+                  <div class="bg-gold/10 border border-gold/30 text-gold font-mono font-black text-lg px-4 py-2 rounded-xl shadow-[0_0_15px_rgba(255,212,0,0.15)] flex-shrink-0">9999</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LIVE ACTIVITY TABLE -->
+          <div class="order-5 xl:order-none w-full glass-panel p-6 overflow-hidden flex flex-col gap-4 mb-10">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-display font-black text-white"><i class="fa-solid fa-chart-bar text-primary mr-2"></i> Live Bets</h3>
+              <button class="bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl text-xs font-bold transition-colors">View All</button>
+            </div>
+            
+            <div class="w-full overflow-x-auto custom-scrollbar pb-2">
+              <table class="w-full text-left text-sm whitespace-nowrap">
+                <thead>
+                  <tr class="text-gray-500 uppercase text-[10px] tracking-widest border-b border-white/5">
+                    <th class="pb-4 pl-4 font-bold">Game</th>
+                    <th class="pb-4 font-bold">Player</th>
+                    <th class="pb-4 font-bold text-right">Wager</th>
+                    <th class="pb-4 font-bold text-right">Multiplier</th>
+                    <th class="pb-4 pr-4 font-bold text-right">Payout</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-300 font-bold" id="liveActivityBody">
+                  <!-- Mock Rows injected via JS to show animation -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR (Number Grid) -->
+        <div class="contents xl:flex xl:flex-col xl:col-span-4 gap-6 lg:gap-10">
+          <div class="order-2 xl:order-none glass-panel p-6 lg:p-8 flex flex-col relative overflow-hidden border-t-2 border-t-gold shadow-[0_30px_60px_rgba(0,0,0,0.6)] xl:sticky xl:top-24 z-20">
+            
+            <!-- Ambient Panel Glow -->
+            <div class="absolute -top-20 -right-20 w-48 h-48 bg-gold/10 rounded-full blur-[80px] pointer-events-none"></div>
+
+            <h3 class="text-2xl font-display font-black text-white text-center mb-8"><i class="fa-solid fa-gem text-gold mr-2"></i> Select Number</h3>
+            
+            <div class="grid grid-cols-5 gap-3 sm:gap-4 relative z-10">
+              <!-- First Row -->
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">1</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">2</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">3</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">4</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">5</button>
+              
+              <!-- Second Row -->
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">6</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">7</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">8</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">9</button>
+              <button class="grid-num-btn aspect-square rounded-2xl bg-bgDark border border-white/5 flex items-center justify-center font-mono text-3xl font-black text-white shadow-inner hover:border-gold hover:text-gold hover:shadow-[0_0_20px_rgba(255,212,0,0.6)] hover:scale-105 transition-all">0</button>
+            </div>
+
+            <!-- Small Instruction -->
+            <p class="text-center text-gray-500 text-xs mt-6 font-bold tracking-widest uppercase">Click any number to place bet</p>
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- BOTTOM SECTIONS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 mt-10">
+        
+        <!-- Active Bets -->
+        <div class="glass-panel p-6 lg:p-8 rounded-[32px] border-t-2 border-t-primary shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+          <h3 class="text-lg font-display font-black text-white mb-6"><i class="fa-solid fa-bolt text-primary mr-2"></i> My Active Bets</h3>
+          <div class="space-y-4" id="activeBetsList">
+            <div class="text-center text-gray-500 py-10 text-sm font-bold tracking-widest uppercase">
+              <i class="fa-solid fa-inbox text-3xl mb-3 opacity-50 block"></i>
+              No Active Bets
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Draws -->
+        <div class="glass-panel p-6 lg:p-8 rounded-[32px] border-t-2 border-t-gold shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+          <h3 class="text-lg font-display font-black text-white mb-6"><i class="fa-solid fa-calendar-alt text-gold mr-2"></i> Upcoming Draws</h3>
+          <div class="space-y-4">
+            <div class="bg-bgDark p-4 rounded-2xl border border-white/5 flex justify-between items-center group hover:border-gold/30 transition-colors">
+              <div>
+                <div class="text-sm font-bold text-white tracking-widest">Draw #4829</div>
+                <div class="text-[10px] text-primary uppercase tracking-widest mt-1 font-bold animate-pulse">Starting soon</div>
+              </div>
+              <div class="text-gold font-mono font-black text-xl drop-shadow-[0_0_8px_rgba(255,212,0,0.4)]">2m 30s</div>
+            </div>
+            <div class="bg-bgDark p-4 rounded-2xl border border-white/5 flex justify-between items-center opacity-60 group hover:opacity-100 transition-all">
+              <div>
+                <div class="text-sm font-bold text-white tracking-widest">Draw #4830</div>
+                <div class="text-[10px] text-gray-500 uppercase tracking-widest mt-1 font-bold">Next Phase</div>
+              </div>
+              <div class="text-gray-400 font-mono font-black text-xl">32m 00s</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Game Rules -->
+        <div class="glass-panel p-6 lg:p-8 rounded-[32px] border-t-2 border-t-cyanLight shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+          <h3 class="text-lg font-display font-black text-white mb-6"><i class="fa-solid fa-book text-cyanLight mr-2"></i> How To Play</h3>
+          <div class="space-y-3">
+            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
+              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
+                Figure (1x8)
+                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
+              </summary>
+              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
+                Select a single digit. If your number appears anywhere in the winning sequence, you win 8x your bet amount.
+              </div>
+            </details>
+            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
+              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
+                Akada (1x80)
+                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
+              </summary>
+              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
+                Select two digits. If both numbers appear in the winning sequence, you win 80x your bet amount.
+              </div>
+            </details>
+            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
+              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
+                Ring (1x800)
+                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
+              </summary>
+              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
+                Select three digits. If all three numbers appear in the winning sequence, you win 800x your bet amount.
+              </div>
+            </details>
+            <details class="bg-bgDark rounded-2xl border border-white/5 group open:border-cyanLight/30 transition-colors">
+              <summary class="p-4 font-bold text-xs sm:text-sm text-gray-300 cursor-pointer list-none flex justify-between items-center outline-none uppercase tracking-widest hover:text-white">
+                Packet (1x6000)
+                <i class="fa-solid fa-chevron-down text-gray-500 group-open:rotate-180 transition-transform"></i>
+              </summary>
+              <div class="px-4 pb-4 text-xs text-gray-400 leading-relaxed border-t border-white/5 pt-3">
+                Select the complete combination. If your combination perfectly matches the winning sequence, you win 6000x your bet amount.
+              </div>
+            </details>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- MOBILE BOTTOM NAV -->
+    <div class="xl:hidden fixed bottom-0 left-0 right-0 h-[80px] bg-bgDark/90 backdrop-blur-xl border-t border-white/5 z-50 flex items-center justify-around px-2 pb-safe">
+      <a href="index.html" class="flex flex-col items-center gap-1.5 text-primary">
+        <i class="fa-solid fa-gamepad text-xl drop-shadow-[0_0_8px_rgba(0,255,136,0.5)]"></i>
+        <span class="text-[9px] font-bold uppercase tracking-widest">Casino</span>
+      </a>
+      <a href="leaderboard.html" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
+        <i class="fa-solid fa-trophy text-xl"></i>
+        <span class="text-[9px] font-bold uppercase tracking-widest">Ranks</span>
+      </a>
+      <a href="dashboard.html" class="flex flex-col items-center justify-center -mt-10 relative group">
+        <div class="absolute inset-0 bg-primary/30 rounded-full blur-xl group-hover:bg-primary/50 transition-colors"></div>
+        <div class="w-16 h-16 bg-gradient-to-tr from-primary to-cyanLight rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,255,136,0.4)] border-4 border-bgDark relative z-10 transform group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-wallet text-bgDark text-xl"></i>
+        </div>
+      </a>
+      <button id="mobileChatBtn" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
+        <i class="fa-solid fa-comments text-xl"></i>
+        <span class="text-[9px] font-bold uppercase tracking-widest">Chat</span>
+      </button>
+      <a href="dashboard.html" class="flex flex-col items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
+        <i class="fa-solid fa-user text-xl"></i>
+        <span class="text-[9px] font-bold uppercase tracking-widest">Profile</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- FLOATING LIVE CHAT (Desktop) -->
+  <div class="hidden 2xl:flex fixed bottom-6 right-6 w-[350px] h-[500px] glass-panel z-40 flex-col shadow-[0_20px_60px_rgba(0,0,0,0.8)] transform translate-y-0 transition-transform">
+    <div class="px-5 py-4 border-b border-white/5 flex items-center justify-between bg-bgDark/50 rounded-t-[18px]">
+      <div class="flex items-center gap-3">
+        <div class="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(0,255,136,0.8)] animate-pulse"></div>
+        <span class="font-bold text-white tracking-wide text-sm">Live English Room</span>
+      </div>
+      <span class="text-xs font-bold text-gray-500"><i class="fa-solid fa-users mr-1"></i> 842</span>
+    </div>
+    
+    <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-4 custom-scrollbar text-sm" id="chatFeed">
+      <!-- Mock Messages -->
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-2">
+          <span class="w-4 h-4 rounded bg-purpleDark/20 text-purpleDark flex items-center justify-center text-[8px] font-black"><i class="fa-solid fa-gem"></i></span>
+          <span class="font-bold text-gray-300 text-xs">CryptoKing99</span>
+          <span class="text-[10px] text-gray-600">12:04</span>
+        </div>
+        <p class="text-gray-400 pl-6">Just hit a 900x multiplier let's goooo! 🚀</p>
+      </div>
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-gray-300 text-xs">Luna_Eclipse</span>
+          <span class="text-[10px] text-gray-600">12:05</span>
+        </div>
+        <p class="text-gray-400 pl-2">Nice win man, im down 5k today 💀</p>
+      </div>
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-2">
+          <span class="w-4 h-4 rounded bg-gold/20 text-gold flex items-center justify-center text-[8px] font-black"><i class="fa-solid fa-crown"></i></span>
+          <span class="font-bold text-gold text-xs drop-shadow-[0_0_5px_rgba(255,212,0,0.5)]">VIP_Whale</span>
+          <span class="text-[10px] text-gray-600">12:05</span>
+        </div>
+        <p class="text-white font-bold pl-6">Dropping a rain in 5 mins, stay active 🌧️💸</p>
+      </div>
+    </div>
+    
+    <div class="p-4 border-t border-white/5 bg-bgDark/50 rounded-b-[18px]">
+      <div class="bg-cardDark border border-white/10 rounded-xl p-2 flex items-center gap-2 focus-within:border-primary/50 transition-colors">
+        <button class="w-8 h-8 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors"><i class="fa-regular fa-face-smile"></i></button>
+        <input type="text" placeholder="Say something..." class="bg-transparent border-none outline-none text-sm text-white w-full placeholder:text-gray-600">
+        <button class="w-8 h-8 rounded-lg text-primary hover:bg-primary/10 transition-colors"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+  <!-- DEPOSIT MODAL -->
+  <div id="depositModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden bg-bgDark/90 backdrop-blur-2xl opacity-0 transition-opacity duration-300 px-4">
+    <div id="depositModalContent" class="bg-cardDark border border-white/10 rounded-[24px] p-8 md:p-10 flex flex-col items-center justify-center shadow-[0_30px_100px_rgba(0,0,0,0.8)] transform scale-95 transition-all duration-300 max-w-md w-full mx-4 relative overflow-hidden z-10">
+      <div class="absolute inset-0 bg-primary/5 blur-[60px] pointer-events-none"></div>
+      
+      <div class="w-full flex justify-between items-center mb-6 relative z-10">
+        <h2 class="text-2xl font-display font-black text-white uppercase tracking-wide">Deposit Crypto</h2>
+        <button id="closeDepositBtn" class="text-gray-500 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+
+      <div class="w-full flex gap-2 bg-bgDark p-1.5 rounded-2xl mb-6 border border-white/5 shadow-inner relative z-10">
+        <button class="flex-1 bg-cardDark text-white py-3 rounded-xl font-bold text-xs uppercase shadow-md border border-white/10 flex items-center justify-center gap-2"><i class="fa-brands fa-bitcoin text-gold text-lg"></i> BTC</button>
+        <button class="flex-1 text-gray-500 hover:text-gray-300 py-3 rounded-xl font-bold text-xs uppercase transition-colors flex items-center justify-center gap-2"><i class="fa-brands fa-ethereum text-purpleDark text-lg"></i> ETH</button>
+        <button class="flex-1 text-gray-500 hover:text-gray-300 py-3 rounded-xl font-bold text-xs uppercase transition-colors flex items-center justify-center gap-2"><i class="fa-brands fa-usdt text-primary text-lg"></i> USDT</button>
+      </div>
+
+      <div class="bg-white p-2 rounded-2xl mb-6 relative z-10 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" alt="QR Code" class="w-32 h-32 rounded-xl">
+      </div>
+
+      <div class="w-full mb-6 relative z-10 group">
+        <label class="text-gray-500 text-[10px] font-bold uppercase tracking-widest block mb-2">Deposit Address</label>
+        <div class="flex items-center bg-bgDark rounded-xl border border-white/5 p-1 pr-1 group-hover:border-white/20 transition-colors">
+          <input type="text" readonly value="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" class="bg-transparent border-none outline-none text-xs text-gray-300 w-full pl-3 font-mono">
+          <button class="bg-cardDark hover:bg-white/10 text-white p-3 rounded-lg transition-colors" onclick="showToast('Address Copied!', 'success')"><i class="fa-regular fa-copy"></i></button>
+        </div>
+      </div>
+
+      <p class="text-xs text-gray-500 text-center font-bold relative z-10">Send only Bitcoin (BTC) to this address.<br>1 Confirmation required.</p>
+    </div>
+  </div>
+
+  <!-- ALL BETS MODAL -->
+  <div id="allBetsModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden bg-bgDark/90 backdrop-blur-2xl opacity-0 transition-opacity duration-300 px-4">
+    <div id="allBetsModalContent" class="bg-cardDark border border-white/10 rounded-[24px] p-6 md:p-8 flex flex-col shadow-[0_30px_100px_rgba(0,0,0,0.8)] transform scale-95 transition-all duration-300 max-w-2xl w-full mx-4 relative overflow-hidden z-10 max-h-[80vh]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-display font-black text-white uppercase tracking-wide"><i class="fa-solid fa-chart-bar text-primary mr-2"></i> All Live Bets</h2>
+        <button id="closeAllBetsBtn" class="text-gray-500 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+      <div class="w-full overflow-y-auto custom-scrollbar pr-2 h-full">
+        <table class="w-full text-left text-sm whitespace-nowrap">
+          <thead>
+            <tr class="text-gray-500 uppercase text-[10px] tracking-widest border-b border-white/5">
+              <th class="pb-4 pl-4 font-bold">Game</th>
+              <th class="pb-4 font-bold">Player</th>
+              <th class="pb-4 font-bold text-right">Wager</th>
+              <th class="pb-4 font-bold text-right">Multiplier</th>
+              <th class="pb-4 pr-4 font-bold text-right">Payout</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-300 font-bold" id="allBetsModalBody">
+            <!-- Filled via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT HUD OVERLAY -->
+  <div id="resultModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden bg-bgDark/95 backdrop-blur-3xl opacity-0 transition-opacity duration-700 overflow-hidden">
+    <!-- Cinematic Vignette & Core Energy -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_0%,_#000_100%)] z-0 pointer-events-none"></div>
+    <div id="modalGlow" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[800px] md:h-[800px] bg-primary/20 blur-[60px] md:blur-[100px] rounded-full pointer-events-none transition-colors duration-1000 z-0"></div>
+    
+    <div id="particleContainer" class="absolute inset-0 z-0 pointer-events-none overflow-hidden"></div>
+
+    <!-- HUD Container -->
+    <div id="resultModalContent" class="relative z-10 w-full h-full max-w-[1400px] mx-auto p-4 md:p-10 flex flex-col items-center justify-center transform scale-110 opacity-0 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden">
+      
+      <!-- Top Left: Round Info (Floats in) -->
+      <div class="absolute top-4 left-4 md:top-10 md:left-10 hud-element flex flex-col gap-1 border-l-2 border-primary pl-4 transition-colors duration-1000 z-20" id="hudBorderTop" style="--delay: 0.2s">
+        <span class="text-primary text-[10px] uppercase font-black tracking-[0.3em] transition-colors duration-1000" id="hudSysText">System.Round</span>
+        <span id="modalRoundId" class="text-white font-mono text-lg md:text-xl font-bold tracking-wider">#8492</span>
+        <span id="modalTimestamp" class="text-gray-500 font-mono text-xs">14:32:00</span>
+      </div>
+
+      <!-- Center: Energy Core & Timer -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[500px] md:h-[500px] z-0 hud-element opacity-20 pointer-events-none" style="--delay: 0.1s">
+        <svg class="w-full h-full animate-[spin_20s_linear_infinite]" viewBox="0 0 200 200">
+           <circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 8" class="text-white/30" />
+           <circle id="coreRing" cx="100" cy="100" r="80" fill="none" stroke="#00FF88" stroke-width="2" stroke-dasharray="20 40 10 20" class="animate-[spin_10s_reverse_infinite] transition-colors duration-1000 opacity-40" />
+           <circle id="modalProgressCircle" cx="100" cy="100" r="70" fill="none" stroke="#00FF88" stroke-width="4" stroke-dasharray="439.8" stroke-dashoffset="0" style="transition: stroke-dashoffset 0.1s linear, stroke 1s ease;" class="-rotate-90 origin-center" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <!-- Center Main: Result -->
+      <div class="relative z-10 flex flex-col items-center hud-element w-full mt-4 md:mt-0" style="--delay: 0.4s">
+        <div id="resultIcon" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-2 border-primary/50 bg-bgDark/50 backdrop-blur-md flex items-center justify-center shadow-[0_0_50px_rgba(0,255,136,0.3)] mb-6 md:mb-8 relative transition-colors duration-1000">
+          <div class="absolute inset-0 rounded-full border border-white/20 animate-ping opacity-20"></div>
+          <i id="resultIconInner" class="fa-solid fa-trophy text-4xl md:text-6xl text-primary drop-shadow-[0_0_20px_currentColor] transition-colors duration-1000"></i>
+        </div>
+        
+        <h2 id="resultTitle" class="text-2xl sm:text-4xl md:text-6xl font-display font-black text-primary tracking-[0.2em] uppercase text-center mb-6 md:mb-12 drop-shadow-[0_0_30px_currentColor] transition-colors duration-1000">ROUND CLEARED</h2>
+        
+        <!-- Extra Results (2nd, 3rd, 4th) -->
+        <div id="modalExtraResults" class="flex gap-4 mb-8 opacity-0 transition-opacity duration-1000 delay-500 z-20">
+        </div>
+
+        <!-- 3D Holographic Tiles -->
+        <div class="flex gap-2 sm:gap-4 md:gap-8 perspective-1000 z-20">
+          <div class="w-16 h-24 sm:w-20 sm:h-28 md:w-28 md:h-40 bg-cardDark/80 backdrop-blur-xl rounded-2xl border border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(255,255,255,0.05)] flex items-start overflow-hidden relative transform transition-transform hover:scale-105 group">
+            <div class="absolute -inset-1 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            <div id="modalDigit0" class="w-full flex flex-col transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] font-mono text-4xl sm:text-5xl md:text-7xl font-black text-primary" style="transform: translateY(0)"></div>
+            <div id="modalDigitGlow0" class="absolute inset-0 bg-primary/20 blur-xl pointer-events-none transition-colors duration-1000 mix-blend-screen"></div>
+          </div>
+          <div class="w-16 h-24 sm:w-20 sm:h-28 md:w-28 md:h-40 bg-cardDark/80 backdrop-blur-xl rounded-2xl border border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(255,255,255,0.05)] flex items-start overflow-hidden relative transform transition-transform hover:scale-105 group">
+            <div class="absolute -inset-1 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            <div id="modalDigit1" class="w-full flex flex-col transition-transform duration-[1700ms] ease-[cubic-bezier(0.16,1,0.3,1)] font-mono text-4xl sm:text-5xl md:text-7xl font-black text-primary" style="transform: translateY(0)"></div>
+            <div id="modalDigitGlow1" class="absolute inset-0 bg-primary/20 blur-xl pointer-events-none transition-colors duration-1000 mix-blend-screen"></div>
+          </div>
+          <div class="w-16 h-24 sm:w-20 sm:h-28 md:w-28 md:h-40 bg-cardDark/80 backdrop-blur-xl rounded-2xl border border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(255,255,255,0.05)] flex items-start overflow-hidden relative transform transition-transform hover:scale-105 group">
+            <div class="absolute -inset-1 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            <div id="modalDigit2" class="w-full flex flex-col transition-transform duration-[2200ms] ease-[cubic-bezier(0.16,1,0.3,1)] font-mono text-4xl sm:text-5xl md:text-7xl font-black text-primary" style="transform: translateY(0)"></div>
+            <div id="modalDigitGlow2" class="absolute inset-0 bg-primary/20 blur-xl pointer-events-none transition-colors duration-1000 mix-blend-screen"></div>
+          </div>
+          <div class="w-16 h-24 sm:w-20 sm:h-28 md:w-28 md:h-40 bg-cardDark/80 backdrop-blur-xl rounded-2xl border border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_0_30px_rgba(255,255,255,0.05)] flex items-start overflow-hidden relative transform transition-transform hover:scale-105 group">
+            <div class="absolute -inset-1 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            <div id="modalDigit3" class="w-full flex flex-col transition-transform duration-[2700ms] ease-[cubic-bezier(0.16,1,0.3,1)] font-mono text-4xl sm:text-5xl md:text-7xl font-black text-primary" style="transform: translateY(0)"></div>
+            <div id="modalDigitGlow3" class="absolute inset-0 bg-primary/20 blur-xl pointer-events-none transition-colors duration-1000 mix-blend-screen"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side: Stats Panel (Floats in) -->
+      <div id="summaryCard" class="relative md:absolute md:right-10 md:top-1/2 md:-translate-y-1/2 w-full max-w-[320px] bg-bgDark/80 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 hidden flex-col gap-6 hud-element shadow-[0_30px_60px_rgba(0,0,0,0.8)] z-20 mt-8 md:mt-0" style="--delay: 0.6s">
+         <!-- Content injected by JS -->
+      </div>
+
+      <!-- Bottom: Controls & History -->
+      <div class="absolute bottom-8 md:bottom-10 w-full px-4 md:px-10 flex flex-col md:flex-row justify-between items-center md:items-end hud-element gap-4 md:gap-6 z-20 pb-safe" style="--delay: 0.8s">
+        
+        <!-- Recent Numbers -->
+        <div class="flex flex-col gap-2 md:gap-3 w-full md:w-auto">
+          <span class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em] flex items-center gap-2 justify-center md:justify-start">
+            <i class="fa-solid fa-clock-rotate-left"></i> History Log
+          </span>
+          <div id="recentDropsContainer" class="flex items-center justify-center md:justify-start gap-2 md:gap-3">
+             <!-- History items filled via JS -->
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center gap-3 md:gap-4 w-full md:w-auto justify-center md:justify-end">
+          <button id="historyBtn" class="hidden md:block px-6 py-4 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all font-bold text-xs uppercase tracking-widest">
+            View Ledger
+          </button>
+          <button id="collectBtn" class="hidden ripple-btn w-full md:w-auto px-6 md:px-10 py-3 md:py-4 bg-primary hover:bg-[#00e67a] text-bgDark font-display font-black text-xs md:text-sm rounded-xl uppercase tracking-[0.2em] transition-all shadow-[0_0_30px_rgba(0,255,136,0.4)] hover:shadow-[0_0_50px_rgba(0,255,136,0.6)] hover:-translate-y-1 shrink-0">
+            Collect Reward
+          </button>
+          <button id="nextRoundBtn" class="ripple-btn w-full md:w-auto px-6 md:px-10 py-3 md:py-4 bg-white/10 hover:bg-white/20 text-white font-display font-black text-xs md:text-sm rounded-xl uppercase tracking-[0.2em] transition-all border border-white/20 hover:border-white/40 hover:-translate-y-1 backdrop-blur-md relative overflow-hidden group shrink-0">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+            Next Round (<span id="btnCountdown">5</span>s)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] bg-cardDark border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] px-6 py-4 rounded-2xl flex items-center gap-4 transform -translate-y-10 opacity-0 transition-all duration-300 pointer-events-none backdrop-blur-xl">
+    <div id="toastIcon" class="text-primary text-2xl drop-shadow-[0_0_8px_rgba(0,255,136,0.6)]"><i class="fa-solid fa-circle-check"></i></div>
+    <span id="toastMsg" class="font-bold text-white tracking-wide text-sm">Bet Placed Successfully!</span>
+  </div>
+
+  <!-- STYLES FOR ANIMATIONS injected via JS -->
+  <style>
+    @keyframes shimmer {
+      100% { transform: translateX(100%) skewX(-12deg); }
+    }
+    @keyframes gradient-border {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes float-particle {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+    }
+    .premium-gradient-border {
+      position: relative;
+    }
+    .premium-gradient-border::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 26px;
+      background: linear-gradient(45deg, #00FF88, #FFD400, #00D4FF, #8B5CF6);
+      background-size: 300% 300%;
+      animation: gradient-border 4s ease infinite;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .premium-gradient-border.win-border::before {
+      opacity: 1;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+    }
+    .ripple-btn {
+      position: relative;
+      overflow: hidden;
+    }
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+    @keyframes ripple {
+      to { transform: scale(4); opacity: 0; }
+    }
+    .recent-win-item {
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .hud-element {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      transition-delay: var(--delay);
+    }
+    .hud-active .hud-element {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+  </style>
+
+  <script>
+    // --- UI Elements ---
+    const gridNumBtns = document.querySelectorAll('.grid-num-btn');
+    const betBottomSheet = document.getElementById('betBottomSheet');
+    const betBottomSheetBackdrop = document.getElementById('betBottomSheetBackdrop');
+    const betBottomSheetContent = document.getElementById('betBottomSheetContent');
+    const closeSheetBtn = document.getElementById('closeSheetBtn');
+    const sheetSelectedNumber = document.getElementById('sheetSelectedNumber');
+    const roundSelectionBtns = document.querySelectorAll('.round-btn');
+    const betTypeSelectionBtns = document.querySelectorAll('.bet-type-card');
+    const dynamicInputSection = document.getElementById('dynamicInputSection');
+    const sheetExtraInput = document.getElementById('sheetExtraInput');
+    const sheetQuickChips = document.getElementById('sheetQuickChips');
+    const sheetAmountInput = document.getElementById('sheetAmountInput');
+    const summarySequence = document.getElementById('summarySequence');
+    const summaryRound = document.getElementById('summaryRound');
+    const summaryMult = document.getElementById('summaryMult');
+    const summaryPayout = document.getElementById('summaryPayout');
+    const confirmBetBtn = document.getElementById('confirmBetBtn');
+    
+    const centerSpinBtn = document.getElementById('centerSpinBtn');
+    const activeUsersCount = document.getElementById('activeUsersCount');
+    const headerCurrentBet = document.getElementById('headerCurrentBet');
+    const wheelText = document.getElementById('wheelText');
+    const timerCircle = document.getElementById('timerCircle');
+    const statusText = document.getElementById('statusText');
+    const statusDot = document.getElementById('statusDot');
+    const wheelGlow = document.getElementById('wheelGlow');
+    const gameContainer = document.getElementById('gameContainer');
+
+    // --- State ---
+    let currentBalance = 10450;
+    let currentBet = null;
+    const walletBalanceEl = document.getElementById('walletBalance');
+
+    // --- Modals & Toasts ---
+    const resultModal = document.getElementById('resultModal');
+    const resultModalContent = document.getElementById('resultModalContent');
+    const resultTitle = document.getElementById('resultTitle');
+    const resultNum = document.getElementById('resultNum');
+    const resultPayout = document.getElementById('resultPayout');
+    const resultPayoutText = document.getElementById('resultPayoutText');
+    const resultIcon = document.getElementById('resultIcon');
+    
+    // Chat toggle logic
+    const headerChatToggleBtn = document.getElementById('headerChatToggleBtn');
+    const mobileChatBtn = document.getElementById('mobileChatBtn');
+    const floatingChatSidebar = document.getElementById('floatingChatSidebar');
+    const closeChatBtn = document.getElementById('closeChatBtn');
+
+    function toggleChat() {
+        floatingChatSidebar.classList.toggle('translate-x-full');
+        floatingChatSidebar.classList.toggle('opacity-0');
+        floatingChatSidebar.classList.toggle('pointer-events-none');
+    }
+
+    if(headerChatToggleBtn) {
+        headerChatToggleBtn.addEventListener('click', toggleChat);
+    }
+    if(mobileChatBtn) {
+        mobileChatBtn.addEventListener('click', toggleChat);
+    }
+    if(closeChatBtn) {
+        closeChatBtn.addEventListener('click', toggleChat);
+    }
+    
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalGlow = document.getElementById('modalGlow');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+    const toastIcon = document.getElementById('toastIcon');
+    let toastTimeout;
+
+    function showToast(msg, type = 'success') {
+      toastMsg.innerText = msg;
+      if (type === 'error') {
+        toastIcon.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+        toastIcon.className = 'text-danger text-2xl drop-shadow-[0_0_8px_rgba(255,77,79,0.6)]';
+      } else {
+        toastIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        toastIcon.className = 'text-primary text-2xl drop-shadow-[0_0_8px_rgba(0,255,136,0.6)]';
+      }
+      toast.classList.remove('-translate-y-10', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-10', 'opacity-0');
+      }, 3000);
+    }
+
+    // Audio Synthesis for Mock Sound Effects
+    function playSound(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            if (type === 'win') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1);
+                osc.start();
+                osc.stop(ctx.currentTime + 1);
+            } else if (type === 'pop') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(600, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.1);
+            }
+        } catch(e) {}
+    }
+
+    function rollDigit(elementId, targetChar) {
+        const el = document.getElementById(elementId);
+        el.style.transition = 'none';
+        el.style.transform = 'translateY(0)';
+        
+        let html = '';
+        for(let i=0; i<20; i++) {
+            html += `<div class="h-20 md:h-24 w-full flex items-center justify-center flex-shrink-0">${Math.floor(Math.random()*10)}</div>`;
+        }
+        html += `<div class="h-20 md:h-24 w-full flex items-center justify-center flex-shrink-0 drop-shadow-[0_0_10px_currentColor]">${targetChar}</div>`;
+        el.innerHTML = html;
+
+        void el.offsetHeight; // reflow
+
+        el.style.transition = ''; // restore class-based transition
+        // Move up 20 units out of 21 total units (the target is the 21st unit)
+        el.style.transform = `translateY(-${(20/21)*100}%)`;
+    }
+
+    let modalCountdownInterval;
+    let recentWinningNumbers = [];
+
+    function spawnParticles() {
+      const container = document.getElementById('particleContainer');
+      container.innerHTML = '';
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 6 + 2;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = (Math.random() * 100) + '%';
+        p.style.top = (80 + Math.random() * 20) + '%';
+        p.style.animation = `float-particle ${Math.random() * 2 + 2}s ease-in ${Math.random() * 2}s infinite`;
+        container.appendChild(p);
+      }
+    }
+
+    function updateRecentDrops(newNums) {
+      if (newNums) {
+        if (Array.isArray(newNums)) {
+           recentWinningNumbers = [...newNums, ...recentWinningNumbers];
+        } else {
+           recentWinningNumbers.unshift(newNums);
+        }
+        if (recentWinningNumbers.length > 8) recentWinningNumbers.length = 8;
+      }
+      const container = document.getElementById('recentDropsContainer');
+      container.innerHTML = '';
+      recentWinningNumbers.forEach((num, idx) => {
+        const isPrimary = idx % 4 === 0; // highlight every 1st prize in the history
+        const colorClass = isPrimary ? 'border-primary text-primary shadow-[0_0_10px_rgba(0,231,1,0.2)]' : 'border-white/10 text-gray-400 shadow-inner opacity-70';
+        container.innerHTML += `<div class="recent-win-item bg-bgDark border px-2 py-1 rounded text-xs font-mono font-bold ${colorClass}">${num}</div>`;
+      });
+    }
+
+    function startModalCountdown() {
+      clearInterval(modalCountdownInterval);
+      const circle = document.getElementById('modalProgressCircle');
+      const btnCountdown = document.getElementById('btnCountdown');
+      const totalTime = 5;
+      let timeLeft = totalTime;
+      
+      const CIRCUMFERENCE = 289; // 2 * pi * 46
+      
+      modalCountdownInterval = setInterval(() => {
+        timeLeft -= 0.1;
+        if (timeLeft <= 0) timeLeft = 0;
+        
+        const percent = (timeLeft / totalTime);
+        const offset = CIRCUMFERENCE - (percent * CIRCUMFERENCE);
+        circle.style.strokeDashoffset = offset;
+        
+        btnCountdown.innerText = Math.ceil(timeLeft);
+        
+        if (timeLeft <= 0) {
+          clearInterval(modalCountdownInterval);
+          hideModal();
+        }
+      }, 100);
+    }
+
+    function showModal(isWin, number, payout = 0, betAmount = 0) {
+      playSound('pop');
+      resultModal.classList.remove('hidden');
+      void resultModal.offsetWidth; // reflow
+      resultModal.classList.remove('opacity-0');
+      
+      const hudContainer = document.getElementById('resultModalContent');
+      hudContainer.classList.remove('scale-110', 'opacity-0');
+      hudContainer.classList.add('scale-100', 'opacity-100', 'hud-active');
+
+      document.getElementById('modalTimestamp').innerText = new Date().toLocaleTimeString();
+      
+      const numStr = Array.isArray(number) ? number[0] : number.toString().padStart(4, '0');
+      for(let i=0; i<4; i++) { 
+         rollDigit(`modalDigit${i}`, numStr[i]); 
+         document.getElementById(`modalDigit${i}`).style.color = ''; // reset color
+      }
+      
+      const extraContainer = document.getElementById('modalExtraResults');
+      if (extraContainer && Array.isArray(number)) {
+        extraContainer.innerHTML = `
+          <div class="flex flex-col items-center bg-black/40 px-4 py-2 rounded-xl border border-white/10">
+            <span class="text-[10px] text-gray-400 font-bold mb-1 tracking-widest">2ND PRIZE</span>
+            <span class="text-xl font-mono font-bold text-gray-200">${number[1]}</span>
+          </div>
+          <div class="flex flex-col items-center bg-black/40 px-4 py-2 rounded-xl border border-white/10">
+            <span class="text-[10px] text-gray-400 font-bold mb-1 tracking-widest">3RD PRIZE</span>
+            <span class="text-xl font-mono font-bold text-gray-200">${number[2]}</span>
+          </div>
+          <div class="flex flex-col items-center bg-black/40 px-4 py-2 rounded-xl border border-white/10">
+            <span class="text-[10px] text-gray-400 font-bold mb-1 tracking-widest">4TH PRIZE</span>
+            <span class="text-xl font-mono font-bold text-gray-200">${number[3]}</span>
+          </div>
+        `;
+        setTimeout(() => extraContainer.classList.remove('opacity-0'), 100);
+      }
+
+      updateRecentDrops(Array.isArray(number) ? number : [numStr]);
+      spawnParticles();
+      startModalCountdown();
+
+      const iconInner = document.getElementById('resultIconInner');
+      const resultIcon = document.getElementById('resultIcon');
+      const resultTitle = document.getElementById('resultTitle');
+      const summaryCard = document.getElementById('summaryCard');
+      const collectBtn = document.getElementById('collectBtn');
+      const progressCircle = document.getElementById('modalProgressCircle');
+      const coreRing = document.getElementById('coreRing');
+      const modalGlow = document.getElementById('modalGlow');
+      
+      const hudBorderTop = document.getElementById('hudBorderTop');
+      const hudSysText = document.getElementById('hudSysText');
+
+      if (isWin === true) {
+        modalGlow.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/20 blur-[100px] rounded-full pointer-events-none transition-colors duration-1000 z-0';
+        
+        resultIcon.className = 'w-32 h-32 rounded-full border-2 border-primary/50 bg-bgDark/50 backdrop-blur-md flex items-center justify-center shadow-[0_0_50px_rgba(0,255,136,0.3)] mb-8 relative transition-colors duration-1000';
+        iconInner.className = 'fa-solid fa-crown text-6xl text-primary drop-shadow-[0_0_20px_currentColor] transition-colors duration-1000';
+        
+        progressCircle.style.stroke = '#00FF88';
+        coreRing.setAttribute('stroke', '#00FF88');
+        
+        resultTitle.innerText = 'MISSION CLEARED';
+        resultTitle.className = 'text-4xl md:text-6xl font-display font-black text-primary tracking-[0.2em] uppercase text-center mb-12 drop-shadow-[0_0_30px_currentColor] transition-colors duration-1000';
+        
+        hudBorderTop.className = 'absolute top-10 left-10 hud-element flex flex-col gap-1 border-l-2 border-primary pl-4 transition-colors duration-1000';
+        hudSysText.className = 'text-primary text-[10px] uppercase font-black tracking-[0.3em] transition-colors duration-1000';
+
+        summaryCard.classList.remove('hidden');
+        summaryCard.classList.add('flex');
+        summaryCard.innerHTML = `
+          <div class="flex items-center gap-4 border-b border-white/5 pb-4">
+             <div class="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary text-xl"><i class="fa-solid fa-arrow-trend-up"></i></div>
+             <div class="flex flex-col">
+                <span class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Payout Acquired</span>
+                <span class="text-primary font-mono font-black text-xl drop-shadow-[0_0_10px_currentColor]">฿ ${payout.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+             </div>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">System Balance</span>
+            <span class="text-white font-mono font-bold text-sm">฿ ${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+          </div>
+        `;
+        
+        collectBtn.classList.remove('hidden');
+        
+        for(let i=0; i<4; i++) {
+            document.getElementById(`modalDigitGlow${i}`).className = 'absolute inset-0 bg-primary/20 blur-xl pointer-events-none transition-colors duration-1000 mix-blend-screen';
+            document.getElementById(`modalDigit${i}`).style.color = '#00FF88';
+        }
+
+        setTimeout(() => playSound('win'), 2000);
+        setTimeout(() => confetti({particleCount: 200, spread: 100, origin: {y: 0.5}, colors: ['#00FF88', '#FFD400', '#00D4FF'], disableForReducedMotion: true}), 2000);
+
+      } else if (isWin === false) {
+        modalGlow.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-danger/10 blur-[100px] rounded-full pointer-events-none transition-colors duration-1000 z-0';
+        
+        resultIcon.className = 'w-32 h-32 rounded-full border-2 border-danger/50 bg-bgDark/50 backdrop-blur-md flex items-center justify-center shadow-[0_0_50px_rgba(255,77,79,0.3)] mb-8 relative transition-colors duration-1000';
+        iconInner.className = 'fa-solid fa-xmark text-6xl text-danger drop-shadow-[0_0_20px_currentColor] transition-colors duration-1000';
+        
+        progressCircle.style.stroke = '#FF4D4F';
+        coreRing.setAttribute('stroke', '#FF4D4F');
+        
+        resultTitle.innerText = 'MISSION FAILED';
+        resultTitle.className = 'text-4xl md:text-6xl font-display font-black text-danger tracking-[0.2em] uppercase text-center mb-12 drop-shadow-[0_0_30px_currentColor] transition-colors duration-1000';
+        
+        hudBorderTop.className = 'absolute top-10 left-10 hud-element flex flex-col gap-1 border-l-2 border-danger pl-4 transition-colors duration-1000';
+        hudSysText.className = 'text-danger text-[10px] uppercase font-black tracking-[0.3em] transition-colors duration-1000';
+
+        summaryCard.classList.remove('hidden');
+        summaryCard.classList.add('flex');
+        summaryCard.innerHTML = `
+          <div class="flex items-center gap-4 border-b border-white/5 pb-4">
+             <div class="w-12 h-12 rounded-xl bg-danger/20 flex items-center justify-center text-danger text-xl"><i class="fa-solid fa-arrow-trend-down"></i></div>
+             <div class="flex flex-col">
+                <span class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Funds Lost</span>
+                <span class="text-danger font-mono font-black text-xl drop-shadow-[0_0_10px_currentColor]">฿ ${betAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+             </div>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-500 text-[10px] font-bold uppercase tracking-widest">System Balance</span>
+            <span class="text-white font-mono font-bold text-sm">฿ ${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+          </div>
+        `;
+        
+        collectBtn.classList.add('hidden');
+        
+        for(let i=0; i<4; i++) {
+            document.getElementById(`modalDigitGlow${i}`).className = 'absolute inset-0 bg-danger/10 blur-xl pointer-events-none transition-colors duration-1000 mix-blend-screen';
+            document.getElementById(`modalDigit${i}`).style.color = '#FF4D4F';
+        }
+        
+      } else {
+        // Observer Mode
+        modalGlow.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyanLight/10 blur-[100px] rounded-full pointer-events-none transition-colors duration-1000 z-0';
+        
+        resultIcon.className = 'w-32 h-32 rounded-full border-2 border-cyanLight/50 bg-bgDark/50 backdrop-blur-md flex items-center justify-center shadow-[0_0_50px_rgba(0,212,255,0.3)] mb-8 relative transition-colors duration-1000';
+        iconInner.className = 'fa-solid fa-info text-6xl text-cyanLight drop-shadow-[0_0_20px_currentColor] transition-colors duration-1000';
+        
+        progressCircle.style.stroke = '#00D4FF';
+        coreRing.setAttribute('stroke', '#00D4FF');
+        
+        resultTitle.innerText = 'ROUND OVER';
+        resultTitle.className = 'text-4xl md:text-6xl font-display font-black text-cyanLight tracking-[0.2em] uppercase text-center mb-12 drop-shadow-[0_0_30px_currentColor] transition-colors duration-1000';
+        
+        hudBorderTop.className = 'absolute top-10 left-10 hud-element flex flex-col gap-1 border-l-2 border-cyanLight pl-4 transition-colors duration-1000';
+        hudSysText.className = 'text-cyanLight text-[10px] uppercase font-black tracking-[0.3em] transition-colors duration-1000';
+
+        summaryCard.classList.add('hidden');
+        collectBtn.classList.add('hidden');
+        
+        for(let i=0; i<4; i++) {
+            document.getElementById(`modalDigitGlow${i}`).className = 'absolute inset-0 bg-cyanLight/10 blur-xl pointer-events-none transition-colors duration-1000 mix-blend-screen';
+            document.getElementById(`modalDigit${i}`).style.color = '#00D4FF';
+        }
+      }
+    }
+
+    function hideModal() {
+      const resultModal = document.getElementById('resultModal');
+      const hudContainer = document.getElementById('resultModalContent');
+      const extraContainer = document.getElementById('modalExtraResults');
+      if(extraContainer) extraContainer.classList.add('opacity-0');
+      
+      hudContainer.classList.remove('scale-100', 'opacity-100', 'hud-active');
+      hudContainer.classList.add('scale-110', 'opacity-0');
+      
+      resultModal.classList.add('opacity-0');
+      setTimeout(() => {
+        resultModal.classList.add('hidden');
+      }, 800);
+    }
+
+    document.getElementById('nextRoundBtn').addEventListener('click', hideModal);
+    document.getElementById('collectBtn').addEventListener('click', () => {
+        playSound('pop');
+        hideModal();
+    });
+
+    function updateWalletUI() {
+      walletBalanceEl.innerText = `฿ ${currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
+
+    let sheetState = {
+      number: '',
+      round: '',
+      type: '',
+      extraDigits: '',
+      multiplier: 0,
+      amount: 0
+    };
+
+    function updateSummary() {
+      let fullSeq = sheetState.number;
+      if (sheetState.type === 'akada' || sheetState.type === 'ring') {
+         fullSeq += sheetState.extraDigits;
+      } else if (sheetState.type === 'packet') {
+         fullSeq += ' (Packet)';
+      }
+      summarySequence.innerText = fullSeq || '-';
+      
+      let roundMap = {'1':'1st Spin', '2':'2nd Spin', '3':'3rd Spin', '4':'4th Spin'};
+      summaryRound.innerText = roundMap[sheetState.round] || '-';
+      
+      summaryMult.innerText = sheetState.multiplier > 0 ? `1x${sheetState.multiplier}` : '1x0';
+      
+      const payout = sheetState.amount * sheetState.multiplier;
+      summaryPayout.innerText = `₹${payout.toLocaleString()}`;
+      
+      // Validate Bet
+      let isValid = false;
+      if (sheetState.number && sheetState.round && sheetState.type && sheetState.amount > 0) {
+        if (sheetState.type === 'figure') isValid = true;
+        if (sheetState.type === 'akada' && sheetState.extraDigits.length === 1) isValid = true;
+        if (sheetState.type === 'ring' && sheetState.extraDigits.length === 2) isValid = true;
+        if (sheetState.type === 'packet') isValid = true;
+      }
+      confirmBetBtn.disabled = !isValid;
+    }
+
+    // Number Grid Click
+    gridNumBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        sheetState.number = e.target.innerText;
+        sheetSelectedNumber.innerText = sheetState.number;
+        
+        // Reset state
+        sheetState.type = '';
+        sheetState.extraDigits = '';
+        sheetState.multiplier = 0;
+        sheetExtraInput.value = '';
+        dynamicInputSection.classList.add('hidden');
+        betTypeSelectionBtns.forEach(b => {
+          b.classList.remove('border-gold');
+          b.classList.add('border-white/10');
+        });
+        
+        updateSummary();
+        openBottomSheet();
+      });
+    });
+
+    function openBottomSheet() {
+      betBottomSheet.classList.remove('hidden');
+      setTimeout(() => {
+        betBottomSheetBackdrop.classList.remove('opacity-0');
+        betBottomSheetContent.classList.remove('translate-y-full');
+      }, 10);
+    }
+
+    function closeBottomSheet() {
+      betBottomSheetBackdrop.classList.add('opacity-0');
+      betBottomSheetContent.classList.add('translate-y-full');
+      setTimeout(() => {
+        betBottomSheet.classList.add('hidden');
+      }, 300);
+    }
+
+    closeSheetBtn.addEventListener('click', closeBottomSheet);
+    betBottomSheetBackdrop.addEventListener('click', closeBottomSheet);
+
+    // Round Selection
+    roundSelectionBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const clicked = e.currentTarget;
+        roundSelectionBtns.forEach(b => {
+          b.classList.remove('border-gold', 'text-gold');
+          b.classList.add('border-white/10', 'text-gray-300');
+          b.querySelector('i').classList.replace('fa-check-square', 'fa-square');
+        });
+        clicked.classList.remove('border-white/10', 'text-gray-300');
+        clicked.classList.add('border-gold', 'text-gold');
+        clicked.querySelector('i').classList.replace('fa-square', 'fa-check-square');
+        sheetState.round = clicked.dataset.round;
+        updateSummary();
+      });
+    });
+
+    // Bet Type Selection
+    betTypeSelectionBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const clicked = e.currentTarget;
+        betTypeSelectionBtns.forEach(b => {
+          b.classList.remove('border-gold');
+          b.classList.add('border-white/10');
+        });
+        clicked.classList.remove('border-white/10');
+        clicked.classList.add('border-gold');
+        
+        sheetState.type = clicked.dataset.type;
+        sheetState.multiplier = parseInt(clicked.dataset.mult);
+        sheetState.extraDigits = '';
+        sheetExtraInput.value = '';
+        
+        if (sheetState.type === 'akada' || sheetState.type === 'ring') {
+          dynamicInputSection.classList.remove('hidden');
+        } else {
+          dynamicInputSection.classList.add('hidden');
+        }
+        updateSummary();
+      });
+    });
+
+    // Extra Input for Akada/Ring
+    sheetExtraInput.addEventListener('input', (e) => {
+      let raw = e.target.value.replace(/\D/g, '');
+      let allowedLen = sheetState.type === 'akada' ? 1 : (sheetState.type === 'ring' ? 2 : 0);
+      let unique = '';
+      // Filter duplicates including the already selected first number
+      let allChars = sheetState.number;
+      for(let char of raw) {
+         if(!allChars.includes(char)) {
+            unique += char;
+            allChars += char;
+         }
+      }
+      raw = unique.slice(0, allowedLen);
+      e.target.value = raw;
+      sheetState.extraDigits = raw;
+      updateSummary();
+    });
+
+    // Amount Selection
+    sheetQuickChips.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') return;
+      const text = e.target.innerText.replace('₹', '');
+      let amount = parseInt(text);
+      let current = sheetState.amount || 0;
+      current += amount;
+      sheetAmountInput.value = current;
+      sheetState.amount = current;
+      updateSummary();
+    });
+
+    sheetAmountInput.addEventListener('input', (e) => {
+      sheetState.amount = parseInt(e.target.value) || 0;
+      updateSummary();
+    });
+
+    // --- Mock Activity Feed ---
+    const liveActivityBody = document.getElementById('liveActivityBody');
+    const mockNames = ["Alex_Winner", "CryptoWhale", "Luna99", "DegenKing", "Satoshi_N", "LuckyStar", "ThaiRoller"];
+    function addMockActivity() {
+      if(Math.random() > 0.3) return; // Random interval
+      const isWin = Math.random() > 0.7;
+      const name = mockNames[Math.floor(Math.random() * mockNames.length)];
+      const wager = (Math.random() * 5000 + 100).toFixed(2);
+      const mult = isWin ? (Math.random() * 90 + 9).toFixed(2) : 0;
+      const payout = isWin ? (wager * mult).toFixed(2) : (-wager).toFixed(2);
+      
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-white/5 hover:bg-white/5 transition-colors activity-feed-enter';
+      tr.innerHTML = `
+        <td class="py-3 pl-4 flex items-center gap-2"><i class="fa-solid fa-crosshairs text-primary"></i> <span class="hidden sm:inline">Thai Lottery</span></td>
+        <td class="py-3 text-white">${name}</td>
+        <td class="py-3 text-right text-gray-400">฿ ${Number(wager).toLocaleString()}</td>
+        <td class="py-3 text-right text-white">x${mult}</td>
+        <td class="py-3 pr-4 text-right ${isWin ? 'text-primary font-black drop-shadow-[0_0_5px_rgba(0,255,136,0.3)]' : 'text-gray-500'}">${isWin ? '+' : ''}฿ ${Math.abs(payout).toLocaleString()}</td>
+      `;
+      liveActivityBody.prepend(tr);
+      if(liveActivityBody.children.length > 8) {
+        liveActivityBody.removeChild(liveActivityBody.lastChild);
+      }
+    }
+    setInterval(addMockActivity, 1500);
+
+    // --- Game Logic ---
+    let timeOffset = 0;
+    function getRemainingSeconds() {
+      const ms = Date.now() + timeOffset;
+      const interval = 30 * 60 * 1000;
+      let nextDrawTime = Math.ceil(ms / interval) * interval;
+      if (nextDrawTime === ms) nextDrawTime += interval;
+      return Math.max(0, Math.floor((nextDrawTime - ms) / 1000));
+    }
+
+    wheelText.addEventListener('click', () => {
+       const ms = Date.now() + timeOffset;
+       const interval = 30 * 60 * 1000;
+       let nextDrawTime = Math.ceil(ms / interval) * interval;
+       if (nextDrawTime === ms) nextDrawTime += interval;
+       const remainingMs = nextDrawTime - ms;
+       timeOffset += (remainingMs - 5000);
+       showToast('Fast Forward: 5 Seconds Remaining', 'info');
+    });
+    
+    let countdown = getRemainingSeconds();
+    let isDrawing = false;
+    let currentRotation = 0;
+    const spinWheelElement = document.getElementById('spinWheelElement');
+    const CIRCUMFERENCE = 339.292; // 2 * pi * 54
+
+    function setProgress(percent) {
+      const offset = CIRCUMFERENCE - percent / 100 * CIRCUMFERENCE;
+      timerCircle.style.strokeDashoffset = offset;
+      if (percent < 25) {
+        timerCircle.style.stroke = '#FF4D4F'; // Danger red
+        statusText.style.color = '#FF4D4F';
+        statusDot.style.backgroundColor = '#FF4D4F';
+        statusDot.style.boxShadow = '0 0 12px rgba(255,77,79,0.8)';
+      } else {
+        timerCircle.style.stroke = '#00FF88'; // Primary green
+        statusText.style.color = '#00FF88';
+        statusDot.style.backgroundColor = '#00FF88';
+        statusDot.style.boxShadow = '0 0 12px rgba(0,255,136,0.8)';
+      }
+    }
+
+    function gameLoop() {
+      if(isDrawing) return;
+      countdown = getRemainingSeconds();
+      
+      const percent = (countdown / 1800) * 100;
+      setProgress(percent);
+      
+      if (countdown <= 60 && !isDrawing && !currentBet) {
+        gridNumBtns.forEach(btn => {
+           btn.disabled = true;
+           btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+        });
+      } else if (countdown > 60 && !isDrawing && !currentBet) {
+        gridNumBtns.forEach(btn => {
+           btn.disabled = false;
+           btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+        });
+      }
+      
+      if(countdown <= 0) {
+        startDraw();
+      } else {
+        const mins = Math.floor(countdown / 60).toString().padStart(2, '0');
+        const secs = (countdown % 60).toString().padStart(2, '0');
+        wheelText.innerText = `${mins}:${secs}`;
+        
+        for(let i=0; i<4; i++) {
+          const d = document.getElementById(`digit-${i}`);
+          d.innerText = '?';
+          d.className = 'w-20 h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
+        }
+      }
+    }
+
+    function startDraw() {
+      isDrawing = true;
+      gridNumBtns.forEach(btn => {
+         btn.disabled = true;
+         btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+      });
+
+      if (isAutoBet && currentBet) { autoBetConfig = { ...currentBet }; }
+
+      statusText.innerText = 'DRAWING';
+      statusText.style.color = '#FFD400';
+      statusDot.style.backgroundColor = '#FFD400';
+      statusDot.style.boxShadow = '0 0 12px rgba(255,212,0,0.8)';
+      
+      const multiResultsContainer = document.getElementById('multiResultsContainer');
+      if(multiResultsContainer) {
+         multiResultsContainer.classList.add('opacity-0', 'translate-y-4');
+         multiResultsContainer.innerHTML = '';
+      }
+
+      function generateUniqueDigitString(length, excludeDigits = []) {
+        let available = ['0','1','2','3','4','5','6','7','8','9'].filter(d => !excludeDigits.includes(d));
+        let result = '';
+        for(let i=0; i<length; i++) {
+          if(available.length === 0) break;
+          const randomIndex = Math.floor(Math.random() * available.length);
+          result += available[randomIndex];
+          available.splice(randomIndex, 1);
+        }
+        return result;
+      }
+
+      window.generatedResults = [];
+      while(window.generatedResults.length < 4) {
+        let numStr = generateUniqueDigitString(4);
+        if(!window.generatedResults.includes(numStr)) {
+          window.generatedResults.push(numStr);
+        }
+      }
+      
+      // Demo Cheat: 50% win rate if bet placed
+      if (currentBet && Math.random() > 0.5) {
+         let missingLen = 4 - currentBet.target.length;
+         let excludeDigits = currentBet.target.split('');
+         let randomSuffix = generateUniqueDigitString(missingLen, excludeDigits);
+         const winIndex = Math.floor(Math.random() * 4);
+         window.generatedResults[winIndex] = currentBet.target + randomSuffix;
+      }
+      
+      let prizeIndex = 0;
+      
+      function drawPrize() {
+        if(prizeIndex >= 4) {
+          setTimeout(() => finishDraw(), 1000);
+          return;
+        }
+        
+        const winningNumStr = window.generatedResults[prizeIndex];
+        const targetDigits = winningNumStr.split('');
+        
+        for(let i=0; i<4; i++) {
+          const d = document.getElementById(`digit-${i}`);
+          d.innerText = '?';
+          d.className = 'w-20 h-24 md:w-24 md:h-32 rounded-3xl border border-white/10 bg-cardDark text-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center font-mono text-6xl md:text-7xl font-black transition-all duration-500 transform rotateX-10';
+        }
+        
+        wheelText.innerText = prizeIndex === 0 ? '!!' : `DRAW ${prizeIndex + 1}`;
+        wheelGlow.classList.remove('opacity-[0.15]');
+        wheelGlow.classList.add('opacity-40', 'animate-pulse');
+        
+        let digitIndex = 0;
+        
+        function spinDigit() {
+          if(digitIndex >= 4) {
+             setTimeout(() => {
+               const titles = ['1ST', '2ND', '3RD', '4TH'];
+               const multiContainer = document.getElementById('multiResultsContainer');
+               if (multiContainer) {
+                 if (prizeIndex === 0) multiContainer.classList.remove('opacity-0', 'translate-y-4');
+                 const colorClass = prizeIndex === 0 ? 'border-primary shadow-[0_0_15px_rgba(0,255,136,0.3)]' : 'border-white/10 shadow-lg';
+                 const textClass = prizeIndex === 0 ? 'text-primary' : 'text-white';
+                 multiContainer.innerHTML += `
+                    <div class="bg-cardDark px-3 py-2 md:px-5 md:py-3 rounded-xl border ${colorClass} text-center animate-bounce">
+                       <div class="text-[8px] md:text-[10px] text-gray-400 font-bold mb-1">${titles[prizeIndex]} PRIZE</div>
+                       <div class="text-lg md:text-2xl font-mono font-black ${textClass}">${winningNumStr}</div>
+                    </div>
+                 `;
+               }
+               prizeIndex++;
+               setTimeout(drawPrize, 1200);
+             }, 800);
+             return;
+          }
+          
+          const targetDigit = parseInt(targetDigits[digitIndex]);
+          const currentAngle = currentRotation % 360;
+          const targetAngle = 360 - (targetDigit * 36);
+          
+          let addedRotation = 5400 + (targetAngle - currentAngle);
+          if (addedRotation < 5400) addedRotation += 360;
+          currentRotation += addedRotation;
+          
+          const spinDuration = prizeIndex === 0 ? 4.5 : 2.0;
+          spinWheelElement.style.transition = `transform ${spinDuration}s cubic-bezier(0.1, 1, 0.1, 1)`;
+          spinWheelElement.style.transform = `rotate(${currentRotation}deg)`;
+          
+          setTimeout(() => {
+            const d = document.getElementById(`digit-${digitIndex}`);
+            d.innerText = targetDigit;
+            d.className = 'w-20 h-24 md:w-24 md:h-32 rounded-3xl border-2 border-primary bg-primary/10 text-primary shadow-[0_0_40px_rgba(0,255,136,0.3),inset_0_0_20px_rgba(0,255,136,0.1)] flex items-center justify-center font-mono text-6xl md:text-7xl font-black transition-all duration-300 transform scale-110 -rotateX-0';
+            
+            digitIndex++;
+            setTimeout(spinDigit, prizeIndex === 0 ? 200 : 100);
+          }, spinDuration * 1000);
+        }
+        
+        spinDigit();
+      }
+      
+      drawPrize();
+    }
+
+    function finishDraw() {
+      wheelGlow.classList.remove('opacity-40', 'animate-pulse');
+      wheelGlow.classList.add('opacity-[0.15]');
+      
+      let isWin = false;
+      if (currentBet) {
+        for(let i=0; i<4; i++) {
+          if (window.generatedResults[i].startsWith(currentBet.target)) {
+            isWin = true;
+            break;
+          }
+        }
+
+        if (isWin) {
+          let multiplier = (Math.pow(10, currentBet.target.length) * 0.9) / 4;
+          let payout = currentBet.amount * multiplier;
+          currentBalance += payout;
+          updateWalletUI();
+          
+          if (typeof confetti === 'function') {
+            confetti({
+              particleCount: 200,
+              spread: 90,
+              origin: { y: 0.6 },
+              colors: ['#00e701', '#FFD400', '#00D4FF', '#8B5CF6'],
+              disableForReducedMotion: true
+            });
+          }
+          setTimeout(() => showModal(true, window.generatedResults, payout), 600);
+        } else {
+          setTimeout(() => showModal(false, window.generatedResults, 0, currentBet.amount), 600);
+        }
+        currentBet = null;
+      } else {
+        setTimeout(() => showModal(null, window.generatedResults), 600);
+      }
+
+      setTimeout(() => {
+        isDrawing = false;
+        countdown = getRemainingSeconds();
+        gridNumBtns.forEach(btn => {
+           btn.disabled = false;
+           btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+        });
+        statusText.innerText = 'Accepting Bets';
+
+        if (isAutoBet && autoBetConfig) {
+           if (currentBalance >= autoBetConfig.amount) {
+               currentBalance -= autoBetConfig.amount;
+               updateWalletUI();
+               currentBet = { ...autoBetConfig };
+               showToast(`Auto Bet Placed: ₹${autoBetConfig.amount}`, 'success');
+               
+               gridNumBtns.forEach(btn => {
+                  btn.disabled = true;
+                  btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+               });
+           } else {
+               showToast('Auto Bet Stopped: Insufficient Balance', 'error');
+               isAutoBet = false;
+           }
+        }
+      }, 3500);
+    }
+
+    setInterval(gameLoop, 1000);
+
+    confirmBetBtn.addEventListener('click', () => {
+      if(isDrawing) return;
+      const amount = sheetState.amount;
+      let target = sheetState.number;
+      if (sheetState.type === 'akada' || sheetState.type === 'ring') target += sheetState.extraDigits;
+      else if (sheetState.type === 'packet') target = sheetState.number; // Just an example for packet
+      
+      if(!amount || amount <= 0) return showToast('Enter a valid amount!', 'error');
+      if(amount > currentBalance) return showToast('Insufficient balance!', 'error');
+      
+      currentBalance -= amount;
+      updateWalletUI();
+      currentBet = { amount, target, type: sheetState.type, round: sheetState.round, mult: sheetState.multiplier };
+      showToast(`Bet Placed: ₹${amount} on sequence ${target}`, 'success');
+      closeBottomSheet();
+    });
+
+    // Initialize UI
+    updateCalculations();
+    
+    // Add initial mock activity
+    for(let i=0; i<6; i++) addMockActivity();
+
+    // --- NEW PLATFORM INTERACTIVITY ---
+
+    // Dropdowns
+    const notifBtn = document.getElementById('headerNotifBtn');
+    const notifDropdown = document.getElementById('notifDropdown');
+    const profileBtn = document.getElementById('headerProfileBtn');
+    const profileDropdown = document.getElementById('profileDropdown');
+
+    if(notifBtn) {
+        notifBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notifDropdown.classList.toggle('hidden');
+            if(profileDropdown) profileDropdown.classList.add('hidden');
+        });
+    }
+
+    if(profileBtn) {
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+            if(notifDropdown) notifDropdown.classList.add('hidden');
+        });
+    }
+
+    document.addEventListener('click', () => {
+        if(notifDropdown) notifDropdown.classList.add('hidden');
+        if(profileDropdown) profileDropdown.classList.add('hidden');
+    });
+
+    // Deposit Modal
+    const depositBtn = document.getElementById('headerDepositBtn');
+    const depositModal = document.getElementById('depositModal');
+    const closeDepositBtn = document.getElementById('closeDepositBtn');
+
+    if(depositBtn) {
+        depositBtn.addEventListener('click', () => {
+            depositModal.classList.remove('hidden');
+            setTimeout(() => depositModal.classList.remove('opacity-0'), 10);
+        });
+    }
+    if(closeDepositBtn) {
+        closeDepositBtn.addEventListener('click', () => {
+            depositModal.classList.add('opacity-0');
+            setTimeout(() => depositModal.classList.add('hidden'), 300);
+        });
+    }
+
+    // View All Bets Modal
+    const viewAllBtn = document.querySelector('button.bg-white\\/5.hover\\:bg-white\\/10');
+    const allBetsModal = document.getElementById('allBetsModal');
+    const closeAllBetsBtn = document.getElementById('closeAllBetsBtn');
+    const allBetsModalBody = document.getElementById('allBetsModalBody');
+
+    if (viewAllBtn && allBetsModal) {
+        viewAllBtn.addEventListener('click', () => {
+            allBetsModalBody.innerHTML = liveActivityBody.innerHTML;
+            allBetsModal.classList.remove('hidden');
+            setTimeout(() => allBetsModal.classList.remove('opacity-0'), 10);
+        });
+    }
+
+    if(closeAllBetsBtn) {
+        closeAllBetsBtn.addEventListener('click', () => {
+            allBetsModal.classList.add('opacity-0');
+            setTimeout(() => allBetsModal.classList.add('hidden'), 300);
+        });
+    }
+
+    // Chat Functionality
+    const chatFeed = document.getElementById('chatFeed');
+    const chatInput = document.querySelector('input[placeholder="Say something..."]');
+    const chatSendBtn = document.querySelector('.fa-paper-plane')?.parentElement;
+
+    function sendChatMessage() {
+        if(!chatInput || !chatFeed) return;
+        const msg = chatInput.value.trim();
+        if(!msg) return;
+        const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        const html = `
+          <div class="flex flex-col gap-1 activity-feed-enter">
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded bg-gold/20 text-gold flex items-center justify-center text-[8px] font-black"><i class="fa-solid fa-crown"></i></span>
+              <span class="font-bold text-gold text-xs">Alex_Winner</span>
+              <span class="text-[10px] text-gray-600">${time}</span>
+            </div>
+            <p class="text-white pl-6 font-medium">${msg}</p>
+          </div>
+        `;
+        chatFeed.insertAdjacentHTML('beforeend', html);
+        chatInput.value = '';
+        chatFeed.scrollTop = chatFeed.scrollHeight;
+    }
+
+    if(chatSendBtn) {
+        chatSendBtn.addEventListener('click', sendChatMessage);
+    }
+    if(chatInput) {
+        chatInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') sendChatMessage();
+        });
+    }
+
+    // Sidebar Items Toasts
+    const sidebarButtons = document.querySelectorAll('aside button');
+    sidebarButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const text = btn.innerText.trim();
+            if(text.includes('Originals') || text.includes('Slots') || text.includes('Live Casino') || text.includes('Promotions')) {
+                showToast(`${text.split('\n')[0]} - Coming Soon!`, 'success');
+            }
+        });
+    });
+
+    // Modal History Link
+    const historyBtn = document.getElementById('historyBtn');
+    if(historyBtn) {
+        historyBtn.addEventListener('click', () => {
+            window.location.href = 'dashboard.html';
+        });
+    }
+
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    if (mobileMenuBtn && sidebar && sidebarOverlay) {
+      function toggleMenu() {
+        const isClosed = sidebar.classList.contains('-translate-x-full');
+        if (isClosed) {
+          sidebar.classList.remove('-translate-x-full');
+          sidebarOverlay.classList.remove('hidden');
+          setTimeout(() => sidebarOverlay.classList.remove('opacity-0'), 10);
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          sidebarOverlay.classList.add('opacity-0');
+          setTimeout(() => sidebarOverlay.classList.add('hidden'), 300);
+        }
+      }
+      mobileMenuBtn.addEventListener('click', toggleMenu);
+      sidebarOverlay.addEventListener('click', toggleMenu);
+    }
+
+    // Ripple Effect Logic
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('.ripple-btn');
+        if (!target) return;
+        
+        const circle = document.createElement('span');
+        const diameter = Math.max(target.clientWidth, target.clientHeight);
+        const radius = diameter / 2;
+        
+        const rect = target.getBoundingClientRect();
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - rect.left - radius}px`;
+        circle.style.top = `${e.clientY - rect.top - radius}px`;
+        circle.classList.add('ripple');
+        
+        const existingRipple = target.querySelector('.ripple');
+        if (existingRipple) existingRipple.remove();
+        
+        target.appendChild(circle);
+    });
+
+  </script>
+  <!-- BOTTOM SHEET (Bet Popup) -->
+  <div id="betBottomSheet" class="fixed inset-0 z-[100] hidden flex items-end justify-center">
+    <!-- Backdrop -->
+    <div id="betBottomSheetBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+    
+    <!-- Sheet Content -->
+    <div id="betBottomSheetContent" class="relative w-full max-w-[600px] bg-cardDark rounded-t-[32px] border-t border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.8)] transform translate-y-full transition-transform duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col">
+      <div class="p-6 md:p-8 flex flex-col gap-6">
+         <!-- Title & Selected Number -->
+         <div class="flex justify-between items-center">
+           <h2 class="text-2xl font-display font-black text-white">Place Your Bet</h2>
+           <button id="closeSheetBtn" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-times"></i></button>
+         </div>
+         
+         <div class="bg-bgDark rounded-2xl p-4 flex items-center justify-between border border-white/5">
+           <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">Selected Number</span>
+           <span id="sheetSelectedNumber" class="text-4xl font-mono font-black text-gold drop-shadow-[0_0_10px_rgba(255,212,0,0.5)]">7</span>
+         </div>
+         
+         <!-- Choose Betting Round -->
+         <div>
+           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Select Spin</h3>
+           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="roundSelection">
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="1"><i class="fa-regular fa-square"></i> 1st Spin</button>
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="2"><i class="fa-regular fa-square"></i> 2nd Spin</button>
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="3"><i class="fa-regular fa-square"></i> 3rd Spin</button>
+             <button class="round-btn p-3 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-xs sm:text-sm hover:border-gold hover:text-gold transition-colors flex items-center justify-center gap-2" data-round="4"><i class="fa-regular fa-square"></i> 4th Spin</button>
+           </div>
+         </div>
+         
+         <!-- Bet Type -->
+         <div>
+           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Type</h3>
+           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="betTypeSelection">
+             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="figure" data-mult="8">
+               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span><span class="text-gold font-mono font-bold">1x8</span></div>
+               <span class="text-xs text-gray-500">Single Digit Bet</span>
+             </button>
+             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="akada" data-mult="80">
+               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span><span class="text-gold font-mono font-bold">1x80</span></div>
+               <span class="text-xs text-gray-500">Two Digit Bet</span>
+             </button>
+             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="ring" data-mult="800">
+               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">RING</span><span class="text-gold font-mono font-bold">1x800</span></div>
+               <span class="text-xs text-gray-500">Three Digit Bet</span>
+             </button>
+             <button class="bet-type-card p-4 rounded-2xl border border-white/10 bg-bgDark flex flex-col gap-1 text-left hover:border-gold transition-all group" data-type="packet" data-mult="6000">
+               <div class="flex justify-between items-center"><span class="font-black text-white text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span><span class="text-gold font-mono font-bold">1x6000</span></div>
+               <span class="text-xs text-gray-500">Complete Combination</span>
+             </button>
+           </div>
+         </div>
+         
+         <!-- Dynamic Input for Akada/Ring -->
+         <div id="dynamicInputSection" class="hidden">
+           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Enter Remaining Digits</h3>
+           <input type="text" id="sheetExtraInput" class="w-full bg-bgDark text-white font-mono text-2xl p-4 text-center outline-none border border-white/10 focus:border-gold rounded-2xl transition-colors placeholder:text-gray-700" placeholder="e.g. 4">
+         </div>
+         
+         <!-- Bet Amount -->
+         <div>
+           <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Bet Amount</h3>
+           <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3" id="sheetQuickChips">
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹10</button>
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹20</button>
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹50</button>
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹100</button>
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹500</button>
+             <button class="bg-white/5 py-2 rounded-xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all shadow-sm">₹1000</button>
+           </div>
+           <div class="relative">
+             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gold font-bold">₹</span>
+             <input type="number" id="sheetAmountInput" class="w-full bg-bgDark text-white font-mono text-2xl p-4 pl-8 text-center outline-none border border-white/10 focus:border-gold rounded-2xl transition-colors placeholder:text-gray-700" placeholder="Custom Amount">
+           </div>
+         </div>
+         
+         <!-- Bet Summary -->
+         <div class="bg-gradient-to-br from-gold/10 to-transparent rounded-2xl p-5 border border-gold/30">
+           <div class="flex justify-between items-center mb-1">
+             <span class="text-xs font-bold text-gray-400">Total Sequence</span>
+             <span id="summarySequence" class="font-mono text-white font-bold tracking-widest">-</span>
+           </div>
+           <div class="flex justify-between items-center mb-1">
+             <span class="text-xs font-bold text-gray-400">Round</span>
+             <span id="summaryRound" class="text-white font-bold">-</span>
+           </div>
+           <div class="flex justify-between items-center mb-1">
+             <span class="text-xs font-bold text-gray-400">Winning Multiplier</span>
+             <span id="summaryMult" class="font-mono text-gold font-bold">1x0</span>
+           </div>
+           <div class="h-px bg-white/10 my-3"></div>
+           <div class="flex justify-between items-center">
+             <span class="text-sm font-bold text-gold uppercase tracking-widest">Potential Winning</span>
+             <span id="summaryPayout" class="font-mono text-2xl font-black text-gold drop-shadow-[0_0_8px_rgba(255,212,0,0.5)]">₹0</span>
+           </div>
+         </div>
+         
+         <!-- Confirm Button -->
+         <button id="confirmBetBtn" class="w-full bg-gold hover:bg-yellow-400 text-bgDark py-5 rounded-2xl font-display font-black uppercase tracking-[0.2em] text-lg shadow-[0_0_30px_rgba(255,212,0,0.4)] hover:shadow-[0_0_40px_rgba(255,212,0,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+           PLACE BET
+         </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
