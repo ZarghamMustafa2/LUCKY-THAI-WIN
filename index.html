@@ -1723,7 +1723,7 @@
         <i class="fa-solid fa-star text-gold text-[10px]"></i> Play
       </div>
       
-      <button class="relative flex items-center gap-4 w-full px-5 py-3.5 bg-white/5 rounded-2xl text-white font-bold border border-white/10 shadow-[inset_0_0_20px_rgba(0,255,136,0.05)] transition-all group overflow-hidden cursor-pointer" onclick="toggleMobileSidebar()">
+      <button class="relative flex items-center gap-4 w-full px-5 py-3.5 bg-white/5 rounded-2xl text-white font-bold border border-white/10 shadow-[inset_0_0_20px_rgba(0,255,136,0.05)] transition-all group overflow-hidden cursor-pointer" onclick="toggleMobileSidebar(); navigateToAppRoute('game-thai-4d');">
         <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary shadow-[0_0_10px_#00FF88]"></div>
         <div class="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
         <i class="fa-solid fa-crosshairs w-6 h-6 text-primary flex justify-center items-center text-lg drop-shadow-[0_0_8px_rgba(0,255,136,0.5)]"></i> 
@@ -1776,11 +1776,11 @@
         
         <!-- LEFT: Hamburger Menu & Dashboard Breadcrumb Title -->
         <div class="flex items-center gap-3">
-          <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" class="text-white hover:text-cyan-300 transition-colors p-1 Cursor-pointer flex items-center justify-center" title="Toggle Sidebar">
+          <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" class="text-white hover:text-cyan-300 transition-colors p-1 cursor-pointer flex items-center justify-center" title="Toggle Sidebar">
             <i class="fa-solid fa-bars text-xl sm:text-2xl"></i>
-          </button> </button>
+          </button>
           
-          <div class="flex items-center gap-1.5 text-xs sm:text-sm font-semibold tracking-wide">
+          <div onclick="navigateToAppRoute('dashboard')" class="flex items-center gap-1.5 text-xs sm:text-sm font-semibold tracking-wide cursor-pointer hover:opacity-80 transition-opacity">
             <span class="text-white font-bold">Dashboard</span>
             <span class="text-gray-400">.</span>
             <span id="headerProfileNameText" class="text-cyan-300 font-mono font-bold">ZarghamMustafa</span>
@@ -1877,13 +1877,14 @@
     <!-- SCROLLABLE MAIN (100% FULL SCREEN BPEXCH DASHBOARD LAYOUT) -->
     <main class="flex-1 overflow-y-auto custom-scrollbar p-2 sm:p-4 md:p-6 relative bg-[#0b1626] text-white w-full">
       
-      <div class="w-full mx-auto flex flex-col gap-4 sm:gap-5">
+      <!-- DASHBOARD VIEW SECTION (Clean Dashboard View) -->
+      <div id="dashboardViewSection" class="w-full mx-auto flex flex-col gap-4 sm:gap-5">
 
         <!-- 1. FEATURED GAME CARDS GRID (bpexch Style Full-Width) -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 w-full">
           
           <!-- Card 1: Existing Game - LUCKY THAI WIN / RITMU TV (Featured) -->
-          <div onclick="var el=document.getElementById('nextSpinBanner')||document.getElementById('gameContainer'); if(el) el.scrollIntoView({behavior:'smooth'});" class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-amber-600 via-amber-700 to-slate-900 border border-gold/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
+          <div onclick="navigateToAppRoute('game-thai-4d')" class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-amber-600 via-amber-700 to-slate-900 border border-gold/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
             <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
             <div class="absolute top-2.5 right-2.5 bg-red-600 border border-red-400 px-2 py-0.5 rounded-full text-[9px] font-black text-white uppercase tracking-wider flex items-center gap-1 shadow-md">
               <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> LIVE DRAW
@@ -1893,13 +1894,13 @@
               <h3 class="text-base sm:text-2xl font-black text-white font-display tracking-tight leading-tight group-hover:text-gold transition-colors">LUCKY THAI 4D</h3>
               <div class="flex items-center justify-between gap-2 mt-1.5">
                 <span class="text-[11px] sm:text-xs font-mono font-bold text-cyan-300">Next: <span id="cardCountdownTimer" class="text-gold font-black">00:60:00</span></span>
-                <span class="bg-gold text-slate-950 font-black text-[9px] sm:text-[10px] px-2 py-0.5 rounded-md uppercase tracking-wider">PLAY NOW</span>
+                <span class="bg-gold text-slate-950 font-black text-[9px] sm:text-[10px] px-2 py-0.5 rounded-md uppercase tracking-wider">PLAY GAME</span>
               </div>
             </div>
           </div>
 
           <!-- Card 2: SPORTS BOOK -->
-          <div class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-black border border-cyan-500/30 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
+          <div onclick="alert('Sports Book Odds & Betting feature coming soon!')" class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-black border border-cyan-500/30 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
             <div class="absolute right-2 top-2 opacity-30 group-hover:opacity-50 transition-opacity text-4xl sm:text-5xl text-cyan-400">
               <i class="fa-solid fa-trophy"></i>
@@ -1911,7 +1912,7 @@
           </div>
 
           <!-- Card 3: AviatorX -->
-          <div class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-red-950 via-red-900 to-black border border-red-500/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
+          <div onclick="alert('AviatorX Crash Game coming soon!')" class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-red-950 via-red-900 to-black border border-red-500/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
             <div class="absolute inset-0 bg-gradient-to-t from-black via-red-950/40 to-transparent"></div>
             <div class="absolute right-3 top-3 opacity-40 group-hover:opacity-70 transition-opacity text-3xl sm:text-4xl text-red-500">
               <i class="fa-solid fa-plane-up"></i>
@@ -1923,7 +1924,7 @@
           </div>
 
           <!-- Card 4: EUROPEAN ROULETTE -->
-          <div class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-purple-950 via-slate-900 to-black border border-purple-500/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
+          <div onclick="alert('European Roulette Live Table coming soon!')" class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-purple-950 via-slate-900 to-black border border-purple-500/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
             <div class="absolute inset-0 bg-gradient-to-t from-black via-purple-950/40 to-transparent"></div>
             <div class="absolute right-3 top-3 opacity-40 group-hover:opacity-70 transition-opacity text-3xl sm:text-4xl text-purple-400">
               <i class="fa-solid fa-chess-queen"></i>
@@ -2148,17 +2149,34 @@
           </div>
         </div>
 
-        <!-- 5. EXISTING GAME SECTION (LUCKY THAI WIN / RITMU TV 4D) -->
-        <div class="mt-2 flex flex-col gap-4">
-          <div class="bg-[#152a45] border border-gold/40 rounded-xl p-3 flex items-center justify-between text-white">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-gem text-gold text-lg"></i>
-              <span class="font-black text-base tracking-wide font-display">OUR FEATURED GAME — LUCKY THAI WIN 4D</span>
-            </div>
-            <button onclick="toggleWheelStage()" class="bg-gold text-slate-950 px-3 py-1 rounded-lg font-black text-xs uppercase cursor-pointer hover:bg-yellow-400 transition-all">
-              Toggle Full Stage
+      </div>
+
+      <!-- DEDICATED GAME PAGE SECTION (Opens when user clicks game card) -->
+      <div id="dedicatedGameViewSection" class="w-full mx-auto flex flex-col gap-4 sm:gap-5 hidden">
+        
+        <!-- Game Page Header Navigation Bar -->
+        <div class="bg-[#152a45] border border-cyan-500/30 rounded-2xl p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3 text-white shadow-xl">
+          <div class="flex items-center gap-3">
+            <button onclick="navigateToAppRoute('dashboard')" class="bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 hover:text-white border border-cyan-400/40 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer active:scale-95 shadow-md">
+              <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
             </button>
+            <div class="flex flex-col">
+              <h2 class="text-base sm:text-xl font-black text-white font-display flex items-center gap-2">
+                <i class="fa-solid fa-gem text-gold"></i> LUCKY THAI 4D LIVE
+              </h2>
+              <span class="text-[10px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider">Official Hourly Thai Lottery Stream & Betting Board</span>
+            </div>
           </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-mono font-bold text-gray-300 bg-black/40 px-3 py-1.5 rounded-xl border border-white/10 flex items-center gap-2">
+              <i class="fa-solid fa-clock text-gold animate-pulse"></i>
+              <span>Next Draw: <span id="gamePageTimer" class="text-gold font-black">00:60:00</span></span>
+            </span>
+          </div>
+        </div>
+
+        <!-- 5. EXISTING GAME CONTAINER (LUCKY THAI WIN / RITMU TV 4D) -->
+        <div class="flex flex-col gap-4">
 
           <!-- INLINE PLACE YOUR BET BOARD (Shown when Wheel Stage is collapsed into top timer) -->
           <div id="nextSpinBanner" class="order-1 xl:order-none glass-panel p-3.5 sm:p-6 flex flex-col gap-3.5 sm:gap-5 border-2 border-gold/40 shadow-[0_10px_30px_rgba(255,212,0,0.15)] transition-all group">
@@ -2474,15 +2492,18 @@
                   </div>
                 </div>
 
-                <!-- LIVE STREAM HELPER FUNCTIONS & CLOCK SYNC -->
+                <!-- LIVE STREAM HELPER FUNCTIONS, ROUTER & CLOCK SYNC -->
                 <script>
                 (function() {
                   function syncClock() {
                     var el = document.getElementById('ritmuTvCountdown');
                     var hEl = document.getElementById('headerTimerText');
                     var cardEl = document.getElementById('cardCountdownTimer');
+                    var gTimer = document.getElementById('gamePageTimer');
+
                     if (el && hEl) el.innerText = hEl.innerText;
                     if (cardEl && hEl) cardEl.innerText = hEl.innerText;
+                    if (gTimer && hEl) gTimer.innerText = hEl.innerText;
 
                     // Sync Compact Balance
                     var wEl = document.getElementById('walletBalance');
@@ -2494,6 +2515,39 @@
                   }
                   setInterval(syncClock, 1000);
                   syncClock();
+
+                  // Client-Side View Router
+                  window.navigateToAppRoute = function(routeName, pushState) {
+                    if (typeof pushState === 'undefined') pushState = true;
+                    var dashEl = document.getElementById('dashboardViewSection');
+                    var gameEl = document.getElementById('dedicatedGameViewSection');
+
+                    if (routeName === 'game-thai-4d' || routeName === '#game-thai-4d' || routeName === 'thai-lottery' || routeName === '#games/thai-4d') {
+                      if (dashEl) dashEl.classList.add('hidden');
+                      if (gameEl) gameEl.classList.remove('hidden');
+                      if (pushState) history.pushState({ route: 'game-thai-4d' }, '', '#games/thai-4d');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                      if (gameEl) gameEl.classList.add('hidden');
+                      if (dashEl) dashEl.classList.remove('hidden');
+                      if (pushState) history.pushState({ route: 'dashboard' }, '', '#dashboard');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  };
+
+                  window.addEventListener('popstate', function() {
+                    var hash = window.location.hash || '';
+                    if (hash.includes('game-thai-4d') || hash.includes('thai-lottery') || hash.includes('games/thai-4d')) {
+                      window.navigateToAppRoute('game-thai-4d', false);
+                    } else {
+                      window.navigateToAppRoute('dashboard', false);
+                    }
+                  });
+
+                  var initialHash = window.location.hash || '';
+                  if (initialHash.includes('game-thai-4d') || initialHash.includes('thai-lottery') || initialHash.includes('games/thai-4d')) {
+                    window.navigateToAppRoute('game-thai-4d', false);
+                  }
 
                   window.toggleRitmuTvSound = function(btn) {
                     var vid = document.getElementById('ritmuLiveVideoPlayer');
