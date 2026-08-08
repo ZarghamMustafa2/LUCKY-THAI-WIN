@@ -1807,6 +1807,42 @@
         </button>
       </div>
 
+      <!-- GUARANTEED LIVE COUNTDOWN SCRIPT: Runs 100% independently every second -->
+      <script>
+        (function() {
+          function _getRem() {
+            var now = new Date();
+            var next = new Date(now);
+            next.setMinutes(0, 0, 0);
+            next.setHours(next.getHours() + 1);
+            var rem = next.getTime() - now.getTime();
+            if (rem <= 0) { next.setHours(next.getHours() + 1); rem = next.getTime() - now.getTime(); }
+            return Math.max(1000, rem);
+          }
+          function _fmt(ms) {
+            var s = Math.max(0, Math.floor(ms / 1000));
+            var h = Math.floor(s / 3600);
+            var m = Math.floor((s % 3600) / 60);
+            var sec = Math.floor(s % 60);
+            var hS = String(h).padStart(2,'0'), mS = String(m).padStart(2,'0'), sS = String(sec).padStart(2,'0');
+            return {
+              hhmmss: hS+':'+mS+':'+sS,
+              short: (m > 0 || h > 0) ? (h > 0 ? h+'h '+m+'m '+sS+'s' : m+'m '+sS+'s') : '0m '+sS+'s'
+            };
+          }
+          function _tick() {
+            var rem = _getRem();
+            var f = _fmt(rem);
+            var hEl = document.getElementById('headerTimerText');
+            var bEl = document.getElementById('bannerCountdownText');
+            if (hEl) hEl.innerText = f.hhmmss;
+            if (bEl) bEl.innerText = f.short;
+          }
+          _tick();
+          setInterval(_tick, 1000);
+        })();
+      </script>
+
       <!-- RIGHT HEADER CONTROLS -->
       <div class="flex items-center gap-1 sm:gap-2.5 lg:gap-4">
         
