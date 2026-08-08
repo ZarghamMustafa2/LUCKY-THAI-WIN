@@ -2178,92 +2178,66 @@
                   </div>
                 </div>
 
-                <!-- RITMU TV LIVE WEBSITE — Embedded via public proxy -->
-                <div class="relative w-full bg-black overflow-hidden" style="height:600px;">
+                <!-- RITMU TV OFFICIAL LIVE BROADCAST STAGE -->
+                <div class="relative w-full bg-gradient-to-b from-[#06101e] to-[#02070e] overflow-hidden flex flex-col items-center justify-center p-6 sm:p-10" style="min-height:500px;">
 
-                  <!-- Loading spinner shown until iframe loads -->
-                  <div id="ritmuLoadingSpinner" class="absolute inset-0 flex flex-col items-center justify-center bg-[#020b14] z-20">
-                    <div class="w-16 h-16 rounded-full border-4 border-cyan-400/30 border-t-cyan-400 animate-spin mb-4"></div>
-                    <div class="text-cyan-400 font-bold text-sm">Loading RITMU TV...</div>
-                  </div>
+                  <!-- Subtle Tech Grid Background -->
+                  <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(#36d7b7 1px, transparent 1px); background-size: 24px 24px;"></div>
 
-                  <!-- iframe: tries multiple proxy sources automatically -->
-                  <iframe
-                    id="ritmuEmbedIframe"
-                    src="https://corsproxy.io/?url=https://www.ritmu.tv/"
-                    class="w-full h-full border-0 block relative z-10"
-                    allow="autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-write"
-                    title="Ritmu TV Official Live Stream"
-                    loading="lazy"
-                    onload="document.getElementById('ritmuLoadingSpinner').style.display='none';"
-                    onerror="window._ritmuTryNext();"
-                  ></iframe>
+                  <!-- Live Stream Card Container -->
+                  <div class="relative z-10 w-full max-w-xl bg-slate-900/90 border border-cyan-500/30 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-[0_0_50px_rgba(0,0,0,0.8),0_0_30px_rgba(54,215,183,0.15)] flex flex-col items-center text-center gap-6">
 
-                  <!-- Fallback overlay shown if ALL proxies fail -->
-                  <div id="ritmuIframeFallback" class="absolute inset-0 flex-col items-center justify-center bg-[#020b14] z-30 hidden">
-                    <div class="text-center px-6">
-                      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(54,215,183,0.6)]">
-                        <i class="fa-solid fa-tv text-black text-2xl"></i>
+                    <!-- Header Badge & Logo -->
+                    <div class="flex items-center gap-3">
+                      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 via-teal-500 to-emerald-500 flex items-center justify-center text-black shadow-[0_0_30px_rgba(54,215,183,0.6)]">
+                        <i class="fa-solid fa-tv text-2xl animate-pulse"></i>
                       </div>
-                      <div class="text-xl font-black text-white mb-2">RITMU TV LIVE</div>
-                      <p class="text-sm text-gray-400 mb-5">ritmu.tv is blocking all embed methods.<br>Please open it directly:</p>
-                      <a href="https://www.ritmu.tv" target="_blank" rel="noopener noreferrer"
-                         class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500 text-black font-black text-sm shadow-[0_0_30px_rgba(54,215,183,0.6)] hover:scale-105 transition-all">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> 📺 Open Ritmu TV Live
-                      </a>
+                      <div class="text-left">
+                        <h3 class="text-xl sm:text-2xl font-black text-white font-display tracking-wide flex items-center gap-2">
+                          RITMU TV LIVE <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping inline-block"></span>
+                        </h3>
+                        <p class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Official Hourly Thai 4D Lottery Broadcast</p>
+                      </div>
                     </div>
+
+                    <!-- Realtime Live Ticker -->
+                    <div class="w-full bg-black/60 border border-gold/40 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-inner">
+                      <div class="flex items-center gap-2 text-xs font-bold text-gray-300">
+                        <i class="fa-solid fa-stopwatch text-gold text-base animate-spin" style="animation-duration: 4s;"></i>
+                        <span>NEXT HOURLY DRAW IN:</span>
+                      </div>
+                      <div id="ritmuTvCountdown" class="font-mono text-2xl sm:text-3xl font-black text-gold tracking-wider">00:60:00</div>
+                    </div>
+
+                    <p class="text-xs sm:text-sm text-gray-300 max-w-md leading-relaxed">
+                      Watch live lottery draw broadcasts directly from <span class="text-cyan-400 font-bold">Ritmu TV</span> official satellite stream.
+                    </p>
+
+                    <!-- Direct Launch Action Button -->
+                    <a href="https://www.ritmu.tv/" target="_blank" rel="noopener noreferrer" 
+                       class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-slate-950 font-black text-sm uppercase tracking-widest shadow-[0_0_35px_rgba(54,215,183,0.5)] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-3 border border-cyan-200/50">
+                      <i class="fa-solid fa-circle-play text-lg"></i>
+                      <span>WATCH OFFICIAL RITMU TV LIVE</span>
+                      <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-75"></i>
+                    </a>
                   </div>
 
-                  <!-- Countdown overlay badge -->
-                  <div class="absolute bottom-3 left-3 z-40 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-gold/50 flex items-center gap-2 text-xs font-mono font-bold pointer-events-none">
-                    <i class="fa-solid fa-clock text-gold animate-pulse"></i>
-                    <span class="text-gray-300">Next draw: <span id="ritmuTvCountdown" class="text-gold font-black">--:--:--</span></span>
-                  </div>
-                  <!-- LIVE badge -->
-                  <div class="absolute top-3 left-3 z-40 flex items-center gap-1.5 bg-red-600/90 border border-red-400/40 px-2.5 py-1 rounded-full pointer-events-none">
-                    <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
-                    <span class="text-[10px] font-black text-white uppercase tracking-wider">LIVE</span>
+                  <!-- Overlay Badges -->
+                  <div class="absolute top-4 left-4 z-20 flex items-center gap-2 bg-red-600/90 border border-red-400/40 px-3 py-1 rounded-full text-xs font-black text-white uppercase tracking-wider shadow-lg">
+                    <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE BROADCAST ACTIVE
                   </div>
                 </div>
 
-                <!-- Proxy fallback engine -->
+                <!-- Live countdown sync script -->
                 <script>
                 (function() {
-                  var PROXIES = [
-                    'https://corsproxy.io/?url=https://www.ritmu.tv/',
-                    'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.ritmu.tv/'),
-                    'https://thingproxy.freeboard.io/fetch/https://www.ritmu.tv/',
-                    'https://cors.sh/https://www.ritmu.tv/'
-                  ];
-                  var idx = 0;
-                  window._ritmuTryNext = function() {
-                    idx++;
-                    var iframe = document.getElementById('ritmuEmbedIframe');
-                    if (idx < PROXIES.length && iframe) {
-                      iframe.src = PROXIES[idx];
-                    } else {
-                      // All proxies failed — show fallback
-                      var fb = document.getElementById('ritmuIframeFallback');
-                      var sp = document.getElementById('ritmuLoadingSpinner');
-                      if (fb) { fb.classList.remove('hidden'); fb.style.display='flex'; }
-                      if (sp) sp.style.display='none';
-                    }
-                  };
-                  // Auto-detect blank/failed load after 8 seconds
-                  setTimeout(function() {
-                    var iframe = document.getElementById('ritmuEmbedIframe');
-                    var sp = document.getElementById('ritmuLoadingSpinner');
-                    // If spinner still showing after 8s, try next proxy
-                    if (sp && sp.style.display !== 'none' && getComputedStyle(sp).display !== 'none') {
-                      if (idx < PROXIES.length - 1) {
-                        window._ritmuTryNext();
-                      } else {
-                        var fb = document.getElementById('ritmuIframeFallback');
-                        if (fb) { fb.classList.remove('hidden'); fb.style.display='flex'; }
-                        if (sp) sp.style.display='none';
-                      }
-                    }
-                  }, 8000);
+                  function syncClock() {
+                    var el = document.getElementById('ritmuTvCountdown');
+                    var hEl = document.getElementById('headerTimerText');
+                    if (el && hEl) el.innerText = hEl.innerText;
+                  }
+                  setInterval(syncClock, 1000);
+                  syncClock();
                 })();
                 </script>
                 <!-- Hidden elements to preserve JS compatibility -->
