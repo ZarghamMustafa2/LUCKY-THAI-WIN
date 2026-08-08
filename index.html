@@ -3774,6 +3774,7 @@
         const now = new Date();
         const remainingMs = getRealClockRemainingMs();
         const totalSecs = Math.floor(remainingMs / 1000);
+        const remainingSecs = totalSecs;
         const engine = window.TimerEngine || (typeof TimerEngine !== 'undefined' ? TimerEngine : null);
         const time = engine ? engine.formatSeconds(totalSecs) : formatTime(totalSecs);
         const nextDrawDate = new Date(now.getTime() + remainingMs);
