@@ -3753,12 +3753,30 @@
       };
     }
 
+    function getRealClockRemainingMs() {
+      if (typeof window !== 'undefined' && window.TimerEngine && typeof window.TimerEngine.getRemainingMs === 'function') {
+        return window.TimerEngine.getRemainingMs();
+      }
+      var now = new Date();
+      var nextDraw = new Date(now);
+      nextDraw.setMinutes(0, 0, 0);
+      nextDraw.setHours(nextDraw.getHours() + 1);
+      var rem = nextDraw.getTime() - now.getTime();
+      if (rem <= 0) {
+        nextDraw.setHours(nextDraw.getHours() + 1);
+        rem = nextDraw.getTime() - now.getTime();
+      }
+      return Math.max(1000, rem);
+    }
+
     function gameLoop() {
       try {
-        const engine = window.TimerEngine || (typeof TimerEngine !== 'undefined' ? TimerEngine : null);
-        const remainingMs = engine ? engine.getRemainingMs() : 3600000;
+        const now = new Date();
+        const remainingMs = getRealClockRemainingMs();
         const totalSecs = Math.floor(remainingMs / 1000);
+        const engine = window.TimerEngine || (typeof TimerEngine !== 'undefined' ? TimerEngine : null);
         const time = engine ? engine.formatSeconds(totalSecs) : formatTime(totalSecs);
+        const nextDrawDate = new Date(now.getTime() + remainingMs);
         const isExactZero = remainingMs <= 1000;
         const percent = (totalSecs / 3600) * 100;
 
