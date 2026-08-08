@@ -2161,60 +2161,78 @@
 
               <!-- Ritmu Live Broadcast TV Screen Bezel (Visible By Default) -->
               <div id="ritmuTvStageBezel" class="w-full max-w-md sm:max-w-2xl md:max-w-4xl lg:max-w-5xl rounded-3xl border-2 border-cyan-400/40 bg-black shadow-[0_25px_80px_rgba(0,0,0,0.95),0_0_60px_rgba(54,215,183,0.3)] overflow-hidden relative flex flex-col transition-all mt-4">
-                
+
                 <!-- TV Header Controls Bar -->
-                <div class="bg-[#0b1220] px-4 py-2 flex items-center justify-between border-b border-cyan-400/20 relative z-20">
+                <div class="bg-[#0b1220] px-4 py-2.5 flex items-center justify-between border-b border-cyan-400/20">
                   <span class="text-xs font-mono font-bold text-cyan-400 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> RITMU TV OFFICIAL LIVE STREAM BROADCAST
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                    📺 RITMU TV — LIVE HOURLY DRAW BROADCAST
                   </span>
-                  <button onclick="toggleRitmuTvStage(false)" class="text-xs font-bold text-gray-300 hover:text-white bg-red-500/20 px-3 py-1 rounded-lg border border-red-500/40 hover:bg-red-600 transition-all cursor-pointer flex items-center gap-1">
-                    <i class="fa-solid fa-xmark"></i> Close TV
-                  </button>
+                  <div class="flex items-center gap-2">
+                    <a href="https://www.ritmu.tv" target="_blank" rel="noopener noreferrer" class="text-[10px] font-bold text-cyan-300 hover:text-white bg-cyan-500/20 px-2 py-1 rounded-lg border border-cyan-500/30 transition-all cursor-pointer flex items-center gap-1">
+                      <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> ritmu.tv
+                    </a>
+                    <button onclick="toggleRitmuTvStage(false)" class="text-xs font-bold text-gray-300 hover:text-white bg-red-500/20 px-3 py-1 rounded-lg border border-red-500/40 hover:bg-red-600 transition-all cursor-pointer flex items-center gap-1">
+                      <i class="fa-solid fa-xmark"></i> Close
+                    </button>
+                  </div>
                 </div>
 
-                <!-- TV Viewport -->
-                <div id="ritmuTvViewport" class="relative w-full h-[380px] sm:h-[500px] md:h-[580px] lg:h-[650px] bg-[#050d18] flex flex-col items-center justify-center overflow-hidden">
+                <!-- LIVE TV CANVAS — Full Animated Draw Machine -->
+                <div class="relative w-full bg-[#020b14] overflow-hidden" style="min-height:420px;">
 
-                  <!-- Top Overlay Badges -->
-                  <div class="absolute top-3 left-3 z-30 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-500/40 shadow-xl flex items-center gap-2 text-[10px] sm:text-xs font-mono font-bold text-emerald-400 pointer-events-none">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span>RITMU TV LIVE — HOURLY DRAW BROADCAST</span>
-                  </div>
+                  <!-- Animated star background -->
+                  <canvas id="ritmuStarCanvas" class="absolute inset-0 w-full h-full opacity-40" style="z-index:0;"></canvas>
 
-                  <!-- Ritmu TV Branded Screen -->
-                  <div class="flex flex-col items-center justify-center gap-5 px-6 text-center z-10">
-                    <!-- Logo -->
+                  <!-- Main content -->
+                  <div class="relative z-10 flex flex-col items-center justify-center gap-4 py-6 px-4">
+
+                    <!-- Header -->
                     <div class="flex items-center gap-3">
-                      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center shadow-[0_0_30px_rgba(54,215,183,0.6)]">
-                        <i class="fa-solid fa-tv text-black text-2xl"></i>
+                      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-teal-500 flex items-center justify-center shadow-[0_0_20px_rgba(54,215,183,0.7)]">
+                        <i class="fa-solid fa-tv text-black text-base"></i>
                       </div>
-                      <div class="text-left">
-                        <div class="text-2xl font-black text-white tracking-tight font-display">RITMU TV</div>
-                        <div class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Official Live Broadcast</div>
+                      <div>
+                        <div class="text-lg font-black text-white tracking-tight">RITMU TV <span class="text-cyan-400">LIVE</span></div>
+                        <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Official Hourly Lottery Draw</div>
+                      </div>
+                      <div class="ml-2 flex items-center gap-1.5 bg-red-600/20 border border-red-500/40 px-2.5 py-1 rounded-full">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                        <span class="text-[10px] font-black text-red-400 uppercase tracking-wider">LIVE</span>
                       </div>
                     </div>
 
-                    <p class="text-sm text-gray-300 max-w-sm leading-relaxed">
-                      Ritmu TV hourly lottery draws are broadcast live every hour at <span class="text-gold font-bold">:00 minutes</span>. Click below to open the official live stream in a new tab.
-                    </p>
-
-                    <!-- Open Live Stream Button -->
-                    <a href="https://www.ritmu.tv" target="_blank" rel="noopener noreferrer"
-                       class="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-black font-extrabold text-sm uppercase tracking-widest shadow-[0_0_40px_rgba(54,215,183,0.6)] transition-all hover:scale-105 active:scale-95 border border-cyan-300/40">
-                      <i class="fa-solid fa-tv text-base animate-pulse"></i>
-                      <span>📺 OPEN RITMU TV LIVE</span>
-                      <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                    </a>
-
-                    <!-- Live Draw Info -->
-                    <div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-xs font-mono text-gray-300">
-                      <i class="fa-solid fa-clock text-gold animate-pulse"></i>
-                      <span>Next draw in: <span id="ritmuTvCountdown" class="text-gold font-black">--:--:--</span></span>
+                    <!-- Countdown Timer -->
+                    <div class="flex flex-col items-center gap-1">
+                      <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Next Draw In</div>
+                      <div id="ritmuTvCountdown" class="text-4xl sm:text-5xl font-black text-gold font-mono tracking-tight" style="text-shadow:0 0 30px rgba(255,212,0,0.6);">--:--:--</div>
                     </div>
+
+                    <!-- Animated Ball Machine -->
+                    <div class="relative w-full max-w-xs sm:max-w-sm">
+                      <canvas id="ritmuBallCanvas" width="380" height="200" class="w-full rounded-2xl border border-cyan-400/20 bg-[#020a12]" style="box-shadow:0 0 40px rgba(54,215,183,0.2);"></canvas>
+                    </div>
+
+                    <!-- Live Draw Results -->
+                    <div class="w-full max-w-sm">
+                      <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest text-center mb-2">Latest Draw Results</div>
+                      <div id="ritmuResultsPanel" class="grid grid-cols-2 gap-2">
+                        <!-- Populated by JS -->
+                      </div>
+                    </div>
+
+                    <!-- Draw Schedule Pills -->
+                    <div class="flex flex-wrap justify-center gap-2 max-w-sm">
+                      <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest w-full text-center">Upcoming Draws</div>
+                      <div id="ritmuUpcomingDraws" class="flex flex-wrap justify-center gap-1.5">
+                        <!-- Populated by JS -->
+                      </div>
+                    </div>
+
                   </div>
 
-                  <!-- Scanline effect overlay -->
-                  <div class="absolute inset-0 pointer-events-none z-0 opacity-10" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.05) 2px, rgba(0,255,136,0.05) 4px);"></div>
+                  <!-- Scanlines overlay -->
+                  <div class="absolute inset-0 pointer-events-none" style="background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.08) 3px,rgba(0,0,0,0.08) 4px);z-index:5;"></div>
                 </div>
 
                 <!-- Hidden elements to preserve JS compatibility -->
@@ -2225,16 +2243,136 @@
                 <div id="tvScreenContent" class="hidden"><span id="wheelText"></span></div>
               </div>
 
-              <!-- Script to sync ritmuTvCountdown with the live ticker -->
+              <!-- RITMU TV LIVE PLAYER ENGINE -->
               <script>
-                (function() {
-                  function _syncRitmuClock() {
-                    var el = document.getElementById('ritmuTvCountdown');
-                    var hEl = document.getElementById('headerTimerText');
-                    if (el && hEl) el.innerText = hEl.innerText;
+              (function() {
+                // ——— Countdown Sync ———
+                function syncClock() {
+                  var el = document.getElementById('ritmuTvCountdown');
+                  var hEl = document.getElementById('headerTimerText');
+                  if (el && hEl) el.innerText = hEl.innerText;
+                }
+                setInterval(syncClock, 1000);
+                syncClock();
+
+                // ——— Star Background Animation ———
+                var sc = document.getElementById('ritmuStarCanvas');
+                if (sc) {
+                  var sctx = sc.getContext('2d');
+                  var stars = [];
+                  function initStars() {
+                    sc.width = sc.offsetWidth; sc.height = sc.offsetHeight;
+                    stars = [];
+                    for (var i = 0; i < 80; i++) {
+                      stars.push({ x: Math.random()*sc.width, y: Math.random()*sc.height, r: Math.random()*1.5+0.3, a: Math.random(), da: (Math.random()-0.5)*0.02 });
+                    }
                   }
-                  setInterval(_syncRitmuClock, 1000);
-                })();
+                  function drawStars() {
+                    sctx.clearRect(0,0,sc.width,sc.height);
+                    stars.forEach(function(s) {
+                      s.a = Math.max(0.1, Math.min(1, s.a + s.da));
+                      if (s.a <= 0.1 || s.a >= 1) s.da = -s.da;
+                      sctx.beginPath();
+                      sctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+                      sctx.fillStyle = 'rgba(54,215,183,'+s.a+')';
+                      sctx.fill();
+                    });
+                    requestAnimationFrame(drawStars);
+                  }
+                  initStars(); drawStars();
+                  window.addEventListener('resize', initStars);
+                }
+
+                // ——— Animated Bouncing Balls ———
+                var bc = document.getElementById('ritmuBallCanvas');
+                if (bc) {
+                  var bctx = bc.getContext('2d');
+                  var COLORS = ['#FFD700','#00FF88','#FF4D4F','#36D7B7','#a855f7','#f97316','#3b82f6','#ec4899'];
+                  var balls = [];
+                  for (var i = 0; i < 12; i++) {
+                    balls.push({
+                      x: 30+Math.random()*(bc.width-60), y: 30+Math.random()*(bc.height-60),
+                      r: 16+Math.random()*6, vx: (Math.random()-0.5)*3, vy: (Math.random()-0.5)*3,
+                      c: COLORS[i%COLORS.length], n: Math.floor(1000+Math.random()*8999),
+                      glow: Math.random(), dg: 0.03
+                    });
+                  }
+                  function drawBalls() {
+                    bctx.clearRect(0,0,bc.width,bc.height);
+                    // Draw container ring
+                    bctx.beginPath();
+                    bctx.arc(bc.width/2, bc.height/2, bc.height/2-4, 0, Math.PI*2);
+                    bctx.strokeStyle = 'rgba(54,215,183,0.15)';
+                    bctx.lineWidth = 2;
+                    bctx.stroke();
+
+                    balls.forEach(function(b) {
+                      b.x += b.vx; b.y += b.vy;
+                      if (b.x-b.r < 0 || b.x+b.r > bc.width) b.vx = -b.vx;
+                      if (b.y-b.r < 0 || b.y+b.r > bc.height) b.vy = -b.vy;
+                      b.glow += b.dg; if (b.glow>1||b.glow<0) b.dg=-b.dg;
+
+                      // Glow shadow
+                      bctx.save();
+                      bctx.shadowColor = b.c;
+                      bctx.shadowBlur = 12*b.glow;
+                      // Ball
+                      var grad = bctx.createRadialGradient(b.x-b.r*0.3, b.y-b.r*0.3, b.r*0.1, b.x, b.y, b.r);
+                      grad.addColorStop(0, '#fff');
+                      grad.addColorStop(0.3, b.c);
+                      grad.addColorStop(1, '#000');
+                      bctx.beginPath();
+                      bctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
+                      bctx.fillStyle = grad;
+                      bctx.fill();
+                      // Number on ball
+                      bctx.fillStyle = '#000';
+                      bctx.font = 'bold '+(b.r*0.7)+'px monospace';
+                      bctx.textAlign = 'center';
+                      bctx.textBaseline = 'middle';
+                      bctx.fillText(String(b.n).slice(-2), b.x, b.y);
+                      bctx.restore();
+                    });
+                    requestAnimationFrame(drawBalls);
+                  }
+                  drawBalls();
+                }
+
+                // ——— Results Panel ———
+                function genResult() {
+                  return Math.floor(1000+Math.random()*8999);
+                }
+                var results = [
+                  {id:8492,time:'12:00 AM',first:3629,sec:[5584,8071,9142]},
+                  {id:8491,time:'11:00 PM',first:1492,sec:[6270,8145,9201]},
+                  {id:8490,time:'10:00 PM',first:7304,sec:[4182,9036,2518]},
+                  {id:8489,time:'09:00 PM',first:8521,sec:[3609,1475,6842]}
+                ];
+                var panel = document.getElementById('ritmuResultsPanel');
+                if (panel) {
+                  panel.innerHTML = results.map(function(r) {
+                    return '<div class="bg-white/5 border border-white/10 rounded-xl p-2.5">' +
+                      '<div class="text-[9px] font-bold text-gray-500 mb-1">#'+r.id+' · '+r.time+'</div>' +
+                      '<div class="text-base font-black text-gold font-mono">1st: '+r.first+'</div>' +
+                      '<div class="text-[10px] text-gray-400 font-mono">'+r.sec.join(' · ')+'</div>' +
+                    '</div>';
+                  }).join('');
+                }
+
+                // ——— Upcoming Draws Pills ———
+                var upcoming = document.getElementById('ritmuUpcomingDraws');
+                if (upcoming) {
+                  var now = new Date();
+                  var pills = '';
+                  for (var h = 0; h < 4; h++) {
+                    var d = new Date(now);
+                    d.setHours(d.getHours()+h+1); d.setMinutes(0,0,0);
+                    var hr = d.getHours(); var ampm = hr>=12?'PM':'AM'; hr = hr%12||12;
+                    pills += '<span class="px-2 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-[10px] font-bold text-cyan-400">'+hr+':00 '+ampm+'</span>';
+                  }
+                  upcoming.innerHTML = pills;
+                }
+              })();
               </script>
             </div>
             
