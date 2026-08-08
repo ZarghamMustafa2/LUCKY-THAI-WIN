@@ -3059,6 +3059,9 @@
     }
   </style>
 
+  <!-- Dedicated Standalone Timer Engine Module -->
+  <script src="timer.js"></script>
+
   <script>
     // --- UI Elements ---
     const gridNumBtns = document.querySelectorAll('.grid-num-btn');
@@ -3752,26 +3755,12 @@
 
     function gameLoop() {
       try {
-        const now = new Date();
-        const currentMs = now.getTime();
-        
-        // Calculate next scheduled draw time (top of the hour: :00:00 sharp)
-        let nextDrawDate = new Date(now);
-        nextDrawDate.setMinutes(0, 0, 0);
-        nextDrawDate.setHours(nextDrawDate.getHours() + 1);
-        
-        let remainingMs = nextDrawDate.getTime() - currentMs;
+        const engine = window.TimerEngine || (typeof TimerEngine !== 'undefined' ? TimerEngine : null);
+        const remainingMs = engine ? engine.getRemainingMs() : 3600000;
+        const totalSecs = Math.floor(remainingMs / 1000);
+        const time = engine ? engine.formatSeconds(totalSecs) : formatTime(totalSecs);
         const isExactZero = remainingMs <= 1000;
-        
-        // Zero-State Rollover: When zero is reached, trigger draw transition and advance to next scheduled draw
-        if (remainingMs <= 0) {
-          nextDrawDate.setHours(nextDrawDate.getHours() + 1);
-          remainingMs = nextDrawDate.getTime() - currentMs;
-        }
-        
-        let remainingSecs = Math.max(0, Math.floor(remainingMs / 1000));
-        const time = formatTime(remainingSecs);
-        const percent = (remainingSecs / 3600) * 100;
+        const percent = (totalSecs / 3600) * 100;
 
         // Update diagnostic telemetry state:
         window.lastTimerUpdateTimestamp = now.toISOString();

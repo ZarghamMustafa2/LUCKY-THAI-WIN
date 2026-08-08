@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import AuthModal from '@/components/AuthModal';
 import SpinWheel from '@/components/SpinWheel';
 import Confetti from 'react-confetti';
+import { getNextRealClockMs, startTimerTicker } from '@/utils/timer';
 import { 
   Menu, Search, Wallet, User, Bell, ChevronDown, MessageSquare, Headset, ShieldCheck, 
   Settings, TrendingUp, Trophy, Flame, PlayCircle, Star, Hash, Gamepad2, Gift, Dices, Clover
@@ -19,19 +20,6 @@ export default function Home() {
   const [selectedRound, setSelectedRound] = useState<number>(1);
   const [betType, setBetType] = useState<string>('figure');
   const [extraDigits, setExtraDigits] = useState('');
-  
-  const getNextRealClockMs = () => {
-    const now = new Date();
-    let nextDrawDate = new Date(now);
-    nextDrawDate.setMinutes(0, 0, 0);
-    nextDrawDate.setHours(nextDrawDate.getHours() + 1);
-    let remMs = nextDrawDate.getTime() - now.getTime();
-    if (remMs <= 0) {
-      nextDrawDate.setHours(nextDrawDate.getHours() + 1);
-      remMs = nextDrawDate.getTime() - now.getTime();
-    }
-    return Math.max(1000, remMs);
-  };
 
   // Existing state with immediate initial real-time clock calculation
   const [remainingMs, setRemainingMs] = useState<number>(getNextRealClockMs);
@@ -52,13 +40,11 @@ export default function Home() {
   const [totalWagered, setTotalWagered] = useState(45200000);
   const [jackpotPool, setJackpotPool] = useState(5100000);
 
-  // Dedicated un-cancelable 1-second live countdown ticker
+  // Integrated Standalone Timer Ticker Ticker Module
   useEffect(() => {
-    setRemainingMs(getNextRealClockMs());
-    const interval = setInterval(() => {
-      const ms = getNextRealClockMs();
-      setRemainingMs(ms);
-      if (ms <= 1000) {
+    return startTimerTicker((data) => {
+      setRemainingMs(data.remainingMs);
+      if (data.remainingMs <= 1000) {
         if (!isDrawingRef.current) {
           setIsDrawing(true);
           isDrawingRef.current = true;
@@ -66,15 +52,14 @@ export default function Home() {
           setPendingWinner(num);
         }
       } else {
-        if (isDrawingRef.current && ms > 5000) {
+        if (isDrawingRef.current && data.remainingMs > 5000) {
           setIsDrawing(false);
           isDrawingRef.current = false;
           setPendingWinner(null);
           setFinalWinner(null);
         }
       }
-    }, 1000);
-    return () => clearInterval(interval);
+    });
   }, []);
 
   useEffect(() => {
