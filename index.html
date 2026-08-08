@@ -3774,7 +3774,6 @@
         const now = new Date();
         const remainingMs = getRealClockRemainingMs();
         const totalSecs = Math.floor(remainingMs / 1000);
-        const remainingSecs = totalSecs;
         const engine = window.TimerEngine || (typeof TimerEngine !== 'undefined' ? TimerEngine : null);
         const time = engine ? engine.formatSeconds(totalSecs) : formatTime(totalSecs);
         const nextDrawDate = new Date(now.getTime() + remainingMs);
@@ -3791,25 +3790,32 @@
           currentTimestamp: now.toISOString(),
           nextDrawTimestamp: nextDrawDate.toISOString(),
           remainingMilliseconds: remainingMs,
-          remainingSeconds: remainingSecs,
+          remainingSeconds: totalSecs,
           displayedHhmmss: time.hhmmss
         };
 
-        // Render real-time HH:MM:SS countdown across all existing UI targets:
-        const headerTimerText = document.getElementById('headerTimerText');
+        // Dynamically query and update ALL live DOM timer targets every second:
+        var headerTimerText = document.getElementById('headerTimerText');
         if (headerTimerText) headerTimerText.innerText = time.hhmmss;
         
-        const bannerCountdownText = document.getElementById('bannerCountdownText');
+        var bannerCountdownText = document.getElementById('bannerCountdownText');
         if (bannerCountdownText) bannerCountdownText.innerText = time.formatted;
         
-        const wEl = document.getElementById('wheelText');
+        var wEl = document.getElementById('wheelText');
         if (wEl) wEl.innerText = time.hhmmss;
-        
-        const timerPills = document.querySelectorAll('.timer-text, #timerDisplay, #roundTimerPill, #timeLeftText');
-        timerPills.forEach(el => { if (el) el.innerText = time.hhmmss; });
 
-        if (!isDrawing) {
-          setProgress(percent);
+        var tCircle = document.getElementById('timerCircle');
+        if (tCircle) {
+          var CIRCUM = 339.292;
+          var offset = CIRCUM - (percent / 100) * CIRCUM;
+          tCircle.style.strokeDashoffset = offset;
+        }
+        
+        var timerPills = document.querySelectorAll('.timer-text, #timerDisplay, #roundTimerPill, #timeLeftText');
+        timerPills.forEach(function(el) { if (el) el.innerText = time.hhmmss; });
+
+        if (!isDrawing && typeof setProgress === 'function') {
+          try { setProgress(percent); } catch(e) {}
         }
 
         // Check for instant Admin Live Broadcast Trigger signal
