@@ -1,7 +1,6 @@
 const https = require('https');
 
 module.exports = (req, res) => {
-  // Target URL on ritmu.tv
   const targetUrl = 'https://www.ritmu.tv/';
 
   const options = {
@@ -22,16 +21,50 @@ module.exports = (req, res) => {
     });
 
     remoteRes.on('end', () => {
-      // Inject <base href="https://www.ritmu.tv/"> right after <head>
-      // so all script, css, and image requests fetch directly from ritmu.tv!
       let modifiedHtml = data;
+
+      // Injected script to patch fetch & XHR for CORS bypass on ritmu.tv API calls
+      const injectedScript = `
+        <base href="https://www.ritmu.tv/">
+        <script>
+          (function() {
+            var origFetch = window.fetch;
+            if (origFetch) {
+              window.fetch = function(input, init) {
+                var url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+                if (url && !url.includes('corsproxy.io') && !url.includes('static/')) {
+                  var target = url.startsWith('http') ? url : ('https://www.ritmu.tv' + (url.startsWith('/') ? '' : '/') + url);
+                  var proxied = 'https://corsproxy.io/?' + encodeURIComponent(target);
+                  if (typeof input === 'string') {
+                    input = proxied;
+                  } else if (input && input.url) {
+                    input = new Request(proxied, init);
+                  }
+                }
+                return origFetch.call(this, input, init);
+              };
+            }
+
+            var origOpen = XMLHttpRequest.prototype.open;
+            XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+              if (url && typeof url === 'string' && !url.includes('corsproxy.io') && !url.includes('static/')) {
+                var target = url.startsWith('http') ? url : ('https://www.ritmu.tv' + (url.startsWith('/') ? '' : '/') + url);
+                url = 'https://corsproxy.io/?' + encodeURIComponent(target);
+              }
+              return origOpen.call(this, method, url, async, user, pass);
+            };
+          })();
+        </script>
+      `;
+
       if (modifiedHtml.includes('<head>')) {
-        modifiedHtml = modifiedHtml.replace('<head>', '<head><base href="https://www.ritmu.tv/">');
+        modifiedHtml = modifiedHtml.replace('<head>', '<head>' + injectedScript);
       } else if (modifiedHtml.includes('<head ')) {
-        modifiedHtml = modifiedHtml.replace(/<head[^>]*>/, '$&<base href="https://www.ritmu.tv/">');
+        modifiedHtml = modifiedHtml.replace(/<head[^>]*>/, '$&' + injectedScript);
+      } else {
+        modifiedHtml = injectedScript + modifiedHtml;
       }
 
-      // Send response without X-Frame-Options or Content-Security-Policy
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
