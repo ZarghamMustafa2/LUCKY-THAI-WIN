@@ -3751,10 +3751,6 @@
     }
 
     function gameLoop() {
-      // Background Execution Safeguard: If TV is OFF / Collapsed, do NOT run in background at all
-      if (window.isWheelHidden) {
-        return;
-      }
       try {
         const now = new Date();
         const currentMs = now.getTime();
@@ -3815,11 +3811,11 @@
           if (typeof startDraw === 'function') startDraw(true);
         }
 
-        // STRICT SCHEDULED DRAW TRANSITION ENGINE (Only trigger wheel animation when TV is ON / Expanded):
+        // STRICT SCHEDULED DRAW TRANSITION ENGINE:
         if (isExactZero) {
           window.currentPhase = 'spinning';
           window.isBettingLocked = true;
-          if (!window.hasProcessedScheduledDraw && !isDrawing && !window.isWheelHidden) {
+          if (!window.hasProcessedScheduledDraw && !isDrawing) {
             window.hasProcessedScheduledDraw = true;
             if (typeof startDraw === 'function') startDraw(true);
           }
