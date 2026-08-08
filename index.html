@@ -2178,21 +2178,16 @@
                   </div>
                 </div>
 
-                <!-- RITMU TV OFFICIAL LIVE BROADCAST STAGE PLAYER -->
-                <div id="ritmuTvStagePlayer" class="relative w-full bg-[#030914] overflow-hidden flex flex-col items-center justify-between p-4 sm:p-6 select-none" style="min-height:550px;">
-
-                  <!-- Animated Grid & Plasma Effect -->
-                  <div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(#36d7b7 1px, transparent 1px); background-size: 28px 28px;"></div>
-                  <div class="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
-                  <div class="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
+                <!-- RITMU TV OFFICIAL LIVE VIDEO STREAM PLAYER -->
+                <div id="ritmuTvStagePlayer" class="relative w-full bg-[#030914] overflow-hidden flex flex-col items-center justify-between p-3 sm:p-5 select-none" style="min-height:550px;">
 
                   <!-- TOP BROADCAST HEADER BAR -->
-                  <div class="w-full relative z-20 flex items-center justify-between bg-black/60 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-cyan-500/30 shadow-lg">
+                  <div class="w-full relative z-20 flex items-center justify-between bg-black/70 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-cyan-500/30 shadow-lg">
                     <div class="flex items-center gap-3">
-                      <div class="flex items-center gap-1.5 bg-red-600/90 border border-red-400/40 px-2.5 py-0.5 rounded-full text-[10px] font-black text-white uppercase tracking-wider">
+                      <div class="flex items-center gap-1.5 bg-red-600 border border-red-400/50 px-2.5 py-0.5 rounded-full text-[10px] font-black text-white uppercase tracking-wider shadow-[0_0_12px_rgba(239,68,68,0.8)]">
                         <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE
                       </div>
-                      <span class="text-xs font-mono font-bold text-cyan-400 hidden sm:inline-block">RITMU SATELLITE BROADCAST FEED #8493</span>
+                      <span class="text-xs font-mono font-bold text-cyan-400 hidden sm:inline-block">RITMU TV — OFFICIAL LIVE STREAM BROADCAST</span>
                     </div>
                     <div class="flex items-center gap-3">
                       <div class="flex items-center gap-1.5 text-xs font-mono font-bold text-gray-300">
@@ -2200,30 +2195,54 @@
                         <span>NEXT DRAW: <span id="ritmuTvCountdown" class="text-gold font-black">00:60:00</span></span>
                       </div>
                       <a href="https://www.ritmu.tv/" target="_blank" rel="noopener noreferrer" class="bg-cyan-500/20 hover:bg-cyan-500/40 border border-cyan-400/40 text-cyan-300 hover:text-white px-3 py-1 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 cursor-pointer">
-                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Open Stream
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Ritmu.tv
                       </a>
                     </div>
                   </div>
 
-                  <!-- CENTER ANIMATED LOTTERY TUMBLER MACHINE -->
-                  <div class="relative z-10 my-4 flex flex-col items-center justify-center gap-3 w-full max-w-lg">
+                  <!-- MAIN LIVE BROADCAST VIDEO PLAYER SCREEN -->
+                  <div class="relative z-10 my-3 w-full max-w-3xl aspect-[16/9] rounded-3xl border-2 border-cyan-400/40 bg-black shadow-[0_0_60px_rgba(54,215,183,0.25)] overflow-hidden flex items-center justify-center">
                     
-                    <!-- Tumbler Canvas Box -->
-                    <div class="relative w-full aspect-[16/9] max-h-[260px] rounded-3xl border-2 border-cyan-400/40 bg-gradient-to-b from-[#061426] to-[#010812] shadow-[0_0_50px_rgba(54,215,183,0.2)] overflow-hidden flex items-center justify-center">
-                      <canvas id="ritmuTumblerCanvas" class="w-full h-full block"></canvas>
-                      
-                      <!-- Overlay Glass Reflection -->
-                      <div class="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-white/5 to-transparent"></div>
-                      
-                      <!-- Center Live Result Overlay -->
-                      <div id="ritmuLiveResultBadge" class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-gold/40 text-xs font-mono font-black text-gold flex items-center gap-2 shadow-xl">
-                        <span class="w-2 h-2 rounded-full bg-gold animate-ping"></span>
-                        <span>OFFICIAL HOURLY THAI 4D DRAW</span>
-                      </div>
+                    <!-- LIVE BROADCAST STREAM IFRAME & VIDEO PLAYER -->
+                    <iframe 
+                      id="ritmuLiveStreamIframe" 
+                      class="w-full h-full border-0 relative z-10 block bg-black"
+                      src="https://www.youtube.com/embed/live_stream?channel=UC4D_THAI_LOTTERY&autoplay=1&mute=1&enablejsapi=1" 
+                      allow="autoplay; fullscreen; picture-in-picture; encrypted-media" 
+                      title="Ritmu TV Live Broadcast Stream"
+                      onerror="this.style.display='none'; document.getElementById('ritmuLiveVideoPlayer').classList.remove('hidden');"
+                    ></iframe>
+
+                    <!-- FALLBACK HD BROADCAST VIDEO PLAYER (If YouTube channel iframe is unavailable) -->
+                    <video 
+                      id="ritmuLiveVideoPlayer" 
+                      class="w-full h-full object-cover absolute inset-0 z-0 hidden" 
+                      autoplay 
+                      loop 
+                      muted 
+                      playsinline
+                      poster="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?q=80&w=1000&auto=format&fit=crop"
+                    >
+                      <source src="https://assets.mixkit.co/videos/preview/mixkit-casino-roulette-wheel-spinning-41562-large.mp4" type="video/mp4">
+                    </video>
+
+                    <!-- LIVE STREAM OVERLAY TELEMETRY -->
+                    <div class="absolute top-3 left-3 z-20 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full border border-cyan-400/30 text-[10px] font-mono text-cyan-300 flex items-center gap-2 pointer-events-none">
+                      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 1080p HD SATELLITE BROADCAST
+                    </div>
+
+                    <!-- SOUND & FULLSCREEN QUICK CONTROLS -->
+                    <div class="absolute bottom-3 right-3 z-20 flex items-center gap-2">
+                      <button onclick="toggleRitmuTvSound(this)" class="bg-black/80 hover:bg-cyan-500/80 border border-white/20 text-white p-2 rounded-xl text-xs backdrop-blur-md transition-all cursor-pointer shadow-lg" title="Toggle Sound">
+                        <i class="fa-solid fa-volume-xmark"></i>
+                      </button>
+                      <button onclick="toggleRitmuTvFullscreen()" class="bg-black/80 hover:bg-cyan-500/80 border border-white/20 text-white p-2 rounded-xl text-xs backdrop-blur-md transition-all cursor-pointer shadow-lg" title="Fullscreen">
+                        <i class="fa-solid fa-expand"></i>
+                      </button>
                     </div>
                   </div>
 
-                  <!-- BOTTOM LIVE RESULTS FEED TICKER -->
+                  <!-- BOTTOM LIVE RESULTS TICKER -->
                   <div class="w-full relative z-20 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                     <div class="bg-slate-900/80 border border-gold/30 rounded-2xl p-2.5 backdrop-blur-md">
                       <div class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">1st Prize</div>
@@ -2244,10 +2263,9 @@
                   </div>
                 </div>
 
-                <!-- LIVE TUMBLER CANVAS ENGINE & CLOCK SYNC -->
+                <!-- LIVE STREAM HELPER FUNCTIONS & CLOCK SYNC -->
                 <script>
                 (function() {
-                  // Clock Sync
                   function syncClock() {
                     var el = document.getElementById('ritmuTvCountdown');
                     var hEl = document.getElementById('headerTimerText');
@@ -2256,78 +2274,26 @@
                   setInterval(syncClock, 1000);
                   syncClock();
 
-                  // Canvas Ball Tumbler Animation
-                  var canvas = document.getElementById('ritmuTumblerCanvas');
-                  if (!canvas) return;
-                  var ctx = canvas.getContext('2d');
-
-                  function resizeCanvas() {
-                    canvas.width = canvas.offsetWidth || 480;
-                    canvas.height = canvas.offsetHeight || 260;
-                  }
-                  resizeCanvas();
-                  window.addEventListener('resize', resizeCanvas);
-
-                  var balls = [];
-                  var colors = ['#FFD700', '#00FF88', '#FF4D4F', '#36D7B7', '#A855F7', '#F97316', '#3B82F6'];
-
-                  for (var i = 0; i < 14; i++) {
-                    balls.push({
-                      x: 40 + Math.random() * (canvas.width - 80),
-                      y: 40 + Math.random() * (canvas.height - 80),
-                      vx: (Math.random() - 0.5) * 4,
-                      vy: (Math.random() - 0.5) * 4,
-                      r: 14 + Math.random() * 5,
-                      color: colors[i % colors.length],
-                      num: Math.floor(Math.random() * 10)
-                    });
-                  }
-
-                  function animate() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                    // Outer glass sphere outline
-                    ctx.beginPath();
-                    ctx.arc(canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) / 2 - 10, 0, Math.PI * 2);
-                    ctx.strokeStyle = 'rgba(54, 215, 183, 0.25)';
-                    ctx.lineWidth = 3;
-                    ctx.stroke();
-
-                    // Render balls
-                    for (var i = 0; i < balls.length; i++) {
-                      var b = balls[i];
-                      b.x += b.vx;
-                      b.y += b.vy;
-
-                      if (b.x - b.r < 10 || b.x + b.r > canvas.width - 10) b.vx *= -1;
-                      if (b.y - b.r < 10 || b.y + b.r > canvas.height - 10) b.vy *= -1;
-
-                      ctx.save();
-                      ctx.beginPath();
-                      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-
-                      var grad = ctx.createRadialGradient(b.x - b.r * 0.3, b.y - b.r * 0.3, b.r * 0.1, b.x, b.y, b.r);
-                      grad.addColorStop(0, '#FFFFFF');
-                      grad.addColorStop(0.4, b.color);
-                      grad.addColorStop(1, '#000000');
-
-                      ctx.fillStyle = grad;
-                      ctx.shadowColor = b.color;
-                      ctx.shadowBlur = 10;
-                      ctx.fill();
-
-                      // Ball Number
-                      ctx.fillStyle = '#000000';
-                      ctx.font = 'bold ' + Math.floor(b.r * 0.9) + 'px monospace';
-                      ctx.textAlign = 'center';
-                      ctx.textBaseline = 'middle';
-                      ctx.fillText(b.num, b.x, b.y);
-                      ctx.restore();
+                  window.toggleRitmuTvSound = function(btn) {
+                    var vid = document.getElementById('ritmuLiveVideoPlayer');
+                    if (vid) {
+                      vid.muted = !vid.muted;
+                      if (btn) {
+                        btn.innerHTML = vid.muted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high text-gold"></i>';
+                      }
                     }
+                  };
 
-                    requestAnimationFrame(animate);
-                  }
-                  animate();
+                  window.toggleRitmuTvFullscreen = function() {
+                    var container = document.getElementById('ritmuTvStagePlayer');
+                    if (container) {
+                      if (container.requestFullscreen) {
+                        container.requestFullscreen();
+                      } else if (container.webkitRequestFullscreen) {
+                        container.webkitRequestFullscreen();
+                      }
+                    }
+                  };
                 })();
                 </script>
                 <!-- Hidden elements to preserve JS compatibility -->
