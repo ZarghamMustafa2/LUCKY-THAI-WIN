@@ -1802,7 +1802,7 @@
         <!-- Wheel Stage Countdown Header Button -->
         <button id="headerTimerBtn" onclick="toggleWheelStage()" class="flex items-center gap-1 sm:gap-2 bg-cardDark/90 hover:bg-cardDark border border-gold/40 hover:border-gold px-1.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-[0_0_12px_rgba(255,212,0,0.15)] whitespace-nowrap">
           <i class="fa-solid fa-stopwatch text-gold animate-pulse text-xs sm:text-base"></i>
-          <span id="headerTimerText" class="font-mono text-[11px] sm:text-sm font-black text-gold leading-none">00:00:00</span>
+          <span id="headerTimerText" class="font-mono text-[11px] sm:text-sm font-black text-gold leading-none">01:00:00</span>
           <i id="headerChevronIcon" class="fa-solid fa-chevron-down text-[9px] sm:text-xs text-gray-400 transition-transform duration-300" style="transform: rotate(180deg);"></i>
         </button>
       </div>
@@ -1923,7 +1923,7 @@
                 </div>
                 <div class="flex flex-col">
                   <span class="text-[9px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest leading-tight">Next Spin Scheduled</span>
-                  <span class="text-sm sm:text-xl font-mono font-black text-white leading-tight">Next Draw <span id="bannerCountdownText" class="text-gold">00m 00s</span></span>
+                  <span class="text-sm sm:text-xl font-mono font-black text-white leading-tight">Next Draw <span id="bannerCountdownText" class="text-gold">60m 00s</span></span>
                 </div>
               </div>
             </div>
@@ -3059,8 +3059,40 @@
     }
   </style>
 
-  <!-- Dedicated Standalone Timer Engine Module -->
-  <script src="timer.js"></script>
+  <!-- Dedicated Standalone Timer Engine Module (Inlined for Vercel compatibility) -->
+  <script>
+    // === LUCKY THAI WIN TIMER ENGINE (Inline) ===
+    window.TimerEngine = {
+      getNextScheduledDrawDate: function() {
+        var now = new Date();
+        var next = new Date(now);
+        next.setMinutes(0, 0, 0);
+        next.setHours(next.getHours() + 1);
+        if (next.getTime() - now.getTime() <= 0) {
+          next.setHours(next.getHours() + 1);
+        }
+        return next;
+      },
+      getRemainingMs: function() {
+        var now = new Date();
+        var next = this.getNextScheduledDrawDate();
+        var rem = next.getTime() - now.getTime();
+        return Math.max(1000, rem);
+      },
+      formatSeconds: function(totalSecs) {
+        var secs = Math.max(0, Math.floor(totalSecs));
+        var h = Math.floor(secs / 3600);
+        var m = Math.floor((secs % 3600) / 60);
+        var s = Math.floor(secs % 60);
+        var hStr = String(h).padStart(2, '0');
+        var mStr = String(m).padStart(2, '0');
+        var sStr = String(s).padStart(2, '0');
+        var hhmmss = hStr + ':' + mStr + ':' + sStr;
+        var formatted = h > 0 ? (h + 'h ' + m + 'm ' + sStr + 's') : (m > 0 ? (m + 'm ' + sStr + 's') : ('0m ' + sStr + 's'));
+        return { hhmmss: hhmmss, formatted: formatted, h: h, m: m, s: s };
+      }
+    };
+  </script>
 
   <script>
     // --- UI Elements ---
