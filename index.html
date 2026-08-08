@@ -1773,181 +1773,397 @@
   <!-- MAIN WRAPPER -->
   <div id="appMainWrapper" class="flex-1 flex flex-col h-full relative overflow-hidden z-10">
     
-    <!-- TOP HEADER -->
-    <header class="min-h-[56px] sm:min-h-[64px] md:h-[80px] bg-bgDark/90 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-1.5 sm:px-4 lg:px-8 z-30 flex-shrink-0 sticky top-0 py-1 sm:py-0 w-full">
+    <!-- TOP HEADER (BPEXCH DASHBOARD STYLE) -->
+    <header class="bg-[#152a45] text-white border-b border-[#254168] z-30 flex-shrink-0 sticky top-0 w-full shadow-lg">
       
-      <!-- LEFT HEADER CONTROLS -->
-      <div class="flex items-center gap-1 sm:gap-2.5">
-        <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" class="xl:hidden text-gray-400 hover:text-white transition-colors p-1 sm:p-2 cursor-pointer flex items-center justify-center">
-          <i class="fa-solid fa-bars text-lg sm:text-2xl"></i>
-        </button>
-
-        <button id="mobileRefreshBtn" onclick="if(typeof triggerAppRefresh==='function') triggerAppRefresh(); else window.location.reload();" class="text-gold hover:text-white bg-gold/10 hover:bg-gold/20 border border-gold/30 p-1 sm:p-2 rounded-lg sm:rounded-xl transition-all cursor-pointer flex items-center justify-center shadow-sm active:scale-95" title="Refresh Page">
-          <i class="fa-solid fa-arrows-rotate text-xs sm:text-sm"></i>
-        </button>
-
-        <button id="headerThemeBtn" onclick="toggleTheme()" class="text-gold hover:text-white bg-gold/10 hover:bg-gold/20 border border-gold/30 p-1 sm:p-2 rounded-lg sm:rounded-xl transition-all cursor-pointer flex items-center justify-center shadow-sm active:scale-95" title="Toggle Light/Dark Theme">
-          <i id="themeToggleIcon" class="fa-solid fa-moon text-xs sm:text-sm text-gold"></i>
-        </button>
+      <!-- MAIN HEADER ROW -->
+      <div class="h-12 sm:h-14 px-3 sm:px-5 flex items-center justify-between">
         
-        <!-- Active Users Indicator (Desktop Only) -->
-        <div class="hidden md:flex items-center gap-2.5 bg-cardDark rounded-xl px-3 py-1.5 border border-white/5">
-          <div class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.8)] animate-pulse"></div>
-          <div class="flex flex-col">
-            <span class="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Active Users</span>
-            <span class="text-xs font-mono font-bold text-white" id="activeUsersCount">12,458</span>
+        <!-- LEFT: Hamburger Menu & Dashboard Breadcrumb Title -->
+        <div class="flex items-center gap-3">
+          <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" class="text-white hover:text-cyan-300 transition-colors p-1 cursor-pointer flex items-center justify-center">
+            <i class="fa-solid fa-bars text-xl sm:text-2xl"></i>
+          </button>
+          
+          <div class="flex items-center gap-1.5 text-xs sm:text-sm font-semibold tracking-wide">
+            <span class="text-white font-bold">Dashboard</span>
+            <span class="text-gray-400">.</span>
+            <span id="headerProfileNameText" class="text-cyan-300 font-mono font-bold">ZarghamMustafa</span>
+          </div>
+
+          <!-- Quick Refresh Button -->
+          <button id="mobileRefreshBtn" onclick="if(typeof triggerAppRefresh==='function') triggerAppRefresh(); else window.location.reload();" class="text-cyan-300 hover:text-white bg-cyan-500/10 p-1 sm:p-1.5 rounded-lg transition-all cursor-pointer flex items-center justify-center shadow-sm ml-2" title="Refresh Page">
+            <i class="fa-solid fa-arrows-rotate text-xs"></i>
+          </button>
+
+          <!-- Theme Switcher -->
+          <button id="headerThemeBtn" onclick="toggleTheme()" class="text-amber-400 hover:text-white bg-amber-400/10 p-1 sm:p-1.5 rounded-lg transition-all cursor-pointer flex items-center justify-center shadow-sm" title="Toggle Light/Dark Theme">
+            <i id="themeToggleIcon" class="fa-solid fa-moon text-xs"></i>
+          </button>
+        </div>
+
+        <!-- CENTER: Timer Ticker (Wheel Stage Toggle) -->
+        <button id="headerTimerBtn" onclick="toggleWheelStage()" class="hidden md:flex items-center gap-2 bg-[#0e1d32] border border-gold/40 hover:border-gold px-3 py-1 rounded-lg cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-md whitespace-nowrap">
+          <i class="fa-solid fa-stopwatch text-gold animate-pulse text-xs"></i>
+          <span id="headerTimerText" class="font-mono text-xs font-black text-gold leading-none">01:00:00</span>
+          <i id="headerChevronIcon" class="fa-solid fa-chevron-down text-[10px] text-gray-400 transition-transform duration-300" style="transform: rotate(180deg);"></i>
+        </button>
+
+        <!-- RIGHT: Balance & Account Dropdown -->
+        <div class="flex items-center gap-3">
+          <!-- B: 0 | L: 0 Quick Status -->
+          <div class="text-xs font-mono font-bold tracking-tight text-white flex items-center gap-1.5 bg-[#0e1d32] px-2.5 py-1 rounded-md border border-[#254168]">
+            <span class="text-cyan-300">B: <span id="headerBalanceCompact">10,450</span></span>
+            <span class="text-gray-500">|</span>
+            <span class="text-gold">L: <span id="headerLiableCompact">0</span></span>
+          </div>
+
+          <!-- User Account Selector Dropdown Button -->
+          <div class="relative">
+            <button id="headerProfileBtn" onclick="toggleProfileDropdown(event)" class="flex items-center gap-1 text-xs font-bold text-white hover:text-cyan-300 bg-[#0e1d32] hover:bg-[#182c47] px-2.5 py-1 rounded-md border border-[#254168] cursor-pointer transition-all">
+              <span id="headerUserIdBadge" class="font-mono text-cyan-300">Bp28233</span>
+              <i class="fa-solid fa-caret-down text-gray-400 text-xs"></i>
+            </button>
+            
+            <!-- Profile Dropdown Menu -->
+            <div id="profileDropdown" class="hidden absolute top-10 right-0 w-48 bg-white text-gray-900 border border-gray-200 rounded-xl shadow-[0_15px_40px_rgba(0,0,0,0.5)] z-[9999] flex flex-col py-2 transition-all">
+              <button type="button" onclick="openProfileStatementModal()" class="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 font-medium text-xs transition-colors cursor-pointer flex items-center justify-between">
+                <span>Statement</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <button type="button" onclick="openProfileResultModal()" class="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 font-medium text-xs transition-colors cursor-pointer flex items-center justify-between">
+                <span>Result</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <button type="button" onclick="openProfileProfitLossModal()" class="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 font-medium text-xs transition-colors cursor-pointer flex items-center justify-between">
+                <span>Profit Loss</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <button type="button" onclick="openProfileBetHistoryModal()" class="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 font-medium text-xs transition-colors cursor-pointer flex items-center justify-between">
+                <span>Bet History</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <button type="button" onclick="openUserLoginModal()" class="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 font-medium text-xs transition-colors cursor-pointer flex items-center justify-between">
+                <span>Profile</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <div class="h-px bg-gray-200 my-1"></div>
+              <button type="button" onclick="performUserLogout()" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-semibold text-xs transition-colors cursor-pointer flex items-center justify-between">
+                <span>Logout</span>
+                <i class="fa-solid fa-right-from-bracket text-xs"></i>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Wheel Stage Countdown Header Button -->
-        <button id="headerTimerBtn" onclick="toggleWheelStage()" class="flex items-center gap-1 sm:gap-2 bg-cardDark/90 hover:bg-cardDark border border-gold/40 hover:border-gold px-1.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl cursor-pointer transition-all hover:scale-105 active:scale-95 shadow-[0_0_12px_rgba(255,212,0,0.15)] whitespace-nowrap">
-          <i class="fa-solid fa-stopwatch text-gold animate-pulse text-xs sm:text-base"></i>
-          <span id="headerTimerText" class="font-mono text-[11px] sm:text-sm font-black text-gold leading-none">01:00:00</span>
-          <i id="headerChevronIcon" class="fa-solid fa-chevron-down text-[9px] sm:text-xs text-gray-400 transition-transform duration-300" style="transform: rotate(180deg);"></i>
-        </button>
       </div>
 
-      <!-- GUARANTEED LIVE COUNTDOWN SCRIPT: Runs 100% independently every second -->
-      <script>
-        (function() {
-          function _getRem() {
-            var now = new Date();
-            var next = new Date(now);
-            next.setMinutes(0, 0, 0);
-            next.setHours(next.getHours() + 1);
-            var rem = next.getTime() - now.getTime();
-            if (rem <= 0) { next.setHours(next.getHours() + 1); rem = next.getTime() - now.getTime(); }
-            return Math.max(1000, rem);
-          }
-          function _fmt(ms) {
-            var s = Math.max(0, Math.floor(ms / 1000));
-            var h = Math.floor(s / 3600);
-            var m = Math.floor((s % 3600) / 60);
-            var sec = Math.floor(s % 60);
-            var hS = String(h).padStart(2,'0'), mS = String(m).padStart(2,'0'), sS = String(sec).padStart(2,'0');
-            return {
-              hhmmss: hS+':'+mS+':'+sS,
-              short: (m > 0 || h > 0) ? (h > 0 ? h+'h '+m+'m '+sS+'s' : m+'m '+sS+'s') : '0m '+sS+'s'
-            };
-          }
-          function _tick() {
-            var rem = _getRem();
-            var f = _fmt(rem);
-            var hEl = document.getElementById('headerTimerText');
-            var bEl = document.getElementById('bannerCountdownText');
-            if (hEl) hEl.innerText = f.hhmmss;
-            if (bEl) bEl.innerText = f.short;
-          }
-          _tick();
-          setInterval(_tick, 1000);
-        })();
-      </script>
-
-      <!-- RIGHT HEADER CONTROLS -->
-      <div class="flex items-center gap-1 sm:gap-2.5 lg:gap-4">
-        
-        <!-- Last Bet Pill (Single Line) -->
-        <div class="flex items-center gap-1 bg-cardDark/90 border border-gold/30 px-1.5 sm:px-2.5 py-1 rounded-lg sm:rounded-xl shadow-sm whitespace-nowrap">
-          <i class="fa-solid fa-clock-rotate-left text-gold text-[9px] sm:text-xs"></i>
-          <span class="text-[8px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none hidden xs:inline">L:</span>
-          <span id="headerLastBet" class="font-mono text-[10px] sm:text-xs font-black text-gold leading-none">Rs 0</span>
+      <!-- SUB-HEADER FINANCIAL METRICS BAR (Credit | Balance | Liable | Active Bets) -->
+      <div class="bg-[#112236] border-t border-[#1c365a] px-3 sm:px-5 py-2 text-xs font-mono font-semibold text-white flex items-center justify-between sm:justify-start gap-4 sm:gap-8 overflow-x-auto whitespace-nowrap custom-scrollbar">
+        <div class="flex items-center gap-1 text-gray-300">
+          <span>Credit:</span>
+          <span class="text-white font-bold">0</span>
         </div>
-
-        <!-- Wallet Balance Card (Single Horizontal Row) -->
-        <div class="flex items-center gap-1 sm:gap-1.5 bg-cardDark/95 border border-white/10 px-1.5 sm:px-3 py-1 rounded-lg sm:rounded-xl shadow-sm whitespace-nowrap">
-          <i class="fa-solid fa-wallet text-gold text-[10px] sm:text-sm"></i>
-          <span class="text-gray-400 font-bold text-[9px] sm:text-xs hidden xs:inline">B:</span>
-          <span id="walletBalance" class="text-white font-mono font-black text-[10px] sm:text-xs md:text-sm tracking-wider">Rs 10,450.00</span>
+        <div class="flex items-center gap-1 text-cyan-300">
+          <span>Balance:</span>
+          <span id="walletBalance" class="text-gold font-bold">Rs 10,450.00</span>
         </div>
-        
-        <!-- Desktop Notifications & Chat Buttons -->
-        <div class="hidden sm:flex items-center gap-2 relative">
-          <button id="headerNotifBtn" class="w-9 h-9 rounded-xl bg-cardDark border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:border-white/20 transition-all relative">
-            <i class="fa-solid fa-bell text-sm"></i>
-            <span class="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full border border-bgDark"></span>
-          </button>
-          
-          <!-- Notif Dropdown -->
-          <div id="notifDropdown" class="hidden absolute top-12 right-12 w-80 bg-cardDark border border-white/10 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 flex flex-col overflow-hidden">
-            <div class="px-4 py-3 border-b border-white/5 bg-bgDark/50 font-bold text-white flex justify-between items-center">
-              Notifications <span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[10px] uppercase">2 New</span>
-            </div>
-            <div class="p-2 flex flex-col gap-1 max-h-60 overflow-y-auto custom-scrollbar">
-              <div class="px-3 py-2 hover:bg-white/5 rounded-xl cursor-pointer flex gap-3 items-center">
-                <div class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-gift"></i></div>
-                <div class="flex-1 flex flex-col"><span class="text-sm font-bold text-white">Daily Bonus Ready</span><span class="text-[10px] text-gray-500">Claim your 500 THB bonus</span></div>
-              </div>
-              <div class="px-3 py-2 hover:bg-white/5 rounded-xl cursor-pointer flex gap-3 items-center">
-                <div class="w-8 h-8 rounded-full bg-cyanLight/20 text-cyanLight flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-arrow-down"></i></div>
-                <div class="flex-1 flex flex-col"><span class="text-sm font-bold text-white">Deposit Successful</span><span class="text-[10px] text-gray-500">2,000 THB added to wallet</span></div>
-              </div>
-            </div>
-          </div>
-
-          <button id="headerChatToggleBtn" class="w-9 h-9 rounded-xl bg-cardDark border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:border-white/20 transition-all">
-            <i class="fa-solid fa-comments text-sm"></i>
-          </button>
+        <div class="flex items-center gap-1 text-gray-300">
+          <span>Liable:</span>
+          <span id="headerLastBet" class="text-white font-bold">0</span>
         </div>
-
-        <!-- User Avatar & VIP Name -->
-        <div class="flex items-center gap-1 sm:gap-2 pl-0.5 relative">
-          <div id="headerProfileBtn" onclick="toggleProfileDropdown(event)" class="flex items-center gap-1.5 sm:gap-2 cursor-pointer group" title="Click to open profile menu">
-            <div class="hidden xs:flex flex-col items-end">
-              <span id="headerProfileNameText" class="text-[9px] sm:text-xs font-bold text-white leading-tight group-hover:text-gold transition-colors">Alex_Winner</span>
-              <span class="text-[7px] sm:text-[9px] font-black text-gold uppercase tracking-widest leading-none">VIP Platinum</span>
-            </div>
-            <div class="relative">
-              <div id="headerUserAvatarCircle" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-gold bg-gradient-to-tr from-gold/30 to-amber-500/20 text-gold font-mono font-black text-[10px] sm:text-xs flex items-center justify-center uppercase shadow-[0_0_10px_rgba(255,212,0,0.3)]">
-                AW
-              </div>
-              <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-gold rounded-full flex items-center justify-center border border-bgDark text-bgDark text-[6px] font-black">
-                <i class="fa-solid fa-crown"></i>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Profile Dropdown (Exact User Screenshot Match) -->
-          <div id="profileDropdown" class="hidden absolute top-12 right-0 w-48 bg-white text-gray-900 border border-gray-200 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.5)] z-[9999] flex flex-col py-2 transition-all">
-            <button type="button" onclick="openProfileStatementModal()" class="w-full text-left px-5 py-2.5 hover:bg-gray-100 text-gray-900 font-medium text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span>Statement</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <button type="button" onclick="openProfileResultModal()" class="w-full text-left px-5 py-2.5 hover:bg-gray-100 text-gray-900 font-medium text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span>Result</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <button type="button" onclick="openProfileProfitLossModal()" class="w-full text-left px-5 py-2.5 hover:bg-gray-100 text-gray-900 font-medium text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span>Profit Loss</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <button type="button" onclick="openProfileBetHistoryModal()" class="w-full text-left px-5 py-2.5 hover:bg-gray-100 text-gray-900 font-medium text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span>Bet History</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <button type="button" onclick="openUserLoginModal()" class="w-full text-left px-5 py-2.5 hover:bg-gray-100 text-gray-900 font-medium text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span>Profile</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <div class="h-px bg-gray-200 my-1"></div>
-            <button type="button" onclick="performUserLogout()" class="w-full text-left px-5 py-2.5 hover:bg-red-50 text-red-600 font-semibold text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span>Logout</span>
-              <i class="fa-solid fa-right-from-bracket text-xs"></i>
-            </button>
-          </div>
+        <div class="flex items-center gap-1 text-gray-300">
+          <span>Active Bets:</span>
+          <span class="text-amber-400 font-bold">*</span>
         </div>
-        
       </div>
     </header>
 
-    <!-- SCROLLABLE MAIN -->
-    <main class="flex-1 overflow-y-auto custom-scrollbar p-2.5 sm:p-4 lg:p-10 relative">
+    <!-- SCROLLABLE MAIN (BPEXCH DASHBOARD LAYOUT) -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-2 sm:p-4 relative bg-[#0b1626] text-white">
       
-      <div class="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-10">
-        
-        <!-- LEFT COLUMN (FULL WIDTH BETTING BOARD & STAGE) -->
-        <div class="contents xl:flex xl:flex-col xl:col-span-12 gap-6 lg:gap-10">
-          
+      <div class="max-w-[1600px] mx-auto flex flex-col gap-4">
 
+        <!-- 1. FEATURED GAME CARDS GRID (bpexch Style) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
+          
+          <!-- Card 1: Existing Game - LUCKY THAI WIN / RITMU TV (Featured) -->
+          <div onclick="var el=document.getElementById('nextSpinBanner')||document.getElementById('gameContainer'); if(el) el.scrollIntoView({behavior:'smooth'});" class="group relative rounded-xl overflow-hidden bg-gradient-to-br from-amber-600 via-amber-700 to-slate-900 border border-gold/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-40 flex flex-col justify-end p-3.5">
+            <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+            <div class="absolute top-2.5 right-2.5 bg-red-600 border border-red-400 px-2 py-0.5 rounded-full text-[9px] font-black text-white uppercase tracking-wider flex items-center gap-1 shadow-md">
+              <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> LIVE DRAW
+            </div>
+            <div class="relative z-10">
+              <span class="text-[10px] font-mono text-gold font-bold uppercase tracking-widest">Ritmu TV Broadcast</span>
+              <h3 class="text-lg sm:text-xl font-black text-white font-display tracking-tight leading-tight group-hover:text-gold transition-colors">LUCKY THAI 4D</h3>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-xs font-mono font-bold text-cyan-300">Next: <span id="cardCountdownTimer" class="text-gold font-black">00:60:00</span></span>
+                <span class="bg-gold text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-md uppercase">PLAY NOW</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: SPORTS BOOK -->
+          <div class="group relative rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-black border border-cyan-500/30 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-40 flex flex-col justify-end p-3.5">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+            <div class="absolute right-2 top-2 opacity-30 group-hover:opacity-50 transition-opacity text-5xl text-cyan-400">
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+            <div class="relative z-10">
+              <h3 class="text-xl font-black text-white font-display tracking-wider group-hover:text-cyan-300 transition-colors">SPORTS BOOK</h3>
+              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Live Odds & Match Betting</p>
+            </div>
+          </div>
+
+          <!-- Card 3: AviatorX -->
+          <div class="group relative rounded-xl overflow-hidden bg-gradient-to-br from-red-950 via-red-900 to-black border border-red-500/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-40 flex flex-col justify-end p-3.5">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-red-950/40 to-transparent"></div>
+            <div class="absolute right-3 top-3 opacity-40 group-hover:opacity-70 transition-opacity text-4xl text-red-500">
+              <i class="fa-solid fa-plane-up"></i>
+            </div>
+            <div class="relative z-10">
+              <h3 class="text-xl font-black text-red-500 italic font-display tracking-tight group-hover:text-white transition-colors">Aviator<span class="text-white">X</span></h3>
+              <p class="text-[10px] text-gray-300 font-bold uppercase tracking-wider">Crash & Multiplier Game</p>
+            </div>
+          </div>
+
+          <!-- Card 4: EUROPEAN ROULETTE -->
+          <div class="hidden xl:flex group relative rounded-xl overflow-hidden bg-gradient-to-br from-purple-950 via-slate-900 to-black border border-purple-500/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-40 flex-col justify-end p-3.5">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-purple-950/40 to-transparent"></div>
+            <div class="absolute right-3 top-3 opacity-40 group-hover:opacity-70 transition-opacity text-4xl text-purple-400">
+              <i class="fa-solid fa-chess-queen"></i>
+            </div>
+            <div class="relative z-10">
+              <h3 class="text-lg font-black text-white font-display tracking-tight group-hover:text-purple-300 transition-colors">EUROPEAN ROULETTE</h3>
+              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Live Dealer Table</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 2. HORSE RACE & GREY HOUND SCHEDULE SLIDERS (bpexch Style) -->
+        <div class="flex flex-col gap-2.5">
+          
+          <!-- Horse Race Schedule Slider -->
+          <div class="bg-[#172f4e] border border-[#25436c] rounded-lg p-2 flex flex-col gap-1.5 shadow-md">
+            <div class="flex items-center gap-2 text-xs font-bold text-white px-1">
+              <i class="fa-solid fa-horse text-amber-400"></i>
+              <span>Horse Race</span>
+            </div>
+            <div class="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-0.5">
+              <button class="bg-[#0f1d32] hover:bg-[#1f3a60] text-gray-300 px-2 py-1.5 rounded text-xs transition-colors flex-shrink-0 cursor-pointer">
+                <i class="fa-solid fa-chevron-left text-[10px]"></i>
+              </button>
+              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-3 py-1.5 rounded flex flex-col items-center flex-shrink-0 min-w-[130px] cursor-pointer transition-all">
+                <span class="text-xs font-mono font-bold text-cyan-300">11:18 PM</span>
+                <span class="text-[10px] text-gray-300 font-semibold">Kilbeggan (IE)</span>
+              </div>
+              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-3 py-1.5 rounded flex flex-col items-center flex-shrink-0 min-w-[130px] cursor-pointer transition-all">
+                <span class="text-xs font-mono font-bold text-cyan-300">11:26 PM</span>
+                <span class="text-[10px] text-gray-300 font-semibold">Gulfstream Park (US)</span>
+              </div>
+              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-3 py-1.5 rounded flex flex-col items-center flex-shrink-0 min-w-[130px] cursor-pointer transition-all">
+                <span class="text-xs font-mono font-bold text-cyan-300">11:27 PM</span>
+                <span class="text-[10px] text-gray-300 font-semibold">Monmouth Park (US)</span>
+              </div>
+              <button class="bg-[#0f1d32] hover:bg-[#1f3a60] text-gray-300 px-2 py-1.5 rounded text-xs transition-colors flex-shrink-0 cursor-pointer">
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Grey Hound Schedule Slider -->
+          <div class="bg-[#172f4e] border border-[#25436c] rounded-lg p-2 flex flex-col gap-1.5 shadow-md">
+            <div class="flex items-center gap-2 text-xs font-bold text-white px-1">
+              <i class="fa-solid fa-dog text-amber-400"></i>
+              <span>Grey Hound</span>
+            </div>
+            <div class="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-0.5">
+              <button class="bg-[#0f1d32] hover:bg-[#1f3a60] text-gray-300 px-2 py-1.5 rounded text-xs transition-colors flex-shrink-0 cursor-pointer">
+                <i class="fa-solid fa-chevron-left text-[10px]"></i>
+              </button>
+              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-3 py-1.5 rounded flex flex-col items-center flex-shrink-0 min-w-[130px] cursor-pointer transition-all">
+                <span class="text-xs font-mono font-bold text-cyan-300">11:14 PM</span>
+                <span class="text-[10px] text-gray-300 font-semibold">Star Pelaw (GB)</span>
+              </div>
+              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-3 py-1.5 rounded flex flex-col items-center flex-shrink-0 min-w-[130px] cursor-pointer transition-all">
+                <span class="text-xs font-mono font-bold text-cyan-300">11:18 PM</span>
+                <span class="text-[10px] text-gray-300 font-semibold">Dunstall Park (GB)</span>
+              </div>
+              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-3 py-1.5 rounded flex flex-col items-center flex-shrink-0 min-w-[130px] cursor-pointer transition-all">
+                <span class="text-xs font-mono font-bold text-cyan-300">11:22 PM</span>
+                <span class="text-[10px] text-gray-300 font-semibold">Romford (GB)</span>
+              </div>
+              <button class="bg-[#0f1d32] hover:bg-[#1f3a60] text-gray-300 px-2 py-1.5 rounded text-xs transition-colors flex-shrink-0 cursor-pointer">
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3. SPORTS CATEGORY TILES (bpexch Style) -->
+        <div class="grid grid-cols-4 gap-1.5 sm:gap-2">
+          
+          <!-- Tile 1: Inplay (Active Green) -->
+          <button class="bg-[#00a86b] text-white rounded-lg p-2 sm:p-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 shadow-md cursor-pointer hover:brightness-110 transition-all border border-emerald-400/40">
+            <span class="font-mono font-black text-sm sm:text-lg">4</span>
+            <div class="flex items-center gap-1">
+              <i class="fa-solid fa-stopwatch text-xs"></i>
+              <span class="text-xs sm:text-sm font-bold">Inplay</span>
+            </div>
+          </button>
+
+          <!-- Tile 2: Cricket -->
+          <button class="bg-[#172f4e] hover:bg-[#1e3c63] text-gray-200 rounded-lg p-2 sm:p-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 shadow-md cursor-pointer transition-all border border-[#25436c]">
+            <span class="font-mono font-black text-sm sm:text-lg text-cyan-300">16</span>
+            <div class="flex items-center gap-1">
+              <i class="fa-solid fa-baseball-bat-ball text-xs"></i>
+              <span class="text-xs sm:text-sm font-bold">Cricket</span>
+            </div>
+          </button>
+
+          <!-- Tile 3: Tennis -->
+          <button class="bg-[#172f4e] hover:bg-[#1e3c63] text-gray-200 rounded-lg p-2 sm:p-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 shadow-md cursor-pointer transition-all border border-[#25436c]">
+            <span class="font-mono font-black text-sm sm:text-lg text-cyan-300">8</span>
+            <div class="flex items-center gap-1">
+              <i class="fa-solid fa-table-tennis-paddle-ball text-xs"></i>
+              <span class="text-xs sm:text-sm font-bold">Tennis</span>
+            </div>
+          </button>
+
+          <!-- Tile 4: Soccer -->
+          <button class="bg-[#172f4e] hover:bg-[#1e3c63] text-gray-200 rounded-lg p-2 sm:p-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 shadow-md cursor-pointer transition-all border border-[#25436c]">
+            <span class="font-mono font-black text-sm sm:text-lg text-cyan-300">10</span>
+            <div class="flex items-center gap-1">
+              <i class="fa-solid fa-football text-xs"></i>
+              <span class="text-xs sm:text-sm font-bold">Soccer</span>
+            </div>
+          </button>
+
+        </div>
+
+        <!-- 4. SPORTS MATCHES & BETTING MARKETS LIST (bpexch Style Table) -->
+        <div class="flex flex-col gap-2 bg-[#12243b] border border-[#213f66] rounded-lg overflow-hidden shadow-md">
+          
+          <!-- Category 1: Cricket -->
+          <div>
+            <div class="bg-[#d9d9d9] text-gray-900 px-3 py-1.5 flex items-center justify-between font-bold text-xs sm:text-sm">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-baseball-bat-ball text-gray-800"></i>
+                <span>Cricket</span>
+              </div>
+              <span class="text-gray-700 font-mono text-xs">Matched</span>
+            </div>
+            
+            <div class="divide-y divide-[#1e3759]">
+              <!-- Match 1 -->
+              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-3 py-2.5 flex items-center justify-between text-xs sm:text-sm transition-colors">
+                <div class="flex items-center gap-2.5">
+                  <div class="bg-[#00a86b] text-white px-2 py-0.5 rounded text-[10px] font-mono font-bold flex flex-col items-center">
+                    <span>InPlay</span>
+                    <span>22:00</span>
+                  </div>
+                  <span class="font-bold text-white">Southern Brave V Manchester Super Giants</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="flex items-center gap-1 text-gray-300">
+                    <i class="fa-solid fa-tv text-cyan-300 text-xs"></i>
+                    <span class="bg-[#0e5c94] text-white px-1.5 py-0.2 rounded text-[9px] font-bold">BM</span>
+                  </div>
+                  <span class="font-mono text-gray-300 font-semibold text-xs hidden xs:inline">199,324,114</span>
+                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 2: Football -->
+          <div>
+            <div class="bg-[#d9d9d9] text-gray-900 px-3 py-1.5 flex items-center justify-between font-bold text-xs sm:text-sm">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-football text-gray-800"></i>
+                <span>Football</span>
+              </div>
+              <span class="text-gray-700 font-mono text-xs">Matched</span>
+            </div>
+            
+            <div class="divide-y divide-[#1e3759]">
+              <!-- Match 1 -->
+              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-3 py-2.5 flex items-center justify-between text-xs sm:text-sm transition-colors">
+                <div class="flex items-center gap-2.5">
+                  <div class="bg-[#00a86b] text-white px-2 py-0.5 rounded text-[10px] font-mono font-bold flex flex-col items-center">
+                    <span>InPlay</span>
+                    <span>23:00</span>
+                  </div>
+                  <span class="font-bold text-white">PSV V Fortuna Sittard</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <i class="fa-solid fa-tv text-cyan-300 text-xs"></i>
+                  <span class="font-mono text-gray-300 font-semibold text-xs hidden xs:inline">2,440,877</span>
+                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 3: Tennis -->
+          <div>
+            <div class="bg-[#d9d9d9] text-gray-900 px-3 py-1.5 flex items-center justify-between font-bold text-xs sm:text-sm">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-table-tennis-paddle-ball text-gray-800"></i>
+                <span>Tennis</span>
+              </div>
+              <span class="text-gray-700 font-mono text-xs">Matched</span>
+            </div>
+            
+            <div class="divide-y divide-[#1e3759]">
+              <!-- Match 1 -->
+              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-3 py-2.5 flex items-center justify-between text-xs sm:text-sm transition-colors">
+                <div class="flex items-center gap-2.5">
+                  <div class="bg-[#00a86b] text-white px-2 py-0.5 rounded text-[10px] font-mono font-bold flex flex-col items-center">
+                    <span>InPlay</span>
+                    <span>21:30</span>
+                  </div>
+                  <span class="font-bold text-white">M Kostyuk V Iga Swiatek</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <i class="fa-solid fa-tv text-cyan-300 text-xs"></i>
+                  <span class="font-mono text-gray-300 font-semibold text-xs hidden xs:inline">25,621,648</span>
+                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer"></i>
+                </div>
+              </div>
+
+              <!-- Match 2 -->
+              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-3 py-2.5 flex items-center justify-between text-xs sm:text-sm transition-colors">
+                <div class="flex items-center gap-2.5">
+                  <div class="bg-[#00a86b] text-white px-2 py-0.5 rounded text-[10px] font-mono font-bold flex flex-col items-center">
+                    <span>InPlay</span>
+                    <span>21:30</span>
+                  </div>
+                  <span class="font-bold text-white">Borges V Darderi</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <i class="fa-solid fa-tv text-cyan-300 text-xs"></i>
+                  <span class="font-mono text-gray-300 font-semibold text-xs hidden xs:inline">9,030,162</span>
+                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. EXISTING GAME SECTION (LUCKY THAI WIN / RITMU TV 4D) -->
+        <div class="mt-2 flex flex-col gap-4">
+          <div class="bg-[#152a45] border border-gold/40 rounded-xl p-3 flex items-center justify-between text-white">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-gem text-gold text-lg"></i>
+              <span class="font-black text-base tracking-wide font-display">OUR FEATURED GAME — LUCKY THAI WIN 4D</span>
+            </div>
+            <button onclick="toggleWheelStage()" class="bg-gold text-slate-950 px-3 py-1 rounded-lg font-black text-xs uppercase cursor-pointer hover:bg-yellow-400 transition-all">
+              Toggle Full Stage
+            </button>
+          </div>
 
           <!-- INLINE PLACE YOUR BET BOARD (Shown when Wheel Stage is collapsed into top timer) -->
           <div id="nextSpinBanner" class="order-1 xl:order-none glass-panel p-3.5 sm:p-6 flex flex-col gap-3.5 sm:gap-5 border-2 border-gold/40 shadow-[0_10px_30px_rgba(255,212,0,0.15)] transition-all group">
@@ -2269,7 +2485,17 @@
                   function syncClock() {
                     var el = document.getElementById('ritmuTvCountdown');
                     var hEl = document.getElementById('headerTimerText');
+                    var cardEl = document.getElementById('cardCountdownTimer');
                     if (el && hEl) el.innerText = hEl.innerText;
+                    if (cardEl && hEl) cardEl.innerText = hEl.innerText;
+
+                    // Sync Compact Balance
+                    var wEl = document.getElementById('walletBalance');
+                    var bComp = document.getElementById('headerBalanceCompact');
+                    if (wEl && bComp) {
+                      var txt = wEl.innerText.replace(/[^0-9.]/g, '');
+                      if (txt) bComp.innerText = Math.floor(parseFloat(txt)).toLocaleString();
+                    }
                   }
                   setInterval(syncClock, 1000);
                   syncClock();
@@ -2553,9 +2779,9 @@
             Next Round (<span id="btnCountdown">5</span>s)
           </button>
         </div>
+        </div>
       </div>
-    </div>
-  </div>
+    </main>
 
   <!-- TOAST NOTIFICATION -->
   <div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100] bg-cardDark border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] px-6 py-4 rounded-2xl flex items-center gap-4 transform -translate-y-10 opacity-0 transition-all duration-300 pointer-events-none backdrop-blur-xl">
