@@ -12,12 +12,8 @@
   ],
   "rewrites": [
     {
-      "source": "/ritmu-proxy",
-      "destination": "https://www.ritmu.tv/"
-    },
-    {
-      "source": "/ritmu-proxy/:path*",
-      "destination": "https://www.ritmu.tv/:path*"
+      "source": "/ritmu-tv-live",
+      "destination": "/api/ritmu"
     }
   ]
 }

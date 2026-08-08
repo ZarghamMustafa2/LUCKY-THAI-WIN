@@ -2178,53 +2178,28 @@
                   </div>
                 </div>
 
-                <!-- RITMU TV OFFICIAL LIVE BROADCAST STAGE -->
-                <div class="relative w-full bg-gradient-to-b from-[#06101e] to-[#02070e] overflow-hidden flex flex-col items-center justify-center p-6 sm:p-10" style="min-height:500px;">
+                <!-- RITMU TV OFFICIAL LIVE BROADCAST IFRAME CONTAINER -->
+                <div class="relative w-full bg-black overflow-hidden flex items-center justify-center" style="min-height:550px; height: 600px;">
+                  
+                  <!-- Live Ritmu TV Web App Stream -->
+                  <iframe
+                    id="ritmuEmbedIframe"
+                    src="/ritmu-tv-live"
+                    class="w-full h-full border-0 block relative z-10"
+                    allow="autoplay; fullscreen; picture-in-picture; encrypted-media; camera; microphone"
+                    title="Ritmu TV Official Live Broadcast Stream"
+                    loading="lazy"
+                  ></iframe>
 
-                  <!-- Subtle Tech Grid Background -->
-                  <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(#36d7b7 1px, transparent 1px); background-size: 24px 24px;"></div>
-
-                  <!-- Live Stream Card Container -->
-                  <div class="relative z-10 w-full max-w-xl bg-slate-900/90 border border-cyan-500/30 rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-[0_0_50px_rgba(0,0,0,0.8),0_0_30px_rgba(54,215,183,0.15)] flex flex-col items-center text-center gap-6">
-
-                    <!-- Header Badge & Logo -->
-                    <div class="flex items-center gap-3">
-                      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 via-teal-500 to-emerald-500 flex items-center justify-center text-black shadow-[0_0_30px_rgba(54,215,183,0.6)]">
-                        <i class="fa-solid fa-tv text-2xl animate-pulse"></i>
-                      </div>
-                      <div class="text-left">
-                        <h3 class="text-xl sm:text-2xl font-black text-white font-display tracking-wide flex items-center gap-2">
-                          RITMU TV LIVE <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping inline-block"></span>
-                        </h3>
-                        <p class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Official Hourly Thai 4D Lottery Broadcast</p>
-                      </div>
-                    </div>
-
-                    <!-- Realtime Live Ticker -->
-                    <div class="w-full bg-black/60 border border-gold/40 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-inner">
-                      <div class="flex items-center gap-2 text-xs font-bold text-gray-300">
-                        <i class="fa-solid fa-stopwatch text-gold text-base animate-spin" style="animation-duration: 4s;"></i>
-                        <span>NEXT HOURLY DRAW IN:</span>
-                      </div>
-                      <div id="ritmuTvCountdown" class="font-mono text-2xl sm:text-3xl font-black text-gold tracking-wider">00:60:00</div>
-                    </div>
-
-                    <p class="text-xs sm:text-sm text-gray-300 max-w-md leading-relaxed">
-                      Watch live lottery draw broadcasts directly from <span class="text-cyan-400 font-bold">Ritmu TV</span> official satellite stream.
-                    </p>
-
-                    <!-- Direct Launch Action Button -->
-                    <a href="https://www.ritmu.tv/" target="_blank" rel="noopener noreferrer" 
-                       class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-slate-950 font-black text-sm uppercase tracking-widest shadow-[0_0_35px_rgba(54,215,183,0.5)] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-3 border border-cyan-200/50">
-                      <i class="fa-solid fa-circle-play text-lg"></i>
-                      <span>WATCH OFFICIAL RITMU TV LIVE</span>
-                      <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-75"></i>
-                    </a>
+                  <!-- Countdown Overlay Badge (Top Right) -->
+                  <div class="absolute top-4 right-4 z-20 bg-black/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-gold/50 flex items-center gap-2 text-xs font-mono font-bold pointer-events-none shadow-xl">
+                    <i class="fa-solid fa-clock text-gold animate-pulse"></i>
+                    <span class="text-gray-300">Draw in: <span id="ritmuTvCountdown" class="text-gold font-black">00:60:00</span></span>
                   </div>
 
-                  <!-- Overlay Badges -->
-                  <div class="absolute top-4 left-4 z-20 flex items-center gap-2 bg-red-600/90 border border-red-400/40 px-3 py-1 rounded-full text-xs font-black text-white uppercase tracking-wider shadow-lg">
-                    <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE BROADCAST ACTIVE
+                  <!-- LIVE Indicator Badge (Top Left) -->
+                  <div class="absolute top-4 left-4 z-20 flex items-center gap-2 bg-red-600/90 border border-red-400/40 px-3 py-1 rounded-full text-xs font-black text-white uppercase tracking-wider shadow-lg pointer-events-none">
+                    <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> RITMU TV LIVE
                   </div>
                 </div>
 
