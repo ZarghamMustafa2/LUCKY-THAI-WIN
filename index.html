@@ -1874,201 +1874,184 @@
       </div>
     </header>
 
-    <!-- SCROLLABLE MAIN (100% FULL SCREEN BPEXCH DASHBOARD LAYOUT) -->
-    <main class="flex-1 overflow-y-auto custom-scrollbar p-2 sm:p-4 md:p-6 relative bg-[#0b1626] text-white w-full">
+    <!-- SCROLLABLE MAIN (PIXEL-PERFECT REFERENCE 2 BPEXCH DASHBOARD) -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-1.5 sm:p-3 relative bg-[#0b1728] text-white w-full">
       
-      <!-- DASHBOARD VIEW SECTION (Clean Dashboard View) -->
-      <div id="dashboardViewSection" class="w-full mx-auto flex flex-col gap-4 sm:gap-5">
+      <!-- DASHBOARD VIEW SECTION (Clean Reference 2 Dashboard) -->
+      <div id="dashboardViewSection" class="w-full mx-auto flex flex-col gap-2.5 sm:gap-3">
 
-        <!-- 1. FEATURED GAME CARDS GRID (bpexch Style Full-Width) -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 w-full">
+        <!-- 1. COMPACT HORIZONTAL GAME CARDS ROW (Exact Reference 2 Match) -->
+        <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 flex-nowrap w-full snap-x">
           
-          <!-- Card 1: Existing Game - LUCKY THAI WIN / RITMU TV (Featured) -->
-          <div onclick="navigateToAppRoute('game-thai-4d')" class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-amber-600 via-amber-700 to-slate-900 border border-gold/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
-            <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
-            <div class="absolute top-2.5 right-2.5 bg-red-600 border border-red-400 px-2 py-0.5 rounded-full text-[9px] font-black text-white uppercase tracking-wider flex items-center gap-1 shadow-md">
-              <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> LIVE DRAW
-            </div>
-            <div class="relative z-10">
-              <span class="text-[10px] font-mono text-gold font-bold uppercase tracking-widest block">Ritmu TV Broadcast</span>
-              <h3 class="text-base sm:text-2xl font-black text-white font-display tracking-tight leading-tight group-hover:text-gold transition-colors">LUCKY THAI 4D</h3>
-              <div class="flex items-center justify-between gap-2 mt-1.5">
-                <span class="text-[11px] sm:text-xs font-mono font-bold text-cyan-300">Next: <span id="cardCountdownTimer" class="text-gold font-black">00:60:00</span></span>
-                <span class="bg-gold text-slate-950 font-black text-[9px] sm:text-[10px] px-2 py-0.5 rounded-md uppercase tracking-wider">PLAY GAME</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 2: SPORTS BOOK -->
-          <div onclick="alert('Sports Book Odds & Betting feature coming soon!')" class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-black border border-cyan-500/30 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-            <div class="absolute right-2 top-2 opacity-30 group-hover:opacity-50 transition-opacity text-4xl sm:text-5xl text-cyan-400">
+          <!-- Card 1: SPORTS BOOK -->
+          <div onclick="alert('Sports Book Live Odds & Betting coming soon!')" class="flex-shrink-0 w-[31%] sm:w-[24%] md:w-[18%] aspect-square rounded-lg overflow-hidden bg-gradient-to-br from-amber-900/80 via-slate-900 to-black border border-[#2b4c75] shadow-md cursor-pointer relative group flex flex-col justify-end p-2">
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/20 via-black/40 to-black"></div>
+            <div class="absolute right-1.5 top-1.5 opacity-60 text-2xl sm:text-3xl text-gold">
               <i class="fa-solid fa-trophy"></i>
             </div>
             <div class="relative z-10">
-              <h3 class="text-base sm:text-2xl font-black text-white font-display tracking-wider group-hover:text-cyan-300 transition-colors">SPORTS BOOK</h3>
-              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Live Odds & Match Betting</p>
+              <h3 class="text-xs sm:text-sm font-black text-white font-display tracking-tight leading-tight group-hover:text-gold transition-colors">SPORTS BOOK</h3>
             </div>
           </div>
 
-          <!-- Card 3: AviatorX -->
-          <div onclick="alert('AviatorX Crash Game coming soon!')" class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-red-950 via-red-900 to-black border border-red-500/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-red-950/40 to-transparent"></div>
-            <div class="absolute right-3 top-3 opacity-40 group-hover:opacity-70 transition-opacity text-3xl sm:text-4xl text-red-500">
+          <!-- Card 2: AviatorX -->
+          <div onclick="alert('AviatorX Crash Game coming soon!')" class="flex-shrink-0 w-[31%] sm:w-[24%] md:w-[18%] aspect-square rounded-lg overflow-hidden bg-gradient-to-br from-red-950 via-slate-900 to-black border border-red-500/30 shadow-md cursor-pointer relative group flex flex-col justify-end p-2">
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-600/20 via-black/40 to-black"></div>
+            <div class="absolute right-1.5 top-1.5 opacity-70 text-2xl sm:text-3xl text-red-500">
               <i class="fa-solid fa-plane-up"></i>
             </div>
             <div class="relative z-10">
-              <h3 class="text-base sm:text-2xl font-black text-red-500 italic font-display tracking-tight group-hover:text-white transition-colors">Aviator<span class="text-white">X</span></h3>
-              <p class="text-[10px] text-gray-300 font-bold uppercase tracking-wider">Crash & Multiplier Game</p>
+              <h3 class="text-xs sm:text-sm font-black text-red-500 italic font-display tracking-tight group-hover:text-white transition-colors">Aviator<span class="text-white">X</span></h3>
             </div>
           </div>
 
-          <!-- Card 4: EUROPEAN ROULETTE -->
-          <div onclick="alert('European Roulette Live Table coming soon!')" class="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-purple-950 via-slate-900 to-black border border-purple-500/40 shadow-lg cursor-pointer transform hover:-translate-y-1 transition-all h-36 sm:h-44 flex flex-col justify-end p-3 sm:p-4">
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-purple-950/40 to-transparent"></div>
-            <div class="absolute right-3 top-3 opacity-40 group-hover:opacity-70 transition-opacity text-3xl sm:text-4xl text-purple-400">
+          <!-- Card 3: EUROPEAN ROULETTE -->
+          <div onclick="alert('European Roulette Live Table coming soon!')" class="flex-shrink-0 w-[31%] sm:w-[24%] md:w-[18%] aspect-square rounded-lg overflow-hidden bg-gradient-to-br from-purple-950 via-slate-900 to-black border border-purple-500/30 shadow-md cursor-pointer relative group flex flex-col justify-end p-2">
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-600/20 via-black/40 to-black"></div>
+            <div class="absolute right-1.5 top-1.5 opacity-70 text-2xl sm:text-3xl text-purple-400">
               <i class="fa-solid fa-chess-queen"></i>
             </div>
             <div class="relative z-10">
-              <h3 class="text-base sm:text-xl font-black text-white font-display tracking-tight group-hover:text-purple-300 transition-colors">EUROPEAN ROULETTE</h3>
-              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Live Dealer Table</p>
+              <h3 class="text-[10px] sm:text-xs font-black text-white font-display tracking-tight leading-tight group-hover:text-purple-300 transition-colors">EUROPEAN ROULETTE</h3>
+            </div>
+          </div>
+
+          <!-- Card 4: OUR FEATURED GAME - LUCKY THAI 4D (Clicking opens dedicated game page) -->
+          <div onclick="navigateToAppRoute('game-thai-4d')" class="flex-shrink-0 w-[31%] sm:w-[24%] md:w-[18%] aspect-square rounded-lg overflow-hidden bg-gradient-to-br from-amber-600 via-amber-700 to-slate-900 border-2 border-gold shadow-lg cursor-pointer relative group flex flex-col justify-end p-2">
+            <div class="absolute top-1 right-1 bg-red-600 px-1.5 py-0.5 rounded text-[8px] font-black text-white uppercase tracking-wider">
+              LIVE
+            </div>
+            <div class="relative z-10">
+              <span class="text-[8px] font-mono text-gold font-bold block uppercase">Ritmu TV</span>
+              <h3 class="text-xs sm:text-sm font-black text-white font-display leading-tight group-hover:text-gold transition-colors">LUCKY THAI 4D</h3>
             </div>
           </div>
 
         </div>
 
-        <!-- 2. HORSE RACE & GREY HOUND SCHEDULE SLIDERS (bpexch Style Full-Width) -->
-        <div class="flex flex-col gap-3 w-full">
+        <!-- 2. HORSE RACE EVENT ROW (Exact Reference 2 Style) -->
+        <div class="bg-[#142842] border border-[#213e64] rounded-md p-1.5 flex flex-col gap-1 w-full shadow-sm">
+          <div class="flex items-center gap-1.5 text-xs font-bold text-white px-1">
+            <i class="fa-solid fa-horse text-amber-400 text-xs"></i>
+            <span class="tracking-wide">Horse Race</span>
+          </div>
+          <div class="flex items-center gap-1 w-full">
+            <button class="bg-[#1b385e] hover:bg-[#25497a] text-cyan-300 w-6 h-10 rounded flex items-center justify-center flex-shrink-0 cursor-pointer text-xs">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="grid grid-cols-3 gap-1 flex-1">
+              <div class="bg-[#1c3c66] border border-[#295287] hover:border-cyan-400 py-1 px-1 rounded flex flex-col items-center justify-center text-center cursor-pointer transition-all">
+                <span class="text-[11px] font-mono font-bold text-cyan-300 leading-tight">11:18 PM</span>
+                <span class="text-[9px] text-gray-300 font-medium truncate w-full">Kilbeggan (IE)</span>
+              </div>
+              <div class="bg-[#1c3c66] border border-[#295287] hover:border-cyan-400 py-1 px-1 rounded flex flex-col items-center justify-center text-center cursor-pointer transition-all">
+                <span class="text-[11px] font-mono font-bold text-cyan-300 leading-tight">11:26 PM</span>
+                <span class="text-[9px] text-gray-300 font-medium truncate w-full">Gulfstream Park (US)</span>
+              </div>
+              <div class="bg-[#1c3c66] border border-[#295287] hover:border-cyan-400 py-1 px-1 rounded flex flex-col items-center justify-center text-center cursor-pointer transition-all">
+                <span class="text-[11px] font-mono font-bold text-cyan-300 leading-tight">11:27 PM</span>
+                <span class="text-[9px] text-gray-300 font-medium truncate w-full">Monmouth Park (US)</span>
+              </div>
+            </div>
+            <button class="bg-[#1b385e] hover:bg-[#25497a] text-cyan-300 w-6 h-10 rounded flex items-center justify-center flex-shrink-0 cursor-pointer text-xs">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. GREY HOUND EVENT ROW (Exact Reference 2 Style) -->
+        <div class="bg-[#142842] border border-[#213e64] rounded-md p-1.5 flex flex-col gap-1 w-full shadow-sm">
+          <div class="flex items-center gap-1.5 text-xs font-bold text-white px-1">
+            <i class="fa-solid fa-dog text-amber-400 text-xs"></i>
+            <span class="tracking-wide">Grey Hound</span>
+          </div>
+          <div class="flex items-center gap-1 w-full">
+            <button class="bg-[#1b385e] hover:bg-[#25497a] text-cyan-300 w-6 h-10 rounded flex items-center justify-center flex-shrink-0 cursor-pointer text-xs">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="grid grid-cols-3 gap-1 flex-1">
+              <div class="bg-[#1c3c66] border border-[#295287] hover:border-cyan-400 py-1 px-1 rounded flex flex-col items-center justify-center text-center cursor-pointer transition-all">
+                <span class="text-[11px] font-mono font-bold text-cyan-300 leading-tight">11:14 PM</span>
+                <span class="text-[9px] text-gray-300 font-medium truncate w-full">Star Pelaw (GB)</span>
+              </div>
+              <div class="bg-[#1c3c66] border border-[#295287] hover:border-cyan-400 py-1 px-1 rounded flex flex-col items-center justify-center text-center cursor-pointer transition-all">
+                <span class="text-[11px] font-mono font-bold text-cyan-300 leading-tight">11:18 PM</span>
+                <span class="text-[9px] text-gray-300 font-medium truncate w-full">Dunstall Park (GB)</span>
+              </div>
+              <div class="bg-[#1c3c66] border border-[#295287] hover:border-cyan-400 py-1 px-1 rounded flex flex-col items-center justify-center text-center cursor-pointer transition-all">
+                <span class="text-[11px] font-mono font-bold text-cyan-300 leading-tight">11:22 PM</span>
+                <span class="text-[9px] text-gray-300 font-medium truncate w-full">Romford (GB)</span>
+              </div>
+            </div>
+            <button class="bg-[#1b385e] hover:bg-[#25497a] text-cyan-300 w-6 h-10 rounded flex items-center justify-center flex-shrink-0 cursor-pointer text-xs">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. SINGLE HORIZONTAL SPORTS CATEGORY TABS ROW (Exact Reference 2 Match) -->
+        <div class="grid grid-cols-4 gap-1 w-full">
           
-          <!-- Horse Race Schedule Slider -->
-          <div class="bg-[#172f4e] border border-[#25436c] rounded-xl p-2.5 sm:p-3 flex flex-col gap-2 shadow-md w-full">
-            <div class="flex items-center gap-2 text-xs font-bold text-white px-1">
-              <i class="fa-solid fa-horse text-amber-400"></i>
-              <span>Horse Race</span>
-            </div>
-            <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 w-full">
-              <button class="bg-[#0f1d32] hover:bg-[#1f3a60] text-gray-300 px-2.5 py-2 rounded-lg text-xs transition-colors flex-shrink-0 cursor-pointer">
-                <i class="fa-solid fa-chevron-left text-xs"></i>
-              </button>
-              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-4 py-2 rounded-lg flex flex-col items-center flex-shrink-0 min-w-[140px] cursor-pointer transition-all">
-                <span class="text-xs font-mono font-bold text-cyan-300">11:18 PM</span>
-                <span class="text-[10px] text-gray-300 font-semibold">Kilbeggan (IE)</span>
-              </div>
-              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-4 py-2 rounded-lg flex flex-col items-center flex-shrink-0 min-w-[140px] cursor-pointer transition-all">
-                <span class="text-xs font-mono font-bold text-cyan-300">11:26 PM</span>
-                <span class="text-[10px] text-gray-300 font-semibold">Gulfstream Park (US)</span>
-              </div>
-              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-4 py-2 rounded-lg flex flex-col items-center flex-shrink-0 min-w-[140px] cursor-pointer transition-all">
-                <span class="text-xs font-mono font-bold text-cyan-300">11:27 PM</span>
-                <span class="text-[10px] text-gray-300 font-semibold">Monmouth Park (US)</span>
-              </div>
-              <button class="bg-[#0f1d32] hover:bg-[#1f3a60] text-gray-300 px-2.5 py-2 rounded-lg text-xs transition-colors flex-shrink-0 cursor-pointer">
-                <i class="fa-solid fa-chevron-right text-xs"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Grey Hound Schedule Slider -->
-          <div class="bg-[#172f4e] border border-[#25436c] rounded-xl p-2.5 sm:p-3 flex flex-col gap-2 shadow-md w-full">
-            <div class="flex items-center gap-2 text-xs font-bold text-white px-1">
-              <i class="fa-solid fa-dog text-amber-400"></i>
-              <span>Grey Hound</span>
-            </div>
-            <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 w-full">
-              <button class="bg-[#0f1d32] hover:bg-[#1f3a60] text-gray-300 px-2.5 py-2 rounded-lg text-xs transition-colors flex-shrink-0 cursor-pointer">
-                <i class="fa-solid fa-chevron-left text-xs"></i>
-              </button>
-              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-4 py-2 rounded-lg flex flex-col items-center flex-shrink-0 min-w-[140px] cursor-pointer transition-all">
-                <span class="text-xs font-mono font-bold text-cyan-300">11:14 PM</span>
-                <span class="text-[10px] text-gray-300 font-semibold">Star Pelaw (GB)</span>
-              </div>
-              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-4 py-2 rounded-lg flex flex-col items-center flex-shrink-0 min-w-[140px] cursor-pointer transition-all">
-                <span class="text-xs font-mono font-bold text-cyan-300">11:18 PM</span>
-                <span class="text-[10px] text-gray-300 font-semibold">Dunstall Park (GB)</span>
-              </div>
-              <div class="bg-[#1b385e] border border-[#2b5185] hover:border-cyan-400 px-4 py-2 rounded-lg flex flex-col items-center flex-shrink-0 min-w-[140px] cursor-pointer transition-all">
-                <span class="text-xs font-mono font-bold text-cyan-300">11:22 PM</span>
-                <span class="text-[10px] text-gray-300 font-semibold">Romford (GB)</span>
-              </div>
-              <button class="bg-[#0f1d32] hover:bg-[#1f3a60] text-gray-300 px-2.5 py-2 rounded-lg text-xs transition-colors flex-shrink-0 cursor-pointer">
-                <i class="fa-solid fa-chevron-right text-xs"></i>
-              </button>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- 3. SPORTS CATEGORY TILES (bpexch Style Full-Width) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 w-full">
-          
-          <!-- Tile 1: Inplay (Active Green) -->
-          <button class="bg-[#00a86b] text-white rounded-xl p-3 sm:p-4 flex items-center justify-center gap-2.5 shadow-md cursor-pointer hover:brightness-110 transition-all border border-emerald-400/40 w-full">
-            <span class="font-mono font-black text-lg sm:text-xl">4</span>
-            <div class="flex items-center gap-1.5">
-              <i class="fa-solid fa-stopwatch text-sm"></i>
-              <span class="text-xs sm:text-sm font-bold tracking-wide">Inplay</span>
-            </div>
+          <!-- Tab 1: Inplay (Active Bright Green) -->
+          <button class="bg-[#00a86b] text-white rounded-md p-1.5 flex flex-col items-center justify-between h-16 sm:h-20 shadow-sm cursor-pointer hover:brightness-110 transition-all border border-emerald-400/40 w-full relative">
+            <span class="font-mono font-black text-xs sm:text-sm italic absolute top-1 left-1.5">4</span>
+            <i class="fa-solid fa-stopwatch text-base sm:text-xl my-auto"></i>
+            <span class="text-xs sm:text-sm font-bold tracking-tight">Inplay</span>
           </button>
 
-          <!-- Tile 2: Cricket -->
-          <button class="bg-[#172f4e] hover:bg-[#1e3c63] text-gray-200 rounded-xl p-3 sm:p-4 flex items-center justify-center gap-2.5 shadow-md cursor-pointer transition-all border border-[#25436c] w-full">
-            <span class="font-mono font-black text-lg sm:text-xl text-cyan-300">16</span>
-            <div class="flex items-center gap-1.5">
-              <i class="fa-solid fa-baseball-bat-ball text-sm text-cyan-400"></i>
-              <span class="text-xs sm:text-sm font-bold tracking-wide">Cricket</span>
-            </div>
+          <!-- Tab 2: Cricket -->
+          <button class="bg-[#1c3c66] hover:bg-[#244b7f] text-gray-100 rounded-md p-1.5 flex flex-col items-center justify-between h-16 sm:h-20 shadow-sm cursor-pointer transition-all border border-[#295287] w-full relative">
+            <span class="font-mono font-black text-xs sm:text-sm italic text-cyan-300 absolute top-1 left-1.5">16</span>
+            <i class="fa-solid fa-baseball-bat-ball text-base sm:text-xl text-cyan-400 my-auto"></i>
+            <span class="text-xs sm:text-sm font-bold tracking-tight">Cricket</span>
           </button>
 
-          <!-- Tile 3: Tennis -->
-          <button class="bg-[#172f4e] hover:bg-[#1e3c63] text-gray-200 rounded-xl p-3 sm:p-4 flex items-center justify-center gap-2.5 shadow-md cursor-pointer transition-all border border-[#25436c] w-full">
-            <span class="font-mono font-black text-lg sm:text-xl text-cyan-300">8</span>
-            <div class="flex items-center gap-1.5">
-              <i class="fa-solid fa-table-tennis-paddle-ball text-sm text-cyan-400"></i>
-              <span class="text-xs sm:text-sm font-bold tracking-wide">Tennis</span>
-            </div>
+          <!-- Tab 3: Tennis -->
+          <button class="bg-[#1c3c66] hover:bg-[#244b7f] text-gray-100 rounded-md p-1.5 flex flex-col items-center justify-between h-16 sm:h-20 shadow-sm cursor-pointer transition-all border border-[#295287] w-full relative">
+            <span class="font-mono font-black text-xs sm:text-sm italic text-cyan-300 absolute top-1 left-1.5">8</span>
+            <i class="fa-solid fa-table-tennis-paddle-ball text-base sm:text-xl text-cyan-400 my-auto"></i>
+            <span class="text-xs sm:text-sm font-bold tracking-tight">Tennis</span>
           </button>
 
-          <!-- Tile 4: Soccer -->
-          <button class="bg-[#172f4e] hover:bg-[#1e3c63] text-gray-200 rounded-xl p-3 sm:p-4 flex items-center justify-center gap-2.5 shadow-md cursor-pointer transition-all border border-[#25436c] w-full">
-            <span class="font-mono font-black text-lg sm:text-xl text-cyan-300">10</span>
-            <div class="flex items-center gap-1.5">
-              <i class="fa-solid fa-football text-sm text-cyan-400"></i>
-              <span class="text-xs sm:text-sm font-bold tracking-wide">Soccer</span>
-            </div>
+          <!-- Tab 4: Soccer -->
+          <button class="bg-[#1c3c66] hover:bg-[#244b7f] text-gray-100 rounded-md p-1.5 flex flex-col items-center justify-between h-16 sm:h-20 shadow-sm cursor-pointer transition-all border border-[#295287] w-full relative">
+            <span class="font-mono font-black text-xs sm:text-sm italic text-cyan-300 absolute top-1 left-1.5">10</span>
+            <i class="fa-solid fa-football text-base sm:text-xl text-cyan-400 my-auto"></i>
+            <span class="text-xs sm:text-sm font-bold tracking-tight">Soccer</span>
           </button>
 
         </div>
 
-        <!-- 4. SPORTS MATCHES & BETTING MARKETS LIST (bpexch Style Table) -->
-        <div class="flex flex-col gap-2 bg-[#12243b] border border-[#213f66] rounded-lg overflow-hidden shadow-md">
+        <!-- 5. COMPACT SPORTS MATCHES & BETTING MARKETS TABLE (Exact Reference 2 Match) -->
+        <div class="flex flex-col gap-1.5 bg-[#12243b] border border-[#213f66] rounded-md overflow-hidden shadow-sm">
           
           <!-- Category 1: Cricket -->
           <div>
-            <div class="bg-[#d9d9d9] text-gray-900 px-3 py-1.5 flex items-center justify-between font-bold text-xs sm:text-sm">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-baseball-bat-ball text-gray-800"></i>
-                <span>Cricket</span>
+            <div class="bg-[#c8cbd2] text-[#121620] px-2.5 py-1 flex items-center justify-between font-bold text-xs">
+              <div class="flex items-center gap-1.5">
+                <i class="fa-solid fa-baseball-bat-ball text-[#121620]"></i>
+                <span class="tracking-tight">Cricket</span>
               </div>
-              <span class="text-gray-700 font-mono text-xs">Matched</span>
+              <span class="font-mono text-[11px] text-[#121620]">Matched</span>
             </div>
             
             <div class="divide-y divide-[#1e3759]">
               <!-- Match 1 -->
-              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-3 py-2.5 flex items-center justify-between text-xs sm:text-sm transition-colors">
-                <div class="flex items-center gap-2.5">
-                  <div class="bg-[#00a86b] text-white px-2 py-0.5 rounded text-[10px] font-mono font-bold flex flex-col items-center">
+              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-2.5 py-2 flex items-center justify-between text-xs transition-colors">
+                <div class="flex items-center gap-2">
+                  <div class="bg-[#00a86b] text-white px-1.5 py-0.5 rounded text-[9px] font-mono font-bold flex flex-col items-center leading-none">
                     <span>InPlay</span>
-                    <span>22:00</span>
+                    <span class="mt-0.5">22:00</span>
                   </div>
-                  <span class="font-bold text-white">Southern Brave V Manchester Super Giants</span>
+                  <span class="font-bold text-white text-xs sm:text-sm leading-snug">Southern Brave V Manchester Super Giants</span>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
                   <div class="flex items-center gap-1 text-gray-300">
                     <i class="fa-solid fa-tv text-cyan-300 text-xs"></i>
-                    <span class="bg-[#0e5c94] text-white px-1.5 py-0.2 rounded text-[9px] font-bold">BM</span>
+                    <span class="bg-[#0e5c94] text-white px-1 py-0.2 rounded text-[8px] font-bold">BM</span>
                   </div>
-                  <span class="font-mono text-gray-300 font-semibold text-xs hidden xs:inline">199,324,114</span>
-                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer"></i>
+                  <span class="font-mono text-gray-300 font-semibold text-xs">199,324,114</span>
+                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer text-xs"></i>
                 </div>
               </div>
             </div>
@@ -2076,28 +2059,28 @@
 
           <!-- Category 2: Football -->
           <div>
-            <div class="bg-[#d9d9d9] text-gray-900 px-3 py-1.5 flex items-center justify-between font-bold text-xs sm:text-sm">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-football text-gray-800"></i>
-                <span>Football</span>
+            <div class="bg-[#c8cbd2] text-[#121620] px-2.5 py-1 flex items-center justify-between font-bold text-xs">
+              <div class="flex items-center gap-1.5">
+                <i class="fa-solid fa-football text-[#121620]"></i>
+                <span class="tracking-tight">Football</span>
               </div>
-              <span class="text-gray-700 font-mono text-xs">Matched</span>
+              <span class="font-mono text-[11px] text-[#121620]">Matched</span>
             </div>
             
             <div class="divide-y divide-[#1e3759]">
               <!-- Match 1 -->
-              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-3 py-2.5 flex items-center justify-between text-xs sm:text-sm transition-colors">
-                <div class="flex items-center gap-2.5">
-                  <div class="bg-[#00a86b] text-white px-2 py-0.5 rounded text-[10px] font-mono font-bold flex flex-col items-center">
+              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-2.5 py-2 flex items-center justify-between text-xs transition-colors">
+                <div class="flex items-center gap-2">
+                  <div class="bg-[#00a86b] text-white px-1.5 py-0.5 rounded text-[9px] font-mono font-bold flex flex-col items-center leading-none">
                     <span>InPlay</span>
-                    <span>23:00</span>
+                    <span class="mt-0.5">23:00</span>
                   </div>
-                  <span class="font-bold text-white">PSV V Fortuna Sittard</span>
+                  <span class="font-bold text-white text-xs sm:text-sm leading-snug">PSV V Fortuna Sittard</span>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
                   <i class="fa-solid fa-tv text-cyan-300 text-xs"></i>
-                  <span class="font-mono text-gray-300 font-semibold text-xs hidden xs:inline">2,440,877</span>
-                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer"></i>
+                  <span class="font-mono text-gray-300 font-semibold text-xs">2,440,877</span>
+                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer text-xs"></i>
                 </div>
               </div>
             </div>
@@ -2105,44 +2088,44 @@
 
           <!-- Category 3: Tennis -->
           <div>
-            <div class="bg-[#d9d9d9] text-gray-900 px-3 py-1.5 flex items-center justify-between font-bold text-xs sm:text-sm">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-table-tennis-paddle-ball text-gray-800"></i>
-                <span>Tennis</span>
+            <div class="bg-[#c8cbd2] text-[#121620] px-2.5 py-1 flex items-center justify-between font-bold text-xs">
+              <div class="flex items-center gap-1.5">
+                <i class="fa-solid fa-table-tennis-paddle-ball text-[#121620]"></i>
+                <span class="tracking-tight">Tennis</span>
               </div>
-              <span class="text-gray-700 font-mono text-xs">Matched</span>
+              <span class="font-mono text-[11px] text-[#121620]">Matched</span>
             </div>
             
             <div class="divide-y divide-[#1e3759]">
               <!-- Match 1 -->
-              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-3 py-2.5 flex items-center justify-between text-xs sm:text-sm transition-colors">
-                <div class="flex items-center gap-2.5">
-                  <div class="bg-[#00a86b] text-white px-2 py-0.5 rounded text-[10px] font-mono font-bold flex flex-col items-center">
+              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-2.5 py-2 flex items-center justify-between text-xs transition-colors">
+                <div class="flex items-center gap-2">
+                  <div class="bg-[#00a86b] text-white px-1.5 py-0.5 rounded text-[9px] font-mono font-bold flex flex-col items-center leading-none">
                     <span>InPlay</span>
-                    <span>21:30</span>
+                    <span class="mt-0.5">21:30</span>
                   </div>
-                  <span class="font-bold text-white">M Kostyuk V Iga Swiatek</span>
+                  <span class="font-bold text-white text-xs sm:text-sm leading-snug">M Kostyuk V Iga Swiatek</span>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
                   <i class="fa-solid fa-tv text-cyan-300 text-xs"></i>
-                  <span class="font-mono text-gray-300 font-semibold text-xs hidden xs:inline">25,621,648</span>
-                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer"></i>
+                  <span class="font-mono text-gray-300 font-semibold text-xs">25,621,648</span>
+                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer text-xs"></i>
                 </div>
               </div>
 
               <!-- Match 2 -->
-              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-3 py-2.5 flex items-center justify-between text-xs sm:text-sm transition-colors">
-                <div class="flex items-center gap-2.5">
-                  <div class="bg-[#00a86b] text-white px-2 py-0.5 rounded text-[10px] font-mono font-bold flex flex-col items-center">
+              <div class="bg-[#172d4a] hover:bg-[#1c385c] px-2.5 py-2 flex items-center justify-between text-xs transition-colors">
+                <div class="flex items-center gap-2">
+                  <div class="bg-[#00a86b] text-white px-1.5 py-0.5 rounded text-[9px] font-mono font-bold flex flex-col items-center leading-none">
                     <span>InPlay</span>
-                    <span>21:30</span>
+                    <span class="mt-0.5">21:30</span>
                   </div>
-                  <span class="font-bold text-white">Borges V Darderi</span>
+                  <span class="font-bold text-white text-xs sm:text-sm leading-snug">Borges V Darderi</span>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
                   <i class="fa-solid fa-tv text-cyan-300 text-xs"></i>
-                  <span class="font-mono text-gray-300 font-semibold text-xs hidden xs:inline">9,030,162</span>
-                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer"></i>
+                  <span class="font-mono text-gray-300 font-semibold text-xs">9,030,162</span>
+                  <i class="fa-solid fa-circle-info text-gray-400 hover:text-white cursor-pointer text-xs"></i>
                 </div>
               </div>
             </div>
