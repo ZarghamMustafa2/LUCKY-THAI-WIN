@@ -1696,9 +1696,11 @@
     html.light [class*="border-gold"] {
       border-color: rgba(217, 119, 6, 0.5) !important;
     }
-    html, body, #appMainWrapper, main {
+    html, body {
       overscroll-behavior-y: none !important;
-      touch-action: pan-x pan-y !important;
+    }
+    main {
+      overscroll-behavior-y: none !important;
     }
   </style>
 </head>
@@ -5538,20 +5540,14 @@
 
       // BIND LISTENERS ACROSS WINDOW, DOCUMENT, HEADER, WRAPPER, & MAIN SCROLLER
       function bindListeners() {
-        var mainEl   = document.querySelector('main');
-        var headerEl = document.querySelector('header');
-        var appWrap  = document.getElementById('appMainWrapper');
-
-        var targets = [window, document, appWrap, headerEl, mainEl];
-        targets.forEach(function(target) {
-          if (!target) return;
-          try {
-            target.addEventListener('touchstart', handleTouchStart, { passive: true });
-            target.addEventListener('touchmove', handleTouchMove, { passive: false });
-            target.addEventListener('touchend', finishPullToRefresh, { passive: true });
-            target.addEventListener('touchcancel', handleTouchCancel, { passive: true });
-          } catch(e) {}
-        });
+        // CRITICAL: touchstart must be { passive: false } so that when touchmove
+        // calls e.preventDefault(), Chrome actually honours it.
+        // If touchstart is passive:true, Chrome ignores preventDefault on touchmove
+        // and its native scroll/overscroll takes over, killing our gesture.
+        document.addEventListener('touchstart', handleTouchStart, { passive: false });
+        document.addEventListener('touchmove',  handleTouchMove,  { passive: false });
+        document.addEventListener('touchend',   finishPullToRefresh, { passive: true });
+        document.addEventListener('touchcancel',handleTouchCancel,   { passive: true });
       }
 
       if (document.readyState === 'loading') {
