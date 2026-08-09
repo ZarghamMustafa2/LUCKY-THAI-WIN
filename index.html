@@ -5318,7 +5318,7 @@
       if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
     }
 
-    // ── Native Mobile Pull To Refresh (Attached Directly to Actual <main> Scroll Container) ──
+    // ── Single Authoritative Pull To Refresh System (Guaranteed Reload Execution) ──
     (function initPullToRefresh() {
       var indicator   = document.getElementById('pullToRefreshIndicator');
       var spinnerEl   = document.getElementById('pullSpinnerIcon');
@@ -5342,13 +5342,13 @@
 
       if (!indicator) return;
 
-      var startY       = 0;
-      var currentY     = 0;
-      var pullDistance = 0;
-      var canRefresh   = false;
-      var isPulling    = false;
-      var isRefreshing = false;
-      var THRESHOLD    = 90; // 90px threshold (in 80-100px range)
+      var startY          = 0;
+      var currentY        = 0;
+      var pullDistance    = 0;
+      var canRefresh      = false;
+      var isPulling       = false;
+      var isReloadingRef  = false; // GUARD REF TO PREVENT DUPLICATE RECALLS
+      var THRESHOLD       = 90;    // 90px threshold (in 80-100px range)
 
       function getScroller() {
         return document.querySelector('main') || document.body;
@@ -5379,7 +5379,7 @@
       }
 
       function handleTouchStart(e) {
-        if (isRefreshing) return;
+        if (isReloadingRef) return;
         if (isSidebarOpen()) {
           updateDebugUI('MAIN', '0', 'SIDEBAR OPEN', 0, 'NO');
           return;
@@ -5405,7 +5405,7 @@
       }
 
       function handleTouchMove(e) {
-        if (!isPulling || isRefreshing || !e.touches || e.touches.length !== 1) return;
+        if (!isPulling || isReloadingRef || !e.touches || e.touches.length !== 1) return;
         currentY = e.touches[0].clientY;
         var rawDistance = currentY - startY;
 
@@ -5455,8 +5455,11 @@
         }
       }
 
-      function handleTouchEnd(e) {
+      // SINGLE AUTHORITATIVE FINALIZATION FUNCTION
+      function finishPullToRefresh(e) {
+        if (isReloadingRef) return; // Prevent duplicate execution
         if (!isPulling && !canRefresh) return;
+        
         isPulling = false;
 
         if (e && e.changedTouches && e.changedTouches.length > 0) {
@@ -5468,9 +5471,10 @@
         }
 
         if (canRefresh === true) {
-          isRefreshing = true;
+          isReloadingRef = true; // Lock reload state!
 
-          updateDebugUI('MAIN', '0', 'RELEASING', pullDistance, 'RELOAD EXECUTING!');
+          // STEP 3 REQUIREMENT: Show "RELEASING" then "RELOAD EXECUTING!"
+          updateDebugUI('MAIN', '0', 'RELEASING', pullDistance, 'YES');
 
           if (pullTextEl) pullTextEl.innerText = 'REFRESHING...';
           indicator.style.opacity     = '1';
@@ -5493,16 +5497,36 @@
             try { navigator.vibrate(40); } catch(err) {}
           }
 
-          // REAL BROWSER PAGE RELOAD
+          updateDebugUI('MAIN', '0', 'RELOAD EXECUTING!', pullDistance, 'YES');
+
+          // STEP 6: EXECUTE REAL RELOAD WITH FAILSAFE FALLBACKS
+          try {
+            console.log("PULL REFRESH: EXECUTING REAL RELOAD");
+            window.location.reload(); // REAL BROWSER RELOAD (no boolean argument)
+          } catch (error) {
+            console.error("PULL REFRESH RELOAD FAILED:", error);
+            updateDebugUI('MAIN', 'ERR', 'FAIL: ' + error.message, pullDistance, 'FAIL');
+            try {
+              window.location.href = window.location.href; // FALLBACK 1
+            } catch (err2) {
+              window.location.replace(window.location.href); // FALLBACK 2
+            }
+          }
+
+          // Failsafe timer if browser delays navigation
           setTimeout(function() {
-            window.location.reload(true);
-          }, 100);
+            try {
+              window.location.href = window.location.href;
+            } catch(e) {}
+          }, 250);
+
         } else {
           resetUI(true);
         }
       }
 
       function resetUI(animated) {
+        if (isReloadingRef) return;
         isPulling = false;
         canRefresh = false;
         if (appWrapper) {
@@ -5521,35 +5545,35 @@
         updateDebugUI('MAIN', '0', 'NO', 0, 'NO');
       }
 
-      function handleTouchCancel() {
-        if (!isRefreshing) {
-          resetUI(true);
+      function handleTouchCancel(e) {
+        if (!isReloadingRef) {
+          finishPullToRefresh(e);
         }
       }
 
       window.triggerAppRefresh = function() {
-        isRefreshing = true;
+        if (isReloadingRef) return;
+        isReloadingRef = true;
         if (pullTextEl) pullTextEl.innerText = 'REFRESHING...';
         indicator.style.opacity   = '1';
         indicator.style.transform = 'translateX(-50%) translateY(50px)';
         if (spinnerEl) spinnerEl.classList.add('animate-spin');
-        updateDebugUI('MAIN', '0', 'YES', 100, 'RELOAD EXECUTING!');
-        setTimeout(function() { window.location.reload(true); }, 100);
+        updateDebugUI('MAIN', '0', 'RELOAD EXECUTING!', 100, 'YES');
+        try {
+          window.location.reload();
+        } catch(e) {
+          window.location.href = window.location.href;
+        }
       };
 
-      // REGISTER ON THE ACTUAL SCROLL CONTAINER (<main>), WINDOW, & DOCUMENT
+      // STEP 7 REQUIREMENT: BIND LISTENERS EXCLUSIVELY TO MAIN SCROLLER CONTAINER
       function bindListeners() {
         var scroller = getScroller();
-        var targets = [scroller, document, window];
-        targets.forEach(function(t) {
-          if (!t) return;
-          try {
-            t.addEventListener('touchstart', handleTouchStart, { passive: true });
-            t.addEventListener('touchmove', handleTouchMove, { passive: false });
-            t.addEventListener('touchend', handleTouchEnd, { passive: true });
-            t.addEventListener('touchcancel', handleTouchCancel, { passive: true });
-          } catch(e) {}
-        });
+        if (!scroller) return;
+        scroller.addEventListener('touchstart', handleTouchStart, { passive: true });
+        scroller.addEventListener('touchmove', handleTouchMove, { passive: false });
+        scroller.addEventListener('touchend', finishPullToRefresh, { passive: true });
+        scroller.addEventListener('touchcancel', handleTouchCancel, { passive: true });
       }
 
       if (document.readyState === 'loading') {
