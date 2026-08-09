@@ -5376,11 +5376,12 @@
       function handleTouchStart(e) {
         if (isReloadingState) return;
         if (isSidebarOpen() || isInteractiveTarget(e.target)) return;
+        if (!e.touches || e.touches.length !== 1) return;
 
         var scroller = getScroller();
-        var sTop = Math.round(getScrollTop(scroller));
+        var sTop = scroller ? Math.round(scroller.scrollTop) : 0;
 
-        if (sTop <= 15 && e.touches && e.touches.length === 1) {
+        if (sTop <= 15) {
           startY          = e.touches[0].clientY;
           currentY        = startY;
           pullDistance    = 0;
@@ -5390,17 +5391,22 @@
       }
 
       function handleTouchMove(e) {
-        if (!isPulling || isReloadingState || !e.touches || e.touches.length !== 1) return;
+        if (!isPulling || isReloadingState) return;
+        if (!e.touches || e.touches.length !== 1) return;
+
         currentY = e.touches[0].clientY;
         var rawDistance = currentY - startY;
 
         var scroller = getScroller();
-        var sTop = Math.round(getScrollTop(scroller));
+        var sTop = scroller ? Math.round(scroller.scrollTop) : 0;
 
         if (rawDistance > 0 && sTop <= 15) {
-          if (e.cancelable) {
-            e.preventDefault();
+          // KEY FIX: Lock main scroll so Chrome compositor cannot steal this gesture
+          if (scroller && scroller.style.overflowY !== 'hidden') {
+            scroller.style.overflowY = 'hidden';
           }
+
+          if (e.cancelable) e.preventDefault();
 
           pullDistance = Math.round(rawDistance);
           var visualDist = Math.min(pullDistance * 0.45, 110);
@@ -5431,12 +5437,18 @@
             if (spinnerEl) spinnerEl.style.color = '#ffd400';
           }
         } else if (rawDistance < 0) {
+          // Scrolling up — cancel gesture, restore scroll
+          unlockScroll();
           isPulling = false;
           resetUI(false);
         }
       }
 
-      // EXPLICIT REAL URL NAVIGATION FUNCTION
+      function unlockScroll() {
+        var scroller = getScroller();
+        if (scroller) scroller.style.overflowY = '';
+      }
+
       function performPullToRefresh() {
         if (isReloadingState) return;
         isReloadingState = true;
@@ -5453,56 +5465,38 @@
           spinnerEl.classList.add('animate-spin');
         }
 
-        if (appWrapper) {
-          appWrapper.style.transition = 'transform 0.2s ease-out';
-          appWrapper.style.transform  = 'translateY(45px)';
-        }
-
         if (navigator.vibrate) {
           try { navigator.vibrate(40); } catch(err) {}
         }
 
-        // REAL BROWSER DOCUMENT URL NAVIGATION
+        // REAL PAGE RELOAD via URL navigation
         try {
-          console.log("PULL REFRESH NAVIGATION START");
           var targetUrl = new URL(window.location.href);
-          targetUrl.searchParams.set("__pull_refresh", Date.now().toString());
-          console.log("NAVIGATING TO:", targetUrl.toString());
+          targetUrl.searchParams.set('__pull_refresh', Date.now().toString());
           window.location.assign(targetUrl.toString());
-        } catch (error) {
-          console.error("PULL REFRESH NAVIGATION ERROR:", error);
-          try {
-            window.location.reload();
-          } catch(e2) {
+        } catch (err) {
+          try { window.location.reload(); } catch(e2) {
             window.location.href = window.location.href;
           }
         }
-
-        // Immediate backup navigation trigger for mobile browsers / WebViews
-        setTimeout(function() {
-          try {
-            var fallbackUrl = new URL(window.location.href);
-            fallbackUrl.searchParams.set("__pull_refresh", Date.now().toString());
-            window.location.href = fallbackUrl.toString();
-          } catch(e) {}
-        }, 150);
       }
 
       function finishPullToRefresh(e) {
         if (isReloadingState) return;
-        if (!isPulling && !canRefreshState) return;
 
+        unlockScroll();
+
+        if (!isPulling) return;
         isPulling = false;
 
+        // Re-check final distance from changedTouches
         if (e && e.changedTouches && e.changedTouches.length > 0) {
-          var releaseY = e.changedTouches[0].clientY;
+          var releaseY  = e.changedTouches[0].clientY;
           var finalDist = releaseY - startY;
-          if (finalDist >= THRESHOLD) {
-            canRefreshState = true;
-          }
+          if (finalDist >= THRESHOLD) canRefreshState = true;
         }
 
-        if (canRefreshState === true) {
+        if (canRefreshState) {
           performPullToRefresh();
         } else {
           resetUI(true);
@@ -5511,14 +5505,15 @@
 
       function resetUI(animated) {
         if (isReloadingState) return;
-        isPulling = false;
+        isPulling       = false;
         canRefreshState = false;
+        unlockScroll();
         if (appWrapper) {
-          appWrapper.style.transition = animated ? 'transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
+          appWrapper.style.transition = animated ? 'transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none';
           appWrapper.style.transform  = 'translateY(0px)';
         }
-        indicator.style.opacity   = '0';
-        indicator.style.transform = 'translateX(-50%) translateY(-80px)';
+        indicator.style.opacity     = '0';
+        indicator.style.transform   = 'translateX(-50%) translateY(-80px)';
         indicator.style.borderColor = '#ffd400';
         if (spinnerEl) {
           spinnerEl.style.transform = '';
@@ -5529,25 +5524,19 @@
       }
 
       function handleTouchCancel(e) {
-        if (!isReloadingState) {
-          finishPullToRefresh(e);
-        }
+        unlockScroll();
+        if (!isReloadingState) resetUI(false);
       }
 
-      window.triggerAppRefresh = function() {
-        performPullToRefresh();
-      };
+      window.triggerAppRefresh = function() { performPullToRefresh(); };
 
-      // BIND LISTENERS ACROSS WINDOW, DOCUMENT, HEADER, WRAPPER, & MAIN SCROLLER
       function bindListeners() {
-        // CRITICAL: touchstart must be { passive: false } so that when touchmove
-        // calls e.preventDefault(), Chrome actually honours it.
-        // If touchstart is passive:true, Chrome ignores preventDefault on touchmove
-        // and its native scroll/overscroll takes over, killing our gesture.
-        document.addEventListener('touchstart', handleTouchStart, { passive: false });
-        document.addEventListener('touchmove',  handleTouchMove,  { passive: false });
-        document.addEventListener('touchend',   finishPullToRefresh, { passive: true });
-        document.addEventListener('touchcancel',handleTouchCancel,   { passive: true });
+        // Attach to document with passive:false on both touchstart and touchmove
+        // so e.preventDefault() is always honoured by Chrome compositor
+        document.addEventListener('touchstart', handleTouchStart, { passive: false, capture: true });
+        document.addEventListener('touchmove',  handleTouchMove,  { passive: false, capture: true });
+        document.addEventListener('touchend',   finishPullToRefresh, { passive: true, capture: true });
+        document.addEventListener('touchcancel',handleTouchCancel,   { passive: true, capture: true });
       }
 
       if (document.readyState === 'loading') {
