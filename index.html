@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.5, user-scalable=yes, viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>ThaiNXT | Premium Crypto Casino</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -5535,14 +5538,22 @@
         performPullToRefresh();
       };
 
-      // BIND LISTENERS EXCLUSIVELY TO MAIN SCROLLER CONTAINER
+      // BIND LISTENERS ACROSS WINDOW, DOCUMENT, HEADER, WRAPPER, & MAIN SCROLLER
       function bindListeners() {
-        var scroller = getScroller();
-        if (!scroller) return;
-        scroller.addEventListener('touchstart', handleTouchStart, { passive: true });
-        scroller.addEventListener('touchmove', handleTouchMove, { passive: false });
-        scroller.addEventListener('touchend', finishPullToRefresh, { passive: true });
-        scroller.addEventListener('touchcancel', handleTouchCancel, { passive: true });
+        var mainEl   = document.querySelector('main');
+        var headerEl = document.querySelector('header');
+        var appWrap  = document.getElementById('appMainWrapper');
+
+        var targets = [window, document, appWrap, headerEl, mainEl];
+        targets.forEach(function(target) {
+          if (!target) return;
+          try {
+            target.addEventListener('touchstart', handleTouchStart, { passive: true });
+            target.addEventListener('touchmove', handleTouchMove, { passive: false });
+            target.addEventListener('touchend', finishPullToRefresh, { passive: true });
+            target.addEventListener('touchcancel', handleTouchCancel, { passive: true });
+          } catch(e) {}
+        });
       }
 
       if (document.readyState === 'loading') {
