@@ -5310,7 +5310,7 @@
       if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
     }
 
-    // ── Native Mobile Pull To Refresh (Physical Rubber-band Elastic Handler) ──
+    // ── Native Mobile Pull To Refresh (Guaranteed Real Page Reload) ──
     (function initPullToRefresh() {
       var indicator   = document.getElementById('pullToRefreshIndicator');
       var spinnerEl   = document.getElementById('pullSpinnerIcon');
@@ -5322,133 +5322,153 @@
 
       var startY       = 0;
       var currentY     = 0;
-      var isPulling    = false;
+      var pullDistance = 0;
+      var canRefresh   = false;
       var isRefreshing = false;
-      var THRESHOLD    = 55; // px pull distance required to trigger refresh
+      var THRESHOLD    = 70; // 70px drag threshold
 
-      function isAtTop() {
+      function getScrollTop() {
         var mainTop = mainEl ? mainEl.scrollTop : 0;
         var winTop  = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        return mainTop <= 5 && winTop <= 5;
+        return mainTop + winTop;
       }
 
       function handleTouchStart(e) {
         if (isRefreshing || !e.touches || e.touches.length !== 1) return;
-        if (isAtTop()) {
-          startY = e.touches[0].clientY;
-          currentY = startY;
-          isPulling = true;
+        if (getScrollTop() <= 5) {
+          startY       = e.touches[0].clientY;
+          currentY     = startY;
+          pullDistance = 0;
+          canRefresh   = false;
         }
       }
 
       function handleTouchMove(e) {
-        if (!isPulling || isRefreshing || !e.touches || e.touches.length !== 1) return;
+        if (isRefreshing || !e.touches || e.touches.length !== 1) return;
         currentY = e.touches[0].clientY;
 
-        if (!isAtTop()) {
-          isPulling = false;
-          resetUI(true);
-          return;
-        }
+        if (getScrollTop() <= 10 && currentY > startY) {
+          pullDistance = currentY - startY;
 
-        var dy = currentY - startY;
-        if (dy <= 0) {
-          resetUI(false);
-          return;
-        }
+          // Rubber-band resistance: drag slows down visually
+          var visualDist = Math.min(pullDistance * 0.5, 95);
 
-        // Rubber-band resistance: drag slows down visually
-        var pullDist = Math.min(dy * 0.45, 90);
+          if (appWrapper) {
+            appWrapper.style.transition = 'none';
+            appWrapper.style.transform  = 'translateY(' + visualDist + 'px)';
+          }
 
-        if (appWrapper) {
-          appWrapper.style.transition = 'none';
-          appWrapper.style.transform  = 'translateY(' + pullDist + 'px)';
-        }
+          indicator.style.opacity   = '1';
+          indicator.style.transform = 'translateX(-50%) translateY(' + Math.max(10, visualDist - 5) + 'px)';
 
-        indicator.style.opacity   = '1';
-        indicator.style.transform = 'translateX(-50%) translateY(' + Math.max(10, pullDist - 5) + 'px)';
+          if (spinnerEl) {
+            spinnerEl.style.transform = 'rotate(' + (pullDistance * 4) + 'deg)';
+          }
 
-        var rot = Math.min(dy * 5, 360);
-        if (spinnerEl) spinnerEl.style.transform = 'rotate(' + rot + 'deg)';
-
-        if (dy >= THRESHOLD) {
-          if (pullTextEl) pullTextEl.innerText = 'RELEASE TO REFRESH';
-          indicator.style.borderColor = '#00a86b';
-          indicator.style.boxShadow   = '0 8px 32px rgba(0,168,107,0.4)';
-          if (spinnerEl) spinnerEl.style.color = '#00ff88';
-        } else {
-          if (pullTextEl) pullTextEl.innerText = 'PULL DOWN TO REFRESH';
-          indicator.style.borderColor = '#ffd400';
-          indicator.style.boxShadow   = '0 8px 32px rgba(255,212,0,0.35)';
-          if (spinnerEl) spinnerEl.style.color = '#ffd400';
+          if (pullDistance >= THRESHOLD) {
+            canRefresh = true;
+            if (pullTextEl) pullTextEl.innerText = 'RELEASE TO REFRESH';
+            indicator.style.borderColor = '#00a86b';
+            indicator.style.boxShadow   = '0 8px 32px rgba(0,168,107,0.5)';
+            if (spinnerEl) spinnerEl.style.color = '#00ff88';
+          } else {
+            canRefresh = false;
+            if (pullTextEl) pullTextEl.innerText = 'PULL DOWN TO REFRESH';
+            indicator.style.borderColor = '#ffd400';
+            indicator.style.boxShadow   = '0 8px 32px rgba(255,212,0,0.35)';
+            if (spinnerEl) spinnerEl.style.color = '#ffd400';
+          }
         }
       }
 
-      function handleTouchEnd() {
-        if (!isPulling || isRefreshing) return;
-        isPulling = false;
-        var dy = currentY - startY;
-
-        if (dy >= THRESHOLD && isAtTop()) {
-          doRefresh();
-        } else {
-          resetUI(true);
-        }
-      }
-
-      function resetUI(animated) {
-        if (appWrapper) {
-          appWrapper.style.transition = animated ? 'transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
-          appWrapper.style.transform  = 'translateY(0px)';
-        }
-        indicator.style.opacity   = '0';
-        indicator.style.transform = 'translateX(-50%) translateY(-80px)';
-        indicator.style.borderColor = '#ffd400';
-        if (spinnerEl) {
-          spinnerEl.style.transform = '';
-          spinnerEl.style.color     = '#ffd400';
-          spinnerEl.classList.remove('animate-spin');
-        }
-        if (pullTextEl) pullTextEl.innerText = 'PULL DOWN TO REFRESH';
-      }
-
-      function doRefresh() {
+      function handleTouchEnd(e) {
         if (isRefreshing) return;
-        isRefreshing = true;
 
-        if (pullTextEl) pullTextEl.innerText = 'REFRESHING...';
-        indicator.style.borderColor = '#00ff88';
-        indicator.style.boxShadow   = '0 8px 32px rgba(0,255,136,0.5)';
-        indicator.style.opacity     = '1';
-        indicator.style.transform   = 'translateX(-50%) translateY(55px)';
-
-        if (spinnerEl) {
-          spinnerEl.style.transform = '';
-          spinnerEl.style.color     = '#00ff88';
-          spinnerEl.classList.add('animate-spin');
+        // Verify release position using changedTouches
+        if (e && e.changedTouches && e.changedTouches.length > 0) {
+          var releaseY = e.changedTouches[0].clientY;
+          var finalDist = releaseY - startY;
+          if (finalDist >= THRESHOLD) {
+            canRefresh = true;
+          }
         }
 
-        if (appWrapper) {
-          appWrapper.style.transition = 'transform 0.25s ease-out';
-          appWrapper.style.transform  = 'translateY(50px)';
+        if (canRefresh === true) {
+          isRefreshing = true;
+
+          // Immediate visual feedback
+          if (pullTextEl) pullTextEl.innerText = 'REFRESHING...';
+          indicator.style.opacity     = '1';
+          indicator.style.transform   = 'translateX(-50%) translateY(50px)';
+          indicator.style.borderColor = '#00ff88';
+          indicator.style.boxShadow   = '0 8px 32px rgba(0,255,136,0.6)';
+
+          if (spinnerEl) {
+            spinnerEl.style.transform = 'none';
+            spinnerEl.style.color     = '#00ff88';
+            spinnerEl.classList.add('animate-spin');
+          }
+
+          if (appWrapper) {
+            appWrapper.style.transition = 'transform 0.2s ease-out';
+            appWrapper.style.transform  = 'translateY(40px)';
+          }
+
+          if (navigator.vibrate) {
+            try { navigator.vibrate(40); } catch(err) {}
+          }
+
+          // ACTUAL BROWSER PAGE RELOAD
+          setTimeout(function() {
+            window.location.reload(true);
+          }, 150);
+        } else {
+          // Reset UI cleanly
+          canRefresh = false;
+          if (appWrapper) {
+            appWrapper.style.transition = 'transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            appWrapper.style.transform  = 'translateY(0px)';
+          }
+          indicator.style.opacity   = '0';
+          indicator.style.transform = 'translateX(-50%) translateY(-80px)';
+          indicator.style.borderColor = '#ffd400';
+          if (spinnerEl) {
+            spinnerEl.style.transform = '';
+            spinnerEl.style.color     = '#ffd400';
+            spinnerEl.classList.remove('animate-spin');
+          }
+          if (pullTextEl) pullTextEl.innerText = 'PULL DOWN TO REFRESH';
         }
-
-        if (navigator.vibrate) navigator.vibrate(35);
-
-        setTimeout(function() {
-          window.location.reload();
-        }, 450);
       }
 
-      window.triggerAppRefresh = doRefresh;
+      function handleTouchCancel() {
+        if (!isRefreshing) {
+          canRefresh = false;
+          if (appWrapper) {
+            appWrapper.style.transition = 'transform 0.25s ease-out';
+            appWrapper.style.transform  = 'translateY(0px)';
+          }
+          indicator.style.opacity   = '0';
+          indicator.style.transform = 'translateX(-50%) translateY(-80px)';
+        }
+      }
 
-      // Attach to window, document, and main element for 100% universal touch capture
+      window.triggerAppRefresh = function() {
+        isRefreshing = true;
+        if (pullTextEl) pullTextEl.innerText = 'REFRESHING...';
+        indicator.style.opacity   = '1';
+        indicator.style.transform = 'translateX(-50%) translateY(50px)';
+        if (spinnerEl) spinnerEl.classList.add('animate-spin');
+        setTimeout(function() { window.location.reload(true); }, 150);
+      };
+
+      // Register touch listeners on window, document, and main element
       [window, document, mainEl].forEach(function(target) {
         if (!target) return;
         target.addEventListener('touchstart', handleTouchStart, { passive: true });
         target.addEventListener('touchmove', handleTouchMove, { passive: true });
         target.addEventListener('touchend', handleTouchEnd, { passive: true });
-        target.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+        target.addEventListener('touchcancel', handleTouchCancel, { passive: true });
       });
     })();
 
