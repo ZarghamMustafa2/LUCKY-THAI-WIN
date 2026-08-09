@@ -5313,7 +5313,19 @@
       if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
     }
 
-    // ── Single Authoritative Production Pull To Refresh System ──
+    // ── Cleanup __pull_refresh parameter on page load without re-triggering reload ──
+    (function cleanupPullRefreshParam() {
+      try {
+        var url = new URL(window.location.href);
+        if (url.searchParams.has('__pull_refresh')) {
+          url.searchParams.delete('__pull_refresh');
+          var cleaned = url.pathname + (url.search ? url.search : '') + (url.hash ? url.hash : '');
+          window.history.replaceState({}, document.title, cleaned || '/');
+        }
+      } catch (e) {}
+    })();
+
+    // ── Single Authoritative Production Pull To Refresh System (Real Document Navigation) ──
     (function initPullToRefresh() {
       var indicator   = document.getElementById('pullToRefreshIndicator');
       var spinnerEl   = document.getElementById('pullSpinnerIcon');
@@ -5421,7 +5433,7 @@
         }
       }
 
-      // EXPLICIT PRODUCTION RELOAD FUNCTION
+      // EXPLICIT REAL URL NAVIGATION FUNCTION
       function performPullToRefresh() {
         if (isReloadingState) return;
         isReloadingState = true;
@@ -5447,17 +5459,28 @@
           try { navigator.vibrate(40); } catch(err) {}
         }
 
-        // REAL BROWSER PAGE RELOAD
+        // REAL BROWSER DOCUMENT URL NAVIGATION
         try {
-          window.location.reload();
-        } catch (e) {
-          window.location.href = window.location.href;
+          console.log("PULL REFRESH NAVIGATION START");
+          var targetUrl = new URL(window.location.href);
+          targetUrl.searchParams.set("__pull_refresh", Date.now().toString());
+          console.log("NAVIGATING TO:", targetUrl.toString());
+          window.location.assign(targetUrl.toString());
+        } catch (error) {
+          console.error("PULL REFRESH NAVIGATION ERROR:", error);
+          try {
+            window.location.reload();
+          } catch(e2) {
+            window.location.href = window.location.href;
+          }
         }
 
-        // Backup for Android Chrome / WebViews
+        // Immediate backup navigation trigger for mobile browsers / WebViews
         setTimeout(function() {
           try {
-            window.location.href = window.location.href;
+            var fallbackUrl = new URL(window.location.href);
+            fallbackUrl.searchParams.set("__pull_refresh", Date.now().toString());
+            window.location.href = fallbackUrl.toString();
           } catch(e) {}
         }, 150);
       }
@@ -5522,11 +5545,6 @@
         scroller.addEventListener('touchcancel', handleTouchCancel, { passive: true });
       }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', bindListeners);
-      } else {
-        bindListeners();
-      }
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', bindListeners);
       } else {
