@@ -1693,13 +1693,17 @@
     html.light [class*="border-gold"] {
       border-color: rgba(217, 119, 6, 0.5) !important;
     }
-    html.light [class*="bg-gold/10"],
-    html.light [class*="bg-gold/20"] {
-      background-color: rgba(217, 119, 6, 0.12) !important;
+    html, body, #appMainWrapper, main {
+      overscroll-behavior-y: contain;
     }
   </style>
 </head>
 <body class="flex h-screen overflow-hidden bg-bgDark bg-particles relative text-gray-300">
+
+  <!-- PTR DEBUG BAR FOR REAL-TIME ANDROID CHROME TOUCH VERIFICATION -->
+  <div id="ptrDebugBar" style="position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:9999999;background:rgba(15,23,42,0.92);border:1.5px solid #00ff88;color:#00ff88;font-family:monospace;font-size:10px;font-weight:700;padding:5px 14px;border-radius:20px;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,255,136,0.3);letter-spacing:0.03em;">
+    <span id="ptrDebugDist">Pull: 0px</span> | <span id="ptrDebugTop">Top: YES</span> | <span id="ptrDebugCan">Can Refresh: NO</span> | <span id="ptrDebugState">State: IDLE</span>
+  </div>
 
   <!-- Floating Pull to Refresh Bar -->
   <div id="pullToRefreshIndicator"
@@ -5311,7 +5315,7 @@
       if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
     }
 
-    // ── Native Mobile Pull To Refresh (Guaranteed Real Page Reload) ──
+    // ── Android Chrome Native Pull To Refresh (Guaranteed Reload Handler) ──
     (function initPullToRefresh() {
       var indicator   = document.getElementById('pullToRefreshIndicator');
       var spinnerEl   = document.getElementById('pullSpinnerIcon');
@@ -5319,14 +5323,28 @@
       var appWrapper  = document.getElementById('appMainWrapper') || document.body;
       var mainEl      = document.querySelector('main') || document.body;
 
+      // Debug elements
+      var dDist  = document.getElementById('ptrDebugDist');
+      var dTop   = document.getElementById('ptrDebugTop');
+      var dCan   = document.getElementById('ptrDebugCan');
+      var dState = document.getElementById('ptrDebugState');
+
+      function updateDebugUI(dist, top, can, state) {
+        if (dDist)  dDist.innerText  = 'Pull: ' + (dist || 0) + 'px';
+        if (dTop)   dTop.innerText   = 'Top: ' + (top || 'NO');
+        if (dCan)   dCan.innerText   = 'Can Refresh: ' + (can || 'NO');
+        if (dState) dState.innerText = 'State: ' + (state || 'IDLE');
+      }
+
       if (!indicator) return;
 
       var startY       = 0;
       var currentY     = 0;
       var pullDistance = 0;
       var canRefresh   = false;
+      var isPulling    = false;
       var isRefreshing = false;
-      var THRESHOLD    = 70; // 70px drag threshold
+      var THRESHOLD    = 100; // Exact 100px drag threshold as requested
 
       function getScrollTop() {
         var mainTop = mainEl ? mainEl.scrollTop : 0;
@@ -5334,25 +5352,55 @@
         return mainTop + winTop;
       }
 
+      function isSidebarOpen() {
+        var sb = document.getElementById('sidebar');
+        var sbo = document.getElementById('sidebarOverlay');
+        if (!sb || !sbo) return false;
+        return !sb.classList.contains('-translate-x-full') || 
+               sb.style.transform === 'translateX(0px)' || 
+               (sbo.style.display && sbo.style.display !== 'none');
+      }
+
+      function isInteractiveTarget(target) {
+        if (!target) return false;
+        var tag = target.tagName ? target.tagName.toUpperCase() : '';
+        if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'OPTION'].indexOf(tag) !== -1) return true;
+        if (target.closest && (target.closest('button') || target.closest('input') || target.closest('textarea') || target.closest('.no-ptr'))) return true;
+        return false;
+      }
+
       function handleTouchStart(e) {
-        if (isRefreshing || !e.touches || e.touches.length !== 1) return;
-        if (getScrollTop() <= 5) {
+        if (isRefreshing) return;
+        if (isSidebarOpen()) { updateDebugUI(0, 'NO', 'NO', 'SIDEBAR OPEN'); return; }
+        if (isInteractiveTarget(e.target)) { updateDebugUI(0, 'NO', 'NO', 'INTERACTIVE TARGET'); return; }
+
+        var sTop = getScrollTop();
+        var isTop = sTop <= 3;
+
+        updateDebugUI(0, isTop ? 'YES' : 'NO', 'NO', 'START');
+
+        if (isTop && e.touches && e.touches.length === 1) {
           startY       = e.touches[0].clientY;
           currentY     = startY;
           pullDistance = 0;
+          isPulling    = true;
           canRefresh   = false;
         }
       }
 
       function handleTouchMove(e) {
-        if (isRefreshing || !e.touches || e.touches.length !== 1) return;
+        if (!isPulling || isRefreshing || !e.touches || e.touches.length !== 1) return;
         currentY = e.touches[0].clientY;
+        var rawDistance = currentY - startY;
 
-        if (getScrollTop() <= 10 && currentY > startY) {
-          pullDistance = currentY - startY;
+        if (rawDistance > 0 && getScrollTop() <= 5) {
+          // IMPORTANT FOR ANDROID CHROME: Prevent native Chrome scroll/pull interference when pulling custom PTR
+          if (e.cancelable) {
+            e.preventDefault();
+          }
 
-          // Rubber-band resistance: drag slows down visually
-          var visualDist = Math.min(pullDistance * 0.5, 95);
+          pullDistance = Math.round(rawDistance);
+          var visualDist = Math.min(pullDistance * 0.45, 110);
 
           if (appWrapper) {
             appWrapper.style.transition = 'none';
@@ -5360,7 +5408,7 @@
           }
 
           indicator.style.opacity   = '1';
-          indicator.style.transform = 'translateX(-50%) translateY(' + Math.max(10, visualDist - 5) + 'px)';
+          indicator.style.transform = 'translateX(-50%) translateY(' + Math.max(10, visualDist) + 'px)';
 
           if (spinnerEl) {
             spinnerEl.style.transform = 'rotate(' + (pullDistance * 4) + 'deg)';
@@ -5370,7 +5418,7 @@
             canRefresh = true;
             if (pullTextEl) pullTextEl.innerText = 'RELEASE TO REFRESH';
             indicator.style.borderColor = '#00a86b';
-            indicator.style.boxShadow   = '0 8px 32px rgba(0,168,107,0.5)';
+            indicator.style.boxShadow   = '0 8px 32px rgba(0,168,107,0.6)';
             if (spinnerEl) spinnerEl.style.color = '#00ff88';
           } else {
             canRefresh = false;
@@ -5379,13 +5427,19 @@
             indicator.style.boxShadow   = '0 8px 32px rgba(255,212,0,0.35)';
             if (spinnerEl) spinnerEl.style.color = '#ffd400';
           }
+
+          updateDebugUI(pullDistance, 'YES', canRefresh ? 'YES' : 'NO', 'PULLING');
+        } else if (rawDistance < 0) {
+          isPulling = false;
+          resetUI(false);
+          updateDebugUI(0, 'NO', 'NO', 'CANCEL');
         }
       }
 
       function handleTouchEnd(e) {
-        if (isRefreshing) return;
+        if (!isPulling && !canRefresh) return;
+        isPulling = false;
 
-        // Verify release position using changedTouches
         if (e && e.changedTouches && e.changedTouches.length > 0) {
           var releaseY = e.changedTouches[0].clientY;
           var finalDist = releaseY - startY;
@@ -5394,13 +5448,14 @@
           }
         }
 
+        updateDebugUI(pullDistance, 'TOP', canRefresh ? 'YES' : 'NO', 'RELEASED');
+
         if (canRefresh === true) {
           isRefreshing = true;
 
-          // Immediate visual feedback
           if (pullTextEl) pullTextEl.innerText = 'REFRESHING...';
           indicator.style.opacity     = '1';
-          indicator.style.transform   = 'translateX(-50%) translateY(50px)';
+          indicator.style.transform   = 'translateX(-50%) translateY(55px)';
           indicator.style.borderColor = '#00ff88';
           indicator.style.boxShadow   = '0 8px 32px rgba(0,255,136,0.6)';
 
@@ -5412,45 +5467,46 @@
 
           if (appWrapper) {
             appWrapper.style.transition = 'transform 0.2s ease-out';
-            appWrapper.style.transform  = 'translateY(40px)';
+            appWrapper.style.transform  = 'translateY(45px)';
           }
 
           if (navigator.vibrate) {
             try { navigator.vibrate(40); } catch(err) {}
           }
 
+          updateDebugUI(pullDistance, 'YES', 'YES', 'RELOAD EXECUTING!');
+
           // ACTUAL BROWSER PAGE RELOAD
           setTimeout(function() {
             window.location.reload(true);
-          }, 150);
+          }, 120);
         } else {
-          // Reset UI cleanly
-          canRefresh = false;
-          if (appWrapper) {
-            appWrapper.style.transition = 'transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            appWrapper.style.transform  = 'translateY(0px)';
-          }
-          indicator.style.opacity   = '0';
-          indicator.style.transform = 'translateX(-50%) translateY(-80px)';
-          indicator.style.borderColor = '#ffd400';
-          if (spinnerEl) {
-            spinnerEl.style.transform = '';
-            spinnerEl.style.color     = '#ffd400';
-            spinnerEl.classList.remove('animate-spin');
-          }
-          if (pullTextEl) pullTextEl.innerText = 'PULL DOWN TO REFRESH';
+          resetUI(true);
         }
+      }
+
+      function resetUI(animated) {
+        isPulling = false;
+        canRefresh = false;
+        if (appWrapper) {
+          appWrapper.style.transition = animated ? 'transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
+          appWrapper.style.transform  = 'translateY(0px)';
+        }
+        indicator.style.opacity   = '0';
+        indicator.style.transform = 'translateX(-50%) translateY(-80px)';
+        indicator.style.borderColor = '#ffd400';
+        if (spinnerEl) {
+          spinnerEl.style.transform = '';
+          spinnerEl.style.color     = '#ffd400';
+          spinnerEl.classList.remove('animate-spin');
+        }
+        if (pullTextEl) pullTextEl.innerText = 'PULL DOWN TO REFRESH';
+        updateDebugUI(0, 'YES', 'NO', 'IDLE');
       }
 
       function handleTouchCancel() {
         if (!isRefreshing) {
-          canRefresh = false;
-          if (appWrapper) {
-            appWrapper.style.transition = 'transform 0.25s ease-out';
-            appWrapper.style.transform  = 'translateY(0px)';
-          }
-          indicator.style.opacity   = '0';
-          indicator.style.transform = 'translateX(-50%) translateY(-80px)';
+          resetUI(true);
         }
       }
 
@@ -5460,17 +5516,15 @@
         indicator.style.opacity   = '1';
         indicator.style.transform = 'translateX(-50%) translateY(50px)';
         if (spinnerEl) spinnerEl.classList.add('animate-spin');
-        setTimeout(function() { window.location.reload(true); }, 150);
+        updateDebugUI(100, 'YES', 'YES', 'RELOAD EXECUTING!');
+        setTimeout(function() { window.location.reload(true); }, 120);
       };
 
-      // Register touch listeners on window, document, and main element
-      [window, document, mainEl].forEach(function(target) {
-        if (!target) return;
-        target.addEventListener('touchstart', handleTouchStart, { passive: true });
-        target.addEventListener('touchmove', handleTouchMove, { passive: true });
-        target.addEventListener('touchend', handleTouchEnd, { passive: true });
-        target.addEventListener('touchcancel', handleTouchCancel, { passive: true });
-      });
+      // REGISTER NATIVE TOUCH LISTENERS ON DOCUMENT & WINDOW WITH { passive: false } ON TOUCHMOVE FOR ANDROID CHROME
+      document.addEventListener('touchstart', handleTouchStart, { passive: true });
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd, { passive: true });
+      document.addEventListener('touchcancel', handleTouchCancel, { passive: true });
     })();
 
   </script>
