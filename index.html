@@ -935,21 +935,33 @@
       var sidebar = document.getElementById('sidebar');
       var sidebarOverlay = document.getElementById('sidebarOverlay');
       if (!sidebar || !sidebarOverlay) return;
-      
-      var isHidden = sidebarOverlay.style.display === 'none' || sidebarOverlay.style.display === '' || sidebar.style.transform === 'translateX(-100%)' || !sidebar.classList.contains('mobile-active');
-      
-      if (isHidden) {
-        sidebar.classList.add('mobile-active');
-        sidebarOverlay.style.display = 'block';
-        sidebarOverlay.style.opacity = '1';
+
+      var isClosed = sidebar.classList.contains('-translate-x-full') || 
+                     sidebar.style.transform === 'translateX(-100%)' || 
+                     sidebarOverlay.classList.contains('hidden') ||
+                     sidebarOverlay.style.display === 'none' ||
+                     sidebarOverlay.style.display === '';
+
+      if (isClosed) {
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
         sidebar.style.transform = 'translateX(0px)';
-        sidebar.style.zIndex = '9999';
-        sidebarOverlay.style.zIndex = '9998';
+        sidebarOverlay.classList.remove('hidden');
+        sidebarOverlay.style.display = 'block';
+        setTimeout(function() {
+          sidebarOverlay.classList.remove('opacity-0');
+          sidebarOverlay.style.opacity = '1';
+        }, 10);
       } else {
-        sidebar.classList.remove('mobile-active');
+        sidebar.classList.remove('translate-x-0');
+        sidebar.classList.add('-translate-x-full');
         sidebar.style.transform = 'translateX(-100%)';
+        sidebarOverlay.classList.add('opacity-0');
         sidebarOverlay.style.opacity = '0';
-        setTimeout(function() { sidebarOverlay.style.display = 'none'; }, 300);
+        setTimeout(function() {
+          sidebarOverlay.classList.add('hidden');
+          sidebarOverlay.style.display = 'none';
+        }, 300);
       }
     };
 
@@ -1701,70 +1713,23 @@
   <div class="absolute top-0 left-1/4 w-[800px] h-[800px] bg-primary opacity-[0.03] rounded-full blur-[150px] pointer-events-none z-0"></div>
   <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-purpleDark opacity-[0.02] rounded-full blur-[150px] pointer-events-none z-0"></div>
 
-  <!-- LEFT SIDEBAR (COLLAPSIBLE OVERLAY FOR 100% FULL SCREEN DASHBOARD) -->
+  <!-- LEFT SIDEBAR (OFF-CANVAS DRAWER MATCHING REFERENCE UI) -->
   <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[90] hidden transition-opacity duration-300 opacity-0" onclick="toggleMobileSidebar()"></div>
-  <aside id="sidebar" class="fixed inset-y-0 left-0 z-[100] transform -translate-x-full w-[280px] bg-cardDark/95 backdrop-blur-3xl border-r border-white/10 flex flex-col flex-shrink-0 shadow-2xl transition-transform duration-300">
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-[100] transform -translate-x-full w-[240px] sm:w-[260px] bg-[#173454] border-r border-[#264870] flex flex-col flex-shrink-0 shadow-2xl transition-transform duration-300 font-sans">
     
-    <!-- Logo Area -->
-    <div class="h-[90px] flex items-center gap-4 px-8 border-b border-white/5 relative group cursor-pointer justify-between">
-      <div class="flex items-center gap-4">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-cyanLight flex items-center justify-center shadow-[0_0_20px_rgba(0,255,136,0.3)] group-hover:shadow-[0_0_30px_rgba(0,255,136,0.6)] transition-all duration-300 transform group-hover:scale-105">
-          <i class="fa-solid fa-dice-d20 text-bgDark text-xl"></i>
-        </div>
-        <h1 class="text-2xl font-display font-extrabold tracking-wider uppercase text-white">
-          THAI<span class="text-primary font-black">NXT</span>
-        </h1>
-      </div>
-      <button onclick="toggleMobileSidebar()" class="text-gray-400 hover:text-white p-2 text-xl cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+    <!-- Top Header Area (Close Box X + Dashboard Text) -->
+    <div class="h-11 px-3 flex items-center gap-3 border-b border-[#25456b] flex-shrink-0 bg-[#132c48]">
+      <button onclick="toggleMobileSidebar()" class="w-8 h-7 rounded border border-white/30 bg-[#1e3c5d] hover:bg-white/10 flex items-center justify-center text-white transition-colors cursor-pointer" title="Close Sidebar">
+        <i class="fa-solid fa-xmark text-base"></i>
+      </button>
+      <span class="text-white font-medium text-sm tracking-tight cursor-pointer" onclick="toggleMobileSidebar(); navigateToAppRoute('dashboard');">Dashboard</span>
     </div>
     
-    <!-- Nav Links -->
-    <div class="flex-1 overflow-y-auto py-8 px-5 flex flex-col gap-2 custom-scrollbar">
-      
-      <div class="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-3 px-4 flex items-center gap-2">
-        <i class="fa-solid fa-star text-gold text-[10px]"></i> Play
-      </div>
-      
-      <button class="relative flex items-center gap-4 w-full px-5 py-3.5 bg-white/5 rounded-2xl text-white font-bold border border-white/10 shadow-[inset_0_0_20px_rgba(0,255,136,0.05)] transition-all group overflow-hidden cursor-pointer" onclick="toggleMobileSidebar(); navigateToAppRoute('game-thai-4d');">
-        <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary shadow-[0_0_10px_#00FF88]"></div>
-        <div class="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        <i class="fa-solid fa-crosshairs w-6 h-6 text-primary flex justify-center items-center text-lg drop-shadow-[0_0_8px_rgba(0,255,136,0.5)]"></i> 
-        <span class="font-display tracking-wide z-10">Thai Lottery</span>
-      </button>
-      
-      <button class="flex items-center gap-4 w-full px-5 py-3.5 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold transition-all group cursor-pointer" onclick="toggleMobileSidebar()">
-        <i class="fa-solid fa-fire w-6 h-6 text-danger flex justify-center items-center text-lg group-hover:drop-shadow-[0_0_8px_rgba(255,77,79,0.5)] transition-all"></i> 
-        <span class="font-display tracking-wide">Originals</span>
-        <span class="ml-auto bg-danger/20 text-danger text-[10px] px-2 py-0.5 rounded-full font-black">HOT</span>
-      </button>
-
-      <button class="flex items-center gap-4 w-full px-5 py-3.5 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold transition-all group cursor-pointer" onclick="toggleMobileSidebar()">
-        <i class="fa-solid fa-bolt w-6 h-6 text-gold flex justify-center items-center text-lg group-hover:drop-shadow-[0_0_8px_rgba(255,212,0,0.5)] transition-all"></i> 
-        <span class="font-display tracking-wide">Slots</span>
-      </button>
-      
-      <button class="flex items-center gap-4 w-full px-5 py-3.5 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white font-bold transition-all group cursor-pointer" onclick="toggleMobileSidebar()">
-        <i class="fa-solid fa-gamepad w-6 h-6 text-cyanLight flex justify-center items-center text-lg group-hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.5)] transition-all"></i> 
-        <span class="font-display tracking-wide">Live Casino</span>
-      </button>
-
-      <!-- Mini Live Feed Promo -->
-      <div class="mt-auto pt-8">
-        <div class="bg-gradient-to-b from-white/5 to-transparent rounded-2xl p-4 border border-white/5 relative overflow-hidden group cursor-pointer hover:border-primary/30 transition-colors">
-          <div class="absolute -right-4 -top-4 w-16 h-16 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/40 transition-colors"></div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-white uppercase tracking-wider">Mega Jackpot</span>
-            <span class="flex h-2 w-2 relative">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-danger"></span>
-            </span>
-          </div>
-          <div class="font-mono text-xl font-black text-gold drop-shadow-[0_0_8px_rgba(255,212,0,0.4)]">Rs 8.4M</div>
-          <div class="text-[10px] text-gray-500 mt-1 uppercase font-bold">Must drop today!</div>
-        </div>
-      </div>
-      
+    <!-- Dynamic Data-Driven Nav Items Container -->
+    <div id="sidebarMenuList" class="flex-1 overflow-y-auto py-1.5 flex flex-col custom-scrollbar">
+      <!-- Rendered dynamically by window.renderSidebarMenu() -->
     </div>
+    
   </aside>
 
   <!-- MAIN WRAPPER -->
@@ -2518,6 +2483,104 @@
                       if (pushState) history.pushState({ route: 'dashboard' }, '', '#dashboard');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
+
+                    if (typeof window.renderSidebarMenu === 'function') {
+                      window.renderSidebarMenu(routeName);
+                    }
+                  };
+
+                  // ============================================================
+                  // DATA-DRIVEN SIDEBAR MENU CONFIG & RENDERER
+                  // ============================================================
+                  window.SIDEBAR_MENU_ITEMS = [
+                    { id: 'dashboard', title: 'Dashboard', icon: 'fa-solid fa-house', route: 'dashboard' },
+                    { id: 'sep1', isSeparator: true },
+                    { id: 'soccer', title: 'Soccer', icon: 'fa-solid fa-futbol', route: 'soccer' },
+                    { id: 'tennis', title: 'Tennis', icon: 'fa-solid fa-table-tennis-paddle-ball', route: 'tennis' },
+                    { id: 'cricket', title: 'Cricket', icon: 'fa-solid fa-baseball-bat-ball', route: 'cricket' },
+                    { id: 'horse-race', title: 'Horse Race', icon: 'fa-solid fa-horse-head', route: 'horse-race' },
+                    { id: 'greyhound', title: 'Greyhound', icon: 'fa-solid fa-dog', route: 'greyhound' },
+                    { id: 'sports-book', title: 'Sports Book', icon: 'fa-solid fa-trophy', route: 'sports-book' },
+                    { id: 'royalstar-casino', title: 'RoyalStar Casino', icon: 'fa-solid fa-star', route: 'royalstar-casino' },
+                    { id: 'star-casino', title: 'Star Casino', icon: 'fa-solid fa-star-half-stroke', route: 'star-casino' },
+                    { id: 'world-casino', title: 'World Casino', icon: 'fa-solid fa-earth-americas', route: 'world-casino' },
+                    { id: 'royal-casino', title: 'Royal Casino', icon: 'fa-solid fa-dice', route: 'royal-casino' },
+                    { id: 'betfair-games', title: 'BetFairGames', icon: 'fa-solid fa-diamond', route: 'betfair-games' },
+                    { id: 'teenpatti-studio', title: 'TeenPatti Studio', icon: 'fa-solid fa-layer-group', route: 'teenpatti-studio' },
+                    { id: 'galaxy-casino', title: 'Galaxy Casino', icon: 'fa-solid fa-rocket', route: 'galaxy-casino' },
+                    { id: 'thai-4d', title: 'Lucky Thai 4D', icon: 'fa-solid fa-crosshairs', route: 'game-thai-4d', badge: 'LIVE' },
+                    { id: 'sep2', isSeparator: true },
+                    { id: 'current-position', title: 'Current Position', icon: 'fa-solid fa-list-check', route: 'current-position' },
+                    { id: 'all-sports', title: 'All Sports', icon: 'fa-solid fa-shapes', route: 'all-sports' },
+                    { id: 'results', title: 'Results', icon: 'fa-solid fa-square-poll-vertical', route: 'results' }
+                  ];
+
+                  window.currentSidebarActiveId = 'dashboard';
+
+                  window.renderSidebarMenu = function(activeRouteId) {
+                    if (activeRouteId) {
+                      if (activeRouteId.includes('game-thai-4d') || activeRouteId.includes('thai-lottery') || activeRouteId.includes('games/thai-4d')) {
+                        window.currentSidebarActiveId = 'thai-4d';
+                      } else if (activeRouteId.includes('dashboard')) {
+                        window.currentSidebarActiveId = 'dashboard';
+                      } else {
+                        window.currentSidebarActiveId = activeRouteId;
+                      }
+                    }
+
+                    var container = document.getElementById('sidebarMenuList');
+                    if (!container) return;
+
+                    var html = '';
+                    window.SIDEBAR_MENU_ITEMS.forEach(function(item) {
+                      if (item.isSeparator) {
+                        html += '<div class="my-1.5 border-t border-[#25456b] mx-0 opacity-80"></div>';
+                        return;
+                      }
+
+                      var isActive = (item.id === window.currentSidebarActiveId || item.route === window.currentSidebarActiveId);
+                      var activeClasses = isActive 
+                        ? 'bg-[#a81c24] text-white font-semibold shadow-inner' 
+                        : 'text-white/90 hover:bg-white/10 hover:text-white font-normal';
+
+                      html += '<button onclick="window.onSidebarMenuItemClick(\'' + item.id + '\', \'' + item.route + '\')" ' +
+                        'class="w-full px-3.5 py-2 flex items-center gap-3 transition-colors cursor-pointer text-left text-xs sm:text-sm tracking-tight ' + activeClasses + '">' +
+                        '<div class="w-6 flex items-center justify-center text-center text-white text-sm sm:text-base flex-shrink-0">' +
+                          '<i class="' + item.icon + '"></i>' +
+                        '</div>' +
+                        '<span class="truncate flex-1">' + item.title + '</span>';
+
+                      if (item.badge) {
+                        html += '<span class="ml-auto bg-emerald-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider animate-pulse">' + item.badge + '</span>';
+                      }
+
+                      html += '</button>';
+                    });
+
+                    container.innerHTML = html;
+                  };
+
+                  window.onSidebarMenuItemClick = function(id, route) {
+                    window.currentSidebarActiveId = id;
+                    window.renderSidebarMenu(id);
+
+                    if (typeof window.toggleMobileSidebar === 'function') {
+                      window.toggleMobileSidebar();
+                    }
+
+                    if (route === 'game-thai-4d' || id === 'thai-4d') {
+                      if (typeof window.navigateToAppRoute === 'function') {
+                        window.navigateToAppRoute('game-thai-4d');
+                      }
+                    } else if (route === 'dashboard' || id === 'dashboard') {
+                      if (typeof window.navigateToAppRoute === 'function') {
+                        window.navigateToAppRoute('dashboard');
+                      }
+                    } else {
+                      if (typeof window.showToast === 'function') {
+                        window.showToast(id.replace(/-/g, ' ').toUpperCase() + ' selected', 'info');
+                      }
+                    }
                   };
 
                   window.addEventListener('popstate', function() {
@@ -2532,6 +2595,8 @@
                   var initialHash = window.location.hash || '';
                   if (initialHash.includes('game-thai-4d') || initialHash.includes('thai-lottery') || initialHash.includes('games/thai-4d')) {
                     window.navigateToAppRoute('game-thai-4d', false);
+                  } else {
+                    window.renderSidebarMenu('dashboard');
                   }
 
 
@@ -5040,24 +5105,7 @@
         });
     }
 
-    // Mobile Menu Toggle
-    window.toggleMobileSidebar = function() {
-      const sidebar = document.getElementById('sidebar');
-      const sidebarOverlay = document.getElementById('sidebarOverlay');
-      if (!sidebar || !sidebarOverlay) return;
-      const isOpen = sidebar.classList.contains('translate-x-0');
-      if (isOpen) {
-        sidebar.classList.remove('translate-x-0');
-        sidebar.classList.add('-translate-x-full');
-        sidebarOverlay.classList.add('opacity-0');
-        setTimeout(() => sidebarOverlay.classList.add('hidden'), 300);
-      } else {
-        sidebar.classList.remove('-translate-x-full');
-        sidebar.classList.add('translate-x-0');
-        sidebarOverlay.classList.remove('hidden');
-        setTimeout(() => sidebarOverlay.classList.remove('opacity-0'), 10);
-      }
-    };
+    // Mobile Menu Toggle Overlay Listener
     const sidebarOverlay = document.getElementById('sidebarOverlay');
     if (sidebarOverlay) {
       sidebarOverlay.addEventListener('click', window.toggleMobileSidebar);
