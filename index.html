@@ -1703,11 +1703,6 @@
 </head>
 <body class="flex h-screen overflow-hidden bg-bgDark bg-particles relative text-gray-300">
 
-  <!-- PTR DEBUG PANEL FOR SCROLL CONTAINER & TOUCH VERIFICATION -->
-  <div id="ptrDebugPanel" style="position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:9999999;background:rgba(15,23,42,0.95);border:1.5px solid #00ff88;color:#00ff88;font-family:monospace;font-size:10px;font-weight:bold;padding:5px 14px;border-radius:20px;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,255,136,0.3);letter-spacing:0.02em;">
-    Container: <span id="ptrDebugComp">MAIN</span> | Top: <span id="ptrDebugTop">0</span> | Touch: <span id="ptrDebugTouch">NO</span> | Pull: <span id="ptrDebugDist">0px</span> | Refresh: <span id="ptrDebugCan">NO</span>
-  </div>
-
   <!-- Floating Pull to Refresh Bar -->
   <div id="pullToRefreshIndicator"
        onclick="if(typeof triggerAppRefresh==='function') triggerAppRefresh(); else window.location.reload();"
@@ -5318,37 +5313,22 @@
       if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
     }
 
-    // ── Single Authoritative Pull To Refresh System (Guaranteed Reload Execution) ──
+    // ── Single Authoritative Production Pull To Refresh System ──
     (function initPullToRefresh() {
       var indicator   = document.getElementById('pullToRefreshIndicator');
       var spinnerEl   = document.getElementById('pullSpinnerIcon');
       var pullTextEl  = document.getElementById('pullText');
       var appWrapper  = document.getElementById('appMainWrapper') || document.body;
 
-      // Debug elements (Step 10 Panel)
-      var dComp  = document.getElementById('ptrDebugComp');
-      var dTop   = document.getElementById('ptrDebugTop');
-      var dTouch = document.getElementById('ptrDebugTouch');
-      var dDist  = document.getElementById('ptrDebugDist');
-      var dCan   = document.getElementById('ptrDebugCan');
-
-      function updateDebugUI(comp, top, touch, dist, can) {
-        if (dComp)  dComp.innerText  = comp || 'MAIN';
-        if (dTop)   dTop.innerText   = top !== undefined ? top : '0';
-        if (dTouch) dTouch.innerText = touch || 'NO';
-        if (dDist)  dDist.innerText  = (dist || 0) + 'px';
-        if (dCan)   dCan.innerText   = can || 'NO';
-      }
-
       if (!indicator) return;
 
       var startY          = 0;
       var currentY        = 0;
       var pullDistance    = 0;
-      var canRefresh      = false;
+      var canRefreshState = false;
       var isPulling       = false;
-      var isReloadingRef  = false; // GUARD REF TO PREVENT DUPLICATE RECALLS
-      var THRESHOLD       = 90;    // 90px threshold (in 80-100px range)
+      var isReloadingState= false;
+      var THRESHOLD       = 90; // 90px drag threshold
 
       function getScroller() {
         return document.querySelector('main') || document.body;
@@ -5379,33 +5359,23 @@
       }
 
       function handleTouchStart(e) {
-        if (isReloadingRef) return;
-        if (isSidebarOpen()) {
-          updateDebugUI('MAIN', '0', 'SIDEBAR OPEN', 0, 'NO');
-          return;
-        }
-        if (isInteractiveTarget(e.target)) {
-          updateDebugUI('MAIN', '0', 'INTERACTIVE', 0, 'NO');
-          return;
-        }
+        if (isReloadingState) return;
+        if (isSidebarOpen() || isInteractiveTarget(e.target)) return;
 
         var scroller = getScroller();
         var sTop = Math.round(getScrollTop(scroller));
 
-        updateDebugUI('MAIN', sTop, 'START', 0, 'NO');
-
         if (sTop <= 3 && e.touches && e.touches.length === 1) {
-          startY       = e.touches[0].clientY;
-          currentY     = startY;
-          pullDistance = 0;
-          isPulling    = true;
-          canRefresh   = false;
-          updateDebugUI('MAIN', sTop, 'YES', 0, 'NO');
+          startY          = e.touches[0].clientY;
+          currentY        = startY;
+          pullDistance    = 0;
+          isPulling       = true;
+          canRefreshState = false;
         }
       }
 
       function handleTouchMove(e) {
-        if (!isPulling || isReloadingRef || !e.touches || e.touches.length !== 1) return;
+        if (!isPulling || isReloadingState || !e.touches || e.touches.length !== 1) return;
         currentY = e.touches[0].clientY;
         var rawDistance = currentY - startY;
 
@@ -5413,7 +5383,6 @@
         var sTop = Math.round(getScrollTop(scroller));
 
         if (rawDistance > 0 && sTop <= 5) {
-          // CRITICAL FOR ANDROID CHROME: Prevent native scrolling when custom pulling
           if (e.cancelable) {
             e.preventDefault();
           }
@@ -5434,101 +5403,90 @@
           }
 
           if (pullDistance >= THRESHOLD) {
-            canRefresh = true;
+            canRefreshState = true;
             if (pullTextEl) pullTextEl.innerText = 'RELEASE TO REFRESH';
             indicator.style.borderColor = '#00a86b';
             indicator.style.boxShadow   = '0 8px 32px rgba(0,168,107,0.6)';
             if (spinnerEl) spinnerEl.style.color = '#00ff88';
           } else {
-            canRefresh = false;
+            canRefreshState = false;
             if (pullTextEl) pullTextEl.innerText = 'PULL DOWN TO REFRESH';
             indicator.style.borderColor = '#ffd400';
             indicator.style.boxShadow   = '0 8px 32px rgba(255,212,0,0.35)';
             if (spinnerEl) spinnerEl.style.color = '#ffd400';
           }
-
-          updateDebugUI('MAIN', sTop, 'YES', pullDistance, canRefresh ? 'YES' : 'NO');
         } else if (rawDistance < 0) {
           isPulling = false;
           resetUI(false);
-          updateDebugUI('MAIN', sTop, 'NO', 0, 'NO');
         }
       }
 
-      // SINGLE AUTHORITATIVE FINALIZATION FUNCTION
+      // EXPLICIT PRODUCTION RELOAD FUNCTION
+      function performPullToRefresh() {
+        if (isReloadingState) return;
+        isReloadingState = true;
+
+        if (pullTextEl) pullTextEl.innerText = 'REFRESHING...';
+        indicator.style.opacity     = '1';
+        indicator.style.transform   = 'translateX(-50%) translateY(55px)';
+        indicator.style.borderColor = '#00ff88';
+        indicator.style.boxShadow   = '0 8px 32px rgba(0,255,136,0.6)';
+
+        if (spinnerEl) {
+          spinnerEl.style.transform = 'none';
+          spinnerEl.style.color     = '#00ff88';
+          spinnerEl.classList.add('animate-spin');
+        }
+
+        if (appWrapper) {
+          appWrapper.style.transition = 'transform 0.2s ease-out';
+          appWrapper.style.transform  = 'translateY(45px)';
+        }
+
+        if (navigator.vibrate) {
+          try { navigator.vibrate(40); } catch(err) {}
+        }
+
+        // REAL BROWSER PAGE RELOAD
+        try {
+          window.location.reload();
+        } catch (e) {
+          window.location.href = window.location.href;
+        }
+
+        // Backup for Android Chrome / WebViews
+        setTimeout(function() {
+          try {
+            window.location.href = window.location.href;
+          } catch(e) {}
+        }, 150);
+      }
+
       function finishPullToRefresh(e) {
-        if (isReloadingRef) return; // Prevent duplicate execution
-        if (!isPulling && !canRefresh) return;
-        
+        if (isReloadingState) return;
+        if (!isPulling && !canRefreshState) return;
+
         isPulling = false;
 
         if (e && e.changedTouches && e.changedTouches.length > 0) {
           var releaseY = e.changedTouches[0].clientY;
           var finalDist = releaseY - startY;
           if (finalDist >= THRESHOLD) {
-            canRefresh = true;
+            canRefreshState = true;
           }
         }
 
-        if (canRefresh === true) {
-          isReloadingRef = true; // Lock reload state!
-
-          // STEP 3 REQUIREMENT: Show "RELEASING" then "RELOAD EXECUTING!"
-          updateDebugUI('MAIN', '0', 'RELEASING', pullDistance, 'YES');
-
-          if (pullTextEl) pullTextEl.innerText = 'REFRESHING...';
-          indicator.style.opacity     = '1';
-          indicator.style.transform   = 'translateX(-50%) translateY(55px)';
-          indicator.style.borderColor = '#00ff88';
-          indicator.style.boxShadow   = '0 8px 32px rgba(0,255,136,0.6)';
-
-          if (spinnerEl) {
-            spinnerEl.style.transform = 'none';
-            spinnerEl.style.color     = '#00ff88';
-            spinnerEl.classList.add('animate-spin');
-          }
-
-          if (appWrapper) {
-            appWrapper.style.transition = 'transform 0.2s ease-out';
-            appWrapper.style.transform  = 'translateY(45px)';
-          }
-
-          if (navigator.vibrate) {
-            try { navigator.vibrate(40); } catch(err) {}
-          }
-
-          updateDebugUI('MAIN', '0', 'RELOAD EXECUTING!', pullDistance, 'YES');
-
-          // STEP 6: EXECUTE REAL RELOAD WITH FAILSAFE FALLBACKS
-          try {
-            console.log("PULL REFRESH: EXECUTING REAL RELOAD");
-            window.location.reload(); // REAL BROWSER RELOAD (no boolean argument)
-          } catch (error) {
-            console.error("PULL REFRESH RELOAD FAILED:", error);
-            updateDebugUI('MAIN', 'ERR', 'FAIL: ' + error.message, pullDistance, 'FAIL');
-            try {
-              window.location.href = window.location.href; // FALLBACK 1
-            } catch (err2) {
-              window.location.replace(window.location.href); // FALLBACK 2
-            }
-          }
-
-          // Failsafe timer if browser delays navigation
-          setTimeout(function() {
-            try {
-              window.location.href = window.location.href;
-            } catch(e) {}
-          }, 250);
-
+        if (canRefreshState === true) {
+          performPullToRefresh();
         } else {
           resetUI(true);
         }
       }
 
       function resetUI(animated) {
-        if (isReloadingRef) return;
+        if (isReloadingState) return;
         isPulling = false;
-        canRefresh = false;
+        canRefreshState = false;
         if (appWrapper) {
           appWrapper.style.transition = animated ? 'transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
           appWrapper.style.transform  = 'translateY(0px)';
@@ -5542,31 +5500,19 @@
           spinnerEl.classList.remove('animate-spin');
         }
         if (pullTextEl) pullTextEl.innerText = 'PULL DOWN TO REFRESH';
-        updateDebugUI('MAIN', '0', 'NO', 0, 'NO');
       }
 
       function handleTouchCancel(e) {
-        if (!isReloadingRef) {
+        if (!isReloadingState) {
           finishPullToRefresh(e);
         }
       }
 
       window.triggerAppRefresh = function() {
-        if (isReloadingRef) return;
-        isReloadingRef = true;
-        if (pullTextEl) pullTextEl.innerText = 'REFRESHING...';
-        indicator.style.opacity   = '1';
-        indicator.style.transform = 'translateX(-50%) translateY(50px)';
-        if (spinnerEl) spinnerEl.classList.add('animate-spin');
-        updateDebugUI('MAIN', '0', 'RELOAD EXECUTING!', 100, 'YES');
-        try {
-          window.location.reload();
-        } catch(e) {
-          window.location.href = window.location.href;
-        }
+        performPullToRefresh();
       };
 
-      // STEP 7 REQUIREMENT: BIND LISTENERS EXCLUSIVELY TO MAIN SCROLLER CONTAINER
+      // BIND LISTENERS EXCLUSIVELY TO MAIN SCROLLER CONTAINER
       function bindListeners() {
         var scroller = getScroller();
         if (!scroller) return;
@@ -5576,6 +5522,11 @@
         scroller.addEventListener('touchcancel', handleTouchCancel, { passive: true });
       }
 
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bindListeners);
+      } else {
+        bindListeners();
+      }
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', bindListeners);
       } else {
