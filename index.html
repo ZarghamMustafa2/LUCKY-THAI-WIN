@@ -5304,48 +5304,116 @@
     }
 
 
-    // ── Pull To Refresh via pulltorefreshjs library ──
-    (function initPTR() {
-      function setup() {
-        if (typeof PullToRefresh === 'undefined') return;
-        var mainEl = document.querySelector('main');
-        if (!mainEl) return;
+    // ── Pull To Refresh: attached to <header> (non-scrollable) ──
+    // Chrome compositor only intercepts touches on SCROLLABLE elements.
+    // <header> is not scrollable, so these events fire reliably on Android Chrome.
+    (function initHeaderPTR() {
+      var THRESHOLD    = 80;   // px to drag before "release to refresh" activates
+      var MAX_PULL     = 130;  // max visual pull distance
+      var startY       = 0;
+      var pullDist     = 0;
+      var isPulling    = false;
+      var isRefreshing = false;
 
-        PullToRefresh.init({
-          mainElement:    mainEl,
-          triggerElement: mainEl,
-          instructionsPullToRefresh: 'Pull down to refresh',
-          instructionsReleaseToRefresh: 'Release to refresh',
-          instructionsRefreshing: 'Refreshing...',
-          distThreshold: 80,
-          distMax: 120,
-          distReload: 60,
-          resistance: 2.5,
-          refreshTimeout: 300,
-          shouldPullToRefresh: function() {
-            // Only activate when main is scrolled to the very top
-            // and sidebar is closed
-            var sb = document.getElementById('sidebar');
-            var sidebarOpen = sb && !sb.classList.contains('-translate-x-full');
-            if (sidebarOpen) return false;
-            return mainEl.scrollTop <= 0;
-          },
-          onRefresh: function() {
-            return new Promise(function(resolve) {
-              window.location.reload();
-              resolve();
-            });
-          }
-        });
+      // --- Create indicator bar ---
+      var bar = document.createElement('div');
+      bar.id  = 'ptrBar';
+      bar.style.cssText = [
+        'position:fixed', 'top:0', 'left:0', 'right:0',
+        'height:4px', 'background:#ffd400',
+        'transform:scaleX(0)', 'transform-origin:left',
+        'transition:transform 0.15s ease', 'z-index:999999',
+        'pointer-events:none'
+      ].join(';');
+      document.body.appendChild(bar);
+
+      var label = document.createElement('div');
+      label.id  = 'ptrLabel';
+      label.style.cssText = [
+        'position:fixed', 'top:8px', 'left:50%',
+        'transform:translateX(-50%) translateY(-60px)',
+        'background:rgba(13,20,33,0.95)',
+        'color:#fff', 'font-size:11px', 'font-weight:800',
+        'letter-spacing:0.1em', 'white-space:nowrap',
+        'padding:6px 18px', 'border-radius:999px',
+        'border:2px solid #ffd400',
+        'transition:transform 0.2s ease, border-color 0.2s ease',
+        'z-index:999999', 'pointer-events:none'
+      ].join(';');
+      label.textContent = 'Pull down to refresh';
+      document.body.appendChild(label);
+
+      function isSidebarOpen() {
+        var sb = document.getElementById('sidebar');
+        return sb && !sb.classList.contains('-translate-x-full');
       }
 
-      // Load pulltorefreshjs from CDN then init
-      var s = document.createElement('script');
-      s.src = 'https://unpkg.com/pulltorefreshjs@0.1.22/dist/index.umd.min.js';
-      s.onload = setup;
-      document.head.appendChild(s);
-    })();
+      function setBar(ratio, ready) {
+        bar.style.transform   = 'scaleX(' + Math.min(ratio, 1) + ')';
+        bar.style.background  = ready ? '#00ff88' : '#ffd400';
+        var ty = Math.min(ratio * 60, 60);
+        label.style.transform = 'translateX(-50%) translateY(' + ty + 'px)';
+        label.style.borderColor = ready ? '#00ff88' : '#ffd400';
+        label.textContent     = ready ? 'Release to refresh ✓' : 'Pull down to refresh';
+      }
 
+      function resetBar() {
+        bar.style.transform   = 'scaleX(0)';
+        bar.style.background  = '#ffd400';
+        label.style.transform = 'translateX(-50%) translateY(-60px)';
+        label.style.borderColor = '#ffd400';
+        label.textContent     = 'Pull down to refresh';
+      }
+
+      function doRefresh() {
+        isRefreshing    = true;
+        bar.style.transform = 'scaleX(1)';
+        bar.style.background = '#00ff88';
+        label.style.transform = 'translateX(-50%) translateY(60px)';
+        label.textContent   = 'Refreshing...';
+        if (navigator.vibrate) try { navigator.vibrate(40); } catch(e) {}
+        setTimeout(function() { window.location.reload(); }, 350);
+      }
+
+      // Attach ONLY to header — Chrome won't intercept non-scrollable element touches
+      var headerEl = document.querySelector('header');
+      if (!headerEl) return;
+
+      headerEl.addEventListener('touchstart', function(e) {
+        if (isRefreshing || isSidebarOpen()) return;
+        var mainEl = document.querySelector('main');
+        if (mainEl && mainEl.scrollTop > 15) return;
+        if (e.touches.length !== 1) return;
+        startY   = e.touches[0].clientY;
+        pullDist = 0;
+        isPulling = true;
+      }, { passive: true });
+
+      headerEl.addEventListener('touchmove', function(e) {
+        if (!isPulling || isRefreshing) return;
+        var dy = e.touches[0].clientY - startY;
+        if (dy <= 0) { isPulling = false; resetBar(); return; }
+        pullDist = Math.min(dy, MAX_PULL);
+        setBar(pullDist / THRESHOLD, pullDist >= THRESHOLD);
+      }, { passive: true });
+
+      headerEl.addEventListener('touchend', function() {
+        if (!isPulling || isRefreshing) return;
+        isPulling = false;
+        if (pullDist >= THRESHOLD) {
+          doRefresh();
+        } else {
+          resetBar();
+          pullDist = 0;
+        }
+      }, { passive: true });
+
+      headerEl.addEventListener('touchcancel', function() {
+        isPulling = false;
+        pullDist  = 0;
+        if (!isRefreshing) resetBar();
+      }, { passive: true });
+    })();
 
 
   </script>
