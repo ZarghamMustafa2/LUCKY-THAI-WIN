@@ -5304,117 +5304,108 @@
     }
 
 
-    // ── Pull To Refresh: attached to <header> (non-scrollable) ──
-    // Chrome compositor only intercepts touches on SCROLLABLE elements.
-    // <header> is not scrollable, so these events fire reliably on Android Chrome.
-    (function initHeaderPTR() {
-      var THRESHOLD    = 80;   // px to drag before "release to refresh" activates
-      var MAX_PULL     = 130;  // max visual pull distance
+    // ── FINAL Pull To Refresh Implementation ──
+    // Uses document-level touch with Y-position check (top 200px).
+    // body has overflow:hidden → body itself doesn't scroll →
+    // Chrome compositor cannot steal these as scroll events.
+    (function initFinalPTR() {
+      var THRESHOLD    = 80;
+      var MAX_PULL     = 150;
+      var TOUCH_ZONE   = 200; // px from top of screen
       var startY       = 0;
       var pullDist     = 0;
       var isPulling    = false;
       var isRefreshing = false;
 
-      // --- Create indicator bar ---
+      // Gold progress bar at very top
       var bar = document.createElement('div');
-      bar.id  = 'ptrBar';
-      bar.style.cssText = [
-        'position:fixed', 'top:0', 'left:0', 'right:0',
-        'height:4px', 'background:#ffd400',
-        'transform:scaleX(0)', 'transform-origin:left',
-        'transition:transform 0.15s ease', 'z-index:999999',
-        'pointer-events:none'
-      ].join(';');
+      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;height:3px;background:#ffd400;transform:scaleX(0);transform-origin:left;transition:transform 0.1s,background 0.2s;z-index:2147483647;pointer-events:none';
       document.body.appendChild(bar);
 
-      var label = document.createElement('div');
-      label.id  = 'ptrLabel';
-      label.style.cssText = [
-        'position:fixed', 'top:8px', 'left:50%',
-        'transform:translateX(-50%) translateY(-60px)',
-        'background:rgba(13,20,33,0.95)',
-        'color:#fff', 'font-size:11px', 'font-weight:800',
-        'letter-spacing:0.1em', 'white-space:nowrap',
-        'padding:6px 18px', 'border-radius:999px',
-        'border:2px solid #ffd400',
-        'transition:transform 0.2s ease, border-color 0.2s ease',
-        'z-index:999999', 'pointer-events:none'
-      ].join(';');
-      label.textContent = 'Pull down to refresh';
-      document.body.appendChild(label);
+      // Label pill
+      var pill = document.createElement('div');
+      pill.style.cssText = 'position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-50px);background:#0d1421;color:#fff;font:800 11px/1 sans-serif;letter-spacing:.1em;white-space:nowrap;padding:7px 20px;border-radius:999px;border:2px solid #ffd400;transition:transform .2s,border-color .2s;z-index:2147483647;pointer-events:none';
+      pill.textContent = 'PULL DOWN TO REFRESH';
+      document.body.appendChild(pill);
 
       function isSidebarOpen() {
         var sb = document.getElementById('sidebar');
         return sb && !sb.classList.contains('-translate-x-full');
       }
 
-      function setBar(ratio, ready) {
-        bar.style.transform   = 'scaleX(' + Math.min(ratio, 1) + ')';
-        bar.style.background  = ready ? '#00ff88' : '#ffd400';
-        var ty = Math.min(ratio * 60, 60);
-        label.style.transform = 'translateX(-50%) translateY(' + ty + 'px)';
-        label.style.borderColor = ready ? '#00ff88' : '#ffd400';
-        label.textContent     = ready ? 'Release to refresh ✓' : 'Pull down to refresh';
+      function update(dist) {
+        var ratio = dist / THRESHOLD;
+        var capped = Math.min(ratio, 1);
+        var ready  = dist >= THRESHOLD;
+        bar.style.transform  = 'scaleX(' + capped + ')';
+        bar.style.background = ready ? '#00ff88' : '#ffd400';
+        var ty = Math.min(dist * 0.5, 60);
+        pill.style.transform      = 'translateX(-50%) translateY(' + ty + 'px)';
+        pill.style.borderColor    = ready ? '#00ff88' : '#ffd400';
+        pill.style.color          = ready ? '#00ff88' : '#fff';
+        pill.textContent          = ready ? '✓ RELEASE TO REFRESH' : 'PULL DOWN TO REFRESH';
       }
 
-      function resetBar() {
-        bar.style.transform   = 'scaleX(0)';
-        bar.style.background  = '#ffd400';
-        label.style.transform = 'translateX(-50%) translateY(-60px)';
-        label.style.borderColor = '#ffd400';
-        label.textContent     = 'Pull down to refresh';
+      function reset() {
+        bar.style.transform  = 'scaleX(0)';
+        bar.style.background = '#ffd400';
+        pill.style.transform = 'translateX(-50%) translateY(-50px)';
+        pill.style.borderColor = '#ffd400';
+        pill.style.color     = '#fff';
+        pill.textContent     = 'PULL DOWN TO REFRESH';
       }
 
       function doRefresh() {
-        isRefreshing    = true;
-        bar.style.transform = 'scaleX(1)';
+        isRefreshing = true;
+        bar.style.transform  = 'scaleX(1)';
         bar.style.background = '#00ff88';
-        label.style.transform = 'translateX(-50%) translateY(60px)';
-        label.textContent   = 'Refreshing...';
-        if (navigator.vibrate) try { navigator.vibrate(40); } catch(e) {}
-        setTimeout(function() { window.location.reload(); }, 350);
+        pill.style.transform = 'translateX(-50%) translateY(60px)';
+        pill.style.borderColor = '#00ff88';
+        pill.textContent     = 'REFRESHING...';
+        if (navigator.vibrate) try { navigator.vibrate(50); } catch(e) {}
+        window.location.reload();
       }
 
-      // Attach ONLY to header — Chrome won't intercept non-scrollable element touches
-      var headerEl = document.querySelector('header');
-      if (!headerEl) return;
-
-      headerEl.addEventListener('touchstart', function(e) {
-        if (isRefreshing || isSidebarOpen()) return;
+      document.addEventListener('touchstart', function(e) {
+        if (isRefreshing) return;
+        if (isSidebarOpen()) return;
+        if (!e.touches || e.touches.length !== 1) return;
+        var t = e.touches[0];
+        // Only activate if finger starts in top TOUCH_ZONE of screen
+        if (t.clientY > TOUCH_ZONE) return;
+        // Only activate if main is scrolled to top
         var mainEl = document.querySelector('main');
-        if (mainEl && mainEl.scrollTop > 15) return;
-        if (e.touches.length !== 1) return;
-        startY   = e.touches[0].clientY;
-        pullDist = 0;
+        if (mainEl && mainEl.scrollTop > 10) return;
+        startY    = t.clientY;
+        pullDist  = 0;
         isPulling = true;
       }, { passive: true });
 
-      headerEl.addEventListener('touchmove', function(e) {
+      document.addEventListener('touchmove', function(e) {
         if (!isPulling || isRefreshing) return;
         var dy = e.touches[0].clientY - startY;
-        if (dy <= 0) { isPulling = false; resetBar(); return; }
+        if (dy <= 0) { isPulling = false; reset(); return; }
         pullDist = Math.min(dy, MAX_PULL);
-        setBar(pullDist / THRESHOLD, pullDist >= THRESHOLD);
+        update(pullDist);
       }, { passive: true });
 
-      headerEl.addEventListener('touchend', function() {
+      document.addEventListener('touchend', function() {
         if (!isPulling || isRefreshing) return;
         isPulling = false;
         if (pullDist >= THRESHOLD) {
           doRefresh();
         } else {
-          resetBar();
+          reset();
           pullDist = 0;
         }
       }, { passive: true });
 
-      headerEl.addEventListener('touchcancel', function() {
+      document.addEventListener('touchcancel', function() {
         isPulling = false;
         pullDist  = 0;
-        if (!isRefreshing) resetBar();
+        if (!isRefreshing) reset();
       }, { passive: true });
     })();
-
 
   </script>
   <!-- BOTTOM SHEET (Bet Popup) -->
