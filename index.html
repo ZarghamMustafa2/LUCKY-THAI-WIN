@@ -1696,11 +1696,9 @@
     html.light [class*="border-gold"] {
       border-color: rgba(217, 119, 6, 0.5) !important;
     }
-    html, body {
-      overscroll-behavior-y: none;
-    }
-    main {
-      overscroll-behavior-y: contain;
+    html, body, #appMainWrapper, main {
+      overscroll-behavior-y: none !important;
+      touch-action: pan-x pan-y !important;
     }
   </style>
 </head>
@@ -1709,7 +1707,7 @@
   <!-- Floating Pull to Refresh Bar -->
   <div id="pullToRefreshIndicator"
        onclick="if(typeof triggerAppRefresh==='function') triggerAppRefresh(); else window.location.reload();"
-       style="position:fixed;top:10px;left:50%;transform:translateX(-50%) translateY(-80px);opacity:0;transition:opacity 0.2s ease,transform 0.2s ease;z-index:999999;pointer-events:auto;cursor:pointer;display:flex;align-items:center;gap:10px;background:rgba(13,20,33,0.97);border:2px solid #ffd400;padding:8px 20px;border-radius:999px;box-shadow:0 8px 32px rgba(255,212,0,0.35);user-select:none;">
+       style="position:fixed;top:10px;left:50%;transform:translateX(-50%) translateY(-80px);opacity:0;transition:opacity 0.2s ease,transform 0.2s ease;z-index:99999999;pointer-events:auto;cursor:pointer;display:flex;align-items:center;gap:10px;background:rgba(13,20,33,0.97);border:2px solid #ffd400;padding:8px 20px;border-radius:999px;box-shadow:0 8px 32px rgba(255,212,0,0.35);user-select:none;">
     <i id="pullSpinnerIcon" class="fa-solid fa-arrows-rotate" style="color:#ffd400;font-size:15px;transition:transform 0.1s linear;"></i>
     <span id="pullText" style="font-size:11px;font-weight:800;color:#fff;letter-spacing:0.1em;white-space:nowrap;">PULL DOWN TO REFRESH</span>
   </div>
@@ -5343,7 +5341,7 @@
       var canRefreshState = false;
       var isPulling       = false;
       var isReloadingState= false;
-      var THRESHOLD       = 100; // Exact 100px drag threshold
+      var THRESHOLD       = 70; // 70px drag threshold for quick mobile response
 
       function getScroller() {
         return document.querySelector('main') || document.body;
@@ -5380,7 +5378,7 @@
         var scroller = getScroller();
         var sTop = Math.round(getScrollTop(scroller));
 
-        if (sTop <= 3 && e.touches && e.touches.length === 1) {
+        if (sTop <= 15 && e.touches && e.touches.length === 1) {
           startY          = e.touches[0].clientY;
           currentY        = startY;
           pullDistance    = 0;
@@ -5397,7 +5395,7 @@
         var scroller = getScroller();
         var sTop = Math.round(getScrollTop(scroller));
 
-        if (rawDistance > 0 && sTop <= 5) {
+        if (rawDistance > 0 && sTop <= 15) {
           if (e.cancelable) {
             e.preventDefault();
           }
