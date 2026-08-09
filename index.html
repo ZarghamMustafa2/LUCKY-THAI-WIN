@@ -1693,16 +1693,19 @@
     html.light [class*="border-gold"] {
       border-color: rgba(217, 119, 6, 0.5) !important;
     }
-    html, body, #appMainWrapper, main {
+    html, body {
+      overscroll-behavior-y: none;
+    }
+    main {
       overscroll-behavior-y: contain;
     }
   </style>
 </head>
 <body class="flex h-screen overflow-hidden bg-bgDark bg-particles relative text-gray-300">
 
-  <!-- PTR DEBUG BAR FOR REAL-TIME ANDROID CHROME TOUCH VERIFICATION -->
-  <div id="ptrDebugBar" style="position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:9999999;background:rgba(15,23,42,0.92);border:1.5px solid #00ff88;color:#00ff88;font-family:monospace;font-size:10px;font-weight:700;padding:5px 14px;border-radius:20px;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,255,136,0.3);letter-spacing:0.03em;">
-    <span id="ptrDebugDist">Pull: 0px</span> | <span id="ptrDebugTop">Top: YES</span> | <span id="ptrDebugCan">Can Refresh: NO</span> | <span id="ptrDebugState">State: IDLE</span>
+  <!-- PTR DEBUG PANEL FOR SCROLL CONTAINER & TOUCH VERIFICATION -->
+  <div id="ptrDebugPanel" style="position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:9999999;background:rgba(15,23,42,0.95);border:1.5px solid #00ff88;color:#00ff88;font-family:monospace;font-size:10px;font-weight:bold;padding:5px 14px;border-radius:20px;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,255,136,0.3);letter-spacing:0.02em;">
+    Container: <span id="ptrDebugComp">MAIN</span> | Top: <span id="ptrDebugTop">0</span> | Touch: <span id="ptrDebugTouch">NO</span> | Pull: <span id="ptrDebugDist">0px</span> | Refresh: <span id="ptrDebugCan">NO</span>
   </div>
 
   <!-- Floating Pull to Refresh Bar -->
@@ -5315,25 +5318,26 @@
       if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
     }
 
-    // ── Android Chrome Native Pull To Refresh (Guaranteed Reload Handler) ──
+    // ── Native Mobile Pull To Refresh (Attached Directly to Actual <main> Scroll Container) ──
     (function initPullToRefresh() {
       var indicator   = document.getElementById('pullToRefreshIndicator');
       var spinnerEl   = document.getElementById('pullSpinnerIcon');
       var pullTextEl  = document.getElementById('pullText');
       var appWrapper  = document.getElementById('appMainWrapper') || document.body;
-      var mainEl      = document.querySelector('main') || document.body;
 
-      // Debug elements
-      var dDist  = document.getElementById('ptrDebugDist');
+      // Debug elements (Step 10 Panel)
+      var dComp  = document.getElementById('ptrDebugComp');
       var dTop   = document.getElementById('ptrDebugTop');
+      var dTouch = document.getElementById('ptrDebugTouch');
+      var dDist  = document.getElementById('ptrDebugDist');
       var dCan   = document.getElementById('ptrDebugCan');
-      var dState = document.getElementById('ptrDebugState');
 
-      function updateDebugUI(dist, top, can, state) {
-        if (dDist)  dDist.innerText  = 'Pull: ' + (dist || 0) + 'px';
-        if (dTop)   dTop.innerText   = 'Top: ' + (top || 'NO');
-        if (dCan)   dCan.innerText   = 'Can Refresh: ' + (can || 'NO');
-        if (dState) dState.innerText = 'State: ' + (state || 'IDLE');
+      function updateDebugUI(comp, top, touch, dist, can) {
+        if (dComp)  dComp.innerText  = comp || 'MAIN';
+        if (dTop)   dTop.innerText   = top !== undefined ? top : '0';
+        if (dTouch) dTouch.innerText = touch || 'NO';
+        if (dDist)  dDist.innerText  = (dist || 0) + 'px';
+        if (dCan)   dCan.innerText   = can || 'NO';
       }
 
       if (!indicator) return;
@@ -5344,10 +5348,15 @@
       var canRefresh   = false;
       var isPulling    = false;
       var isRefreshing = false;
-      var THRESHOLD    = 100; // Exact 100px drag threshold as requested
+      var THRESHOLD    = 90; // 90px threshold (in 80-100px range)
 
-      function getScrollTop() {
-        var mainTop = mainEl ? mainEl.scrollTop : 0;
+      function getScroller() {
+        return document.querySelector('main') || document.body;
+      }
+
+      function getScrollTop(scroller) {
+        var s = scroller || getScroller();
+        var mainTop = s ? s.scrollTop : 0;
         var winTop  = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
         return mainTop + winTop;
       }
@@ -5365,26 +5374,33 @@
         if (!target) return false;
         var tag = target.tagName ? target.tagName.toUpperCase() : '';
         if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'OPTION'].indexOf(tag) !== -1) return true;
-        if (target.closest && (target.closest('button') || target.closest('input') || target.closest('textarea') || target.closest('.no-ptr'))) return true;
+        if (target.closest && (target.closest('button') || target.closest('input') || target.closest('textarea') || target.closest('#sidebar') || target.closest('#sidebarOverlay'))) return true;
         return false;
       }
 
       function handleTouchStart(e) {
         if (isRefreshing) return;
-        if (isSidebarOpen()) { updateDebugUI(0, 'NO', 'NO', 'SIDEBAR OPEN'); return; }
-        if (isInteractiveTarget(e.target)) { updateDebugUI(0, 'NO', 'NO', 'INTERACTIVE TARGET'); return; }
+        if (isSidebarOpen()) {
+          updateDebugUI('MAIN', '0', 'SIDEBAR OPEN', 0, 'NO');
+          return;
+        }
+        if (isInteractiveTarget(e.target)) {
+          updateDebugUI('MAIN', '0', 'INTERACTIVE', 0, 'NO');
+          return;
+        }
 
-        var sTop = getScrollTop();
-        var isTop = sTop <= 3;
+        var scroller = getScroller();
+        var sTop = Math.round(getScrollTop(scroller));
 
-        updateDebugUI(0, isTop ? 'YES' : 'NO', 'NO', 'START');
+        updateDebugUI('MAIN', sTop, 'START', 0, 'NO');
 
-        if (isTop && e.touches && e.touches.length === 1) {
+        if (sTop <= 3 && e.touches && e.touches.length === 1) {
           startY       = e.touches[0].clientY;
           currentY     = startY;
           pullDistance = 0;
           isPulling    = true;
           canRefresh   = false;
+          updateDebugUI('MAIN', sTop, 'YES', 0, 'NO');
         }
       }
 
@@ -5393,8 +5409,11 @@
         currentY = e.touches[0].clientY;
         var rawDistance = currentY - startY;
 
-        if (rawDistance > 0 && getScrollTop() <= 5) {
-          // IMPORTANT FOR ANDROID CHROME: Prevent native Chrome scroll/pull interference when pulling custom PTR
+        var scroller = getScroller();
+        var sTop = Math.round(getScrollTop(scroller));
+
+        if (rawDistance > 0 && sTop <= 5) {
+          // CRITICAL FOR ANDROID CHROME: Prevent native scrolling when custom pulling
           if (e.cancelable) {
             e.preventDefault();
           }
@@ -5428,11 +5447,11 @@
             if (spinnerEl) spinnerEl.style.color = '#ffd400';
           }
 
-          updateDebugUI(pullDistance, 'YES', canRefresh ? 'YES' : 'NO', 'PULLING');
+          updateDebugUI('MAIN', sTop, 'YES', pullDistance, canRefresh ? 'YES' : 'NO');
         } else if (rawDistance < 0) {
           isPulling = false;
           resetUI(false);
-          updateDebugUI(0, 'NO', 'NO', 'CANCEL');
+          updateDebugUI('MAIN', sTop, 'NO', 0, 'NO');
         }
       }
 
@@ -5448,10 +5467,10 @@
           }
         }
 
-        updateDebugUI(pullDistance, 'TOP', canRefresh ? 'YES' : 'NO', 'RELEASED');
-
         if (canRefresh === true) {
           isRefreshing = true;
+
+          updateDebugUI('MAIN', '0', 'RELEASING', pullDistance, 'RELOAD EXECUTING!');
 
           if (pullTextEl) pullTextEl.innerText = 'REFRESHING...';
           indicator.style.opacity     = '1';
@@ -5474,12 +5493,10 @@
             try { navigator.vibrate(40); } catch(err) {}
           }
 
-          updateDebugUI(pullDistance, 'YES', 'YES', 'RELOAD EXECUTING!');
-
-          // ACTUAL BROWSER PAGE RELOAD
+          // REAL BROWSER PAGE RELOAD
           setTimeout(function() {
             window.location.reload(true);
-          }, 120);
+          }, 100);
         } else {
           resetUI(true);
         }
@@ -5501,7 +5518,7 @@
           spinnerEl.classList.remove('animate-spin');
         }
         if (pullTextEl) pullTextEl.innerText = 'PULL DOWN TO REFRESH';
-        updateDebugUI(0, 'YES', 'NO', 'IDLE');
+        updateDebugUI('MAIN', '0', 'NO', 0, 'NO');
       }
 
       function handleTouchCancel() {
@@ -5516,15 +5533,30 @@
         indicator.style.opacity   = '1';
         indicator.style.transform = 'translateX(-50%) translateY(50px)';
         if (spinnerEl) spinnerEl.classList.add('animate-spin');
-        updateDebugUI(100, 'YES', 'YES', 'RELOAD EXECUTING!');
-        setTimeout(function() { window.location.reload(true); }, 120);
+        updateDebugUI('MAIN', '0', 'YES', 100, 'RELOAD EXECUTING!');
+        setTimeout(function() { window.location.reload(true); }, 100);
       };
 
-      // REGISTER NATIVE TOUCH LISTENERS ON DOCUMENT & WINDOW WITH { passive: false } ON TOUCHMOVE FOR ANDROID CHROME
-      document.addEventListener('touchstart', handleTouchStart, { passive: true });
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('touchend', handleTouchEnd, { passive: true });
-      document.addEventListener('touchcancel', handleTouchCancel, { passive: true });
+      // REGISTER ON THE ACTUAL SCROLL CONTAINER (<main>), WINDOW, & DOCUMENT
+      function bindListeners() {
+        var scroller = getScroller();
+        var targets = [scroller, document, window];
+        targets.forEach(function(t) {
+          if (!t) return;
+          try {
+            t.addEventListener('touchstart', handleTouchStart, { passive: true });
+            t.addEventListener('touchmove', handleTouchMove, { passive: false });
+            t.addEventListener('touchend', handleTouchEnd, { passive: true });
+            t.addEventListener('touchcancel', handleTouchCancel, { passive: true });
+          } catch(e) {}
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bindListeners);
+      } else {
+        bindListeners();
+      }
     })();
 
   </script>
