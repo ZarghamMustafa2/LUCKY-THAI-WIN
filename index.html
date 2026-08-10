@@ -1790,7 +1790,7 @@
           </div>
 
           <!-- Card 3: LUCKY THAI 4D (FEATURED FIRST GAME) -->
-          <div onclick="window.navigateToAppRoute('game-thai-4d')" class="w-[32.6%] aspect-square rounded-sm overflow-hidden bg-[#0d1428] border border-amber-500/50 shadow-sm cursor-pointer relative group flex flex-col justify-between p-2 bg-cover bg-center" style="background-image: url('roulette_card.jpg');">
+          <div onclick="window.location.href='game.html'" class="w-[32.6%] aspect-square rounded-sm overflow-hidden bg-[#0d1428] border border-amber-500/50 shadow-sm cursor-pointer relative group flex flex-col justify-between p-2 bg-cover bg-center" style="background-image: url('roulette_card.jpg');">
             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
             <div class="relative z-10 flex items-center justify-between w-full">
               <span class="bg-emerald-500 text-white text-[8px] font-black px-1 py-0.5 rounded uppercase tracking-wider animate-pulse">LIVE</span>
@@ -2397,21 +2397,8 @@
                     }
 
                     if (routeName === 'game-thai-4d' || routeName === '#game-thai-4d' || routeName === 'thai-lottery' || routeName === '#games/thai-4d') {
-                      if (mainEl) mainEl.style.backgroundColor = '#0b1220';
-                      setDisp(dashEl, 'none');
-                      setDisp(gameEl, 'flex');
-                      if (routeBadge) routeBadge.innerText = 'Lucky Thai 4D';
-                      setDisp(bannerEl, 'flex');
-                      setDisp(gameContEl, 'block');
-                      window.isWheelHidden = false;
-                      if (pushState) {
-                        try { window.location.hash = 'games/thai-4d'; } catch(e) {}
-                      }
-                      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
-                      // Start game loop
-                      setTimeout(function() {
-                        if (typeof window.gameLoop === 'function') { try { window.gameLoop(); } catch(e) {} }
-                      }, 100);
+                      window.location.href = 'game.html';
+                      return;
                     } else {
                       if (mainEl) mainEl.style.backgroundColor = '#E7F4FA';
                       setDisp(gameEl, 'none');
@@ -2611,10 +2598,10 @@
           <i class="fa-solid fa-stopwatch text-base sm:text-lg text-emerald-400"></i>
           <span class="text-[10px] sm:text-xs font-bold tracking-tight">Inplay</span>
         </button>
-        <button onclick="window.navigateToAppRoute('game-thai-4d')" class="flex flex-col items-center gap-0.5 text-gold hover:text-yellow-300 transition-colors cursor-pointer py-1 px-2.5 rounded-lg bg-gold/10 border border-gold/40 hover:bg-gold/20 active:scale-95 shadow-sm">
+        <a href="game.html" class="flex flex-col items-center gap-0.5 text-gold hover:text-yellow-300 transition-colors cursor-pointer py-1 px-2.5 rounded-lg bg-gold/10 border border-gold/40 hover:bg-gold/20 active:scale-95 shadow-sm">
           <i class="fa-solid fa-gem text-base sm:text-lg text-gold animate-pulse"></i>
           <span class="text-[10px] sm:text-xs font-black tracking-tight text-gold">Lucky Thai 4D</span>
-        </button>
+        </a>
         <button onclick="window.onSidebarMenuItemClick('sports-book', 'sports-book')" class="flex flex-col items-center gap-0.5 text-white/90 hover:text-white transition-colors cursor-pointer py-1 px-2.5 rounded-lg hover:bg-white/5 active:scale-95">
           <i class="fa-solid fa-trophy text-base sm:text-lg text-cyan-300"></i>
           <span class="text-[10px] sm:text-xs font-bold tracking-tight">Sports Book</span>
