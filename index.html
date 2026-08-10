@@ -353,7 +353,8 @@
       if (tabName === 'market') window.renderBpExchMarketTable();
     };
 
-    window.openProfileStatementModal = function() {
+    window.openProfileStatementModal = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
       
@@ -400,18 +401,26 @@
       if (balEl) balEl.innerText = 'Rs ' + (account.balance || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
 
       var modal = document.getElementById('profileStatementModal');
-      if (modal) modal.classList.remove('hidden');
+      if (modal) {
+        modal.classList.remove('hidden');
+        try { modal.style.setProperty('display', 'flex', 'important'); } catch(err) { modal.style.display = 'flex'; }
+      }
     };
 
-    window.openProfileResultModal = function() {
+    window.openProfileResultModal = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
       if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
       var modal = document.getElementById('profileResultModal');
-      if (modal) modal.classList.remove('hidden');
+      if (modal) {
+        modal.classList.remove('hidden');
+        try { modal.style.setProperty('display', 'flex', 'important'); } catch(err) { modal.style.display = 'flex'; }
+      }
     };
 
-    window.openProfileProfitLossModal = function() {
+    window.openProfileProfitLossModal = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
       
@@ -442,10 +451,14 @@
       }
 
       var modal = document.getElementById('profileProfitLossModal');
-      if (modal) modal.classList.remove('hidden');
+      if (modal) {
+        modal.classList.remove('hidden');
+        try { modal.style.setProperty('display', 'flex', 'important'); } catch(err) { modal.style.display = 'flex'; }
+      }
     };
 
-    window.openProfileBetHistoryModal = function() {
+    window.openProfileBetHistoryModal = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
       
@@ -477,7 +490,10 @@
       }
 
       var modal = document.getElementById('profileBetHistoryModal');
-      if (modal) modal.classList.remove('hidden');
+      if (modal) {
+        modal.classList.remove('hidden');
+        try { modal.style.setProperty('display', 'flex', 'important'); } catch(err) { modal.style.display = 'flex'; }
+      }
     };
 
     window.renderBpExchLedgerTable = function() {
@@ -703,12 +719,29 @@
 
     window.closeProfileModal = function(modalId) {
       var modal = document.getElementById(modalId);
-      if (modal) modal.classList.add('hidden');
+      if (modal) {
+        modal.classList.add('hidden');
+        try { modal.style.setProperty('display', 'none', 'important'); } catch(e) { modal.style.display = 'none'; }
+      }
+    };
+
+    window.openUserLoginModal = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      var dropdown = document.getElementById('profileDropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+      var modal = document.getElementById('userLoginModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        try { modal.style.setProperty('display', 'flex', 'important'); } catch(err) { modal.style.display = 'flex'; }
+      }
     };
 
     window.closeUserLoginModal = function() {
       var modal = document.getElementById('userLoginModal');
-      if (modal) modal.classList.add('hidden');
+      if (modal) {
+        modal.classList.add('hidden');
+        try { modal.style.setProperty('display', 'none', 'important'); } catch(e) { modal.style.display = 'none'; }
+      }
     };
 
     window.saveUserLoginName = function() {
@@ -1713,30 +1746,31 @@
           
           <!-- Profile Dropdown Menu -->
           <div id="profileDropdown" class="hidden absolute top-10 right-0 w-52 bg-[#172d47] text-white border border-[#264a70] rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.8)] z-[9999] flex flex-col py-2 transition-all">
-            <button type="button" onclick="openProfileStatementModal()" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="openProfileStatementModal(event)" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice text-cyan-400"></i> Statement</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
-            <button type="button" onclick="openProfileResultModal()" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="openProfileResultModal(event)" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-square-poll-vertical text-emerald-400"></i> Result</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
-            <button type="button" onclick="openProfileProfitLossModal()" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="openProfileProfitLossModal(event)" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-gold"></i> Profit Loss</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
-            <button type="button" onclick="openProfileBetHistoryModal()" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="openProfileBetHistoryModal(event)" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-list-check text-purple-400"></i> Bet History</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
-            <button type="button" onclick="openUserLoginModal()" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="openUserLoginModal(event)" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-user-gear text-blue-400"></i> Profile</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
             <div class="h-px bg-white/10 my-1"></div>
-            <button type="button" onclick="performUserLogout()" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="performUserLogout(event)" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
+            </button>
           </div>
         </div>
 
