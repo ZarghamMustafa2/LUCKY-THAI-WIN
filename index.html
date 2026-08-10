@@ -1547,6 +1547,16 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     }
     
+    /* Inside game section, restore dark glass panels for game UI */
+    #dedicatedGameViewSection .glass-panel {
+      background: rgba(13, 20, 40, 0.85) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+    }
+    #dedicatedGameViewSection .glass-panel:hover {
+      border-color: rgba(255, 255, 255, 0.15) !important;
+    }
+    
     .glass-panel:hover {
       border-color: rgba(0, 0, 0, 0.1);
       box-shadow: 0 15px 50px rgba(0,0,0,0.15);
@@ -1998,7 +2008,7 @@
       </div>
 
       <!-- DEDICATED GAME PAGE SECTION (Opens when user clicks game card) -->
-      <div id="dedicatedGameViewSection" class="w-full mx-auto flex flex-col gap-4 sm:gap-5 hidden">
+      <div id="dedicatedGameViewSection" class="w-full mx-auto flex flex-col gap-4 sm:gap-5 hidden" style="background: #0b1220; min-height: 100vh; padding: 16px; border-radius: 0;">
         
         <!-- Game Page Header Navigation Bar -->
         <div class="bg-[#152a45] border border-cyan-500/30 rounded-2xl p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3 text-white shadow-xl">
