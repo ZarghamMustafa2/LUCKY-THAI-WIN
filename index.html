@@ -2217,7 +2217,7 @@
           </div>
 
           <!-- THE 3D WHEEL STAGE -->
-          <div id="gameContainer" class="order-1 xl:order-none glass-panel relative flex flex-col items-center justify-center overflow-hidden min-h-[500px] md:min-h-[600px] lg:min-h-[700px] transition-transform duration-500 hidden" style="display: none !important;">
+          <div id="gameContainer" class="order-1 xl:order-none glass-panel relative flex flex-col items-center justify-center overflow-hidden min-h-[500px] md:min-h-[600px] lg:min-h-[700px] transition-transform duration-500">
             <!-- Background effects -->
             <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvc3ZnPg==')] opacity-50 mix-blend-overlay"></div>
             
@@ -2377,23 +2377,40 @@
                     if (typeof pushState === 'undefined') pushState = true;
                     var dashEl = document.getElementById('dashboardViewSection');
                     var gameEl = document.getElementById('dedicatedGameViewSection');
+                    var bannerEl = document.getElementById('nextSpinBanner');
+                    var gameContEl = document.getElementById('gameContainer');
 
                     if (routeName === 'game-thai-4d' || routeName === '#game-thai-4d' || routeName === 'thai-lottery' || routeName === '#games/thai-4d') {
                       if (dashEl) dashEl.classList.add('hidden');
-                      if (gameEl) gameEl.classList.remove('hidden');
+                      if (gameEl) {
+                        gameEl.classList.remove('hidden');
+                        gameEl.style.display = 'flex';
+                      }
+                      // Show betting board immediately
+                      if (bannerEl) {
+                        bannerEl.style.setProperty('display', 'flex', 'important');
+                        bannerEl.classList.remove('hidden');
+                      }
+                      // Show game container (TV/digits)
+                      if (gameContEl) {
+                        gameContEl.style.setProperty('display', 'block', 'important');
+                        gameContEl.classList.remove('hidden');
+                      }
+                      window.isWheelHidden = false;
                       if (pushState) history.pushState({ route: 'game-thai-4d' }, '', '#games/thai-4d');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      // Show the full game UI (expand the wheel/TV stage)
+                      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
+                      // Start game loop
                       setTimeout(function() {
-                        if (typeof window.expandWheelStage === 'function') {
-                          window.expandWheelStage();
-                        }
-                      }, 50);
+                        if (typeof window.gameLoop === 'function') { try { window.gameLoop(); } catch(e) {} }
+                      }, 100);
                     } else {
-                      if (gameEl) gameEl.classList.add('hidden');
+                      if (gameEl) {
+                        gameEl.classList.add('hidden');
+                        gameEl.style.display = '';
+                      }
                       if (dashEl) dashEl.classList.remove('hidden');
                       if (pushState) history.pushState({ route: 'dashboard' }, '', '#dashboard');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
                     }
 
                     if (typeof window.renderSidebarMenu === 'function') {
