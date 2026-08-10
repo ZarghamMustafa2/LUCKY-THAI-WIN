@@ -2388,13 +2388,13 @@
                       }
                       // Show betting board immediately
                       if (bannerEl) {
-                        bannerEl.style.setProperty('display', 'flex', 'important');
                         bannerEl.classList.remove('hidden');
+                        bannerEl.style.display = 'flex';
                       }
                       // Show game container (TV/digits)
                       if (gameContEl) {
-                        gameContEl.style.setProperty('display', 'block', 'important');
                         gameContEl.classList.remove('hidden');
+                        gameContEl.style.display = 'block';
                       }
                       window.isWheelHidden = false;
                       if (pushState) history.pushState({ route: 'game-thai-4d' }, '', '#games/thai-4d');
@@ -2406,7 +2406,7 @@
                     } else {
                       if (gameEl) {
                         gameEl.classList.add('hidden');
-                        gameEl.style.display = '';
+                        gameEl.style.display = 'none';
                       }
                       if (dashEl) dashEl.classList.remove('hidden');
                       if (pushState) history.pushState({ route: 'dashboard' }, '', '#dashboard');
@@ -2581,12 +2581,6 @@
             </div>
             <div id="multiResultsContainer" class="hidden"></div>
           </div>
-
-
-        </div>
-
-
-      </div>
 
         <!-- Hidden activeBetsList container to preserve JS engine compatibility -->
         <div id="activeBetsList" class="hidden"></div>
@@ -4917,6 +4911,65 @@
             }
             html.light [class*="bg-gold/10"], html.light [class*="bg-gold/20"] {
               background-color: rgba(217, 119, 6, 0.12) !important;
+            }
+            /* GUARANTEE DEDICATED GAME SECTION REMAINS 100% VISIBLE WITH DARK UI & WHITE/GOLD TEXT */
+            html.light #dedicatedGameViewSection {
+              background-color: #0b1220 !important;
+              color: #ffffff !important;
+            }
+            html.light #dedicatedGameViewSection [class*="text-white"],
+            html.light #dedicatedGameViewSection .text-white {
+              color: #ffffff !important;
+            }
+            html.light #dedicatedGameViewSection [class*="text-gray-300"],
+            html.light #dedicatedGameViewSection .text-gray-300 {
+              color: #d1d5db !important;
+            }
+            html.light #dedicatedGameViewSection [class*="text-gray-400"],
+            html.light #dedicatedGameViewSection .text-gray-400 {
+              color: #9ca3af !important;
+            }
+            html.light #dedicatedGameViewSection [class*="text-gray-500"],
+            html.light #dedicatedGameViewSection .text-gray-500 {
+              color: #6b7280 !important;
+            }
+            html.light #dedicatedGameViewSection [class*="text-gold"],
+            html.light #dedicatedGameViewSection .text-gold {
+              color: #FFD700 !important;
+            }
+            html.light #dedicatedGameViewSection [class*="text-cyanLight"],
+            html.light #dedicatedGameViewSection [class*="text-cyan-300"],
+            html.light #dedicatedGameViewSection [class*="text-cyan-400"] {
+              color: #00D4FF !important;
+            }
+            html.light #dedicatedGameViewSection [class*="bg-bgDark"],
+            html.light #dedicatedGameViewSection .bg-bgDark {
+              background-color: #0D0D0D !important;
+              color: #ffffff !important;
+            }
+            html.light #dedicatedGameViewSection [class*="bg-cardDark"],
+            html.light #dedicatedGameViewSection .bg-cardDark {
+              background-color: #121B2F !important;
+              color: #ffffff !important;
+            }
+            html.light #dedicatedGameViewSection .glass-panel,
+            html.light #dedicatedGameViewSection [class*="glass-panel"] {
+              background: rgba(13, 20, 40, 0.85) !important;
+              color: #ffffff !important;
+              border-color: rgba(255, 255, 255, 0.1) !important;
+              box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+            }
+            html.light #dedicatedGameViewSection [class*="border-white"] {
+              border-color: rgba(255, 255, 255, 0.15) !important;
+            }
+            html.light #dedicatedGameViewSection [class*="border-gold"] {
+              border-color: rgba(255, 215, 0, 0.4) !important;
+            }
+            html.light #dedicatedGameViewSection [class*="bg-gold/10"] {
+              background-color: rgba(255, 215, 0, 0.1) !important;
+            }
+            html.light #dedicatedGameViewSection [class*="bg-gold/20"] {
+              background-color: rgba(255, 215, 0, 0.2) !important;
             }
           `;
           document.head.appendChild(style);
