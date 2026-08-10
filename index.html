@@ -2400,7 +2400,9 @@
                       setDisp(bannerEl, 'flex');
                       setDisp(gameContEl, 'block');
                       window.isWheelHidden = false;
-                      if (pushState) history.pushState({ route: 'game-thai-4d' }, '', '#games/thai-4d');
+                      if (pushState) {
+                        try { window.location.hash = 'games/thai-4d'; } catch(e) {}
+                      }
                       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
                       // Start game loop
                       setTimeout(function() {
@@ -2410,7 +2412,9 @@
                       setDisp(gameEl, 'none');
                       setDisp(dashEl, 'flex');
                       if (routeBadge) routeBadge.innerText = 'Exch';
-                      if (pushState) history.pushState({ route: 'dashboard' }, '', '#dashboard');
+                      if (pushState) {
+                        try { window.location.hash = 'dashboard'; } catch(e) {}
+                      }
                       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
                     }
 
@@ -2513,14 +2517,15 @@
                     }
                   };
 
-                  window.addEventListener('popstate', function() {
+                  function handleHashOrPopstate() {
                     var hash = window.location.hash || '';
                     if (hash.includes('game-thai-4d') || hash.includes('thai-lottery') || hash.includes('games/thai-4d')) {
                       window.navigateToAppRoute('game-thai-4d', false);
-                    } else {
-                      window.navigateToAppRoute('dashboard', false);
                     }
-                  });
+                  }
+
+                  window.addEventListener('popstate', handleHashOrPopstate);
+                  window.addEventListener('hashchange', handleHashOrPopstate);
 
                   var initialHash = window.location.hash || '';
                   if (initialHash.includes('game-thai-4d') || initialHash.includes('thai-lottery') || initialHash.includes('games/thai-4d')) {
