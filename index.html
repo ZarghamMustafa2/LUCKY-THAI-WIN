@@ -2383,6 +2383,12 @@
                       if (gameEl) gameEl.classList.remove('hidden');
                       if (pushState) history.pushState({ route: 'game-thai-4d' }, '', '#games/thai-4d');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
+                      // Show the full game UI (expand the wheel/TV stage)
+                      setTimeout(function() {
+                        if (typeof window.expandWheelStage === 'function') {
+                          window.expandWheelStage();
+                        }
+                      }, 50);
                     } else {
                       if (gameEl) gameEl.classList.add('hidden');
                       if (dashEl) dashEl.classList.remove('hidden');
