@@ -1787,11 +1787,15 @@
             </div>
           </div>
 
-          <!-- Card 3: EUROPEAN ROULETTE -->
-          <div onclick="window.navigateToAppRoute('game-thai-4d')" class="w-[32.6%] aspect-square rounded-sm overflow-hidden bg-black border border-gray-300 shadow-sm cursor-pointer relative group flex flex-col justify-start p-2 bg-cover bg-center" style="background-image: url('roulette_card.jpg');">
-            <div class="absolute inset-0 bg-black/25"></div>
+          <!-- Card 3: LUCKY THAI 4D (FEATURED FIRST GAME) -->
+          <div onclick="window.navigateToAppRoute('game-thai-4d')" class="w-[32.6%] aspect-square rounded-sm overflow-hidden bg-[#0d1428] border border-amber-500/50 shadow-sm cursor-pointer relative group flex flex-col justify-between p-2 bg-cover bg-center" style="background-image: url('roulette_card.jpg');">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+            <div class="relative z-10 flex items-center justify-between w-full">
+              <span class="bg-emerald-500 text-white text-[8px] font-black px-1 py-0.5 rounded uppercase tracking-wider animate-pulse">LIVE</span>
+              <span class="text-gold text-[9px] font-bold"><i class="fa-solid fa-gem"></i></span>
+            </div>
             <div class="relative z-10 flex flex-col">
-              <h3 class="text-[9px] sm:text-[11px] font-black text-white tracking-tighter leading-none uppercase">EUROPEAN ROULETTE</h3>
+              <h3 class="text-[9px] sm:text-[11px] font-black text-gold tracking-tighter leading-none uppercase drop-shadow">LUCKY THAI 4D</h3>
               <span class="text-[7px] text-green-400 font-bold tracking-tighter uppercase mt-0.5 animate-pulse">PLAY NOW</span>
             </div>
           </div>
@@ -2374,12 +2378,15 @@
                     var bannerEl = document.getElementById('nextSpinBanner');
                     var gameContEl = document.getElementById('gameContainer');
 
+                    var routeBadge = document.getElementById('headerRouteBadge');
+
                     if (routeName === 'game-thai-4d' || routeName === '#game-thai-4d' || routeName === 'thai-lottery' || routeName === '#games/thai-4d') {
                       if (dashEl) dashEl.classList.add('hidden');
                       if (gameEl) {
                         gameEl.classList.remove('hidden');
                         gameEl.style.display = 'flex';
                       }
+                      if (routeBadge) routeBadge.innerText = 'Lucky Thai 4D';
                       // Show betting board immediately
                       if (bannerEl) {
                         bannerEl.classList.remove('hidden');
@@ -2403,6 +2410,7 @@
                         gameEl.style.display = 'none';
                       }
                       if (dashEl) dashEl.classList.remove('hidden');
+                      if (routeBadge) routeBadge.innerText = 'Exch';
                       if (pushState) history.pushState({ route: 'dashboard' }, '', '#dashboard');
                       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
                     }
