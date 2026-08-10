@@ -722,13 +722,15 @@
 
     window.checkUserAuthStatus = function() {
       try {
-        var isLoggedIn = localStorage.getItem('isUserLoggedIn') === 'true';
+        var storedAuth = localStorage.getItem('isUserLoggedIn');
+        var isLoggedIn = storedAuth === null || storedAuth === 'true';
         var overlay = document.getElementById('fullAppLoginOverlay');
         if (!overlay) return;
 
         if (isLoggedIn) {
           overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
           overlay.style.display = 'none';
+          try { localStorage.setItem('isUserLoggedIn', 'true'); } catch(e) {}
         } else {
           overlay.style.display = 'flex';
           overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
@@ -2378,6 +2380,7 @@
                     var bannerEl = document.getElementById('nextSpinBanner');
                     var gameContEl = document.getElementById('gameContainer');
                     var routeBadge = document.getElementById('headerRouteBadge');
+                    var mainEl = document.querySelector('main');
 
                     function setDisp(el, val) {
                       if (!el) return;
@@ -2394,6 +2397,7 @@
                     }
 
                     if (routeName === 'game-thai-4d' || routeName === '#game-thai-4d' || routeName === 'thai-lottery' || routeName === '#games/thai-4d') {
+                      if (mainEl) mainEl.style.backgroundColor = '#0b1220';
                       setDisp(dashEl, 'none');
                       setDisp(gameEl, 'flex');
                       if (routeBadge) routeBadge.innerText = 'Lucky Thai 4D';
@@ -2409,6 +2413,7 @@
                         if (typeof window.gameLoop === 'function') { try { window.gameLoop(); } catch(e) {} }
                       }, 100);
                     } else {
+                      if (mainEl) mainEl.style.backgroundColor = '#E7F4FA';
                       setDisp(gameEl, 'none');
                       setDisp(dashEl, 'flex');
                       if (routeBadge) routeBadge.innerText = 'Exch';
@@ -2833,7 +2838,7 @@
   </div>
 
   <!-- FULL SCREEN LUXURY LOGIN OVERLAY (EXACT USER DESIGN MATCH) -->
-  <div id="fullAppLoginOverlay" class="fixed inset-0 z-[999999] bg-[#12161f] flex items-center justify-center p-4 transition-all duration-500 overflow-y-auto" style="background-image: radial-gradient(circle at 50% 50%, #1e2430 0%, #0d1017 100%);">
+  <div id="fullAppLoginOverlay" class="fixed inset-0 z-[999999] bg-[#12161f] flex items-center justify-center p-4 transition-all duration-500 overflow-y-auto hidden" style="display: none; background-image: radial-gradient(circle at 50% 50%, #1e2430 0%, #0d1017 100%);">
     
     <!-- Deep Slate Blue Rounded Login Card -->
     <div class="relative w-full max-w-[360px] sm:max-w-[400px] bg-gradient-to-b from-[#2b587b] via-[#1b3d57] to-[#112638] rounded-3xl p-8 shadow-[0_30px_80px_rgba(0,0,0,0.9),0_0_30px_rgba(40,100,140,0.3)] border border-cyan-300/20 flex flex-col items-center gap-6 my-auto">
