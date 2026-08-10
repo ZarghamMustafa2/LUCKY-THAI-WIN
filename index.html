@@ -1640,15 +1640,15 @@
   <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-purpleDark opacity-[0.02] rounded-full blur-[150px] pointer-events-none z-0"></div>
 
   <!-- LEFT SIDEBAR (OFF-CANVAS DRAWER MATCHING REFERENCE UI) -->
-  <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[90] hidden transition-opacity duration-300 opacity-0" onclick="toggleMobileSidebar()"></div>
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[90] hidden transition-opacity duration-300 opacity-0" onclick="window.toggleMobileSidebar()"></div>
   <aside id="sidebar" class="fixed inset-y-0 left-0 z-[100] transform -translate-x-full w-[240px] sm:w-[260px] bg-[#173454] border-r border-[#264870] flex flex-col flex-shrink-0 shadow-2xl transition-transform duration-300 font-sans">
     
     <!-- Top Header Area (Close Box X + Dashboard Text) -->
     <div class="h-11 px-3 flex items-center gap-3 border-b border-[#25456b] flex-shrink-0 bg-[#132c48]">
-      <button onclick="toggleMobileSidebar()" class="w-8 h-7 rounded border border-white/30 bg-[#1e3c5d] hover:bg-white/10 flex items-center justify-center text-white transition-colors cursor-pointer" title="Close Sidebar">
+      <button onclick="window.toggleMobileSidebar()" class="w-8 h-7 rounded border border-white/30 bg-[#1e3c5d] hover:bg-white/10 flex items-center justify-center text-white transition-colors cursor-pointer" title="Close Sidebar">
         <i class="fa-solid fa-xmark text-base"></i>
       </button>
-      <span class="text-white font-medium text-sm tracking-tight cursor-pointer" onclick="toggleMobileSidebar(); navigateToAppRoute('dashboard');">Dashboard</span>
+      <span class="text-white font-medium text-sm tracking-tight cursor-pointer" onclick="window.toggleMobileSidebar(); window.navigateToAppRoute('dashboard');">Dashboard</span>
     </div>
     
     <!-- Dynamic Data-Driven Nav Items Container -->
@@ -1669,11 +1669,11 @@
         
         <!-- LEFT: Hamburger Menu & Dashboard . Exch -->
         <div class="flex items-center gap-2.5">
-          <button id="mobileMenuBtn" onclick="toggleMobileSidebar()" class="text-white hover:text-cyan-300 transition-colors p-1 cursor-pointer flex items-center justify-center" title="Toggle Sidebar">
+          <button id="mobileMenuBtn" onclick="window.toggleMobileSidebar()" class="text-white hover:text-cyan-300 transition-colors p-1 cursor-pointer flex items-center justify-center" title="Toggle Sidebar">
             <i class="fa-solid fa-bars text-xl sm:text-2xl"></i>
           </button>
           
-          <div onclick="navigateToAppRoute('dashboard')" class="flex items-center gap-1 text-xs sm:text-sm font-semibold tracking-wide cursor-pointer hover:opacity-80 transition-opacity">
+          <div onclick="window.navigateToAppRoute('dashboard')" class="flex items-center gap-1 text-xs sm:text-sm font-semibold tracking-wide cursor-pointer hover:opacity-80 transition-opacity">
             <span class="text-white font-bold">Dashboard</span>
             <span class="text-white/60 mx-1 font-black">.</span>
             <span id="headerRouteBadge" class="text-white/90 font-medium">null</span>
@@ -1784,7 +1784,7 @@
           </div>
 
           <!-- Card 3: EUROPEAN ROULETTE -->
-          <div onclick="navigateToAppRoute('game-thai-4d')" class="w-[32.6%] aspect-square rounded-sm overflow-hidden bg-black border border-gray-300 shadow-sm cursor-pointer relative group flex flex-col justify-start p-2 bg-cover bg-center" style="background-image: url('roulette_card.jpg');">
+          <div onclick="window.navigateToAppRoute('game-thai-4d')" class="w-[32.6%] aspect-square rounded-sm overflow-hidden bg-black border border-gray-300 shadow-sm cursor-pointer relative group flex flex-col justify-start p-2 bg-cover bg-center" style="background-image: url('roulette_card.jpg');">
             <div class="absolute inset-0 bg-black/25"></div>
             <div class="relative z-10 flex flex-col">
               <h3 class="text-[9px] sm:text-[11px] font-black text-white tracking-tighter leading-none uppercase">EUROPEAN ROULETTE</h3>
@@ -2003,7 +2003,7 @@
         <!-- Game Page Header Navigation Bar -->
         <div class="bg-[#152a45] border border-cyan-500/30 rounded-2xl p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3 text-white shadow-xl">
           <div class="flex items-center gap-3">
-            <button onclick="navigateToAppRoute('dashboard')" class="bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 hover:text-white border border-cyan-400/40 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer active:scale-95 shadow-md">
+            <button onclick="window.navigateToAppRoute('dashboard')" class="bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 hover:text-white border border-cyan-400/40 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all flex items-center gap-2 cursor-pointer active:scale-95 shadow-md">
               <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
             </button>
             <div class="flex flex-col">
