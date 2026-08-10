@@ -85,9 +85,40 @@
           <span id="gamePageTimer" class="text-gold font-black">00:60:00</span>
         </div>
 
-        <div class="flex flex-col items-end leading-tight text-xs sm:text-sm font-bold">
-          <span class="text-gold">Bp28233</span>
-          <span class="text-emerald-400 font-mono">Rs <span id="userBalanceText">7,950.00</span></span>
+        <div class="relative cursor-pointer select-none" onclick="toggleGameProfileDropdown(event)">
+          <div class="flex flex-col items-end leading-tight text-xs sm:text-sm font-bold hover:opacity-90 transition-opacity">
+            <span class="text-gold flex items-center gap-1">Bp28233 <i class="fa-solid fa-caret-down text-[10px]"></i></span>
+            <span class="text-emerald-400 font-mono">Rs <span id="userBalanceText">7,950.00</span></span>
+          </div>
+
+          <!-- Profile Dropdown Menu -->
+          <div id="gameProfileDropdown" class="hidden absolute top-10 right-0 w-52 bg-[#121B2F] text-white border border-gold/40 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] z-[9999] flex flex-col py-2 transition-all">
+            <a href="index.html#bpexch-reports" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice text-cyan-400"></i> Statement</span>
+              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+            </a>
+            <a href="index.html#bpexch-reports" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-square-poll-vertical text-emerald-400"></i> Result</span>
+              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+            </a>
+            <a href="index.html#bpexch-reports" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-gold"></i> Profit Loss</span>
+              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+            </a>
+            <a href="index.html#bpexch-reports" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-list-check text-purple-400"></i> Bet History</span>
+              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+            </a>
+            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-user-gear text-blue-400"></i> Profile</span>
+              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+            </a>
+            <div class="h-px bg-white/10 my-1"></div>
+            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
+              <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -342,6 +373,12 @@
 
   <!-- COMPLETE GAME ENGINE JAVASCRIPT LOGIC -->
   <script>
+    window.toggleGameProfileDropdown = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      var drop = document.getElementById('gameProfileDropdown');
+      if (drop) drop.classList.toggle('hidden');
+    };
+
     // State management
     window.currentSelectedDigits = '';
     window.currentRequiredLength = 1;
