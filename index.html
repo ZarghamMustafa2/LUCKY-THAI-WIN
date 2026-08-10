@@ -1746,28 +1746,28 @@
           
           <!-- Profile Dropdown Menu -->
           <div id="profileDropdown" class="hidden absolute top-10 right-0 w-52 bg-[#172d47] text-white border border-[#264a70] rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.8)] z-[9999] flex flex-col py-2 transition-all">
-            <button type="button" onclick="openProfileStatementModal(event)" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="event.stopPropagation(); openProfileStatementModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice text-cyan-400"></i> Statement</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
-            <button type="button" onclick="openProfileResultModal(event)" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="event.stopPropagation(); openProfileResultModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-square-poll-vertical text-emerald-400"></i> Result</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
-            <button type="button" onclick="openProfileProfitLossModal(event)" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="event.stopPropagation(); openProfileProfitLossModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-gold"></i> Profit Loss</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
-            <button type="button" onclick="openProfileBetHistoryModal(event)" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="event.stopPropagation(); openProfileBetHistoryModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-list-check text-purple-400"></i> Bet History</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
-            <button type="button" onclick="openUserLoginModal(event)" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="event.stopPropagation(); openUserLoginModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-user-gear text-blue-400"></i> Profile</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
             <div class="h-px bg-white/10 my-1"></div>
-            <button type="button" onclick="performUserLogout(event)" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="event.stopPropagation(); performUserLogout(event);" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
             </button>
