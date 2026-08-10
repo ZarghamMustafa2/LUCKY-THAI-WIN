@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LUCKY THAI WIN 4D — Live Hourly Lottery & Betting Stage</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bgDark: '#0b1220',
+            cardDark: '#121B2F',
+            gold: '#FFD700',
+            cyanLight: '#00D4FF',
+            primary: '#00FF88',
+            danger: '#FF3366',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            display: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Font Awesome 6 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      background-color: #0b1220;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+    }
+    .text-gold { color: #FFD700 !important; }
+    .bg-gold { background-color: #FFD700 !important; }
+    .border-gold { border-color: #FFD700 !important; }
+    .glass-panel {
+      background: rgba(18, 27, 47, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0b1220; }
+    ::-webkit-scrollbar-thumb { background: #1f375c; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #FFD700; }
+  </style>
+</head>
+<body class="bg-[#0b1220] text-white min-h-screen flex flex-col font-sans antialiased selection:bg-gold selection:text-black">
+
+  <!-- TOP APP NAVIGATION HEADER -->
+  <header class="bg-[#172d47] border-b border-[#234368] sticky top-0 z-50 text-white shadow-xl">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
+      
+      <!-- LEFT: Back to Dashboard & Game Title -->
+      <div class="flex items-center gap-2 sm:gap-4">
+        <a href="../index.html" class="bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 hover:text-white border border-cyan-400/40 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all flex items-center gap-1.5 sm:gap-2 active:scale-95 shadow-md">
+          <i class="fa-solid fa-arrow-left"></i> Dashboard
+        </a>
+        <div class="flex flex-col">
+          <h1 class="text-sm sm:text-lg font-black text-white font-display flex items-center gap-1.5 leading-none">
+            <i class="fa-solid fa-gem text-gold text-xs sm:text-base animate-pulse"></i> LUCKY THAI 4D
+          </h1>
+          <span class="text-[9px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider leading-tight hidden sm:block">Official Live Hourly Lottery & Betting Stage</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Timer & User Balance Badge -->
+      <div class="flex items-center gap-2 sm:gap-4">
+        <div class="bg-black/50 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/10 flex items-center gap-2 text-xs sm:text-sm font-mono">
+          <i class="fa-solid fa-clock text-gold animate-pulse text-xs"></i>
+          <span class="text-gray-300 font-bold hidden sm:inline">Next Spin:</span>
+          <span id="gamePageTimer" class="text-gold font-black">00:60:00</span>
+        </div>
+
+        <div class="flex flex-col items-end leading-tight text-xs sm:text-sm font-bold">
+          <span class="text-gold">Bp28233</span>
+          <span class="text-emerald-400 font-mono">Rs <span id="userBalanceText">7,950.00</span></span>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN GAME CONTENT CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 flex flex-col gap-5 sm:gap-8">
+
+    <!-- 1. LIVE RITMU TV BROADCAST VIDEO STAGE -->
+    <section class="w-full flex flex-col items-center justify-center relative">
+      <div id="wheelGlow" class="absolute inset-0 bg-[#36d7b7] opacity-[0.12] rounded-3xl blur-[120px] pointer-events-none w-full max-w-4xl h-80 mx-auto"></div>
+
+      <!-- Ritmu Live Broadcast TV Screen Bezel -->
+      <div id="ritmuTvStageBezel" class="w-full max-w-5xl rounded-3xl border-2 border-cyan-400/40 bg-black shadow-[0_25px_80px_rgba(0,0,0,0.95),0_0_60px_rgba(54,215,183,0.2)] overflow-hidden relative flex flex-col transition-all">
+
+        <!-- TV Header Controls Bar -->
+        <div class="bg-[#0b1220] px-4 py-2.5 flex items-center justify-between border-b border-cyan-400/20">
+          <span class="text-xs font-mono font-bold text-cyan-400 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+            📺 RITMU TV — LIVE HOURLY DRAW BROADCAST
+          </span>
+          <div class="flex items-center gap-2">
+            <button onclick="toggleRitmuTvSound(this)" class="text-xs font-bold text-cyan-300 hover:text-white bg-cyan-500/20 px-2.5 py-1 rounded-lg border border-cyan-500/30 transition-all cursor-pointer flex items-center gap-1">
+              <i class="fa-solid fa-volume-xmark" id="soundIcon"></i> Sound
+            </button>
+            <a href="https://www.ritmu.tv" target="_blank" rel="noopener noreferrer" class="text-[10px] font-bold text-cyan-300 hover:text-white bg-cyan-500/20 px-2.5 py-1 rounded-lg border border-cyan-500/30 transition-all cursor-pointer flex items-center gap-1">
+              <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> ritmu.tv
+            </a>
+          </div>
+        </div>
+
+        <!-- TV Screen Frame with Live Stream Video Embed -->
+        <div class="relative w-full aspect-video sm:max-h-[500px] bg-black flex items-center justify-center overflow-hidden">
+          <iframe 
+            id="ritmuLiveVideoPlayer"
+            src="https://www.ritmu.tv" 
+            title="Ritmu TV Live Stream"
+            class="w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+
+          <!-- Fallback Telemetry Overlay if iframe is blocked -->
+          <div id="tvFallbackOverlay" class="hidden absolute inset-0 bg-black/90 flex-col items-center justify-center p-6 text-center gap-3">
+            <i class="fa-solid fa-satellite-dish text-4xl text-cyan-400 animate-bounce"></i>
+            <h3 class="text-lg font-black text-white font-display">LUCKY THAI 4D LIVE STREAM BROADCAST</h3>
+            <p class="text-xs text-gray-400 max-w-md">Hourly live draw results stream directly synchronized with Ritmu TV Thailand official servers.</p>
+            <a href="https://www.ritmu.tv" target="_blank" class="mt-2 bg-gradient-to-r from-cyan-500 to-emerald-500 text-black font-extrabold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all">
+              Watch on Ritmu.tv <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- TV Footer Telemetry Bar -->
+        <div class="bg-[#0b1220] px-4 py-2 flex items-center justify-between text-[10px] sm:text-xs font-mono text-gray-400 border-t border-white/5">
+          <span class="flex items-center gap-1.5"><i class="fa-solid fa-signal text-emerald-400"></i> Signal: 100% HD 1080p</span>
+          <span class="text-gold font-bold">DRAW ROUND #8492</span>
+          <span class="flex items-center gap-1 text-cyan-300"><i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> LIVE SATELLITE FEED</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 2. PLACE YOUR BET BOARD FORM -->
+    <section class="w-full glass-panel p-4 sm:p-8 flex flex-col gap-5 sm:gap-6 border-2 border-gold/40 shadow-[0_15px_40px_rgba(255,212,0,0.12)]">
+      
+      <!-- Section Header -->
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gold/10 border border-gold/40 flex items-center justify-center text-gold text-lg sm:text-2xl shadow-inner">
+            <i class="fa-solid fa-gem animate-pulse"></i>
+          </div>
+          <div class="flex flex-col">
+            <h2 class="text-base sm:text-2xl font-display font-black text-white leading-tight">Place Your Bet</h2>
+            <span class="text-[10px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider leading-tight">Select your lucky numbers and bet details</span>
+          </div>
+        </div>
+        <span class="text-[10px] sm:text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/30 flex items-center gap-1.5">
+          <i class="fa-solid fa-bolt"></i> Instant Payouts
+        </span>
+      </div>
+
+      <!-- Selected Number Display Box -->
+      <div class="bg-black/60 rounded-2xl p-4 border-2 border-gold/50 focus-within:border-gold transition-all shadow-[0_0_30px_rgba(255,212,0,0.15)] flex flex-col gap-2">
+        <div class="flex justify-between items-center">
+          <label class="text-xs font-bold text-gold uppercase tracking-widest flex items-center gap-1.5">
+            <i class="fa-solid fa-hashtag"></i> Selected Bet Number
+          </label>
+          <span id="bannerInputHelperText" class="text-xs font-mono text-gray-400 font-bold bg-white/5 px-3 py-1 rounded-full border border-white/10">1 Digit Allowed</span>
+        </div>
+        
+        <input 
+          id="bannerNumberInput"
+          type="text" 
+          readonly
+          tabindex="-1"
+          class="w-full bg-white/5 text-gold font-mono font-black text-3xl sm:text-5xl py-3 sm:py-4 px-4 text-center outline-none border border-gold/40 rounded-2xl tracking-[0.25em] shadow-inner transition-all placeholder:text-gray-600 placeholder:tracking-normal placeholder:text-sm sm:placeholder:text-lg cursor-default select-none" 
+          placeholder="Click digits 0-9 below..." 
+        />
+      </div>
+
+      <!-- Quick Digit Select Buttons (0-9) -->
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Digits</h3>
+          <button type="button" onclick="clearQuickDigit()" class="text-xs font-bold text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1 rounded-lg border border-rose-500/30 active:scale-95 transition-all cursor-pointer flex items-center gap-1">
+            <i class="fa-solid fa-eraser"></i> Clear
+          </button>
+        </div>
+        <div class="grid grid-cols-5 sm:grid-cols-10 gap-2">
+          <button type="button" onclick="appendQuickDigit('1')" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-base sm:text-xl hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">1</button>
+          <button type="button" onclick="appendQuickDigit('2')" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-base sm:text-xl hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">2</button>
+          <button type="button" onclick="appendQuickDigit('3')" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-base sm:text-xl hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">3</button>
+          <button type="button" onclick="appendQuickDigit('4')" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-base sm:text-xl hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">4</button>
+          <button type="button" onclick="appendQuickDigit('5')" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-base sm:text-xl hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">5</button>
+          <button type="button" onclick="appendQuickDigit('6')" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-base sm:text-xl hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">6</button>
+          <button type="button" onclick="appendQuickDigit('7')" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-base sm:text-xl hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">7</button>
+          <button type="button" onclick="appendQuickDigit('8')" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-base sm:text-xl hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">8</button>
+          <button type="button" onclick="appendQuickDigit('9')" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-base sm:text-xl hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">9</button>
+          <button type="button" onclick="appendQuickDigit('0')" class="py-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono font-bold text-base sm:text-xl hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer">0</button>
+        </div>
+      </div>
+
+      <!-- Choose Betting Round (1st Draw / 2nd Draw) -->
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Draws</h3>
+          <button type="button" onclick="toggleSelectAllSpins()" class="text-xs font-bold text-gold hover:underline cursor-pointer flex items-center gap-1 bg-gold/10 px-3 py-1 rounded-lg border border-gold/30">
+            <i class="fa-solid fa-check-double"></i> Both Draws
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" onclick="toggleBetRound(this, 1)" class="round-btn p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="1">
+            <i class="fa-solid fa-square-check text-gold"></i> 1st Draw
+          </button>
+          <button type="button" onclick="toggleBetRound(this, 2)" class="round-btn p-3.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-sm sm:text-base hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm" data-round="2">
+            <i class="fa-regular fa-square text-gray-500"></i> 2nd Draw
+          </button>
+        </div>
+      </div>
+
+      <!-- Bet Type Cards with Dynamic Multipliers -->
+      <div class="flex flex-col gap-2">
+        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Bet Type</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          <button onclick="selectBetType(this, 'figure', 1)" class="bet-type-card p-3.5 sm:p-4 rounded-2xl border border-gold bg-gold/10 flex flex-col gap-1 transition-all group cursor-pointer" data-type="figure" data-mult="8">
+            <div class="flex justify-between items-center gap-1">
+              <div class="flex flex-col text-left">
+                <span class="font-black text-white text-sm sm:text-lg tracking-wider group-hover:text-gold transition-colors">FIGURE</span>
+                <span class="text-[10px] sm:text-xs text-gray-400 font-bold">1 Digit</span>
+              </div>
+              <div class="font-mono bg-black/40 px-2 py-1 rounded-lg border border-white/10 text-gold font-bold text-xs sm:text-sm">1x8</div>
+            </div>
+          </button>
+          <button onclick="selectBetType(this, 'akada', 2)" class="bet-type-card p-3.5 sm:p-4 rounded-2xl border border-white/10 bg-black/40 flex flex-col gap-1 transition-all group cursor-pointer" data-type="akada" data-mult="80">
+            <div class="flex justify-between items-center gap-1">
+              <div class="flex flex-col text-left">
+                <span class="font-black text-white text-sm sm:text-lg tracking-wider group-hover:text-gold transition-colors">AKADA</span>
+                <span class="text-[10px] sm:text-xs text-gray-400 font-bold">2 Digits</span>
+              </div>
+              <div class="font-mono bg-black/40 px-2 py-1 rounded-lg border border-white/10 text-gold font-bold text-xs sm:text-sm">1x80</div>
+            </div>
+          </button>
+          <button onclick="selectBetType(this, 'ring', 3)" class="bet-type-card p-3.5 sm:p-4 rounded-2xl border border-white/10 bg-black/40 flex flex-col gap-1 transition-all group cursor-pointer" data-type="ring" data-mult="800">
+            <div class="flex justify-between items-center gap-1">
+              <div class="flex flex-col text-left">
+                <span class="font-black text-white text-sm sm:text-lg tracking-wider group-hover:text-gold transition-colors">RING</span>
+                <span class="text-[10px] sm:text-xs text-gray-400 font-bold">3 Digits</span>
+              </div>
+              <div class="font-mono bg-black/40 px-2 py-1 rounded-lg border border-white/10 text-gold font-bold text-xs sm:text-sm">1x800</div>
+            </div>
+          </button>
+          <button onclick="selectBetType(this, 'packet', 4)" class="bet-type-card p-3.5 sm:p-4 rounded-2xl border border-white/10 bg-black/40 flex flex-col gap-1 transition-all group cursor-pointer" data-type="packet" data-mult="6000">
+            <div class="flex justify-between items-center gap-1">
+              <div class="flex flex-col text-left">
+                <span class="font-black text-white text-sm sm:text-lg tracking-wider group-hover:text-gold transition-colors">PACKET</span>
+                <span class="text-[10px] sm:text-xs text-gray-400 font-bold">4 Digits</span>
+              </div>
+              <div class="font-mono bg-black/40 px-2 py-1 rounded-lg border border-white/10 text-gold font-bold text-xs sm:text-sm">1x6000</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Chips Bet Amount Selector -->
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Bet Amount</h3>
+          <span id="bannerCurrentAmountText" class="text-xs font-mono font-bold text-gold">Rs 10</span>
+        </div>
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+          <button type="button" onclick="setMainBetAmount(10)" class="banner-amount-btn py-2.5 rounded-xl bg-gold/20 border border-gold text-gold font-mono font-bold text-xs hover:border-gold active:scale-95 transition-all cursor-pointer" data-amount="10">Rs 10</button>
+          <button type="button" onclick="setMainBetAmount(20)" class="banner-amount-btn py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer" data-amount="20">Rs 20</button>
+          <button type="button" onclick="setMainBetAmount(50)" class="banner-amount-btn py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer" data-amount="50">Rs 50</button>
+          <button type="button" onclick="setMainBetAmount(100)" class="banner-amount-btn py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer" data-amount="100">Rs 100</button>
+          <button type="button" onclick="setMainBetAmount(500)" class="banner-amount-btn py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer" data-amount="500">Rs 500</button>
+          <button type="button" onclick="setMainBetAmount(1000)" class="banner-amount-btn py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer" data-amount="1000">Rs 1000</button>
+        </div>
+
+        <!-- Custom Amount Field -->
+        <div class="flex items-center gap-2 bg-white/5 p-2 rounded-xl border border-white/10 focus-within:border-gold transition-all mt-1">
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-widest pl-1 whitespace-nowrap"><i class="fa-solid fa-pen-to-square text-gold mr-1"></i> Custom Amount:</span>
+          <div class="relative flex-1">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 font-mono font-bold text-gold text-sm">Rs</span>
+            <input type="number" id="bannerCustomBetInput" min="1" max="100000" placeholder="Enter custom amount..." oninput="onCustomBetAmountInput(this.value)" class="w-full pl-9 pr-2 py-1.5 bg-transparent text-white font-mono font-bold text-sm focus:outline-none placeholder:text-gray-600" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Potential Win Payout Calculator Card -->
+      <div id="bannerProfitCard" class="bg-black/60 rounded-2xl p-4 sm:p-5 border-2 border-gold/40 shadow-[0_0_25px_rgba(255,212,0,0.15)] flex items-center justify-between gap-4 transition-all">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-gold/10 border border-gold/40 flex items-center justify-center text-gold text-2xl shadow-inner">
+            <i class="fa-solid fa-trophy animate-pulse"></i>
+          </div>
+          <div class="flex flex-col text-left">
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Potential Win Payout</span>
+            <span id="bannerSelectedDetailsText" class="text-xs text-gold font-bold leading-none">1st Draw • FIGURE (8x Multiplier)</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end text-right">
+          <span class="text-xs text-gray-400 font-bold uppercase tracking-widest leading-none mb-1">Total Return / Profit</span>
+          <div class="flex items-baseline gap-1.5">
+            <span id="bannerPotentialPayoutText" class="font-mono text-xl sm:text-3xl font-black text-emerald-400 drop-shadow-[0_0_12px_rgba(0,255,136,0.6)]">Rs 80</span>
+            <span id="bannerNetProfitText" class="text-xs font-mono font-bold text-emerald-400/80">(+Rs 70 Profit)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary Action Button: Place Bet Now -->
+      <button id="inlinePlaceBetBtn" type="button" onclick="placeInlineBet()" class="w-full py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-gold via-yellow-400 to-amber-500 text-black font-black text-base sm:text-2xl uppercase tracking-widest shadow-[0_10px_35px_rgba(255,212,0,0.35)] hover:scale-[1.01] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2">
+        <i class="fa-solid fa-bolt text-xl"></i> Place Bet Now
+      </button>
+
+    </section>
+
+    <!-- 3. RECENT 24H WINNING DRAWS HISTORY TICKER -->
+    <section class="w-full glass-panel p-4 sm:p-6 flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="text-sm sm:text-lg font-black text-white font-display flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-gold"></i> Recent 24h Winning Draws
+        </h3>
+        <span class="text-xs font-mono text-gray-400">Updated Hourly</span>
+      </div>
+      <div id="24hWinningDrawsGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3">
+        <!-- Dynamically rendered by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM STICKY NAVIGATION BAR -->
+  <footer class="bg-[#172d47] border-t border-[#234368] text-white py-2 px-3 sticky bottom-0 z-50 shadow-lg w-full flex items-center justify-between text-xs sm:text-sm font-sans">
+    <div class="max-w-7xl mx-auto w-full flex items-center justify-around gap-1 sm:gap-2">
+      <a href="../index.html" class="flex flex-col items-center gap-0.5 text-white/90 hover:text-white transition-colors py-1 px-3 rounded-lg hover:bg-white/5 active:scale-95">
+        <i class="fa-solid fa-house text-base sm:text-lg"></i>
+        <span class="text-[10px] sm:text-xs font-bold">Home</span>
+      </a>
+      <a href="../index.html#inplay" class="flex flex-col items-center gap-0.5 text-white/90 hover:text-white transition-colors py-1 px-3 rounded-lg hover:bg-white/5 active:scale-95">
+        <i class="fa-solid fa-stopwatch text-base sm:text-lg text-emerald-400"></i>
+        <span class="text-[10px] sm:text-xs font-bold">Inplay</span>
+      </a>
+      <a href="index.html" class="flex flex-col items-center gap-0.5 text-gold transition-colors py-1 px-3 rounded-lg bg-gold/10 border border-gold/40 active:scale-95 shadow-sm">
+        <i class="fa-solid fa-gem text-base sm:text-lg text-gold animate-pulse"></i>
+        <span class="text-[10px] sm:text-xs font-black text-gold">Lucky Thai 4D</span>
+      </a>
+      <a href="../index.html#sports-book" class="flex flex-col items-center gap-0.5 text-white/90 hover:text-white transition-colors py-1 px-3 rounded-lg hover:bg-white/5 active:scale-95">
+        <i class="fa-solid fa-trophy text-base sm:text-lg text-cyan-300"></i>
+        <span class="text-[10px] sm:text-xs font-bold">Sports Book</span>
+      </a>
+      <a href="../index.html#account" class="flex flex-col items-center gap-0.5 text-white/90 hover:text-white transition-colors py-1 px-3 rounded-lg hover:bg-white/5 active:scale-95">
+        <i class="fa-solid fa-user text-base sm:text-lg"></i>
+        <span class="text-[10px] sm:text-xs font-bold">Account</span>
+      </a>
+    </div>
+  </footer>
+
+  <!-- COMPLETE GAME ENGINE JAVASCRIPT LOGIC -->
+  <script>
+    // State management
+    window.currentSelectedDigits = '';
+    window.currentRequiredLength = 1;
+    window.currentBetType = 'figure';
+    window.currentMultiplier = 8;
+    window.selectedBetRounds = [1];
+    window.currentMainBetAmount = 10;
+    window.currentBalance = 7950;
+
+    // Toast Notification helper
+    window.showToast = function(msg, type) {
+      var toast = document.createElement('div');
+      toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/90 text-white px-5 py-3 rounded-2xl border border-gold/50 shadow-2xl z-[99999] text-xs sm:text-sm font-bold flex items-center gap-2 animate-bounce';
+      toast.innerHTML = '<i class="fa-solid fa-circle-info text-gold"></i> ' + msg;
+      document.body.appendChild(toast);
+      setTimeout(function() { toast.remove(); }, 3000);
+    };
+
+    // Digit Selection Handlers
+    window.appendQuickDigit = function(digit) {
+      if (window.currentSelectedDigits.length < window.currentRequiredLength) {
+        window.currentSelectedDigits += digit;
+        var input = document.getElementById('bannerNumberInput');
+        if (input) input.value = window.currentSelectedDigits;
+        window.updateBannerProfitCalculator();
+      } else {
+        window.showToast('Selected ' + window.currentRequiredLength + ' digit(s) for ' + window.currentBetType.toUpperCase(), 'info');
+      }
+    };
+
+    window.clearQuickDigit = function() {
+      window.currentSelectedDigits = '';
+      var input = document.getElementById('bannerNumberInput');
+      if (input) input.value = '';
+      window.updateBannerProfitCalculator();
+    };
+
+    // Bet Round Selection
+    window.toggleBetRound = function(btn, roundNum) {
+      var idx = window.selectedBetRounds.indexOf(roundNum);
+      if (idx > -1) {
+        if (window.selectedBetRounds.length === 1) {
+          window.showToast('At least 1 draw must be selected!', 'warning');
+          return;
+        }
+        window.selectedBetRounds.splice(idx, 1);
+        btn.className = 'round-btn p-3.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 font-bold text-sm sm:text-base hover:border-gold hover:text-gold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm';
+        btn.querySelector('i').className = 'fa-regular fa-square text-gray-500';
+      } else {
+        window.selectedBetRounds.push(roundNum);
+        btn.className = 'round-btn p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm';
+        btn.querySelector('i').className = 'fa-solid fa-square-check text-gold';
+      }
+      window.updateBannerProfitCalculator();
+    };
+
+    window.toggleSelectAllSpins = function() {
+      window.selectedBetRounds = [1, 2];
+      document.querySelectorAll('.round-btn').forEach(function(btn) {
+        btn.className = 'round-btn p-3.5 rounded-xl border border-gold bg-gold/10 text-gold font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm';
+        btn.querySelector('i').className = 'fa-solid fa-square-check text-gold';
+      });
+      window.updateBannerProfitCalculator();
+    };
+
+    // Bet Type Selection
+    window.selectBetType = function(btn, type, reqLen) {
+      window.currentBetType = type;
+      window.currentRequiredLength = reqLen;
+
+      var multMap = { figure: 8, akada: 80, ring: 800, packet: 6000 };
+      window.currentMultiplier = multMap[type] || 8;
+
+      document.querySelectorAll('.bet-type-card').forEach(function(card) {
+        card.className = 'bet-type-card p-3.5 sm:p-4 rounded-2xl border border-white/10 bg-black/40 flex flex-col gap-1 transition-all group cursor-pointer';
+      });
+      btn.className = 'bet-type-card p-3.5 sm:p-4 rounded-2xl border border-gold bg-gold/10 flex flex-col gap-1 transition-all group cursor-pointer';
+
+      var helper = document.getElementById('bannerInputHelperText');
+      if (helper) helper.innerText = reqLen + ' Digit' + (reqLen > 1 ? 's' : '') + ' Allowed';
+
+      window.clearQuickDigit();
+    };
+
+    // Bet Amount Selector
+    window.setMainBetAmount = function(amount) {
+      window.currentMainBetAmount = amount;
+      document.querySelectorAll('.banner-amount-btn').forEach(function(btn) {
+        if (parseInt(btn.getAttribute('data-amount')) === amount) {
+          btn.className = 'banner-amount-btn py-2.5 rounded-xl bg-gold/20 border border-gold text-gold font-mono font-bold text-xs hover:border-gold active:scale-95 transition-all cursor-pointer';
+        } else {
+          btn.className = 'banner-amount-btn py-2.5 rounded-xl bg-white/5 border border-white/10 text-gray-300 font-mono font-bold text-xs hover:border-gold hover:text-gold active:scale-95 transition-all cursor-pointer';
+        }
+      });
+      var curText = document.getElementById('bannerCurrentAmountText');
+      if (curText) curText.innerText = 'Rs ' + amount;
+
+      var custInput = document.getElementById('bannerCustomBetInput');
+      if (custInput) custInput.value = '';
+
+      window.updateBannerProfitCalculator();
+    };
+
+    window.onCustomBetAmountInput = function(val) {
+      var num = parseInt(val);
+      if (!isNaN(num) && num > 0) {
+        window.currentMainBetAmount = num;
+        var curText = document.getElementById('bannerCurrentAmountText');
+        if (curText) curText.innerText = 'Rs ' + num;
+        window.updateBannerProfitCalculator();
+      }
+    };
+
+    // Potential Payout Calculator
+    window.updateBannerProfitCalculator = function() {
+      var totalCost = window.currentMainBetAmount * window.selectedBetRounds.length;
+      var totalReturn = window.currentMainBetAmount * window.currentMultiplier * window.selectedBetRounds.length;
+      var netProfit = totalReturn - totalCost;
+
+      var detText = document.getElementById('bannerSelectedDetailsText');
+      if (detText) {
+        var roundsStr = window.selectedBetRounds.map(function(r){ return r + (r === 1 ? 'st' : 'nd') + ' Draw'; }).join(' & ');
+        detText.innerText = roundsStr + ' • ' + window.currentBetType.toUpperCase() + ' (' + window.currentMultiplier + 'x Multiplier)';
+      }
+
+      var retText = document.getElementById('bannerPotentialPayoutText');
+      if (retText) retText.innerText = 'Rs ' + totalReturn.toLocaleString();
+
+      var profText = document.getElementById('bannerNetProfitText');
+      if (profText) profText.innerText = '(+Rs ' + netProfit.toLocaleString() + ' Profit)';
+    };
+
+    // Place Bet Logic
+    window.placeInlineBet = function() {
+      if (!window.currentSelectedDigits || window.currentSelectedDigits.length !== window.currentRequiredLength) {
+        window.showToast('Please select exactly ' + window.currentRequiredLength + ' digit(s) first!', 'warning');
+        return;
+      }
+      var totalCost = window.currentMainBetAmount * window.selectedBetRounds.length;
+      if (window.currentBalance < totalCost) {
+        window.showToast('Insufficient balance! Please add funds.', 'warning');
+        return;
+      }
+      window.currentBalance -= totalCost;
+      var balEl = document.getElementById('userBalanceText');
+      if (balEl) balEl.innerText = window.currentBalance.toLocaleString() + '.00';
+
+      window.showToast('Bet Placed Successfully! Sequence: ' + window.currentSelectedDigits + ' | Amount: Rs ' + totalCost, 'success');
+      window.clearQuickDigit();
+    };
+
+    // Sound Toggle
+    window.toggleRitmuTvSound = function(btn) {
+      var icon = document.getElementById('soundIcon');
+      if (icon) {
+        if (icon.classList.contains('fa-volume-xmark')) {
+          icon.className = 'fa-solid fa-volume-high text-emerald-400';
+          window.showToast('Audio Unmuted', 'info');
+        } else {
+          icon.className = 'fa-solid fa-volume-xmark';
+          window.showToast('Audio Muted', 'info');
+        }
+      }
+    };
+
+    // Hourly Countdown Clock
+    function updateHourlyTimer() {
+      var now = new Date();
+      var mins = 59 - now.getMinutes();
+      var secs = 59 - now.getSeconds();
+      var mStr = mins < 10 ? '0' + mins : mins;
+      var sStr = secs < 10 ? '0' + secs : secs;
+      var timerEl = document.getElementById('gamePageTimer');
+      if (timerEl) timerEl.innerText = '00:' + mStr + ':' + sStr;
+    }
+    setInterval(updateHourlyTimer, 1000);
+    updateHourlyTimer();
+
+    // Render 24h Winning Draws History Ticker
+    window.renderWinningDraws = function() {
+      var grid = document.getElementById('24hWinningDrawsGrid');
+      if (!grid) return;
+
+      var mockDraws = [
+        { time: '10:00 PM', nums: '7 - 4 - 2 - 9', draw: '#8491' },
+        { time: '09:00 PM', nums: '3 - 8 - 1 - 5', draw: '#8490' },
+        { time: '08:00 PM', nums: '0 - 9 - 6 - 2', draw: '#8489' },
+        { time: '07:00 PM', nums: '5 - 1 - 4 - 8', draw: '#8488' },
+        { time: '06:00 PM', nums: '2 - 7 - 3 - 0', draw: '#8487' },
+        { time: '05:00 PM', nums: '8 - 5 - 9 - 1', draw: '#8486' },
+      ];
+
+      var html = '';
+      mockDraws.forEach(function(d) {
+        html += '<div class="bg-black/50 p-3 rounded-xl border border-white/10 flex flex-col gap-1 text-center shadow-inner">' +
+          '<div class="flex items-center justify-between text-[10px] text-gray-400 font-mono">' +
+            '<span>' + d.time + '</span>' +
+            '<span class="text-gold font-bold">' + d.draw + '</span>' +
+          '</div>' +
+          '<div class="text-sm font-mono font-black text-emerald-400 tracking-wider my-0.5">' + d.nums + '</div>' +
+          '<span class="text-[9px] font-bold text-gray-400 uppercase">Official Result</span>' +
+        '</div>';
+      });
+      grid.innerHTML = html;
+    };
+    window.renderWinningDraws();
+
+    // Initial calculator refresh
+    window.updateBannerProfitCalculator();
+  </script>
+</body>
+</html>
