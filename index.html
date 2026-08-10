@@ -2519,7 +2519,9 @@
 
                   function handleHashOrPopstate() {
                     var hash = window.location.hash || '';
-                    if (hash.includes('game-thai-4d') || hash.includes('thai-lottery') || hash.includes('games/thai-4d')) {
+                    if (hash.includes('dashboard')) {
+                      window.navigateToAppRoute('dashboard', false);
+                    } else {
                       window.navigateToAppRoute('game-thai-4d', false);
                     }
                   }
@@ -2528,10 +2530,11 @@
                   window.addEventListener('hashchange', handleHashOrPopstate);
 
                   var initialHash = window.location.hash || '';
-                  if (initialHash.includes('game-thai-4d') || initialHash.includes('thai-lottery') || initialHash.includes('games/thai-4d')) {
-                    window.navigateToAppRoute('game-thai-4d', false);
+                  if (initialHash.includes('dashboard')) {
+                    window.navigateToAppRoute('dashboard', false);
                   } else {
-                    window.renderSidebarMenu('dashboard');
+                    // Default to Lucky Thai 4D game directly on website launch!
+                    window.navigateToAppRoute('game-thai-4d', false);
                   }
 
 
