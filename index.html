@@ -2006,7 +2006,7 @@
       </div>
 
       <!-- DEDICATED GAME PAGE SECTION (Opens when user clicks game card) -->
-      <div id="dedicatedGameViewSection" class="w-full mx-auto flex flex-col gap-4 sm:gap-5 hidden" style="background: #0b1220; min-height: 100vh; padding: 16px; border-radius: 0;">
+      <div id="dedicatedGameViewSection" class="w-full mx-auto flex flex-col gap-4 sm:gap-5" style="background: #0b1220; min-height: 100vh; padding: 16px; border-radius: 0; display: none;">
         
         <!-- Game Page Header Navigation Bar -->
         <div class="bg-[#152a45] border border-cyan-500/30 rounded-2xl p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3 text-white shadow-xl">
@@ -2377,26 +2377,28 @@
                     var gameEl = document.getElementById('dedicatedGameViewSection');
                     var bannerEl = document.getElementById('nextSpinBanner');
                     var gameContEl = document.getElementById('gameContainer');
-
                     var routeBadge = document.getElementById('headerRouteBadge');
 
+                    function setDisp(el, val) {
+                      if (!el) return;
+                      if (val === 'none') {
+                        el.classList.add('hidden');
+                      } else {
+                        el.classList.remove('hidden');
+                      }
+                      if (el.style && typeof el.style.setProperty === 'function') {
+                        try { el.style.setProperty('display', val, 'important'); } catch(e) { el.style.display = val; }
+                      } else if (el.style) {
+                        el.style.display = val;
+                      }
+                    }
+
                     if (routeName === 'game-thai-4d' || routeName === '#game-thai-4d' || routeName === 'thai-lottery' || routeName === '#games/thai-4d') {
-                      if (dashEl) dashEl.classList.add('hidden');
-                      if (gameEl) {
-                        gameEl.classList.remove('hidden');
-                        gameEl.style.display = 'flex';
-                      }
+                      setDisp(dashEl, 'none');
+                      setDisp(gameEl, 'flex');
                       if (routeBadge) routeBadge.innerText = 'Lucky Thai 4D';
-                      // Show betting board immediately
-                      if (bannerEl) {
-                        bannerEl.classList.remove('hidden');
-                        bannerEl.style.display = 'flex';
-                      }
-                      // Show game container (TV/digits)
-                      if (gameContEl) {
-                        gameContEl.classList.remove('hidden');
-                        gameContEl.style.display = 'block';
-                      }
+                      setDisp(bannerEl, 'flex');
+                      setDisp(gameContEl, 'block');
                       window.isWheelHidden = false;
                       if (pushState) history.pushState({ route: 'game-thai-4d' }, '', '#games/thai-4d');
                       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
@@ -2405,11 +2407,8 @@
                         if (typeof window.gameLoop === 'function') { try { window.gameLoop(); } catch(e) {} }
                       }, 100);
                     } else {
-                      if (gameEl) {
-                        gameEl.classList.add('hidden');
-                        gameEl.style.display = 'none';
-                      }
-                      if (dashEl) dashEl.classList.remove('hidden');
+                      setDisp(gameEl, 'none');
+                      setDisp(dashEl, 'flex');
                       if (routeBadge) routeBadge.innerText = 'Exch';
                       if (pushState) history.pushState({ route: 'dashboard' }, '', '#dashboard');
                       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e) {}
