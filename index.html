@@ -55,6 +55,26 @@
     }
   </script>
   <script>
+    // Force unregister any stale service workers and clear cache to prevent cached/offline version issues
+    try {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for (var i = 0; i < registrations.length; i++) {
+            registrations[i].unregister().then(function(success) {
+              if (success) {
+                if ('caches' in window) {
+                  caches.keys().then(function(keys) {
+                    keys.forEach(function(key) { caches.delete(key); });
+                  });
+                }
+                setTimeout(function() { window.location.reload(); }, 200);
+              }
+            });
+          }
+        });
+      }
+    } catch(e) {}
+
     try {
       window.isUserLoggedInFallback = localStorage.getItem('isUserLoggedIn') === 'true';
     } catch(e) {
