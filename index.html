@@ -306,17 +306,32 @@
         var avatarEl = document.getElementById('headerUserAvatarCircle');
         if (avatarEl) avatarEl.innerText = initials;
 
-        var input = document.getElementById('userLoginNameInput');
-        if (input) input.value = name;
+        var inputName = document.getElementById('userLoginNameInput');
+        if (inputName) inputName.value = name;
+        var inputId = document.getElementById('userProfileIdDisplay');
+        if (inputId) inputId.value = 'Bp28233';
+        var inputPass = document.getElementById('userProfilePasswordInput');
+        if (inputPass) inputPass.value = localStorage.getItem('userLoginPassword') || 'Bp28233@pass';
       } catch(e) {}
     };
 
-    window.openUserLoginModal = function() {
+    window.openUserLoginModal = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      var dropdown = document.getElementById('profileDropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var pass = localStorage.getItem('userLoginPassword') || 'Bp28233@pass';
+      var inputName = document.getElementById('userLoginNameInput');
+      if (inputName) inputName.value = name;
+      var inputId = document.getElementById('userProfileIdDisplay');
+      if (inputId) inputId.value = 'Bp28233';
+      var inputPass = document.getElementById('userProfilePasswordInput');
+      if (inputPass) inputPass.value = pass;
       var modal = document.getElementById('userLoginModal');
-      var input = document.getElementById('userLoginNameInput');
-      var name = localStorage.getItem('userLoginName') || 'Player';
-      if (input) input.value = name;
-      if (modal) modal.classList.remove('hidden');
+      if (modal) {
+        modal.classList.remove('hidden');
+        try { modal.style.setProperty('display', 'flex', 'important'); } catch(err) { modal.style.display = 'flex'; }
+      }
     };
 
     window.toggleProfileDropdown = function(e) {
@@ -686,13 +701,32 @@
       }
     };
 
+    window.toggleProfilePasswordVisibility = function() {
+      var passInput = document.getElementById('userProfilePasswordInput');
+      var eyeIcon = document.getElementById('userProfilePasswordEyeIcon');
+      if (passInput) {
+        if (passInput.type === 'password') {
+          passInput.type = 'text';
+          if (eyeIcon) eyeIcon.className = 'fa-solid fa-eye-slash text-cyan-600';
+        } else {
+          passInput.type = 'password';
+          if (eyeIcon) eyeIcon.className = 'fa-solid fa-eye';
+        }
+      }
+    };
+
     window.saveUserLoginName = function() {
-      var currentName = localStorage.getItem('userLoginName') || 'Alex_Winner';
-      var input = document.getElementById('userLoginNameInput');
-      if (input) input.value = currentName;
+      var nameInput = document.getElementById('userLoginNameInput');
+      var passInput = document.getElementById('userProfilePasswordInput');
+      if (nameInput && nameInput.value.trim()) {
+        localStorage.setItem('userLoginName', nameInput.value.trim());
+      }
+      if (passInput && passInput.value.trim()) {
+        localStorage.setItem('userLoginPassword', passInput.value.trim());
+      }
       window.updateUserProfileUI();
       window.closeUserLoginModal();
-      if (typeof window.showToast === 'function') window.showToast('Username is locked and cannot be changed!', 'info');
+      if (typeof window.showToast === 'function') window.showToast('Profile credentials saved successfully!', 'success');
     };
 
     window.checkUserAuthStatus = function() {
@@ -2827,43 +2861,83 @@
     </div>
   </div>
 
-  <!-- USER LOGIN / PROFILE NAME MODAL -->
-  <div id="userLoginModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-all">
-    <div class="bg-white border border-gray-300 rounded-xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative flex flex-col gap-4 text-gray-900">
-      <button onclick="closeUserLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 p-2 text-lg">
+  <!-- USER LOGIN / PROFILE NAME MODAL (BPEXCH Style with ID, Name & Password) -->
+  <div id="userLoginModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 sm:p-4 transition-all">
+    <div class="bg-[#eef2f5] border border-gray-300 rounded-lg p-3 sm:p-5 max-w-md w-full shadow-2xl relative flex flex-col gap-4 max-h-[90vh] overflow-y-auto custom-scrollbar text-gray-900 font-sans">
+      
+      <!-- Modal Close Button -->
+      <button onclick="closeUserLoginModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-900 p-1 text-lg z-10">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <div class="flex items-center gap-3 border-b border-gray-200 pb-4">
-        <div class="w-12 h-12 rounded-xl bg-[#24496B]/10 border border-[#24496B]/20 flex items-center justify-center text-[#24496B] text-2xl">
-          <i class="fa-solid fa-user-gear"></i>
+      <!-- 1. PLAYER PROFILE CARD -->
+      <div class="bg-white rounded border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+        <!-- Card Header -->
+        <div class="bg-[#24496B] px-3.5 py-2.5 flex items-center gap-2 text-white font-bold text-sm shadow-sm">
+          <i class="fa-solid fa-id-card text-gold"></i>
+          <span>Player Profile & Account Credentials</span>
         </div>
-        <div class="flex flex-col">
-          <h3 class="text-lg font-bold text-[#24496B] font-sans">Player Profile & Security</h3>
-          <span class="text-xs text-gray-500">View and update profile information</span>
-        </div>
-      </div>
-
-      <div class="flex flex-col gap-3 my-1">
-        <div class="flex flex-col gap-1">
-          <label class="text-xs font-bold text-[#24496B] uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-lock text-[10px]"></i> Username (Locked)</label>
-          <input id="userLoginNameInput" type="text" readonly disabled placeholder="Username" class="w-full bg-[#F3F8FB] border border-gray-200 px-4 py-2.5 rounded-lg text-gray-600 font-mono font-bold text-base outline-none cursor-not-allowed opacity-80" />
-        </div>
-        <div class="flex flex-col gap-1">
-          <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">VIP Tier Level</label>
-          <div class="w-full bg-[#F3F8FB] border border-gray-200 px-4 py-2.5 rounded-lg text-[#24496B] font-bold text-sm flex items-center gap-2">
-            <i class="fa-solid fa-crown text-amber-500"></i> VIP Platinum Member
+        
+        <!-- Card Body -->
+        <div class="p-4 flex flex-col gap-3.5">
+          
+          <!-- Field 1: User ID -->
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-hashtag text-[#24496B] text-[11px]"></i> User ID
+            </label>
+            <div class="flex items-center gap-2">
+              <input id="userProfileIdDisplay" type="text" readonly value="Bp28233" class="w-full bg-[#f8f9fa] border border-gray-300 px-3 py-2 rounded text-[#24496B] font-mono font-extrabold text-sm outline-none shadow-xs" />
+              <button type="button" onclick="if (typeof window.showToast === 'function') window.showToast('User ID Copied!', 'success');" class="px-3 py-2 bg-[#6c757d] hover:bg-gray-700 text-white rounded text-xs font-bold transition-all shadow-xs cursor-pointer whitespace-nowrap">
+                <i class="fa-solid fa-copy"></i> Copy
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="flex flex-col gap-1">
-          <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Change Password</label>
-          <input type="password" placeholder="Enter new password..." class="w-full bg-white border border-gray-200 px-4 py-2.5 rounded-lg text-gray-900 font-mono text-sm outline-none focus:border-[#24496B]" />
+
+          <!-- Field 2: User Name -->
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-user text-[#24496B] text-[11px]"></i> User Name
+            </label>
+            <input id="userLoginNameInput" type="text" value="Alex_Winner" class="w-full bg-white border border-gray-300 px-3 py-2 rounded text-gray-900 font-mono font-bold text-sm outline-none focus:border-[#24496B] transition-all shadow-xs" />
+          </div>
+
+          <!-- Field 3: User Password with Reveal/Hide Eye Icon -->
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-key text-[#24496B] text-[11px]"></i> User Password</span>
+              <span class="text-[10px] text-gray-400 font-normal">Click eye to view</span>
+            </label>
+            <div class="relative w-full">
+              <input id="userProfilePasswordInput" type="password" value="Bp28233@pass" class="w-full bg-white border border-gray-300 pl-3 pr-10 py-2 rounded text-gray-900 font-mono font-bold text-sm outline-none focus:border-[#24496B] transition-all shadow-xs" />
+              <button type="button" onclick="toggleProfilePasswordVisibility()" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 p-1 text-sm cursor-pointer">
+                <i id="userProfilePasswordEyeIcon" class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Extra Account Badges Row -->
+          <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-100">
+            <div class="bg-[#f8f9fa] border border-gray-200 p-2 rounded flex flex-col">
+              <span class="text-[10px] text-gray-500 font-bold uppercase">VIP Membership</span>
+              <span class="text-xs font-bold text-amber-600 flex items-center gap-1"><i class="fa-solid fa-crown text-[10px]"></i> VIP Platinum</span>
+            </div>
+            <div class="bg-[#f8f9fa] border border-gray-200 p-2 rounded flex flex-col">
+              <span class="text-[10px] text-gray-500 font-bold uppercase">Currency</span>
+              <span class="text-xs font-bold text-[#00a67d]">PKR / INR (Rs)</span>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex justify-end w-full pt-2">
+            <button type="button" onclick="saveUserLoginName()" class="w-full bg-[#00a67d] hover:bg-[#008f6b] text-white text-xs sm:text-sm font-bold py-2.5 rounded transition-all shadow-sm active:scale-95 cursor-pointer uppercase tracking-wide">
+              Save Profile Credentials
+            </button>
+          </div>
+
         </div>
       </div>
 
-      <button onclick="saveUserLoginName()" class="w-full py-3 rounded-lg bg-[#24496B] hover:bg-[#1f3d5a] text-white font-black text-sm uppercase tracking-wider shadow-md transition-all">
-        Save Profile Settings
-      </button>
     </div>
   </div>
 
