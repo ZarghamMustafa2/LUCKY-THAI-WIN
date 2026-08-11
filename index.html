@@ -357,49 +357,6 @@
       if (e && e.stopPropagation) e.stopPropagation();
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
-      
-      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
-      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
-      var stmt = account.statement || [];
-
-      var tbody = document.querySelector('#profileStatementModal tbody');
-      if (tbody) {
-        if (stmt.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500 font-bold">No financial transactions recorded for ' + name + '</td></tr>';
-        } else {
-          var html = '';
-          for (var i = 0; i < stmt.length; i++) {
-            var item = stmt[i];
-            var amtClass = item.amount >= 0 ? 'text-emerald-400' : 'text-amber-400';
-            var amtSign = item.amount >= 0 ? '+' : '';
-            html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
-              '<td class="p-3 text-gray-400">' + item.date + '</td>' +
-              '<td class="p-3 ' + amtClass + '">' + item.type + '</td>' +
-              '<td class="p-3 font-mono ' + amtClass + ' text-right">' + amtSign + 'Rs ' + Math.abs(item.amount).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</td>' +
-              '<td class="p-3 font-mono text-white text-right">Rs ' + item.runningBalance.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + '</td>' +
-              '<td class="p-3 text-center"><span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-[9px] uppercase font-bold">' + (item.status || 'SUCCESS') + '</span></td>' +
-            '</tr>';
-          }
-          tbody.innerHTML = html;
-        }
-      }
-
-      var totalDep = 0;
-      var totalWager = 0;
-      stmt.forEach(function(item) {
-        if (item.amount > 0 && (item.type || '').toLowerCase().includes('deposit')) {
-          totalDep += item.amount;
-        } else if (item.amount < 0 && (item.type || '').toLowerCase().includes('wager')) {
-          totalWager += Math.abs(item.amount);
-        }
-      });
-      var depEl = document.getElementById('stmtTotalDeposited');
-      if (depEl) depEl.innerText = 'Rs ' + totalDep.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
-      var wagEl = document.getElementById('stmtTotalWagered');
-      if (wagEl) wagEl.innerText = 'Rs ' + totalWager.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
-      var balEl = document.getElementById('stmtCurrentBalance');
-      if (balEl) balEl.innerText = 'Rs ' + (account.balance || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
-
       var modal = document.getElementById('profileStatementModal');
       if (modal) {
         modal.classList.remove('hidden');
@@ -420,7 +377,6 @@
       if (e && e.stopPropagation) e.stopPropagation();
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
-      if (typeof window.render24HoursDrawHistory === 'function') window.render24HoursDrawHistory();
       var modal = document.getElementById('profileResultModal');
       if (modal) {
         modal.classList.remove('hidden');
@@ -432,33 +388,6 @@
       if (e && e.stopPropagation) e.stopPropagation();
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
-      
-      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
-      var account = (typeof window.getUserAccountData === 'function') ? window.getUserAccountData(name) : {};
-      var plList = account.profitLoss || [];
-
-      var tbody = document.querySelector('#profileProfitLossModal tbody');
-      if (tbody) {
-        if (plList.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500 font-bold">No profit & loss activity recorded for ' + name + '</td></tr>';
-        } else {
-          var html = '';
-          for (var i = 0; i < plList.length; i++) {
-            var item = plList[i];
-            var netClass = item.netPL >= 0 ? 'text-primary' : 'text-danger';
-            var netSign = item.netPL >= 0 ? '+' : '';
-            html += '<tr class="border-b border-white/5 hover:bg-white/5">' +
-              '<td class="p-3 text-gold">' + item.category + '</td>' +
-              '<td class="p-3 text-center font-mono text-white">' + item.betsCount + '</td>' +
-              '<td class="p-3 font-mono text-gray-400 text-right">Rs ' + item.totalWagered.toLocaleString() + '</td>' +
-              '<td class="p-3 font-mono text-primary text-right">Rs ' + item.totalPayout.toLocaleString() + '</td>' +
-              '<td class="p-3 font-mono ' + netClass + ' text-right font-black">' + netSign + 'Rs ' + item.netPL.toLocaleString() + '</td>' +
-            '</tr>';
-          }
-          tbody.innerHTML = html;
-        }
-      }
-
       var modal = document.getElementById('profileProfitLossModal');
       if (modal) {
         modal.classList.remove('hidden');
