@@ -690,6 +690,14 @@
       if (e && e.stopPropagation) e.stopPropagation();
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
+      var name = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var pass = localStorage.getItem('userLoginPassword') || 'Bp28233@pass';
+      var inputName = document.getElementById('userLoginNameInput');
+      if (inputName) inputName.value = name;
+      var inputId = document.getElementById('userProfileIdDisplay');
+      if (inputId) inputId.value = 'Bp28233';
+      var inputPass = document.getElementById('userProfilePasswordInput');
+      if (inputPass) inputPass.value = pass;
       var modal = document.getElementById('userLoginModal');
       if (modal) {
         modal.classList.remove('hidden');
