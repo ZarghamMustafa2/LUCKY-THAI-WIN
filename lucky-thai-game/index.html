@@ -101,10 +101,10 @@
               <span class="flex items-center gap-2"><i class="fa-solid fa-square-poll-vertical text-emerald-400"></i> Result</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
-            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="event.stopPropagation(); openProfileProfitLossModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-gold"></i> Profit Loss</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </a>
+            </button>
             <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-list-check text-purple-400"></i> Bet History</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
@@ -677,8 +677,130 @@
     </div>
   </div>
 
+  <!-- 3. BPEXCH ORIGINAL SPORTS PROFIT LOSS MODAL (Exact Screenshot Match) -->
+  <div id="profileProfitLossModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-2 sm:p-4 transition-all">
+    <div class="bg-[#eef2f5] border border-gray-300 rounded-lg p-3 sm:p-5 max-w-2xl w-full shadow-2xl relative flex flex-col gap-4 max-h-[90vh] overflow-y-auto custom-scrollbar text-gray-900 font-sans">
+      
+      <!-- Modal Close Button -->
+      <button onclick="closeProfileModal('profileProfitLossModal')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-900 p-1 text-lg z-10">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- 1. REPORT FILTER CARD -->
+      <div class="bg-white rounded border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+        <!-- Card Header -->
+        <div class="bg-[#f8f9fa] px-3 py-2 border-b border-gray-200 flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-800">
+          <i class="fa-solid fa-bars text-gray-700"></i>
+          <span>Report Filter</span>
+        </div>
+        
+        <!-- Card Body -->
+        <div class="p-3 sm:p-4 flex flex-col gap-3">
+          <!-- Date Range Pickers Row -->
+          <div class="flex flex-col sm:flex-row items-center gap-2 w-full">
+            
+            <!-- From Date Input Box -->
+            <div class="flex-1 w-full bg-white border border-gray-300 rounded px-2.5 py-1.5 flex items-center justify-between shadow-xs">
+              <span class="text-xs font-mono font-medium text-gray-800">08/11/2026 12:00 AM</span>
+              <i class="fa-solid fa-calendar-days text-gray-500 text-xs"></i>
+            </div>
+
+            <span class="text-gray-400 font-bold hidden sm:inline">-</span>
+
+            <!-- To Date Input Box -->
+            <div class="flex-1 w-full bg-white border border-gray-300 rounded px-2.5 py-1.5 flex items-center justify-between shadow-xs">
+              <span class="text-xs font-mono font-medium text-gray-800">08/11/2026 11:59 PM</span>
+              <i class="fa-solid fa-calendar-days text-gray-500 text-xs"></i>
+            </div>
+
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex justify-end w-full">
+            <button type="button" onclick="closeProfileModal('profileProfitLossModal'); if (typeof window.showToast === 'function') window.showToast('Filter Applied', 'success');" class="bg-[#00a67d] hover:bg-[#008f6b] text-white text-xs sm:text-sm font-bold px-5 py-1.5 rounded transition-all shadow-sm active:scale-95 cursor-pointer">
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. SPORTS PROFITLOSS CARD -->
+      <div class="bg-white rounded border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+        <!-- Card Header -->
+        <div class="bg-[#f8f9fa] px-3 py-2 border-b border-gray-200 flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-800">
+          <i class="fa-solid fa-bars text-gray-700"></i>
+          <span>Sports ProfitLoss</span>
+        </div>
+
+        <!-- Card Body -->
+        <div class="p-3 sm:p-4 flex flex-col gap-3 min-h-[120px]">
+          
+          <!-- Table Container -->
+          <div class="overflow-x-auto border border-gray-200 rounded bg-white">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-[#f8f9fa] border-b border-gray-200 text-gray-700 font-bold">
+                <tr>
+                  <th class="p-2.5 border-r border-gray-200">Sport Name</th>
+                  <th class="p-2.5 border-r border-gray-200 text-right">Profit/Loss</th>
+                  <th class="p-2.5 border-r border-gray-200 text-right">Commission</th>
+                  <th class="p-2.5 text-right">Net Amount</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 text-gray-800 font-medium">
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 font-bold text-[#24496B]">Lucky Thai 4D</td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-right font-bold text-[#00a67d]">+9,700.00</td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-right text-gray-500">0.00</td>
+                  <td class="p-2.5 font-mono text-right font-bold text-[#00a67d]">+9,700.00</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 font-bold text-[#24496B]">Cricket</td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-right font-bold text-gray-700">0.00</td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-right text-gray-500">0.00</td>
+                  <td class="p-2.5 font-mono text-right font-bold text-gray-700">0.00</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 font-bold text-[#24496B]">Soccer</td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-right font-bold text-gray-700">0.00</td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-right text-gray-500">0.00</td>
+                  <td class="p-2.5 font-mono text-right font-bold text-gray-700">0.00</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 font-bold text-[#24496B]">Tennis</td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-right font-bold text-gray-700">0.00</td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-right text-gray-500">0.00</td>
+                  <td class="p-2.5 font-mono text-right font-bold text-gray-700">0.00</td>
+                </tr>
+              </tbody>
+              <tfoot class="bg-[#f8f9fa] border-t-2 border-gray-300 font-bold text-xs text-gray-900">
+                <tr>
+                  <td class="p-2.5 border-r border-gray-200">Total Summary</td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-right text-[#00a67d]">+9,700.00</td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-right text-gray-500">0.00</td>
+                  <td class="p-2.5 font-mono text-right text-[#00a67d]">+9,700.00</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- COMPLETE GAME ENGINE JAVASCRIPT LOGIC -->
   <script>
+    window.openProfileProfitLossModal = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      var drop = document.getElementById('gameProfileDropdown');
+      if (drop) drop.classList.add('hidden');
+      var modal = document.getElementById('profileProfitLossModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        try { modal.style.setProperty('display', 'flex', 'important'); } catch(err) { modal.style.display = 'flex'; }
+      }
+    };
     window.selectMarketCategory = function(btn, categoryKey) {
       document.querySelectorAll('.market-cat-btn').forEach(function(b) {
         b.className = 'market-cat-btn px-3 py-1.5 rounded bg-[#6c757d] hover:bg-gray-700 text-white font-bold text-xs transition-all cursor-pointer';
