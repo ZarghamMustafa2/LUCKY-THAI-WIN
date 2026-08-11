@@ -2909,62 +2909,59 @@
     <span id="toastMsg" class="font-bold text-white tracking-wide text-sm">Bet Placed Successfully!</span>
   </div>
 
-  <!-- FULL SCREEN LUXURY LOGIN OVERLAY (EXACT USER DESIGN MATCH) -->
+  <!-- FULL SCREEN BPEXCH LOGIN OVERLAY (EXACT USER SCREENSHOT MATCH) -->
   <div id="fullAppLoginOverlay" class="fixed inset-0 z-[999999] bg-[#12161f] flex items-center justify-center p-4 transition-all duration-500 overflow-y-auto hidden" style="display: none; background-image: radial-gradient(circle at 50% 50%, #1e2430 0%, #0d1017 100%);">
     
-    <!-- Deep Slate Blue Rounded Login Card -->
-    <div class="relative w-full max-w-[360px] sm:max-w-[400px] bg-gradient-to-b from-[#2b587b] via-[#1b3d57] to-[#112638] rounded-3xl p-8 shadow-[0_30px_80px_rgba(0,0,0,0.9),0_0_30px_rgba(40,100,140,0.3)] border border-cyan-300/20 flex flex-col items-center gap-6 my-auto">
+    <!-- Deep Slate Blue Rounded Login Card (Exact Match) -->
+    <div class="relative w-full max-w-[340px] sm:max-w-[380px] bg-gradient-to-b from-[#2d5c80] via-[#1b3f5c] to-[#12283b] rounded-3xl p-7 sm:p-9 shadow-[0_30px_80px_rgba(0,0,0,0.9),0_0_40px_rgba(45,92,128,0.4)] border border-cyan-300/20 flex flex-col items-center gap-6 my-auto">
       
       <!-- Close Overlay Button -->
       <button type="button" onclick="closeAppLoginOverlay()" class="absolute top-4 right-4 text-cyan-200/70 hover:text-white p-2 text-xl z-20 transition-colors">
         <i class="fa-solid fa-xmark"></i>
       </button>
       
-      <!-- Cyan Brand Logo Circle (Super Prominent Brand Name) -->
-      <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-gradient-to-tr from-[#36d7b7] via-[#40e0d0] to-[#00f2fe] shadow-[0_0_40px_rgba(64,224,208,0.6)] flex flex-col items-center justify-center text-[#091522] my-2 transition-transform hover:scale-105 border-2 border-white/40">
-        <span class="font-display font-black italic text-5xl sm:text-6xl tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]">TN</span>
-        <span class="text-xs font-mono font-extrabold uppercase tracking-[0.25em] -mt-1 text-[#091522] border-t border-[#091522]/30 pt-0.5">THAI WIN</span>
+      <!-- BP Turquoise Brand Logo Circle (Exact Screenshot Match) -->
+      <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-[#52e8ca] shadow-[0_0_35px_rgba(82,232,202,0.6)] flex items-center justify-center text-[#12283b] my-2 transition-transform hover:scale-105 border-2 border-white/40">
+        <span class="font-serif italic font-black text-5xl sm:text-6xl tracking-tighter drop-shadow-sm select-none" style="font-family: 'Playfair Display', 'Georgia', serif; font-style: italic;">BP</span>
       </div>
 
       <!-- Auth Form -->
       <form id="appAuthForm" onsubmit="handleAppLoginSubmit(event); return false;" class="w-full flex flex-col gap-6 mt-1">
         
         <!-- Username Underline Field -->
-        <div class="flex items-center gap-3 border-b border-gray-300/40 pb-2 px-1 focus-within:border-cyan-300 transition-colors">
-          <i class="fa-solid fa-user text-gray-200 text-lg w-5 text-center"></i>
+        <div class="flex items-center gap-3 border-b border-gray-400/40 pb-2 px-1 focus-within:border-cyan-300 transition-colors">
+          <i class="fa-solid fa-user text-white text-base w-5 text-center"></i>
           <input 
             id="authUsernameInput" 
             type="text" 
             required
             placeholder="Username" 
-            class="w-full bg-transparent text-white font-medium text-base outline-none placeholder:text-gray-300 tracking-wide" 
+            class="w-full bg-transparent text-white font-medium text-base outline-none placeholder:text-gray-200 tracking-wide" 
           />
         </div>
 
         <!-- Password Underline Field -->
-        <div class="flex items-center gap-3 border-b border-gray-300/40 pb-2 px-1 focus-within:border-cyan-300 transition-colors">
-          <i class="fa-solid fa-lock text-gray-200 text-lg w-5 text-center"></i>
+        <div class="flex items-center gap-3 border-b border-gray-400/40 pb-2 px-1 focus-within:border-cyan-300 transition-colors">
+          <i class="fa-solid fa-lock text-white text-base w-5 text-center"></i>
           <input 
             id="authPasswordInput" 
             type="password" 
             placeholder="Password" 
-            class="w-full bg-transparent text-white font-medium text-base outline-none placeholder:text-gray-300 tracking-wide" 
+            class="w-full bg-transparent text-white font-medium text-base outline-none placeholder:text-gray-200 tracking-wide" 
           />
         </div>
 
-        <!-- 3D Glossy Pill Login Button -->
-        <div class="flex justify-center mt-3">
+        <!-- 3D Glossy Pill Login Button (Exact Match) -->
+        <div class="flex justify-center mt-4 mb-1">
           <button 
             type="submit" 
             onclick="handleAppLoginSubmit(event)"
             id="authSubmitBtn" 
-            class="w-44 py-3 rounded-full bg-gradient-to-b from-[#4e8bb7] via-[#2f668f] to-[#1a4463] text-white font-bold text-lg tracking-wide shadow-[0_8px_20px_rgba(0,0,0,0.6),inset_0_1px_2px_rgba(255,255,255,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer border border-cyan-300/30 flex items-center justify-center">
+            class="w-48 py-3 rounded-full bg-gradient-to-b from-[#4e8bb7] via-[#2f668f] to-[#1a4463] text-white font-bold text-lg tracking-wide shadow-[0_8px_20px_rgba(0,0,0,0.6),inset_0_1px_2px_rgba(255,255,255,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer border border-cyan-300/30 flex items-center justify-center">
             Login
           </button>
         </div>
       </form>
-
-
 
     </div>
   </div>
