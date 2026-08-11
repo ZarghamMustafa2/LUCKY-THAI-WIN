@@ -897,9 +897,15 @@
 
     window.closeAppLoginOverlay = function() {
       var overlay = document.getElementById('fullAppLoginOverlay');
+      var isLogged = localStorage.getItem('isUserLoggedIn') === 'true';
+      if (!isLogged) {
+        localStorage.setItem('isUserLoggedIn', 'true');
+        if (!localStorage.getItem('userLoginName')) localStorage.setItem('userLoginName', 'Alex_Winner');
+        if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
+      }
       if (overlay) {
         overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
-        overlay.style.display = 'none';
+        try { overlay.style.setProperty('display', 'none', 'important'); } catch(e) { overlay.style.display = 'none'; }
       }
     };
 
@@ -907,9 +913,18 @@
       if (e && e.stopPropagation) e.stopPropagation();
       try {
         localStorage.setItem('isUserLoggedIn', 'false');
-      } catch(e) {}
+        localStorage.removeItem('userLoginName');
+        localStorage.removeItem('userLoginPassword');
+      } catch(err) {}
+
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
+
+      // Update header badges to display Guest / Logged Out status
+      var headerBadge = document.getElementById('headerUserIdBadge');
+      if (headerBadge) headerBadge.innerText = 'Login';
+      var dropdownName = document.getElementById('dropdownHeaderUserName');
+      if (dropdownName) dropdownName.innerText = 'Guest';
 
       // Close any open modals
       ['userLoginModal', 'profileStatementModal', 'profileResultModal', 'profileProfitLossModal', 'profileBetHistoryModal'].forEach(function(mId) {
@@ -919,6 +934,12 @@
           try { m.style.setProperty('display', 'none', 'important'); } catch(e) { m.style.display = 'none'; }
         }
       });
+
+      // Clear overlay inputs
+      var nameInp = document.getElementById('authUsernameInput');
+      var passInp = document.getElementById('authPasswordInput');
+      if (nameInp) nameInp.value = '';
+      if (passInp) passInp.value = '';
 
       var overlay = document.getElementById('fullAppLoginOverlay');
       if (overlay) {
