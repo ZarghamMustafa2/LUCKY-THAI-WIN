@@ -66,7 +66,7 @@
       
       <!-- LEFT: Back to Dashboard & Game Title -->
       <div class="flex items-center gap-2 sm:gap-4">
-        <a href="../index.html" class="bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 hover:text-white border border-cyan-400/40 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all flex items-center gap-1.5 sm:gap-2 active:scale-95 shadow-md">
+        <a href="index.html" class="bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 hover:text-white border border-cyan-400/40 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all flex items-center gap-1.5 sm:gap-2 active:scale-95 shadow-md">
           <i class="fa-solid fa-arrow-left"></i> Dashboard
         </a>
         <div class="flex flex-col">
@@ -97,24 +97,24 @@
               <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice text-cyan-400"></i> Statement</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </button>
-            <a href="../index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="event.stopPropagation(); openProfileResultModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-square-poll-vertical text-emerald-400"></i> Result</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </a>
-            <a href="../index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            </button>
+            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-gold"></i> Profit Loss</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </a>
-            <a href="../index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-list-check text-purple-400"></i> Bet History</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </a>
-            <a href="../index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-user-gear text-blue-400"></i> Profile</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </a>
             <div class="h-px bg-white/10 my-1"></div>
-            <a href="../index.html" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
             </a>
@@ -525,8 +525,179 @@
     </div>
   </div>
 
+  <!-- 2. BPEXCH ORIGINAL MARKET RESULTS MODAL (Exact Screenshot Match) -->
+  <div id="profileResultModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-2 sm:p-4 transition-all">
+    <div class="bg-[#eef2f5] border border-gray-300 rounded-lg p-3 sm:p-5 max-w-2xl w-full shadow-2xl relative flex flex-col gap-4 max-h-[90vh] overflow-y-auto custom-scrollbar text-gray-900 font-sans">
+      
+      <!-- Modal Close Button -->
+      <button onclick="closeProfileModal('profileResultModal')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-900 p-1 text-lg z-10">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- MARKET RESULTS CARD -->
+      <div class="bg-white rounded border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+        <!-- Card Header -->
+        <div class="bg-[#f8f9fa] px-3 py-2 border-b border-gray-200 flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-800">
+          <i class="fa-solid fa-bars text-gray-700"></i>
+          <span>Market Results</span>
+        </div>
+
+        <!-- Card Body -->
+        <div class="p-3 sm:p-4 flex flex-col gap-4">
+          
+          <!-- Date Range Pickers Row -->
+          <div class="flex flex-col sm:flex-row items-center gap-2 w-full max-w-xs">
+            <div class="w-full bg-white border border-gray-300 rounded px-2.5 py-1.5 flex items-center justify-between shadow-xs">
+              <span class="text-xs font-mono font-medium text-gray-800">08/07/2026</span>
+              <i class="fa-solid fa-calendar-days text-gray-500 text-xs"></i>
+            </div>
+            <span class="text-gray-400 font-bold hidden sm:inline">-</span>
+            <div class="w-full bg-white border border-gray-300 rounded px-2.5 py-1.5 flex items-center justify-between shadow-xs">
+              <span class="text-xs font-mono font-medium text-gray-800">08/12/2026</span>
+              <i class="fa-solid fa-calendar-days text-gray-500 text-xs"></i>
+            </div>
+          </div>
+
+          <!-- Category Selector Buttons Row -->
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button type="button" onclick="selectMarketCategory(this, 'soccer')" class="market-cat-btn px-3 py-1.5 rounded bg-[#6c757d] hover:bg-gray-700 text-white font-bold text-xs transition-all cursor-pointer">Soccer</button>
+            <button type="button" onclick="selectMarketCategory(this, 'tennis')" class="market-cat-btn px-3 py-1.5 rounded bg-[#6c757d] hover:bg-gray-700 text-white font-bold text-xs transition-all cursor-pointer">Tennis</button>
+            <button type="button" onclick="selectMarketCategory(this, 'cricket')" class="market-cat-btn px-3 py-1.5 rounded bg-[#6c757d] hover:bg-gray-700 text-white font-bold text-xs transition-all cursor-pointer">Cricket</button>
+            <button type="button" onclick="selectMarketCategory(this, 'horse')" class="market-cat-btn px-3.5 py-1.5 rounded bg-[#00a67d] text-white font-bold text-xs shadow-sm transition-all cursor-pointer">Horse Race</button>
+            <button type="button" onclick="selectMarketCategory(this, 'fancy')" class="market-cat-btn px-3 py-1.5 rounded bg-[#6c757d] hover:bg-gray-700 text-white font-bold text-xs transition-all cursor-pointer">Fancy</button>
+            <button type="button" onclick="selectMarketCategory(this, 'casino')" class="market-cat-btn px-3 py-1.5 rounded bg-[#6c757d] hover:bg-gray-700 text-white font-bold text-xs transition-all cursor-pointer">Casino</button>
+            <button type="button" onclick="selectMarketCategory(this, 'greyhound')" class="market-cat-btn px-3 py-1.5 rounded bg-[#6c757d] hover:bg-gray-700 text-white font-bold text-xs transition-all cursor-pointer">Greyhound</button>
+          </div>
+
+          <!-- Controls Row: Show Entries Dropdown & Search -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-700 pt-1">
+            <div class="flex items-center gap-1.5">
+              <span class="text-gray-600 font-medium">Show</span>
+              <select class="bg-white border border-gray-300 rounded px-2 py-1 text-xs font-semibold outline-none">
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+              </select>
+              <span class="text-gray-600 font-medium">entries</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 w-full sm:w-auto">
+              <span class="text-gray-600 font-medium whitespace-nowrap">Search:</span>
+              <input type="text" placeholder="" class="border border-gray-300 rounded px-2.5 py-1 text-xs w-full sm:w-48 outline-none focus:border-cyan-500 transition-all bg-white" />
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="overflow-x-auto border border-gray-200 rounded bg-white">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-[#f8f9fa] border-b border-gray-200 text-gray-800 font-bold">
+                <tr>
+                  <th class="p-2.5 border-r border-gray-200 w-12 text-center">
+                    <span class="flex items-center justify-center gap-1"># <i class="fa-solid fa-sort text-[10px] text-gray-400"></i></span>
+                  </th>
+                  <th class="p-2.5">
+                    <span class="flex items-center justify-between">Match name <i class="fa-solid fa-sort text-[10px] text-gray-400"></i></span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 text-gray-800 font-medium">
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 1
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">1:45 PM Carlisle 11th Aug</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 2
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">1:45 PM Carlisle 11th Aug</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 3
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">1:30 PM Lingfield 11th Aug</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 4
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">1:30 PM Lingfield 11th Aug</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 5
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">1:09 PM Northam (AUS) 11th Aug</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 6
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">12:40 PM Northam (AUS) 11th Aug</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 7
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">12:09 PM Northam (AUS) 11th Aug</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 8
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">11:55 AM Albury (AUS) 11th Aug</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 9
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">11:45 AM Port Pirie (AUS) 11th Aug</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 10
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">11:32 AM Northam (AUS) 11th Aug</td>
+                </tr>
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#00a67d] text-white text-[9px] mr-1"><i class="fa-solid fa-plus"></i></span> 11
+                  </td>
+                  <td class="p-2.5 font-semibold text-gray-900">11:22 AM Albury (AUS) 11th Aug</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- COMPLETE GAME ENGINE JAVASCRIPT LOGIC -->
   <script>
+    window.selectMarketCategory = function(btn, categoryKey) {
+      document.querySelectorAll('.market-cat-btn').forEach(function(b) {
+        b.className = 'market-cat-btn px-3 py-1.5 rounded bg-[#6c757d] hover:bg-gray-700 text-white font-bold text-xs transition-all cursor-pointer';
+      });
+      if (btn) {
+        btn.className = 'market-cat-btn px-3.5 py-1.5 rounded bg-[#00a67d] text-white font-bold text-xs shadow-sm transition-all cursor-pointer';
+      }
+    };
+
+    window.openProfileResultModal = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      var drop = document.getElementById('gameProfileDropdown');
+      if (drop) drop.classList.add('hidden');
+      var modal = document.getElementById('profileResultModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        try { modal.style.setProperty('display', 'flex', 'important'); } catch(err) { modal.style.display = 'flex'; }
+      }
+    };
     window.openProfileStatementModal = function(e) {
       if (e && e.stopPropagation) e.stopPropagation();
       var drop = document.getElementById('gameProfileDropdown');
