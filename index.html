@@ -885,10 +885,31 @@
       if (typeof window.showToast === 'function') window.showToast('Guest Demo Login Successful!', 'success');
     };
 
+    window.showAppLoginOverlay = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      var dropdown = document.getElementById('profileDropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+      var overlay = document.getElementById('fullAppLoginOverlay');
+      if (overlay) {
+        overlay.style.display = 'flex';
+        overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
+      }
+    };
+
+    window.closeAppLoginOverlay = function() {
+      var overlay = document.getElementById('fullAppLoginOverlay');
+      if (overlay) {
+        overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
+        overlay.style.display = 'none';
+      }
+    };
+
     window.performUserLogout = function() {
       try {
         localStorage.setItem('isUserLoggedIn', 'false');
       } catch(e) {}
+      var dropdown = document.getElementById('profileDropdown');
+      if (dropdown) dropdown.classList.add('hidden');
       window.checkUserAuthStatus();
       if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
     };
@@ -1805,6 +1826,10 @@
                 <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
               </button>
               <div class="h-px bg-white/10 my-1"></div>
+              <button type="button" onclick="event.stopPropagation(); showAppLoginOverlay(event);" class="w-full text-left px-5 py-2 hover:bg-cyan-500/20 text-cyan-300 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-right-to-bracket text-cyan-400"></i> Login / Account</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-cyan-400"></i>
+              </button>
               <button type="button" onclick="event.stopPropagation(); performUserLogout(event);" class="w-full text-left px-5 py-2 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between mb-1">
                 <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
                 <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
@@ -2874,6 +2899,11 @@
     
     <!-- Deep Slate Blue Rounded Login Card -->
     <div class="relative w-full max-w-[360px] sm:max-w-[400px] bg-gradient-to-b from-[#2b587b] via-[#1b3d57] to-[#112638] rounded-3xl p-8 shadow-[0_30px_80px_rgba(0,0,0,0.9),0_0_30px_rgba(40,100,140,0.3)] border border-cyan-300/20 flex flex-col items-center gap-6 my-auto">
+      
+      <!-- Close Overlay Button -->
+      <button type="button" onclick="closeAppLoginOverlay()" class="absolute top-4 right-4 text-cyan-200/70 hover:text-white p-2 text-xl z-20 transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
       
       <!-- Cyan Brand Logo Circle (Super Prominent Brand Name) -->
       <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-gradient-to-tr from-[#36d7b7] via-[#40e0d0] to-[#00f2fe] shadow-[0_0_40px_rgba(64,224,208,0.6)] flex flex-col items-center justify-center text-[#091522] my-2 transition-transform hover:scale-105 border-2 border-white/40">
