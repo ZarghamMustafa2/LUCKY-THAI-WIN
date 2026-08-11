@@ -963,9 +963,13 @@
 
       if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
 
-      // Force page reload to clear all states and force fresh auth check immediately
+      // Force page reload with cache buster to bypass browser cache completely
       setTimeout(function() {
-        window.location.reload();
+        var cleanPath = window.location.pathname;
+        if (cleanPath.endsWith('/')) {
+          cleanPath += 'index.html';
+        }
+        window.location.href = cleanPath + '?v=' + Date.now() + window.location.hash;
       }, 300);
     };
 
