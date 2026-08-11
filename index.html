@@ -2973,56 +2973,157 @@
     </div>
   </div>
 
-  <!-- 1. BPEXCH ORIGINAL CUSTOMER STATEMENT MODAL -->
-  <div id="profileStatementModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-all">
-    <div class="bg-white border border-gray-300 rounded-xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl relative flex flex-col gap-4 max-h-[85vh] overflow-hidden text-gray-900">
-      <button onclick="closeProfileModal('profileStatementModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 p-2 text-lg">
+  <!-- 1. BPEXCH ORIGINAL CUSTOMER STATEMENT MODAL (Exact Screenshot Match) -->
+  <div id="profileStatementModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 sm:p-4 transition-all">
+    <div class="bg-[#eef2f5] border border-gray-300 rounded-lg p-3 sm:p-5 max-w-2xl w-full shadow-2xl relative flex flex-col gap-4 max-h-[90vh] overflow-y-auto custom-scrollbar text-gray-900 font-sans">
+      
+      <!-- Modal Close Button -->
+      <button onclick="closeProfileModal('profileStatementModal')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-900 p-1 text-lg z-10">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <div class="flex items-center gap-3 border-b border-gray-200 pb-4">
-        <div class="w-12 h-12 rounded-xl bg-[#24496B]/10 border border-[#24496B]/20 flex items-center justify-center text-[#24496B] text-2xl">
-          <i class="fa-solid fa-file-invoice-dollar"></i>
+      <!-- 1. REPORT FILTER CARD -->
+      <div class="bg-white rounded border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+        <!-- Card Header -->
+        <div class="bg-[#f8f9fa] px-3 py-2 border-b border-gray-200 flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-800">
+          <i class="fa-solid fa-bars text-gray-700"></i>
+          <span>Report Filter</span>
         </div>
-        <div class="flex flex-col">
-          <h3 class="text-lg font-bold text-[#24496B] font-sans">Account Financial Statement</h3>
-          <span class="text-xs text-gray-500">Complete breakdown of deposits, wagers & payouts</span>
+        
+        <!-- Card Body -->
+        <div class="p-3 sm:p-4 flex flex-col gap-3">
+          <!-- Date Range Pickers Row -->
+          <div class="flex flex-col sm:flex-row items-center gap-2 w-full">
+            
+            <!-- From Date Input Box -->
+            <div class="flex-1 w-full bg-white border border-gray-300 rounded px-2.5 py-1.5 flex items-center justify-between shadow-xs">
+              <span class="text-xs font-mono font-medium text-gray-800">08/11/2026 12:00 AM</span>
+              <i class="fa-solid fa-calendar-days text-gray-500 text-xs"></i>
+            </div>
+
+            <span class="text-gray-400 font-bold hidden sm:inline">-</span>
+
+            <!-- To Date Input Box -->
+            <div class="flex-1 w-full bg-white border border-gray-300 rounded px-2.5 py-1.5 flex items-center justify-between shadow-xs">
+              <span class="text-xs font-mono font-medium text-gray-800">08/11/2026 11:59 PM</span>
+              <i class="fa-solid fa-calendar-days text-gray-500 text-xs"></i>
+            </div>
+
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex justify-end w-full">
+            <button type="button" onclick="closeProfileModal('profileStatementModal'); if (typeof window.showToast === 'function') window.showToast('Filter Applied', 'success');" class="bg-[#00a67d] hover:bg-[#008f6b] text-white text-xs sm:text-sm font-bold px-5 py-1.5 rounded transition-all shadow-sm active:scale-95 cursor-pointer">
+              Submit
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- Quick Summary Cards -->
-      <div class="grid grid-cols-3 gap-3">
-        <div class="bg-[#F3F8FB] p-3 rounded-lg border border-gray-200 flex flex-col">
-          <span class="text-[10px] text-gray-500 font-bold uppercase">Total Deposited</span>
-          <span id="stmtTotalDeposited" class="text-sm sm:text-base font-mono font-bold text-gray-900 mt-1">Rs 0.00</span>
+      <!-- 2. ACCOUNT LEDGER CARD -->
+      <div class="bg-white rounded border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+        <!-- Card Header -->
+        <div class="bg-[#f8f9fa] px-3 py-2 border-b border-gray-200 flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-800">
+          <i class="fa-solid fa-bars text-gray-700"></i>
+          <span>Account Ledger</span>
         </div>
-        <div class="bg-[#F3F8FB] p-3 rounded-lg border border-gray-200 flex flex-col">
-          <span class="text-[10px] text-gray-500 font-bold uppercase">Total Wagered</span>
-          <span id="stmtTotalWagered" class="text-sm sm:text-base font-mono font-bold text-amber-600 mt-1">Rs 0.00</span>
-        </div>
-        <div class="bg-[#F3F8FB] p-3 rounded-lg border border-gray-200 flex flex-col">
-          <span class="text-[10px] text-gray-500 font-bold uppercase">Current Balance</span>
-          <span id="stmtCurrentBalance" class="text-sm sm:text-base font-mono font-bold text-[#08B88A] mt-1">Rs 0.00</span>
+
+        <!-- Card Body -->
+        <div class="p-3 sm:p-4 flex flex-col gap-3">
+          
+          <!-- Controls Row: Entries Dropdown & Print/Excel/PDF Bar & Search -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-700">
+            
+            <!-- Left: Entries selector -->
+            <div class="flex items-center gap-1.5">
+              <select class="bg-white border border-gray-300 rounded px-2 py-1 text-xs font-semibold outline-none">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+              <span class="text-gray-600 font-medium">entries per page</span>
+            </div>
+
+            <!-- Middle: Export Pill Buttons Bar -->
+            <div class="flex items-center rounded overflow-hidden border border-gray-400 bg-[#6c757d] text-white text-[11px] font-bold shadow-xs">
+              <button type="button" class="px-3 py-1 hover:bg-gray-700 transition-colors border-r border-gray-500 cursor-pointer">Print</button>
+              <button type="button" class="px-3 py-1 hover:bg-gray-700 transition-colors border-r border-gray-500 cursor-pointer">Excel</button>
+              <button type="button" class="px-3 py-1 hover:bg-gray-700 transition-colors cursor-pointer">PDF</button>
+            </div>
+
+            <!-- Right: Search Input -->
+            <div class="flex items-center gap-1.5 w-full sm:w-auto">
+              <span class="text-gray-600 font-medium whitespace-nowrap">Search:</span>
+              <input type="text" placeholder="" class="border border-gray-300 rounded px-2 py-1 text-xs w-full sm:w-32 outline-none focus:border-cyan-500 transition-all bg-white" />
+            </div>
+
+          </div>
+
+          <!-- Table Container -->
+          <div class="overflow-x-auto border border-gray-200 rounded bg-white">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-[#f8f9fa] border-b border-gray-200 text-gray-700 font-bold">
+                <tr>
+                  <th class="p-2.5 border-r border-gray-200 w-12 text-center">
+                    <span class="flex items-center justify-center gap-1"># <i class="fa-solid fa-sort text-[10px] text-gray-400"></i></span>
+                  </th>
+                  <th class="p-2.5 border-r border-gray-200">
+                    <span class="flex items-center gap-1">Date <i class="fa-solid fa-sort text-[10px] text-gray-400"></i></span>
+                  </th>
+                  <th class="p-2.5">
+                    <span class="flex items-center gap-1">Description <i class="fa-solid fa-sort text-[10px] text-gray-400"></i></span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 text-gray-800 font-medium">
+                <!-- Row 1: Opening Balance -->
+                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                  <td class="p-2.5 border-r border-gray-200 text-center font-bold text-gray-700">
+                    <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] mr-1"><i class="fa-solid fa-minus"></i></span> 1
+                  </td>
+                  <td class="p-2.5 border-r border-gray-200 font-mono text-xs text-gray-700 whitespace-nowrap">
+                    8/11/2026 12:00:00 am
+                  </td>
+                  <td class="p-2.5 font-bold text-[#00a67d]">
+                    Opening Balance
+                  </td>
+                </tr>
+                <!-- Sub-row details for Row 1 -->
+                <tr class="bg-[#fdfdfd] border-b border-gray-200">
+                  <td colspan="3" class="px-4 py-2 bg-gray-50/50">
+                    <div class="flex items-center gap-8 text-xs font-mono font-bold">
+                      <div class="flex items-center gap-2">
+                        <span class="text-gray-500 font-sans">Amount</span>
+                        <span class="text-gray-900">0</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-gray-500 font-sans">Balance</span>
+                        <span class="text-gray-900">0</span>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Table Footer / Pagination -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-600 font-medium pt-1">
+            <span>Showing 1 to 1 of 1 entry</span>
+            
+            <!-- Pagination Controls -->
+            <div class="flex items-center gap-1 border border-gray-300 rounded overflow-hidden bg-white">
+              <button type="button" class="px-2 py-1 text-gray-500 hover:bg-gray-100 border-r border-gray-200 cursor-pointer">«</button>
+              <button type="button" class="px-2 py-1 text-gray-500 hover:bg-gray-100 border-r border-gray-200 cursor-pointer">‹</button>
+              <button type="button" class="px-3 py-1 bg-[#00a67d] text-white font-bold cursor-pointer">1</button>
+              <button type="button" class="px-2 py-1 text-gray-500 hover:bg-gray-100 border-l border-gray-200 cursor-pointer">›</button>
+              <button type="button" class="px-2 py-1 text-gray-500 hover:bg-gray-100 border-l border-gray-200 cursor-pointer">»</button>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- Statement Table -->
-      <div class="overflow-x-auto overflow-y-auto custom-scrollbar border border-gray-200 rounded-lg bg-white max-h-[300px]">
-        <table class="w-full text-left text-xs whitespace-nowrap">
-          <thead class="bg-[#D9D9D9] border-b border-gray-200 sticky top-0 text-[#17212B] uppercase text-[9px] font-extrabold">
-            <tr class="text-[#17212B] uppercase text-[9px] font-extrabold">
-              <th class="p-3">Date & Time</th>
-              <th class="p-3">Transaction Type</th>
-              <th class="p-3 text-right">Amount</th>
-              <th class="p-3 text-right">Running Balance</th>
-              <th class="p-3 text-center">Status</th>
-            </tr>
-          </thead>
-          <tbody class="text-gray-700 font-bold divide-y divide-gray-100">
-            <!-- Dynamically populated -->
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 
