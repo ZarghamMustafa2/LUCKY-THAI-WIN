@@ -759,17 +759,16 @@
     window.checkUserAuthStatus = function() {
       try {
         var storedAuth = localStorage.getItem('isUserLoggedIn');
-        var isLoggedIn = storedAuth === null || storedAuth === 'true';
+        var isLoggedIn = storedAuth === 'true';
         var overlay = document.getElementById('fullAppLoginOverlay');
         if (!overlay) return;
 
         if (isLoggedIn) {
           overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
-          overlay.style.display = 'none';
-          try { localStorage.setItem('isUserLoggedIn', 'true'); } catch(e) {}
+          try { overlay.style.setProperty('display', 'none', 'important'); } catch(e) { overlay.style.display = 'none'; }
         } else {
-          overlay.style.display = 'flex';
           overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
+          try { overlay.style.setProperty('display', 'flex', 'important'); } catch(e) { overlay.style.display = 'flex'; }
         }
       } catch(e) {}
     };
@@ -904,13 +903,29 @@
       }
     };
 
-    window.performUserLogout = function() {
+    window.performUserLogout = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
       try {
         localStorage.setItem('isUserLoggedIn', 'false');
       } catch(e) {}
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
-      window.checkUserAuthStatus();
+
+      // Close any open modals
+      ['userLoginModal', 'profileStatementModal', 'profileResultModal', 'profileProfitLossModal', 'profileBetHistoryModal'].forEach(function(mId) {
+        var m = document.getElementById(mId);
+        if (m) {
+          m.classList.add('hidden');
+          try { m.style.setProperty('display', 'none', 'important'); } catch(e) { m.style.display = 'none'; }
+        }
+      });
+
+      var overlay = document.getElementById('fullAppLoginOverlay');
+      if (overlay) {
+        overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
+        try { overlay.style.setProperty('display', 'flex', 'important'); } catch(e) { overlay.style.display = 'flex'; }
+      }
+
       if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
     };
 
