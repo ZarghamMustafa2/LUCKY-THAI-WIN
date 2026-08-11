@@ -55,6 +55,12 @@
     }
   </script>
   <script>
+    try {
+      window.isUserLoggedInFallback = localStorage.getItem('isUserLoggedIn') === 'true';
+    } catch(e) {
+      window.isUserLoggedInFallback = false;
+    }
+
     // Global Theme Switcher Engine (Head Level Availability)
     window.setTheme = function(theme) {
       var html = document.documentElement;
@@ -762,20 +768,26 @@
     };
 
     window.checkUserAuthStatus = function() {
+      var isLoggedIn = false;
       try {
         var storedAuth = localStorage.getItem('isUserLoggedIn');
-        var isLoggedIn = storedAuth === 'true';
+        isLoggedIn = storedAuth === 'true';
+      } catch(e) {
+        isLoggedIn = !!window.isUserLoggedInFallback;
+      }
+
+      try {
         var overlay = document.getElementById('fullAppLoginOverlay');
         if (!overlay) return;
 
         if (isLoggedIn) {
           overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
-          try { overlay.style.setProperty('display', 'none', 'important'); } catch(e) { overlay.style.display = 'none'; }
+          try { overlay.style.setProperty('display', 'none', 'important'); } catch(err) { overlay.style.display = 'none'; }
         } else {
           overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
-          try { overlay.style.setProperty('display', 'flex', 'important'); } catch(e) { overlay.style.display = 'flex'; }
+          try { overlay.style.setProperty('display', 'flex', 'important'); } catch(err) { overlay.style.display = 'flex'; }
         }
-      } catch(e) {}
+      } catch(err) {}
     };
 
     window.switchLoginAuthMode = function(mode) {
@@ -825,6 +837,7 @@
           localStorage.setItem('isUserLoggedIn', 'true');
           localStorage.setItem('isAdminAuth', 'true');
         } catch(err) {}
+        window.isUserLoggedInFallback = true;
 
         if (typeof window.showToast === 'function') window.showToast('Admin Verified! Opening Admin Panel...', 'success');
         window.location.href = 'admin.html';
@@ -836,7 +849,9 @@
         localStorage.setItem('userLoginName', username);
         localStorage.setItem('isUserLoggedIn', 'true');
         localStorage.setItem('isAdminAuth', 'false');
-
+      } catch(err) {}
+      window.isUserLoggedInFallback = true;
+      try {
         // Save user credentials to registeredUsersList array in localStorage for Admin Panel
         var existingList = JSON.parse(localStorage.getItem('registeredUsersList') || '[]');
         var foundIndex = -1;
@@ -883,6 +898,7 @@
         localStorage.setItem('userLoginName', guestName);
         localStorage.setItem('isUserLoggedIn', 'true');
       } catch(err) {}
+      window.isUserLoggedInFallback = true;
 
       if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
       window.checkUserAuthStatus();
@@ -920,6 +936,7 @@
         localStorage.removeItem('userLoginName');
         localStorage.removeItem('userLoginPassword');
       } catch(err) {}
+      window.isUserLoggedInFallback = false;
 
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
