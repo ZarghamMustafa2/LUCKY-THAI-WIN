@@ -924,34 +924,12 @@
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
 
-      // Update header badges to display Guest / Logged Out status
-      var headerBadge = document.getElementById('headerUserIdBadge');
-      if (headerBadge) headerBadge.innerText = 'Login';
-      var dropdownName = document.getElementById('dropdownHeaderUserName');
-      if (dropdownName) dropdownName.innerText = 'Guest';
-
-      // Close any open modals
-      ['userLoginModal', 'profileStatementModal', 'profileResultModal', 'profileProfitLossModal', 'profileBetHistoryModal'].forEach(function(mId) {
-        var m = document.getElementById(mId);
-        if (m) {
-          m.classList.add('hidden');
-          try { m.style.setProperty('display', 'none', 'important'); } catch(e) { m.style.display = 'none'; }
-        }
-      });
-
-      // Clear overlay inputs
-      var nameInp = document.getElementById('authUsernameInput');
-      var passInp = document.getElementById('authPasswordInput');
-      if (nameInp) nameInp.value = '';
-      if (passInp) passInp.value = '';
-
-      var overlay = document.getElementById('fullAppLoginOverlay');
-      if (overlay) {
-        overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
-        try { overlay.style.setProperty('display', 'flex', 'important'); } catch(e) { overlay.style.display = 'flex'; }
-      }
-
       if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
+
+      // Force page reload to clear all states and force fresh auth check immediately
+      setTimeout(function() {
+        window.location.reload();
+      }, 300);
     };
 
     if (document.readyState === 'loading') {
