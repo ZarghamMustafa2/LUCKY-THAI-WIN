@@ -55,7 +55,7 @@
     }
   </script>
   <script>
-    // Force unregister any stale service workers and clear cache to prevent cached/offline version issues
+    // Force unregister any stale service workers and clear cache silently
     try {
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -67,7 +67,7 @@
                     keys.forEach(function(key) { caches.delete(key); });
                   });
                 }
-                setTimeout(function() { window.location.reload(); }, 200);
+                // NOTE: Do NOT reload here — reloading resets auth state after logout
               }
             });
           }
