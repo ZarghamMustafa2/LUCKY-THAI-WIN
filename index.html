@@ -81,13 +81,23 @@
         localStorage.removeItem('userLoginName');
         localStorage.removeItem('userLoginPassword');
       } catch(e) {}
+      try {
+        document.cookie = "isUserLoggedIn=false; path=/; max-age=31536000";
+      } catch(cErr) {}
       window.isUserLoggedInFallback = false;
     } else {
+      var isLoggedVal = false;
       try {
-        window.isUserLoggedInFallback = localStorage.getItem('isUserLoggedIn') === 'true';
-      } catch(e) {
-        window.isUserLoggedInFallback = false;
-      }
+        isLoggedVal = localStorage.getItem('isUserLoggedIn') === 'true';
+      } catch(e) {}
+      try {
+        if (document.cookie.indexOf('isUserLoggedIn=true') > -1) {
+          isLoggedVal = true;
+        } else if (document.cookie.indexOf('isUserLoggedIn=false') > -1) {
+          isLoggedVal = false;
+        }
+      } catch(cErr) {}
+      window.isUserLoggedInFallback = isLoggedVal;
     }
 
     // Global Theme Switcher Engine (Head Level Availability)
@@ -806,6 +816,14 @@
       }
 
       try {
+        if (document.cookie.indexOf('isUserLoggedIn=true') > -1) {
+          isLoggedIn = true;
+        } else if (document.cookie.indexOf('isUserLoggedIn=false') > -1) {
+          isLoggedIn = false;
+        }
+      } catch(cErr) {}
+
+      try {
         var overlay = document.getElementById('fullAppLoginOverlay');
         if (!overlay) return;
 
@@ -867,6 +885,9 @@
           localStorage.setItem('isUserLoggedIn', 'true');
           localStorage.setItem('isAdminAuth', 'true');
         } catch(err) {}
+        try {
+          document.cookie = "isUserLoggedIn=true; path=/; max-age=31536000";
+        } catch(cErr) {}
         window.isUserLoggedInFallback = true;
 
         if (typeof window.showToast === 'function') window.showToast('Admin Verified! Opening Admin Panel...', 'success');
@@ -880,6 +901,9 @@
         localStorage.setItem('isUserLoggedIn', 'true');
         localStorage.setItem('isAdminAuth', 'false');
       } catch(err) {}
+      try {
+        document.cookie = "isUserLoggedIn=true; path=/; max-age=31536000";
+      } catch(cErr) {}
       window.isUserLoggedInFallback = true;
       try {
         // Save user credentials to registeredUsersList array in localStorage for Admin Panel
@@ -928,6 +952,9 @@
         localStorage.setItem('userLoginName', guestName);
         localStorage.setItem('isUserLoggedIn', 'true');
       } catch(err) {}
+      try {
+        document.cookie = "isUserLoggedIn=true; path=/; max-age=31536000";
+      } catch(cErr) {}
       window.isUserLoggedInFallback = true;
 
       if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
@@ -966,6 +993,9 @@
         localStorage.removeItem('userLoginName');
         localStorage.removeItem('userLoginPassword');
       } catch(err) {}
+      try {
+        document.cookie = "isUserLoggedIn=false; path=/; max-age=31536000";
+      } catch(cErr) {}
       window.isUserLoggedInFallback = false;
 
       var dropdown = document.getElementById('profileDropdown');
