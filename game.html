@@ -1057,10 +1057,8 @@
     window.performGameUserLogout = function(e) {
       if (e && e.stopPropagation) e.stopPropagation();
       try {
+        localStorage.clear();
         localStorage.setItem('isUserLoggedIn', 'false');
-        localStorage.removeItem('userLoginName');
-        localStorage.removeItem('userLoginPassword');
-        localStorage.removeItem('isAdminAuth');
       } catch(err) {}
       try {
         var cookies = document.cookie.split(";");
@@ -1072,8 +1070,9 @@
             document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
           }
         }
+        document.cookie = "isUserLoggedIn=false; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       } catch(cErr) {}
-      window.location.href = 'index.html';
+      window.location.replace('index.html');
     };
   </script>
   <!-- Universal Touch Pull-To-Refresh Engine -->

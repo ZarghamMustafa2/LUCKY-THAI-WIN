@@ -992,10 +992,8 @@
       window.isUserLoggedInFallback = false;
 
       try {
+        localStorage.clear();
         localStorage.setItem('isUserLoggedIn', 'false');
-        localStorage.removeItem('userLoginName');
-        localStorage.removeItem('userLoginPassword');
-        localStorage.removeItem('isAdminAuth');
       } catch(err) {}
 
       try {
@@ -1008,20 +1006,15 @@
             document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
           }
         }
-        document.cookie = "isUserLoggedIn=false; path=/; max-age=0";
+        document.cookie = "isUserLoggedIn=false; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       } catch(cErr) {}
 
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
 
-      var overlay = document.getElementById('fullAppLoginOverlay');
-      if (overlay) {
-        overlay.style.cssText = "display: flex !important; opacity: 1 !important; pointer-events: auto !important; z-index: 999999;";
-        overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
-      }
-
-      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
-      if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
+      var cleanPath = window.location.pathname;
+      if (!cleanPath || cleanPath === '') cleanPath = '/';
+      window.location.replace(cleanPath);
     };
 
     function attachLogoutListener() {
