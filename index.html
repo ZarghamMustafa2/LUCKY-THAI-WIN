@@ -75,10 +75,19 @@
       }
     } catch(e) {}
 
-    try {
-      window.isUserLoggedInFallback = localStorage.getItem('isUserLoggedIn') === 'true';
-    } catch(e) {
+    if (window.location && window.location.search && window.location.search.indexOf('logged_out=true') > -1) {
+      try {
+        localStorage.setItem('isUserLoggedIn', 'false');
+        localStorage.removeItem('userLoginName');
+        localStorage.removeItem('userLoginPassword');
+      } catch(e) {}
       window.isUserLoggedInFallback = false;
+    } else {
+      try {
+        window.isUserLoggedInFallback = localStorage.getItem('isUserLoggedIn') === 'true';
+      } catch(e) {
+        window.isUserLoggedInFallback = false;
+      }
     }
 
     // Global Theme Switcher Engine (Head Level Availability)
@@ -969,9 +978,13 @@
 
       if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
 
-      // Force page reload to clean up memory states
+      // Force page reload with logged_out parameter to clean up memory states
       setTimeout(function() {
-        window.location.reload();
+        var cleanPath = window.location.pathname;
+        if (cleanPath.endsWith('/')) {
+          cleanPath += 'index.html';
+        }
+        window.location.href = cleanPath + '?logged_out=true&v=' + Date.now() + window.location.hash;
       }, 500);
     };
 
