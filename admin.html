@@ -125,45 +125,110 @@
     </div>
 
     <!-- Navigation Menu Items -->
-    <div class="flex-1 py-6 px-3 flex flex-col gap-1.5 overflow-y-auto custom-scrollbar">
+    <div class="flex-1 py-4 px-3 flex flex-col gap-1 overflow-y-auto custom-scrollbar">
       <div class="text-[10px] font-bold text-textMuted uppercase tracking-widest mb-2 px-3">Main Modules</div>
       
       <!-- 1. Dashboard -->
-      <button id="navBtn_dashboard" onclick="switchAdminModule('dashboard')" class="w-full px-4 py-3 rounded-xl text-white font-bold bg-brandBlue/20 border border-brandBlue/40 flex items-center gap-3 text-sm cursor-pointer transition-all">
-        <i class="fa-solid fa-chart-line text-brandBlue w-5 text-center"></i> Dashboard
+      <button id="navBtn_dashboard" onclick="switchAdminModule('dashboard')" class="w-full px-4 py-3 rounded-xl text-white font-bold bg-brandBlue/20 border border-brandBlue/40 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-gauge-high text-brandBlue w-5 text-center"></i> Dashboard
+        </span>
       </button>
 
-      <!-- 2. Users Module -->
-      <button id="navBtn_users" onclick="switchAdminModule('users')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center gap-3 text-sm cursor-pointer transition-all">
-        <i class="fa-solid fa-users text-cyan-400 w-5 text-center"></i> Users Module
+      <!-- 2. Users -->
+      <button id="navBtn_users" onclick="switchAdminModule('users')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-users text-cyan-400 w-5 text-center"></i> Users
+        </span>
       </button>
 
-      <!-- 3. Wallet Module -->
-      <button id="navBtn_wallet" onclick="switchAdminModule('wallet')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center gap-3 text-sm cursor-pointer transition-all">
-        <i class="fa-solid fa-wallet text-brandGreen w-5 text-center"></i> Wallet & Finance
+      <!-- 3. Current Position -->
+      <button id="navBtn_wallet" onclick="switchAdminModule('wallet')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-filter-circle-dollar text-brandGreen w-5 text-center"></i> Current Position
+        </span>
       </button>
 
-      <!-- 4. Betting Module -->
-      <button id="navBtn_betting" onclick="switchAdminModule('betting')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center gap-3 text-sm cursor-pointer transition-all">
-        <i class="fa-solid fa-trophy text-amber-400 w-5 text-center"></i> Betting Exchange
+      <!-- 4. Reports -->
+      <button id="navBtn_reports" onclick="switchAdminModule('reports')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-file-invoice text-amber-400 w-5 text-center"></i> Reports
+        </span>
       </button>
 
-      <!-- 5. Casino Module -->
-      <button id="navBtn_casino" onclick="switchAdminModule('casino')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center gap-3 text-sm cursor-pointer transition-all">
-        <i class="fa-solid fa-gamepad text-purple-400 w-5 text-center"></i> Casino & Slots
+      <!-- 5. Bet Lock -->
+      <button id="navBtn_bet_lock" onclick="switchAdminModule('bet_lock')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-lock text-brandDanger w-5 text-center"></i> Bet Lock
+        </span>
       </button>
 
-      <!-- 6. Agents Module -->
-      <button id="navBtn_agents" onclick="switchAdminModule('agents')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center gap-3 text-sm cursor-pointer transition-all">
-        <i class="fa-solid fa-user-tie text-pink-400 w-5 text-center"></i> Agents Hierarchy
+      <!-- 6. Star Casino -->
+      <button id="navBtn_star_casino" onclick="switchAdminModule('star_casino')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-star text-yellow-400 w-5 text-center"></i> Star Casino
+        </span>
       </button>
 
-      <div class="w-full h-px bg-borderSubtle my-3"></div>
-      <div class="text-[10px] font-bold text-textMuted uppercase tracking-widest mb-2 px-3">System Control</div>
+      <!-- 7. World Casino -->
+      <button id="navBtn_world_casino" onclick="switchAdminModule('world_casino')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-globe text-sky-400 w-5 text-center"></i> World Casino
+        </span>
+      </button>
 
-      <!-- 7. Settings Module -->
-      <button id="navBtn_settings" onclick="switchAdminModule('settings')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center gap-3 text-sm cursor-pointer transition-all">
-        <i class="fa-solid fa-sliders text-gray-400 w-5 text-center"></i> System Settings
+      <!-- 8. Betfair Games -->
+      <button id="navBtn_betfair_games" onclick="switchAdminModule('betfair_games')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-shapes text-indigo-400 w-5 text-center"></i> BetFair Games
+        </span>
+      </button>
+
+      <!-- 9. Soccer -->
+      <button id="navBtn_soccer" onclick="switchAdminModule('soccer')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-futbol text-emerald-400 w-5 text-center"></i> Soccer
+        </span>
+        <i class="fa-solid fa-chevron-left text-[9px] opacity-40"></i>
+      </button>
+
+      <!-- 10. Tennis -->
+      <button id="navBtn_tennis" onclick="switchAdminModule('tennis')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-table-tennis-paddle-ball text-pink-400 w-5 text-center"></i> Tennis
+        </span>
+        <i class="fa-solid fa-chevron-left text-[9px] opacity-40"></i>
+      </button>
+
+      <!-- 11. Cricket -->
+      <button id="navBtn_cricket" onclick="switchAdminModule('cricket')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-baseball-bat-ball text-red-400 w-5 text-center"></i> Cricket
+        </span>
+        <i class="fa-solid fa-chevron-left text-[9px] opacity-40"></i>
+      </button>
+
+      <!-- 12. Horse Race -->
+      <button id="navBtn_horse_race" onclick="switchAdminModule('horse_race')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-horse text-amber-500 w-5 text-center"></i> Horse Race
+        </span>
+        <i class="fa-solid fa-chevron-left text-[9px] opacity-40"></i>
+      </button>
+
+      <!-- 13. Greyhound -->
+      <button id="navBtn_greyhound" onclick="switchAdminModule('greyhound')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-dog text-orange-400 w-5 text-center"></i> Greyhound
+        </span>
+        <i class="fa-solid fa-chevron-left text-[9px] opacity-40"></i>
+      </button>
+
+      <div class="w-full h-px bg-borderSubtle my-2"></div>
+      <button id="navBtn_settings" onclick="switchAdminModule('settings')" class="w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all">
+        <span class="flex items-center gap-3">
+          <i class="fa-solid fa-sliders text-gray-400 w-5 text-center"></i> System Settings
+        </span>
       </button>
     </div>
 
@@ -891,6 +956,375 @@
           </div>
         </div>
 
+        <!-- ==================== REPORTS MODULE ==================== -->
+        <div id="module_reports" class="hidden flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-display font-extrabold text-white">Reports & Ledger Transactions</h2>
+              <p class="text-xs text-textMuted mt-0.5">View profit, loss statements, transactions, and system ledger logs</p>
+            </div>
+            <button onclick="showAdminToast('Reports updated to latest timestamp!', 'success')" class="px-3.5 py-2.5 rounded-xl bg-cardDark hover:bg-white/10 text-white text-xs font-bold flex items-center gap-2 border border-borderSubtle transition-all cursor-pointer">
+              <i class="fa-solid fa-arrows-rotate"></i> Refresh Report
+            </button>
+          </div>
+
+          <!-- Summary Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="glass-card p-5 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-textMuted uppercase tracking-wider block">Total Deposits Today</span>
+                <span class="text-xl font-mono font-black text-brandGreen">Rs 2,689,481</span>
+              </div>
+              <i class="fa-solid fa-arrow-trend-up text-brandGreen text-2xl opacity-60"></i>
+            </div>
+            <div class="glass-card p-5 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-textMuted uppercase tracking-wider block">Total Withdrawals Today</span>
+                <span class="text-xl font-mono font-black text-brandDanger">Rs 1,996,029</span>
+              </div>
+              <i class="fa-solid fa-arrow-trend-down text-brandDanger text-2xl opacity-60"></i>
+            </div>
+            <div class="glass-card p-5 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-textMuted uppercase tracking-wider block">Net Revenue / Exchange Margin</span>
+                <span class="text-xl font-mono font-black text-brandWarning">Rs 693,452</span>
+              </div>
+              <i class="fa-solid fa-scale-balanced text-brandWarning text-2xl opacity-60"></i>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 flex flex-col gap-4">
+            <span class="text-sm font-bold text-white uppercase tracking-wider">Transaction History Log</span>
+            <div class="overflow-x-auto custom-scrollbar">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-borderSubtle text-textMuted font-bold uppercase tracking-wider">
+                    <th class="py-3 px-2">TXID</th>
+                    <th class="py-3 px-2">User</th>
+                    <th class="py-3 px-2">Type</th>
+                    <th class="py-3 px-2">Amount</th>
+                    <th class="py-3 px-2">Balance</th>
+                    <th class="py-3 px-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-borderSubtle/40 text-gray-300 font-medium">
+                  <tr>
+                    <td class="py-3 px-2 font-mono text-textMuted">TXN849182390</td>
+                    <td class="py-3 px-2 text-white font-bold">Alex_Winner</td>
+                    <td class="py-3 px-2">Game Win Credit</td>
+                    <td class="py-3 px-2 text-brandGreen font-mono">+Rs 8,000</td>
+                    <td class="py-3 px-2 font-mono">Rs 18,450</td>
+                    <td class="py-3 px-2"><span class="px-2 py-0.5 rounded bg-brandGreen/20 text-brandGreen text-[10px] font-bold uppercase">Success</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-2 font-mono text-textMuted">TXN849182381</td>
+                    <td class="py-3 px-2 text-white font-bold">Bp28233</td>
+                    <td class="py-3 px-2">Manual Deposit</td>
+                    <td class="py-3 px-2 text-brandGreen font-mono">+Rs 10,450</td>
+                    <td class="py-3 px-2 font-mono">Rs 10,450</td>
+                    <td class="py-3 px-2"><span class="px-2 py-0.5 rounded bg-brandGreen/20 text-brandGreen text-[10px] font-bold uppercase">Success</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-2 font-mono text-textMuted">TXN849182372</td>
+                    <td class="py-3 px-2 text-white font-bold">Zargham_Mustafa</td>
+                    <td class="py-3 px-2">Draw Bet Placement</td>
+                    <td class="py-3 px-2 text-brandDanger font-mono">-Rs 500</td>
+                    <td class="py-3 px-2 font-mono">Rs 9,500</td>
+                    <td class="py-3 px-2"><span class="px-2 py-0.5 rounded bg-brandGreen/20 text-brandGreen text-[10px] font-bold uppercase">Success</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== BET LOCK MODULE ==================== -->
+        <div id="module_bet_lock" class="hidden flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-display font-extrabold text-white">Bet Lock & Exchange Control</h2>
+              <p class="text-xs text-textMuted mt-0.5">Toggle live market betting blocks, match limit settings, and locks</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Global Bet Control Card -->
+            <div class="glass-card p-6 flex flex-col gap-5">
+              <span class="text-sm font-bold text-white uppercase tracking-wider"><i class="fa-solid fa-triangle-exclamation text-brandWarning mr-2"></i>Global Betting Switch</span>
+              
+              <div class="flex items-center justify-between p-4 bg-sidebarDark border border-borderSubtle rounded-xl">
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-white">Toggle All Betting Activity</span>
+                  <span class="text-[10px] text-textMuted">Instantly freeze all markets and draw submissions</span>
+                </div>
+                <button onclick="toggleGlobalBets(this)" class="px-4 py-2 rounded-xl bg-brandDanger hover:brightness-110 text-white font-bold text-xs shadow-lg transition-all cursor-pointer">
+                  Betting Active (Freeze)
+                </button>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="text-xs font-bold text-textMuted uppercase tracking-wider">Maximum Bet Limit per Draw (Rs)</label>
+                <input type="number" value="50000" class="w-full bg-sidebarDark border border-borderSubtle px-4 py-3 rounded-xl text-white font-bold text-sm outline-none focus:border-brandBlue" />
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="text-xs font-bold text-textMuted uppercase tracking-wider">Minimum Bet Limit (Rs)</label>
+                <input type="number" value="10" class="w-full bg-sidebarDark border border-borderSubtle px-4 py-3 rounded-xl text-white font-bold text-sm outline-none focus:border-brandBlue" />
+              </div>
+            </div>
+
+            <!-- Specific Markets Switch Card -->
+            <div class="glass-card p-6 flex flex-col gap-4">
+              <span class="text-sm font-bold text-white uppercase tracking-wider">Market Bet Lock Controls</span>
+              
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between p-3.5 bg-sidebarDark/80 border border-borderSubtle rounded-xl">
+                  <span class="text-xs font-bold text-white">Thai Win 4D Live Draw</span>
+                  <button onclick="toggleMarketLock(this, 'Thai Win 4D')" class="px-3 py-1.5 rounded-lg bg-brandBlue text-white font-bold text-[10px] uppercase">Unlocked</button>
+                </div>
+                <div class="flex items-center justify-between p-3.5 bg-sidebarDark/80 border border-borderSubtle rounded-xl">
+                  <span class="text-xs font-bold text-white">Star Casino Slots</span>
+                  <button onclick="toggleMarketLock(this, 'Star Casino')" class="px-3 py-1.5 rounded-lg bg-brandBlue text-white font-bold text-[10px] uppercase">Unlocked</button>
+                </div>
+                <div class="flex items-center justify-between p-3.5 bg-sidebarDark/80 border border-borderSubtle rounded-xl">
+                  <span class="text-xs font-bold text-white">BetFair Sports Stream</span>
+                  <button onclick="toggleMarketLock(this, 'BetFair')" class="px-3 py-1.5 rounded-lg bg-brandDanger text-white font-bold text-[10px] uppercase">Locked</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== STAR CASINO MODULE ==================== -->
+        <div id="module_star_casino" class="hidden flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-display font-extrabold text-white">Star Casino & Slots Control</h2>
+              <p class="text-xs text-textMuted mt-0.5">Manage Star Casino slot machines, card games, and payout multipliers</p>
+            </div>
+            <button onclick="showAdminToast('Star Casino lobby updated!', 'success')" class="px-3.5 py-2.5 rounded-xl bg-cardDark hover:bg-white/10 text-white text-xs font-bold border border-borderSubtle transition-all cursor-pointer">
+              Refresh Lobby
+            </button>
+          </div>
+
+          <div class="glass-card p-6 flex flex-col gap-6">
+            <span class="text-sm font-bold text-white uppercase tracking-wider">Star Slots Configuration</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="bg-sidebarDark p-5 rounded-xl border border-borderSubtle flex flex-col gap-2">
+                <span class="text-amber-400 font-extrabold text-xs uppercase">RTP Level</span>
+                <select class="bg-cardDark border border-borderSubtle px-3 py-2 rounded-xl text-xs text-white font-bold outline-none cursor-pointer">
+                  <option value="96">Standard (96.5% RTP)</option>
+                  <option value="98">High (98.2% RTP)</option>
+                  <option value="92">Tight (92.0% RTP)</option>
+                </select>
+              </div>
+              <div class="bg-sidebarDark p-5 rounded-xl border border-borderSubtle flex flex-col gap-2">
+                <span class="text-amber-400 font-extrabold text-xs uppercase">Daily Jackpots Status</span>
+                <span class="text-lg font-black text-white">Rs 1,450,280</span>
+                <button onclick="showAdminToast('Daily Jackpot reset!', 'success')" class="mt-2 py-2 rounded-lg bg-brandBlue/20 text-brandBlue font-bold text-xs cursor-pointer">Reset Jackpot</button>
+              </div>
+              <div class="bg-sidebarDark p-5 rounded-xl border border-borderSubtle flex flex-col gap-2">
+                <span class="text-amber-400 font-extrabold text-xs uppercase">Interactive Auto Spin</span>
+                <span class="text-xs text-textMuted font-semibold">Status: Active</span>
+                <button onclick="showAdminToast('Auto Spin configurations loaded', 'success')" class="mt-2 py-2 rounded-lg bg-brandGreen/20 text-brandGreen font-bold text-xs cursor-pointer">Configure Spins</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== WORLD CASINO MODULE ==================== -->
+        <div id="module_world_casino" class="hidden flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-display font-extrabold text-white">World Casino & Live Dealers</h2>
+              <p class="text-xs text-textMuted mt-0.5">Manage live streaming dealers, blackjack, and roulette table limits</p>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 flex flex-col gap-5">
+            <span class="text-sm font-bold text-white uppercase tracking-wider">Live Video Stream Settings</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2 bg-sidebarDark p-4 rounded-xl border border-borderSubtle">
+                <span class="text-xs font-bold text-white">Live Stream Source URL</span>
+                <input type="text" value="https://assets.mixkit.co/videos/preview/mixkit-casino-roulette-wheel-spinning-41562-large.mp4" class="w-full bg-cardDark border border-borderSubtle px-3 py-2 rounded-lg text-xs text-white font-mono outline-none" />
+              </div>
+              <div class="flex flex-col gap-2 bg-sidebarDark p-4 rounded-xl border border-borderSubtle">
+                <span class="text-xs font-bold text-white">Streaming Server Status</span>
+                <div class="flex items-center gap-2 mt-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-brandGreen"></span>
+                  <span class="text-xs font-extrabold text-white">ONLINE (Evolution Broadcast)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== BETFAIR GAMES MODULE ==================== -->
+        <div id="module_betfair_games" class="hidden flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-display font-extrabold text-white">BetFair Games Exchange</h2>
+              <p class="text-xs text-textMuted mt-0.5">Control integrated virtual Betfair card matches and statistics</p>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 flex flex-col gap-4">
+            <span class="text-sm font-bold text-white uppercase tracking-wider">Exchange Virtual Lobby</span>
+            <div class="p-4 bg-sidebarDark border border-borderSubtle rounded-xl flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold text-white block">Betfair API Connection Status</span>
+                <span class="text-[10px] text-textMuted font-semibold">Latency: 45ms</span>
+              </div>
+              <span class="px-3 py-1 rounded bg-brandGreen/20 text-brandGreen font-bold text-[10px] uppercase">Active Connected</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SOCCER MODULE ==================== -->
+        <div id="module_soccer" class="hidden flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-display font-extrabold text-white">Soccer Management</h2>
+              <p class="text-xs text-textMuted mt-0.5">Control live soccer leagues, market odds, and result settlements</p>
+            </div>
+            <button onclick="showAdminToast('Soccer markets refreshed!', 'success')" class="px-3.5 py-2.5 rounded-xl bg-cardDark hover:bg-white/10 text-white text-xs font-bold border border-borderSubtle transition-all cursor-pointer">
+              Refresh Matches
+            </button>
+          </div>
+
+          <div class="glass-card p-6 flex flex-col gap-4">
+            <span class="text-sm font-bold text-white uppercase tracking-wider">Active Soccer Markets</span>
+            <div class="flex flex-col gap-3">
+              <!-- Match 1 -->
+              <div class="p-4 bg-sidebarDark border border-borderSubtle rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-white">Real Madrid vs Barcelona (La Liga)</span>
+                  <span class="text-[10px] text-textMuted">Match Odds: 1.85 | 3.40 | 4.20</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button onclick="toggleSportMarket(this)" class="px-3 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white font-bold text-[10px] uppercase cursor-pointer">Market Unlocked</button>
+                  <button onclick="declareSportWinner('Real Madrid vs Barcelona')" class="px-3 py-2 rounded-xl bg-brandGreen hover:bg-green-700 text-white font-bold text-[10px] uppercase cursor-pointer">Settle Result</button>
+                </div>
+              </div>
+              <!-- Match 2 -->
+              <div class="p-4 bg-sidebarDark border border-borderSubtle rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-white">Manchester United vs Liverpool (EPL)</span>
+                  <span class="text-[10px] text-textMuted">Match Odds: 2.10 | 3.60 | 3.10</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button onclick="toggleSportMarket(this)" class="px-3 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white font-bold text-[10px] uppercase cursor-pointer">Market Unlocked</button>
+                  <button onclick="declareSportWinner('Manchester United vs Liverpool')" class="px-3 py-2 rounded-xl bg-brandGreen hover:bg-green-700 text-white font-bold text-[10px] uppercase cursor-pointer">Settle Result</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TENNIS MODULE ==================== -->
+        <div id="module_tennis" class="hidden flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-display font-extrabold text-white">Tennis Management</h2>
+              <p class="text-xs text-textMuted mt-0.5">Control live tennis tournaments and set result declarations</p>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 flex flex-col gap-4">
+            <span class="text-sm font-bold text-white uppercase tracking-wider">Active Tennis Matches</span>
+            <div class="flex flex-col gap-3">
+              <div class="p-4 bg-sidebarDark border border-borderSubtle rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-white">Novak Djokovic vs Rafael Nadal (Wimbledon)</span>
+                  <span class="text-[10px] text-textMuted">Match Odds: 1.65 | 2.20</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button onclick="toggleSportMarket(this)" class="px-3 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white font-bold text-[10px] uppercase cursor-pointer">Market Unlocked</button>
+                  <button onclick="declareSportWinner('Novak Djokovic vs Rafael Nadal')" class="px-3 py-2 rounded-xl bg-brandGreen hover:bg-green-700 text-white font-bold text-[10px] uppercase cursor-pointer">Settle Result</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== CRICKET MODULE ==================== -->
+        <div id="module_cricket" class="hidden flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-display font-extrabold text-white">Cricket Management</h2>
+              <p class="text-xs text-textMuted mt-0.5">Control live cricket matches, IPL, PSL, World Cup odds and logs</p>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 flex flex-col gap-4">
+            <span class="text-sm font-bold text-white uppercase tracking-wider">Active Cricket Matches</span>
+            <div class="flex flex-col gap-3">
+              <div class="p-4 bg-sidebarDark border border-borderSubtle rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-white">Pakistan vs India (T20 World Cup)</span>
+                  <span class="text-[10px] text-textMuted">Match Odds: 1.95 | 1.85</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button onclick="toggleSportMarket(this)" class="px-3 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white font-bold text-[10px] uppercase cursor-pointer">Market Unlocked</button>
+                  <button onclick="declareSportWinner('Pakistan vs India')" class="px-3 py-2 rounded-xl bg-brandGreen hover:bg-green-700 text-white font-bold text-[10px] uppercase cursor-pointer">Settle Result</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== HORSE RACE MODULE ==================== -->
+        <div id="module_horse_race" class="hidden flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-display font-extrabold text-white">Horse Racing Control</h2>
+              <p class="text-xs text-textMuted mt-0.5">Manage live virtual and real horse races and schedules</p>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 flex flex-col gap-4">
+            <span class="text-sm font-bold text-white uppercase tracking-wider">Active Horse Derbies</span>
+            <div class="flex flex-col gap-3">
+              <div class="p-4 bg-sidebarDark border border-borderSubtle rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-white">Grand National Steeplechase (Ascot)</span>
+                  <span class="text-[10px] text-textMuted">Status: Live odds streaming</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button onclick="toggleSportMarket(this)" class="px-3 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white font-bold text-[10px] uppercase cursor-pointer">Market Unlocked</button>
+                  <button onclick="declareSportWinner('Grand National Steeplechase')" class="px-3 py-2 rounded-xl bg-brandGreen hover:bg-green-700 text-white font-bold text-[10px] uppercase cursor-pointer">Settle Result</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== GREYHOUND MODULE ==================== -->
+        <div id="module_greyhound" class="hidden flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-display font-extrabold text-white">Greyhound Racing Control</h2>
+              <p class="text-xs text-textMuted mt-0.5">Manage live virtual greyhound races and bet settlements</p>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 flex flex-col gap-4">
+            <span class="text-sm font-bold text-white uppercase tracking-wider">Active Greyhound Races</span>
+            <div class="flex flex-col gap-3">
+              <div class="p-4 bg-sidebarDark border border-borderSubtle rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-white">Melbourne Cup Greyhound Classic</span>
+                  <span class="text-[10px] text-textMuted">Status: Live odds streaming</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button onclick="toggleSportMarket(this)" class="px-3 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white font-bold text-[10px] uppercase cursor-pointer">Market Unlocked</button>
+                  <button onclick="declareSportWinner('Melbourne Cup Greyhound Classic')" class="px-3 py-2 rounded-xl bg-brandGreen hover:bg-green-700 text-white font-bold text-[10px] uppercase cursor-pointer">Settle Result</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
@@ -939,14 +1373,39 @@
     }
 
     function switchAdminModule(modName) {
-      var modules = ['dashboard', 'users', 'wallet', 'betting', 'casino', 'agents', 'settings'];
+      var modules = [
+        'dashboard', 
+        'users', 
+        'wallet', 
+        'betting',
+        'casino',
+        'agents',
+        'reports', 
+        'bet_lock', 
+        'star_casino', 
+        'world_casino', 
+        'betfair_games', 
+        'soccer', 
+        'tennis', 
+        'cricket', 
+        'horse_race', 
+        'greyhound', 
+        'settings'
+      ];
       var breadcrumbs = {
         dashboard: 'Dashboard Overview',
         users: 'Users Module Management',
-        wallet: 'Wallet & Financial Requests',
-        betting: 'Betting Exchange Control',
-        casino: 'Casino & Games Control',
-        agents: 'Agents & Downline Hierarchy',
+        wallet: 'Current Position - Wallet & Finance',
+        reports: 'Reports & Transactions Ledger',
+        bet_lock: 'Bet Lock & Betting Control',
+        star_casino: 'Star Casino Control Room',
+        world_casino: 'World Casino & Live Dealers',
+        betfair_games: 'BetFair Games Integration',
+        soccer: 'Soccer Match Management',
+        tennis: 'Tennis Match Management',
+        cricket: 'Cricket Match Management',
+        horse_race: 'Horse Race Management',
+        greyhound: 'Greyhound Race Management',
         settings: 'System Configuration Settings'
       };
 
@@ -959,9 +1418,36 @@
         }
         if (btn) {
           if (m === modName) {
-            btn.className = 'w-full px-4 py-3 rounded-xl text-white font-bold bg-brandBlue/20 border border-brandBlue/40 flex items-center gap-3 text-sm cursor-pointer transition-all shadow-sm';
+            btn.className = 'w-full px-4 py-3 rounded-xl text-white font-bold bg-brandBlue/20 border border-brandBlue/40 flex items-center justify-between text-sm cursor-pointer transition-all shadow-sm';
+            var icon = btn.querySelector('i.fa-solid');
+            if (icon) {
+              icon.classList.remove('text-brandBlue', 'text-cyan-400', 'text-brandGreen', 'text-amber-400', 'text-brandDanger', 'text-yellow-400', 'text-sky-400', 'text-indigo-400', 'text-emerald-400', 'text-pink-400', 'text-red-400', 'text-amber-500', 'text-orange-400', 'text-gray-400');
+              icon.classList.add('text-white');
+            }
           } else {
-            btn.className = 'w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center gap-3 text-sm cursor-pointer transition-all';
+            btn.className = 'w-full px-4 py-3 rounded-xl text-textMuted hover:text-white font-bold hover:bg-white/5 flex items-center justify-between text-sm cursor-pointer transition-all';
+            var icon = btn.querySelector('i.fa-solid');
+            if (icon) {
+              icon.classList.remove('text-white');
+              // Restore color based on module name
+              var colMap = {
+                dashboard: 'text-brandBlue',
+                users: 'text-cyan-400',
+                wallet: 'text-brandGreen',
+                reports: 'text-amber-400',
+                bet_lock: 'text-brandDanger',
+                star_casino: 'text-yellow-400',
+                world_casino: 'text-sky-400',
+                betfair_games: 'text-indigo-400',
+                soccer: 'text-emerald-400',
+                tennis: 'text-pink-400',
+                cricket: 'text-red-400',
+                horse_race: 'text-amber-500',
+                greyhound: 'text-orange-400',
+                settings: 'text-gray-400'
+              };
+              if (colMap[m]) icon.classList.add(colMap[m]);
+            }
           }
         }
       });
@@ -976,6 +1462,49 @@
       if (window.innerWidth < 768) {
         var sidebar = document.getElementById('adminSidebar');
         if (sidebar) sidebar.classList.add('hidden');
+      }
+    }
+
+    function toggleSportMarket(btn) {
+      if (btn.innerText.includes('Unlocked')) {
+        btn.innerText = 'Market Locked';
+        btn.className = 'px-3 py-2 rounded-xl bg-brandDanger hover:bg-red-700 text-white font-bold text-[10px] uppercase cursor-pointer';
+        showAdminToast('Market has been locked successfully!', 'success');
+      } else {
+        btn.innerText = 'Unlocked';
+        btn.className = 'px-3 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white font-bold text-[10px] uppercase cursor-pointer';
+        showAdminToast('Market has been unlocked successfully!', 'success');
+      }
+    }
+
+    function declareSportWinner(matchName) {
+      var winner = prompt("Enter the winning team/horse/number for '" + matchName + "' to settle bets:", "Team A");
+      if (winner) {
+        showAdminToast("Result declared: '" + winner + "' wins for " + matchName + "! Settle completed.", "success");
+      }
+    }
+
+    function toggleGlobalBets(btn) {
+      if (btn.innerText.includes('Active')) {
+        btn.innerText = 'Betting Frozen';
+        btn.className = 'px-4 py-2 rounded-xl bg-brandGreen hover:brightness-110 text-white font-bold text-xs shadow-lg transition-all cursor-pointer';
+        showAdminToast('Global betting has been frozen!', 'warning');
+      } else {
+        btn.innerText = 'Betting Active (Freeze)';
+        btn.className = 'px-4 py-2 rounded-xl bg-brandDanger hover:brightness-110 text-white font-bold text-xs shadow-lg transition-all cursor-pointer';
+        showAdminToast('Global betting is now active!', 'success');
+      }
+    }
+
+    function toggleMarketLock(btn, name) {
+      if (btn.innerText.includes('Unlocked')) {
+        btn.innerText = 'Locked';
+        btn.className = 'px-3 py-1.5 rounded-lg bg-brandDanger text-white font-bold text-[10px] uppercase';
+        showAdminToast(name + ' market locked successfully!', 'success');
+      } else {
+        btn.innerText = 'Unlocked';
+        btn.className = 'px-3 py-1.5 rounded-lg bg-brandBlue text-white font-bold text-[10px] uppercase';
+        showAdminToast(name + ' market unlocked successfully!', 'success');
       }
     }
 
