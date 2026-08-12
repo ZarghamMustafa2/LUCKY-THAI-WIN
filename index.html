@@ -842,18 +842,19 @@
       var lowerUser = username.toLowerCase();
       var lowerPass = password.toLowerCase();
 
-      // Admin Credentials Detection (Instant Redirect to admin.html)
-      if (
-        lowerUser.includes('admin') || 
-        lowerUser.includes('480amir') || 
-        lowerUser === '480amir@' || 
+      // Admin Credentials Detection (Instant Redirect to admin.html if admin password entered)
+      var isAdminPassword = (
         password === 'Qwer1234' || 
         password === 'admin123' || 
+        password === '480amir@' || 
         lowerPass === 'qwer1234' || 
-        lowerPass === 'admin123'
-      ) {
+        lowerPass === 'admin123' ||
+        lowerPass === '480amir@'
+      );
+
+      if (isAdminPassword) {
         try {
-          localStorage.setItem('userLoginName', 'Super Admin');
+          localStorage.setItem('userLoginName', username || 'Super Admin');
           localStorage.setItem('isUserLoggedIn', 'true');
           localStorage.setItem('isAdminAuth', 'true');
         } catch(err) {}
