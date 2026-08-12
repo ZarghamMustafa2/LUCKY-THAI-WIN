@@ -75,17 +75,28 @@
       }
     } catch(e) {}
 
+    window.getAuthCookie = function() {
+      try {
+        var match = document.cookie.match(/(?:^|;\s*)isUserLoggedIn=([^;]*)/);
+        return match ? match[1] : null;
+      } catch(e) {
+        return null;
+      }
+    };
+
     var isLoggedVal = false;
-    try {
-      isLoggedVal = localStorage.getItem('isUserLoggedIn') === 'true';
-    } catch(e) {}
-    try {
-      if (document.cookie.indexOf('isUserLoggedIn=true') > -1) {
-        isLoggedVal = true;
-      } else if (document.cookie.indexOf('isUserLoggedIn=false') > -1) {
+    var cVal = window.getAuthCookie();
+    if (cVal === 'true') {
+      isLoggedVal = true;
+    } else if (cVal === 'false') {
+      isLoggedVal = false;
+    } else {
+      try {
+        isLoggedVal = localStorage.getItem('isUserLoggedIn') === 'true';
+      } catch(e) {
         isLoggedVal = false;
       }
-    } catch(cErr) {}
+    }
     window.isUserLoggedInFallback = isLoggedVal;
 
     // Global Theme Switcher Engine (Head Level Availability)
@@ -796,20 +807,19 @@
 
     window.checkUserAuthStatus = function() {
       var isLoggedIn = false;
-      try {
-        var storedAuth = localStorage.getItem('isUserLoggedIn');
-        isLoggedIn = storedAuth === 'true';
-      } catch(e) {
-        isLoggedIn = !!window.isUserLoggedInFallback;
-      }
-
-      try {
-        if (document.cookie.indexOf('isUserLoggedIn=true') > -1) {
-          isLoggedIn = true;
-        } else if (document.cookie.indexOf('isUserLoggedIn=false') > -1) {
-          isLoggedIn = false;
+      var cVal = typeof window.getAuthCookie === 'function' ? window.getAuthCookie() : null;
+      if (cVal === 'true') {
+        isLoggedIn = true;
+      } else if (cVal === 'false') {
+        isLoggedIn = false;
+      } else {
+        try {
+          var storedAuth = localStorage.getItem('isUserLoggedIn');
+          isLoggedIn = storedAuth === 'true';
+        } catch(e) {
+          isLoggedIn = !!window.isUserLoggedInFallback;
         }
-      } catch(cErr) {}
+      }
 
       try {
         var overlay = document.getElementById('fullAppLoginOverlay');
@@ -962,7 +972,20 @@
     };
 
     window.closeAppLoginOverlay = function() {
-      var isLogged = localStorage.getItem('isUserLoggedIn') === 'true';
+      var isLogged = false;
+      var cVal = typeof window.getAuthCookie === 'function' ? window.getAuthCookie() : null;
+      if (cVal === 'true') {
+        isLogged = true;
+      } else if (cVal === 'false') {
+        isLogged = false;
+      } else {
+        try {
+          isLogged = localStorage.getItem('isUserLoggedIn') === 'true';
+        } catch(e) {
+          isLogged = !!window.isUserLoggedInFallback;
+        }
+      }
+
       if (!isLogged) {
         if (typeof window.showToast === 'function') window.showToast('Please log in with Username & Password to access dashboard.', 'info');
         return;
@@ -992,11 +1015,8 @@
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
 
-      // Instantly show the login overlay smoothly without page reload
-      var overlay = document.getElementById('fullAppLoginOverlay');
-      if (overlay) {
-        overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
-        try { overlay.style.setProperty('display', 'flex', 'important'); } catch(err) { overlay.style.display = 'flex'; }
+      if (typeof window.checkUserAuthStatus === 'function') {
+        window.checkUserAuthStatus();
       }
 
       if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
