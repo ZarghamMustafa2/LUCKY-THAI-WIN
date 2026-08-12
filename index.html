@@ -809,11 +809,11 @@
         if (!overlay) return;
 
         if (isLoggedIn) {
+          overlay.style.cssText = "display: none !important; opacity: 0 !important; pointer-events: none !important;";
           overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
-          try { overlay.style.setProperty('display', 'none', 'important'); } catch(err) { overlay.style.display = 'none'; }
         } else {
+          overlay.style.cssText = "display: flex !important; opacity: 1 !important; pointer-events: auto !important; z-index: 999999;";
           overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
-          try { overlay.style.setProperty('display', 'flex', 'important'); } catch(err) { overlay.style.display = 'flex'; }
         }
       } catch(err) {}
     };
@@ -915,12 +915,11 @@
 
       if (typeof window.loadActiveUserSession === 'function') window.loadActiveUserSession();
       if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
-      window.checkUserAuthStatus();
       
       var overlay = document.getElementById('fullAppLoginOverlay');
       if (overlay) {
+        overlay.style.cssText = "display: none !important; opacity: 0 !important; pointer-events: none !important;";
         overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
-        overlay.style.display = 'none';
       }
 
       if (typeof window.showToast === 'function') window.showToast('Welcome, ' + username + '!', 'success');
@@ -939,7 +938,11 @@
       window.isUserLoggedInFallback = true;
 
       if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
-      window.checkUserAuthStatus();
+      var overlay = document.getElementById('fullAppLoginOverlay');
+      if (overlay) {
+        overlay.style.cssText = "display: none !important; opacity: 0 !important; pointer-events: none !important;";
+        overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
+      }
       if (typeof window.showToast === 'function') window.showToast('Guest Demo Login Successful!', 'success');
     };
 
@@ -949,7 +952,7 @@
       if (dropdown) dropdown.classList.add('hidden');
       var overlay = document.getElementById('fullAppLoginOverlay');
       if (overlay) {
-        overlay.style.display = 'flex';
+        overlay.style.cssText = "display: flex !important; opacity: 1 !important; pointer-events: auto !important; z-index: 999999;";
         overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
       }
     };
@@ -975,8 +978,8 @@
       }
       var overlay = document.getElementById('fullAppLoginOverlay');
       if (overlay) {
+        overlay.style.cssText = "display: none !important; opacity: 0 !important; pointer-events: none !important;";
         overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
-        try { overlay.style.setProperty('display', 'none', 'important'); } catch(e) { overlay.style.display = 'none'; }
       }
     };
 
@@ -1013,27 +1016,37 @@
 
       var overlay = document.getElementById('fullAppLoginOverlay');
       if (overlay) {
+        overlay.style.cssText = "display: flex !important; opacity: 1 !important; pointer-events: auto !important; z-index: 999999;";
         overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
-        try { overlay.style.setProperty('display', 'flex', 'important'); } catch(err) { overlay.style.display = 'flex'; }
       }
 
-      var userText = document.getElementById('headerUsernameText');
-      if (userText) userText.textContent = 'Guest';
-
+      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
       if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
     };
+
+    function attachLogoutListener() {
+      var btn = document.getElementById('logoutBtn');
+      if (btn) {
+        btn.onclick = function(e) {
+          if (e && e.stopPropagation) e.stopPropagation();
+          window.performUserLogout(e);
+        };
+      }
+    }
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function() {
         if (typeof window.loadActiveUserSession === 'function') window.loadActiveUserSession();
         window.updateUserProfileUI();
         window.checkUserAuthStatus();
+        attachLogoutListener();
       });
     } else {
       setTimeout(function() {
         if (typeof window.loadActiveUserSession === 'function') window.loadActiveUserSession();
         window.updateUserProfileUI();
         window.checkUserAuthStatus();
+        attachLogoutListener();
       }, 50);
     }
 
@@ -1939,7 +1952,7 @@
                 <span class="flex items-center gap-2"><i class="fa-solid fa-right-to-bracket text-cyan-400"></i> Login / Account</span>
                 <i class="fa-solid fa-chevron-right text-[10px] text-cyan-400"></i>
               </button>
-              <button type="button" onclick="event.stopPropagation(); performUserLogout(event);" class="w-full text-left px-5 py-2 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between mb-1">
+              <button id="logoutBtn" type="button" onclick="event.stopPropagation(); performUserLogout(event);" class="w-full text-left px-5 py-2 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between mb-1">
                 <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
                 <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
               </button>
