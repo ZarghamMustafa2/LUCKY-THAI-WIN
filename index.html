@@ -75,30 +75,18 @@
       }
     } catch(e) {}
 
-    if (window.location && window.location.search && window.location.search.indexOf('logged_out=true') > -1) {
-      try {
-        localStorage.setItem('isUserLoggedIn', 'false');
-        localStorage.removeItem('userLoginName');
-        localStorage.removeItem('userLoginPassword');
-      } catch(e) {}
-      try {
-        document.cookie = "isUserLoggedIn=false; path=/; max-age=31536000";
-      } catch(cErr) {}
-      window.isUserLoggedInFallback = false;
-    } else {
-      var isLoggedVal = false;
-      try {
-        isLoggedVal = localStorage.getItem('isUserLoggedIn') === 'true';
-      } catch(e) {}
-      try {
-        if (document.cookie.indexOf('isUserLoggedIn=true') > -1) {
-          isLoggedVal = true;
-        } else if (document.cookie.indexOf('isUserLoggedIn=false') > -1) {
-          isLoggedVal = false;
-        }
-      } catch(cErr) {}
-      window.isUserLoggedInFallback = isLoggedVal;
-    }
+    var isLoggedVal = false;
+    try {
+      isLoggedVal = localStorage.getItem('isUserLoggedIn') === 'true';
+    } catch(e) {}
+    try {
+      if (document.cookie.indexOf('isUserLoggedIn=true') > -1) {
+        isLoggedVal = true;
+      } else if (document.cookie.indexOf('isUserLoggedIn=false') > -1) {
+        isLoggedVal = false;
+      }
+    } catch(cErr) {}
+    window.isUserLoggedInFallback = isLoggedVal;
 
     // Global Theme Switcher Engine (Head Level Availability)
     window.setTheme = function(theme) {
@@ -987,7 +975,10 @@
     };
 
     window.performUserLogout = function(e) {
-      if (e && e.stopPropagation) e.stopPropagation();
+      if (e) {
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+      }
       try {
         localStorage.setItem('isUserLoggedIn', 'false');
         localStorage.removeItem('userLoginName');
@@ -1001,21 +992,14 @@
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
 
-      // Instantly trigger checkUserAuthStatus to show login overlay immediately
-      if (typeof window.checkUserAuthStatus === 'function') {
-        window.checkUserAuthStatus();
+      // Instantly show the login overlay smoothly without page reload
+      var overlay = document.getElementById('fullAppLoginOverlay');
+      if (overlay) {
+        overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
+        try { overlay.style.setProperty('display', 'flex', 'important'); } catch(err) { overlay.style.display = 'flex'; }
       }
 
       if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
-
-      // Force page reload with logged_out parameter to clean up memory states
-      setTimeout(function() {
-        var cleanPath = window.location.pathname;
-        if (cleanPath.endsWith('/')) {
-          cleanPath += 'index.html';
-        }
-        window.location.href = cleanPath + '?logged_out=true&v=' + Date.now() + window.location.hash;
-      }, 500);
     };
 
     if (document.readyState === 'loading') {
