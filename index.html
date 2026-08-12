@@ -991,11 +991,16 @@
 
       window.isUserLoggedInFallback = false;
 
+      // Step 1: Clear all auth state from localStorage
       try {
         localStorage.clear();
         localStorage.setItem('isUserLoggedIn', 'false');
       } catch(err) {}
 
+      // Step 2: Clear sessionStorage
+      try { sessionStorage.clear(); } catch(e) {}
+
+      // Step 3: Expire all cookies
       try {
         var cookies = document.cookie.split(";");
         for (var i = 0; i < cookies.length; i++) {
@@ -1009,22 +1014,24 @@
         document.cookie = "isUserLoggedIn=false; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       } catch(cErr) {}
 
+      // Step 4: Show login overlay immediately (visible before reload)
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
 
-      var userInput = document.getElementById('authUsernameInput');
-      var passInput = document.getElementById('authPasswordInput');
-      if (userInput) userInput.value = '';
-      if (passInput) passInput.value = '';
-
       var overlay = document.getElementById('fullAppLoginOverlay');
       if (overlay) {
-        overlay.style.cssText = "display: flex !important; opacity: 1 !important; pointer-events: auto !important; z-index: 999999;";
+        overlay.style.cssText = "display: flex !important; opacity: 1 !important; pointer-events: auto !important; z-index: 999999 !important;";
         overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
       }
 
-      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
-      if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
+      // Step 5: Force a HARD PAGE RELOAD after 700ms (after toast is visible).
+      // This completely destroys all in-memory JS state (running intervals, variables, etc.).
+      // On fresh load: localStorage has isUserLoggedIn='false' → login overlay shows automatically.
+      if (typeof window.showToast === 'function') window.showToast('Logged out. Redirecting...', 'info');
+      setTimeout(function() {
+        var cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        window.location.replace(cleanUrl);
+      }, 700);
     };
 
     function attachLogoutListener() {
