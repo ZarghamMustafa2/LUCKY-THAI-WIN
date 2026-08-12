@@ -1012,9 +1012,19 @@
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
 
-      var cleanPath = window.location.pathname;
-      if (!cleanPath || cleanPath === '') cleanPath = '/';
-      window.location.replace(cleanPath);
+      var userInput = document.getElementById('authUsernameInput');
+      var passInput = document.getElementById('authPasswordInput');
+      if (userInput) userInput.value = '';
+      if (passInput) passInput.value = '';
+
+      var overlay = document.getElementById('fullAppLoginOverlay');
+      if (overlay) {
+        overlay.style.cssText = "display: flex !important; opacity: 1 !important; pointer-events: auto !important; z-index: 999999;";
+        overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
+      }
+
+      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
+      if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
     };
 
     function attachLogoutListener() {
