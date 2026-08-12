@@ -1060,9 +1060,18 @@
         localStorage.setItem('isUserLoggedIn', 'false');
         localStorage.removeItem('userLoginName');
         localStorage.removeItem('userLoginPassword');
+        localStorage.removeItem('isAdminAuth');
       } catch(err) {}
       try {
-        document.cookie = "isUserLoggedIn=false; path=/; max-age=31536000";
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+          var eqPos = cookies[i].indexOf("=");
+          var name = eqPos > -1 ? cookies[i].substr(0, eqPos).trim() : cookies[i].trim();
+          if (name) {
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
+          }
+        }
       } catch(cErr) {}
       window.location.href = 'index.html';
     };

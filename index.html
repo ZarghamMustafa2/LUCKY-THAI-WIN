@@ -75,27 +75,11 @@
       }
     } catch(e) {}
 
-    window.getAuthCookie = function() {
-      try {
-        var match = document.cookie.match(/(?:^|;\s*)isUserLoggedIn=([^;]*)/);
-        return match ? match[1] : null;
-      } catch(e) {
-        return null;
-      }
-    };
-
     var isLoggedVal = false;
-    var cVal = window.getAuthCookie();
-    if (cVal === 'true') {
-      isLoggedVal = true;
-    } else if (cVal === 'false') {
+    try {
+      isLoggedVal = localStorage.getItem('isUserLoggedIn') === 'true';
+    } catch(e) {
       isLoggedVal = false;
-    } else {
-      try {
-        isLoggedVal = localStorage.getItem('isUserLoggedIn') === 'true';
-      } catch(e) {
-        isLoggedVal = false;
-      }
     }
     window.isUserLoggedInFallback = isLoggedVal;
 
@@ -807,18 +791,17 @@
 
     window.checkUserAuthStatus = function() {
       var isLoggedIn = false;
-      var cVal = typeof window.getAuthCookie === 'function' ? window.getAuthCookie() : null;
-      if (cVal === 'true') {
-        isLoggedIn = true;
-      } else if (cVal === 'false') {
-        isLoggedIn = false;
-      } else {
-        try {
-          var storedAuth = localStorage.getItem('isUserLoggedIn');
-          isLoggedIn = storedAuth === 'true';
-        } catch(e) {
+      try {
+        var storedAuth = localStorage.getItem('isUserLoggedIn');
+        if (storedAuth === 'true') {
+          isLoggedIn = true;
+        } else if (storedAuth === 'false') {
+          isLoggedIn = false;
+        } else {
           isLoggedIn = !!window.isUserLoggedInFallback;
         }
+      } catch(e) {
+        isLoggedIn = !!window.isUserLoggedInFallback;
       }
 
       try {
@@ -973,17 +956,17 @@
 
     window.closeAppLoginOverlay = function() {
       var isLogged = false;
-      var cVal = typeof window.getAuthCookie === 'function' ? window.getAuthCookie() : null;
-      if (cVal === 'true') {
-        isLogged = true;
-      } else if (cVal === 'false') {
-        isLogged = false;
-      } else {
-        try {
-          isLogged = localStorage.getItem('isUserLoggedIn') === 'true';
-        } catch(e) {
+      try {
+        var storedAuth = localStorage.getItem('isUserLoggedIn');
+        if (storedAuth === 'true') {
+          isLogged = true;
+        } else if (storedAuth === 'false') {
+          isLogged = false;
+        } else {
           isLogged = !!window.isUserLoggedInFallback;
         }
+      } catch(e) {
+        isLogged = !!window.isUserLoggedInFallback;
       }
 
       if (!isLogged) {
@@ -1002,22 +985,40 @@
         if (e.stopPropagation) e.stopPropagation();
         if (e.preventDefault) e.preventDefault();
       }
+
+      window.isUserLoggedInFallback = false;
+
       try {
         localStorage.setItem('isUserLoggedIn', 'false');
         localStorage.removeItem('userLoginName');
         localStorage.removeItem('userLoginPassword');
+        localStorage.removeItem('isAdminAuth');
       } catch(err) {}
+
       try {
-        document.cookie = "isUserLoggedIn=false; path=/; max-age=31536000";
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+          var eqPos = cookies[i].indexOf("=");
+          var name = eqPos > -1 ? cookies[i].substr(0, eqPos).trim() : cookies[i].trim();
+          if (name) {
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
+          }
+        }
+        document.cookie = "isUserLoggedIn=false; path=/; max-age=0";
       } catch(cErr) {}
-      window.isUserLoggedInFallback = false;
 
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
 
-      if (typeof window.checkUserAuthStatus === 'function') {
-        window.checkUserAuthStatus();
+      var overlay = document.getElementById('fullAppLoginOverlay');
+      if (overlay) {
+        overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
+        try { overlay.style.setProperty('display', 'flex', 'important'); } catch(err) { overlay.style.display = 'flex'; }
       }
+
+      var userText = document.getElementById('headerUsernameText');
+      if (userText) userText.textContent = 'Guest';
 
       if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
     };
