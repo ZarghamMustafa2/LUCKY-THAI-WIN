@@ -114,15 +114,10 @@
               <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
             </a>
             <div class="h-px bg-white/10 my-1"></div>
-            <a href="admin.html" class="w-full text-left px-5 py-2.5 hover:bg-[#2563eb]/20 text-blue-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-user-shield text-[#2563eb]"></i> Admin Panel</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-[#2563eb]"></i>
-            </a>
-            <div class="h-px bg-white/10 my-1"></div>
-            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+            <button type="button" onclick="event.stopPropagation(); performGameUserLogout(event);" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
               <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
               <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -1058,6 +1053,16 @@
 
     // Initial calculator refresh
     window.updateBannerProfitCalculator();
+
+    window.performGameUserLogout = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      try {
+        localStorage.setItem('isUserLoggedIn', 'false');
+        localStorage.removeItem('userLoginName');
+        localStorage.removeItem('userLoginPassword');
+      } catch(err) {}
+      window.location.href = 'index.html?v=' + Date.now();
+    };
   </script>
   <!-- Universal Touch Pull-To-Refresh Engine -->
   <script src="pull-to-refresh.js"></script>
