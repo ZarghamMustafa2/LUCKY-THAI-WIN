@@ -962,16 +962,17 @@
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) dropdown.classList.add('hidden');
 
+      // Instantly trigger checkUserAuthStatus to show login overlay immediately
+      if (typeof window.checkUserAuthStatus === 'function') {
+        window.checkUserAuthStatus();
+      }
+
       if (typeof window.showToast === 'function') window.showToast('Logged out successfully.', 'info');
 
-      // Force page reload with cache buster to bypass browser cache completely
+      // Force page reload to clean up memory states
       setTimeout(function() {
-        var cleanPath = window.location.pathname;
-        if (cleanPath.endsWith('/')) {
-          cleanPath += 'index.html';
-        }
-        window.location.href = cleanPath + '?v=' + Date.now() + window.location.hash;
-      }, 300);
+        window.location.reload();
+      }, 500);
     };
 
     if (document.readyState === 'loading') {
