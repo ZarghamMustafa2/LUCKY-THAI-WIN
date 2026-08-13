@@ -371,14 +371,16 @@
         if (e && e.stopPropagation) e.stopPropagation();
         window.performUserLogout(e);
       };
-      btn.addEventListener('click', function(e) {
-        if (e && e.stopPropagation) e.stopPropagation();
-        window.performUserLogout(e);
-      });
-      btn.addEventListener('touchend', function(e) {
-        if (e && e.stopPropagation) e.stopPropagation();
-        window.performUserLogout(e);
-      });
+      if (typeof btn.addEventListener === 'function') {
+        btn.addEventListener('click', function(e) {
+          if (e && e.stopPropagation) e.stopPropagation();
+          window.performUserLogout(e);
+        });
+        btn.addEventListener('touchend', function(e) {
+          if (e && e.stopPropagation) e.stopPropagation();
+          window.performUserLogout(e);
+        });
+      }
     }
   }
 
