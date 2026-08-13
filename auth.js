@@ -2,14 +2,7 @@
  * ============================================================
  *  AUTH.JS — Lucky Thai Win Authentication System
  *  Handles: Login · Logout · Guest Login · Session State
- *  Version: 2.0 | Standalone Module
- * ============================================================
- *
- *  STORAGE KEY:  localStorage → 'isUserLoggedIn'  ('true' | 'false')
- *  OVERLAY ID:   #fullAppLoginOverlay
- *  LOGOUT BTN:   #logoutBtn
- *
- *  All functions are exposed on window.* for global access.
+ *  Version: 2.1 | Standalone Module | 100% In-Place (No Reload)
  * ============================================================
  */
 
@@ -25,7 +18,6 @@
       if (val === 'true')  return true;
       if (val === 'false') return false;
     } catch (e) {}
-    // Fallback to in-memory flag (set during head-init)
     return !!window.isUserLoggedInFallback;
   }
 
@@ -33,19 +25,34 @@
   function _showOverlay() {
     var overlay = document.getElementById('fullAppLoginOverlay');
     if (!overlay) return;
-    overlay.style.cssText =
-      'display: flex !important; opacity: 1 !important; ' +
-      'pointer-events: auto !important; z-index: 999999 !important;';
     overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
+    try {
+      overlay.style.setProperty('display', 'flex', 'important');
+      overlay.style.setProperty('opacity', '1', 'important');
+      overlay.style.setProperty('pointer-events', 'auto', 'important');
+      overlay.style.setProperty('z-index', '999999', 'important');
+    } catch (err) {
+      overlay.style.display = 'flex';
+      overlay.style.opacity = '1';
+      overlay.style.pointerEvents = 'auto';
+      overlay.style.zIndex = '999999';
+    }
   }
 
   /** Hide the full-screen login overlay */
   function _hideOverlay() {
     var overlay = document.getElementById('fullAppLoginOverlay');
     if (!overlay) return;
-    overlay.style.cssText =
-      'display: none !important; opacity: 0 !important; pointer-events: none !important;';
     overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
+    try {
+      overlay.style.setProperty('display', 'none', 'important');
+      overlay.style.setProperty('opacity', '0', 'important');
+      overlay.style.setProperty('pointer-events', 'none', 'important');
+    } catch (err) {
+      overlay.style.display = 'none';
+      overlay.style.opacity = '0';
+      overlay.style.pointerEvents = 'none';
+    }
   }
 
   /** Close the profile dropdown */
@@ -70,7 +77,7 @@
   function _clearAuthState() {
     window.isUserLoggedInFallback = false;
 
-    // Clear localStorage (preserve nothing from the session)
+    // Clear localStorage
     try {
       localStorage.clear();
       localStorage.setItem('isUserLoggedIn', 'false');
@@ -141,7 +148,6 @@
   /**
    * AUTH.checkUserAuthStatus()
    * Reads auth state and shows/hides the login overlay accordingly.
-   * Call this on every page load.
    */
   window.checkUserAuthStatus = function () {
     var loggedIn = _readAuthState();
@@ -179,17 +185,20 @@
   /**
    * AUTH.handleAppLoginSubmit(e)
    * Processes the login form submission.
-   * Validates username, detects admin password, logs the user in.
    */
   window.handleAppLoginSubmit = function (e) {
-    if (e && e.preventDefault) e.preventDefault();
+    if (e) {
+      try {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+      } catch (err) {}
+    }
 
     var nameInput = document.getElementById('authUsernameInput');
     var passInput = document.getElementById('authPasswordInput');
     var username  = nameInput && nameInput.value ? nameInput.value.trim() : '';
     var password  = passInput && passInput.value ? passInput.value.trim() : '';
 
-    // Validate username
     if (!username) {
       if (typeof window.showToast === 'function') {
         window.showToast('Please enter your username!', 'warning');
@@ -221,10 +230,10 @@
 
     // Load session & update UI
     if (typeof window.loadActiveUserSession === 'function') {
-      window.loadActiveUserSession();
+      try { window.loadActiveUserSession(); } catch (err) {}
     }
     if (typeof window.updateUserProfileUI === 'function') {
-      window.updateUserProfileUI();
+      try { window.updateUserProfileUI(); } catch (err) {}
     }
 
     // Hide overlay
@@ -245,7 +254,7 @@
     _setLoggedIn(guestName);
 
     if (typeof window.updateUserProfileUI === 'function') {
-      window.updateUserProfileUI();
+      try { window.updateUserProfileUI(); } catch (err) {}
     }
     _hideOverlay();
 
@@ -256,11 +265,15 @@
 
   /**
    * AUTH.showAppLoginOverlay(e)
-   * Programmatically show the login overlay (e.g. when unauthenticated user
-   * tries to access a protected feature).
+   * Programmatically show the login overlay.
    */
   window.showAppLoginOverlay = function (e) {
-    if (e && e.stopPropagation) e.stopPropagation();
+    if (e) {
+      try {
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+      } catch (err) {}
+    }
     _closeDropdown();
     _showOverlay();
   };
@@ -268,7 +281,6 @@
   /**
    * AUTH.closeAppLoginOverlay()
    * Close the overlay ONLY if the user is already logged in.
-   * If not logged in, shows a warning toast instead.
    */
   window.closeAppLoginOverlay = function () {
     if (!_readAuthState()) {
@@ -286,49 +298,62 @@
    *  1. Clears localStorage, sessionStorage, cookies & in-memory auth state
    *  2. Clears login credentials input fields
    *  3. Closes profile dropdown & modals
-   *  4. Shows login overlay instantly
+   *  4. Shows login overlay instantly in-place
    *  5. Updates profile UI and shows toast notification
    */
   window.performUserLogout = function (e) {
     if (e) {
-      if (e.stopPropagation) e.stopPropagation();
-      if (e.preventDefault) e.preventDefault();
+      try {
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+      } catch (err) {}
     }
 
-    // 1 — Clear all auth & session data
-    _clearAuthState();
+    try {
+      // 1 — Clear all auth & session data
+      _clearAuthState();
+    } catch (err) {}
 
-    // 2 — Clear inputs in login overlay
-    var nameInput = document.getElementById('authUsernameInput');
-    var passInput = document.getElementById('authPasswordInput');
-    if (nameInput) nameInput.value = '';
-    if (passInput) passInput.value = '';
+    try {
+      // 2 — Clear inputs in login overlay
+      var nameInput = document.getElementById('authUsernameInput');
+      var passInput = document.getElementById('authPasswordInput');
+      if (nameInput) nameInput.value = '';
+      if (passInput) passInput.value = '';
+    } catch (err) {}
 
-    // 3 — Close profile dropdown & any open modals
-    _closeDropdown();
-    var modals = ['userLoginModal', 'profileStatementModal', 'profileProfitLossModal', 'profileBetHistoryModal'];
-    modals.forEach(function(mId) {
-      var el = document.getElementById(mId);
-      if (el) el.classList.add('hidden');
-    });
+    try {
+      // 3 — Close profile dropdown & any open modals
+      _closeDropdown();
+      var modals = ['userLoginModal', 'profileStatementModal', 'profileProfitLossModal', 'profileBetHistoryModal'];
+      modals.forEach(function(mId) {
+        var el = document.getElementById(mId);
+        if (el) el.classList.add('hidden');
+      });
+    } catch (err) {}
 
-    // 4 — Show login overlay instantly in-place
-    _showOverlay();
+    try {
+      // 4 — Show login overlay instantly in-place
+      _showOverlay();
+    } catch (err) {}
 
-    // 5 — Update profile UI
-    if (typeof window.updateUserProfileUI === 'function') {
-      window.updateUserProfileUI();
-    }
+    try {
+      // 5 — Update profile UI
+      if (typeof window.updateUserProfileUI === 'function') {
+        window.updateUserProfileUI();
+      }
+    } catch (err) {}
 
-    // 6 — Show toast notification (No page reload)
-    if (typeof window.showToast === 'function') {
-      window.showToast('Logged out successfully.', 'info');
-    }
+    try {
+      // 6 — Show toast notification (No page reload)
+      if (typeof window.showToast === 'function') {
+        window.showToast('Logged out successfully.', 'info');
+      }
+    } catch (err) {}
   };
 
   /**
    * AUTH.isLoggedIn()
-   * Returns true/false — useful for guarding any feature.
    */
   window.AuthSystem = {
     isLoggedIn:  _readAuthState,
@@ -337,7 +362,7 @@
     logout:      window.performUserLogout
   };
 
-  // ─── INIT — runs after DOM is ready ───────────────────────
+  // ─── INIT — attach listeners & initial check ─────────────
 
   function _attachLogoutBtn() {
     var btn = document.getElementById('logoutBtn');
@@ -346,30 +371,36 @@
         if (e && e.stopPropagation) e.stopPropagation();
         window.performUserLogout(e);
       };
+      btn.addEventListener('click', function(e) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        window.performUserLogout(e);
+      });
+      btn.addEventListener('touchend', function(e) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        window.performUserLogout(e);
+      });
     }
   }
 
   function _init() {
-    // Run session loaders if available
     if (typeof window.loadActiveUserSession === 'function') {
-      window.loadActiveUserSession();
+      try { window.loadActiveUserSession(); } catch (err) {}
     }
     if (typeof window.updateUserProfileUI === 'function') {
-      window.updateUserProfileUI();
+      try { window.updateUserProfileUI(); } catch (err) {}
     }
-
-    // Show or hide login overlay based on auth state
     window.checkUserAuthStatus();
-
-    // Bind logout button
     _attachLogoutBtn();
   }
 
-  // Boot when DOM is ready
+  // Run on DOM ready or immediately if already ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', _init);
   } else {
-    setTimeout(_init, 50);
+    _init();
   }
+
+  // Also bind window load to be 100% sure
+  window.addEventListener('load', _attachLogoutBtn);
 
 })(window);
