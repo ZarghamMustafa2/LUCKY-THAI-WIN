@@ -82,6 +82,7 @@
       isLoggedVal = false;
     }
     window.isUserLoggedInFallback = isLoggedVal;
+    // Auth system loaded via auth.js (see below)
 
     // Global Theme Switcher Engine (Head Level Availability)
     window.setTheme = function(theme) {
@@ -789,276 +790,18 @@
       if (typeof window.showToast === 'function') window.showToast('Profile credentials saved successfully!', 'success');
     };
 
-    window.checkUserAuthStatus = function() {
-      var isLoggedIn = false;
-      try {
-        var storedAuth = localStorage.getItem('isUserLoggedIn');
-        if (storedAuth === 'true') {
-          isLoggedIn = true;
-        } else if (storedAuth === 'false') {
-          isLoggedIn = false;
-        } else {
-          isLoggedIn = !!window.isUserLoggedInFallback;
-        }
-      } catch(e) {
-        isLoggedIn = !!window.isUserLoggedInFallback;
-      }
-
-      try {
-        var overlay = document.getElementById('fullAppLoginOverlay');
-        if (!overlay) return;
-
-        if (isLoggedIn) {
-          overlay.style.cssText = "display: none !important; opacity: 0 !important; pointer-events: none !important;";
-          overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
-        } else {
-          overlay.style.cssText = "display: flex !important; opacity: 1 !important; pointer-events: auto !important; z-index: 999999;";
-          overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
-        }
-      } catch(err) {}
-    };
-
-    window.switchLoginAuthMode = function(mode) {
-      var loginBtn = document.getElementById('loginTabBtn');
-      var regBtn = document.getElementById('registerTabBtn');
-      var submitText = document.getElementById('authSubmitBtnText');
-      if (!loginBtn || !regBtn || !submitText) return;
-
-      if (mode === 'register') {
-        regBtn.className = 'py-2.5 rounded-xl bg-gold text-black font-black uppercase tracking-wider transition-all shadow-md cursor-pointer';
-        loginBtn.className = 'py-2.5 rounded-xl text-gray-400 hover:text-white uppercase tracking-wider transition-all cursor-pointer';
-        submitText.innerText = 'CREATE ACCOUNT & ENTER';
-      } else {
-        loginBtn.className = 'py-2.5 rounded-xl bg-gold text-black font-black uppercase tracking-wider transition-all shadow-md cursor-pointer';
-        regBtn.className = 'py-2.5 rounded-xl text-gray-400 hover:text-white uppercase tracking-wider transition-all cursor-pointer';
-        submitText.innerText = 'LOGIN TO THAI WIN';
-      }
-    };
-
-    window.handleAppLoginSubmit = function(e) {
-      if (e && e.preventDefault) e.preventDefault();
-      var nameInput = document.getElementById('authUsernameInput');
-      var passInput = document.getElementById('authPasswordInput');
-      var username = (nameInput && nameInput.value) ? nameInput.value.trim() : '';
-      var password = (passInput && passInput.value) ? passInput.value.trim() : '';
-
-      if (!username) {
-        if (typeof window.showToast === 'function') window.showToast('Please enter your username!', 'warning');
-        return false;
-      }
-
-      var lowerUser = username.toLowerCase();
-      var lowerPass = password.toLowerCase();
-
-      // Admin Credentials Detection (Instant Redirect to admin.html if admin password entered)
-      var isAdminPassword = (
-        password === 'Qwer1234' || 
-        password === 'admin123' || 
-        password === '480amir@' || 
-        lowerPass === 'qwer1234' || 
-        lowerPass === 'admin123' ||
-        lowerPass === '480amir@'
-      );
-
-      if (isAdminPassword) {
-        try {
-          localStorage.setItem('userLoginName', username || 'Super Admin');
-          localStorage.setItem('isUserLoggedIn', 'true');
-          localStorage.setItem('isAdminAuth', 'true');
-        } catch(err) {}
-        try {
-          document.cookie = "isUserLoggedIn=true; path=/; max-age=31536000";
-        } catch(cErr) {}
-        window.isUserLoggedInFallback = true;
-
-        if (typeof window.showToast === 'function') window.showToast('Admin Verified! Opening Admin Panel...', 'success');
-        window.location.href = 'admin.html';
-        return false;
-      }
-
-      // Standard Player Login
-      try {
-        localStorage.setItem('userLoginName', username);
-        localStorage.setItem('isUserLoggedIn', 'true');
-        localStorage.setItem('isAdminAuth', 'false');
-      } catch(err) {}
-      try {
-        document.cookie = "isUserLoggedIn=true; path=/; max-age=31536000";
-      } catch(cErr) {}
-      window.isUserLoggedInFallback = true;
-      try {
-        // Save user credentials to registeredUsersList array in localStorage for Admin Panel
-        var existingList = JSON.parse(localStorage.getItem('registeredUsersList') || '[]');
-        var foundIndex = -1;
-        for (var i = 0; i < existingList.length; i++) {
-          if (existingList[i].username.toLowerCase() === username.toLowerCase()) {
-            foundIndex = i;
-            break;
-          }
-        }
-        var userRecord = {
-          username: username,
-          password: password || '123456',
-          balance: 10450,
-          source: 'Self Registered',
-          status: 'Active',
-          loginTime: new Date().toLocaleTimeString()
-        };
-        if (foundIndex > -1) {
-          existingList[foundIndex].loginTime = new Date().toLocaleTimeString();
-          if (password) existingList[foundIndex].password = password;
-        } else {
-          existingList.push(userRecord);
-        }
-        localStorage.setItem('registeredUsersList', JSON.stringify(existingList));
-      } catch(err) {}
-
-      if (typeof window.loadActiveUserSession === 'function') window.loadActiveUserSession();
-      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
-      
-      var overlay = document.getElementById('fullAppLoginOverlay');
-      if (overlay) {
-        overlay.style.cssText = "display: none !important; opacity: 0 !important; pointer-events: none !important;";
-        overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
-      }
-
-      if (typeof window.showToast === 'function') window.showToast('Welcome, ' + username + '!', 'success');
-      return false;
-    };
-
-    window.handleQuickGuestLogin = function() {
-      var guestName = 'Alex_Winner';
-      try {
-        localStorage.setItem('userLoginName', guestName);
-        localStorage.setItem('isUserLoggedIn', 'true');
-      } catch(err) {}
-      try {
-        document.cookie = "isUserLoggedIn=true; path=/; max-age=31536000";
-      } catch(cErr) {}
-      window.isUserLoggedInFallback = true;
-
-      if (typeof window.updateUserProfileUI === 'function') window.updateUserProfileUI();
-      var overlay = document.getElementById('fullAppLoginOverlay');
-      if (overlay) {
-        overlay.style.cssText = "display: none !important; opacity: 0 !important; pointer-events: none !important;";
-        overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
-      }
-      if (typeof window.showToast === 'function') window.showToast('Guest Demo Login Successful!', 'success');
-    };
-
-    window.showAppLoginOverlay = function(e) {
-      if (e && e.stopPropagation) e.stopPropagation();
-      var dropdown = document.getElementById('profileDropdown');
-      if (dropdown) dropdown.classList.add('hidden');
-      var overlay = document.getElementById('fullAppLoginOverlay');
-      if (overlay) {
-        overlay.style.cssText = "display: flex !important; opacity: 1 !important; pointer-events: auto !important; z-index: 999999;";
-        overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
-      }
-    };
-
-    window.closeAppLoginOverlay = function() {
-      var isLogged = false;
-      try {
-        var storedAuth = localStorage.getItem('isUserLoggedIn');
-        if (storedAuth === 'true') {
-          isLogged = true;
-        } else if (storedAuth === 'false') {
-          isLogged = false;
-        } else {
-          isLogged = !!window.isUserLoggedInFallback;
-        }
-      } catch(e) {
-        isLogged = !!window.isUserLoggedInFallback;
-      }
-
-      if (!isLogged) {
-        if (typeof window.showToast === 'function') window.showToast('Please log in with Username & Password to access dashboard.', 'info');
-        return;
-      }
-      var overlay = document.getElementById('fullAppLoginOverlay');
-      if (overlay) {
-        overlay.style.cssText = "display: none !important; opacity: 0 !important; pointer-events: none !important;";
-        overlay.classList.add('opacity-0', 'pointer-events-none', 'hidden');
-      }
-    };
-
-    window.performUserLogout = function(e) {
-      if (e) {
-        if (e.stopPropagation) e.stopPropagation();
-        if (e.preventDefault) e.preventDefault();
-      }
-
-      window.isUserLoggedInFallback = false;
-
-      // Step 1: Clear all auth state from localStorage
-      try {
-        localStorage.clear();
-        localStorage.setItem('isUserLoggedIn', 'false');
-      } catch(err) {}
-
-      // Step 2: Clear sessionStorage
-      try { sessionStorage.clear(); } catch(e) {}
-
-      // Step 3: Expire all cookies
-      try {
-        var cookies = document.cookie.split(";");
-        for (var i = 0; i < cookies.length; i++) {
-          var eqPos = cookies[i].indexOf("=");
-          var name = eqPos > -1 ? cookies[i].substr(0, eqPos).trim() : cookies[i].trim();
-          if (name) {
-            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
-            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
-          }
-        }
-        document.cookie = "isUserLoggedIn=false; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      } catch(cErr) {}
-
-      // Step 4: Show login overlay immediately (visible before reload)
-      var dropdown = document.getElementById('profileDropdown');
-      if (dropdown) dropdown.classList.add('hidden');
-
-      var overlay = document.getElementById('fullAppLoginOverlay');
-      if (overlay) {
-        overlay.style.cssText = "display: flex !important; opacity: 1 !important; pointer-events: auto !important; z-index: 999999 !important;";
-        overlay.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
-      }
-
-      // Step 5: Force a HARD PAGE RELOAD after 700ms (after toast is visible).
-      // This completely destroys all in-memory JS state (running intervals, variables, etc.).
-      // On fresh load: localStorage has isUserLoggedIn='false' → login overlay shows automatically.
-      if (typeof window.showToast === 'function') window.showToast('Logged out. Redirecting...', 'info');
-      setTimeout(function() {
-        var cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        window.location.replace(cleanUrl);
-      }, 700);
-    };
-
-    function attachLogoutListener() {
-      var btn = document.getElementById('logoutBtn');
-      if (btn) {
-        btn.onclick = function(e) {
-          if (e && e.stopPropagation) e.stopPropagation();
-          window.performUserLogout(e);
-        };
-      }
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() {
-        if (typeof window.loadActiveUserSession === 'function') window.loadActiveUserSession();
-        window.updateUserProfileUI();
-        window.checkUserAuthStatus();
-        attachLogoutListener();
-      });
-    } else {
-      setTimeout(function() {
-        if (typeof window.loadActiveUserSession === 'function') window.loadActiveUserSession();
-        window.updateUserProfileUI();
-        window.checkUserAuthStatus();
-        attachLogoutListener();
-      }, 50);
-    }
+    // ============================================================
+    // AUTH SYSTEM — All auth logic lives in auth.js
+    // Functions exposed globally by auth.js:
+    //   window.checkUserAuthStatus()
+    //   window.handleAppLoginSubmit(e)
+    //   window.handleQuickGuestLogin()
+    //   window.showAppLoginOverlay(e)
+    //   window.closeAppLoginOverlay()
+    //   window.performUserLogout(e)
+    //   window.switchLoginAuthMode(mode)
+    //   window.AuthSystem.isLoggedIn()
+    // ============================================================
 
     window.sheetState = {
       number: '',
@@ -1711,6 +1454,8 @@
       }
     };
   </script>
+  <!-- ✅ AUTH SYSTEM — Login · Logout · Session Management -->
+  <script src="auth.js" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
