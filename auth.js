@@ -282,10 +282,12 @@
 
   /**
    * AUTH.performUserLogout(e)
-   * Full logout:
-   *  1. Clears localStorage, sessionStorage, cookies
-   *  2. Shows login overlay immediately
-   *  3. Hard page reload after 700ms (kills all in-memory JS state)
+   * Smooth In-Place Logout (NO page refresh/reload):
+   *  1. Clears localStorage, sessionStorage, cookies & in-memory auth state
+   *  2. Clears login credentials input fields
+   *  3. Closes profile dropdown & modals
+   *  4. Shows login overlay instantly
+   *  5. Updates profile UI and shows toast notification
    */
   window.performUserLogout = function (e) {
     if (e) {
@@ -296,22 +298,32 @@
     // 1 — Clear all auth & session data
     _clearAuthState();
 
-    // 2 — Close dropdown, show overlay instantly
+    // 2 — Clear inputs in login overlay
+    var nameInput = document.getElementById('authUsernameInput');
+    var passInput = document.getElementById('authPasswordInput');
+    if (nameInput) nameInput.value = '';
+    if (passInput) passInput.value = '';
+
+    // 3 — Close profile dropdown & any open modals
     _closeDropdown();
+    var modals = ['userLoginModal', 'profileStatementModal', 'profileProfitLossModal', 'profileBetHistoryModal'];
+    modals.forEach(function(mId) {
+      var el = document.getElementById(mId);
+      if (el) el.classList.add('hidden');
+    });
+
+    // 4 — Show login overlay instantly in-place
     _showOverlay();
 
-    // 3 — Toast then hard reload
-    if (typeof window.showToast === 'function') {
-      window.showToast('Logged out. Redirecting...', 'info');
+    // 5 — Update profile UI
+    if (typeof window.updateUserProfileUI === 'function') {
+      window.updateUserProfileUI();
     }
 
-    setTimeout(function () {
-      var cleanUrl =
-        window.location.protocol + '//' +
-        window.location.host +
-        window.location.pathname;
-      window.location.replace(cleanUrl);
-    }, 700);
+    // 6 — Show toast notification (No page reload)
+    if (typeof window.showToast === 'function') {
+      window.showToast('Logged out successfully.', 'info');
+    }
   };
 
   /**
