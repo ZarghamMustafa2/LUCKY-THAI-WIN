@@ -99,36 +99,61 @@
           </div>
 
           <!-- Profile Dropdown Menu -->
-          <div id="gameProfileDropdown" class="hidden absolute top-10 right-0 w-52 bg-[#121B2F] text-white border border-gold/40 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] z-[9999] flex flex-col py-2 transition-all">
-            <a href="#myActiveBetsSection" onclick="event.stopPropagation(); toggleGameProfileDropdown(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-ticket-simple text-amber-400"></i> My Active Bets</span>
-              <span id="dropdownActiveBetsCount" class="badge badge-warning text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono font-bold">0</span>
-            </a>
-            <button type="button" onclick="event.stopPropagation(); openProfileStatementModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice text-cyan-400"></i> Statement</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <button type="button" onclick="event.stopPropagation(); openProfileResultModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-square-poll-vertical text-emerald-400"></i> Result</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <button type="button" onclick="event.stopPropagation(); openProfileProfitLossModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-gold"></i> Profit Loss</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-list-check text-purple-400"></i> Bet History</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </a>
-            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-user-gear text-blue-400"></i> Profile</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </a>
-            <div class="h-px bg-white/10 my-1"></div>
-            <button type="button" onclick="event.stopPropagation(); performGameUserLogout(event);" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
-            </button>
+          <div id="gameProfileDropdown" class="hidden absolute top-10 right-0 w-60 bg-[#121B2F] text-white border border-gold/40 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] z-[9999] flex flex-col py-0 overflow-hidden transition-all">
+            <!-- Top Credentials Summary Card inside Dropdown -->
+            <div class="px-4 py-2.5 bg-[#0A101D] border-b border-white/10 flex flex-col gap-1.5 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-gray-400 text-[10px] uppercase font-bold flex items-center gap-1">
+                  <i class="fa-solid fa-hashtag text-cyan-400 text-[9px]"></i> User ID:
+                </span>
+                <span id="gameDropdownUserId" class="font-mono font-bold text-amber-400 bg-black/40 px-2 py-0.5 rounded border border-white/10 text-xs">Bp28233</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-400 text-[10px] uppercase font-bold flex items-center gap-1">
+                  <i class="fa-solid fa-user text-cyan-400 text-[9px]"></i> Name:
+                </span>
+                <span id="gameDropdownUserName" class="font-mono font-bold text-cyan-300 text-xs">Alex_Winner</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-400 text-[10px] uppercase font-bold flex items-center gap-1">
+                  <i class="fa-solid fa-coins text-amber-400 text-[9px]"></i> Tokens:
+                </span>
+                <span id="gameDropdownTokenBalance" class="font-mono font-bold text-amber-300 bg-black/40 px-2 py-0.5 rounded border border-white/10 text-xs">45,000 VTK</span>
+              </div>
+            </div>
+
+            <!-- Dropdown Navigation Items -->
+            <div class="py-1 flex flex-col">
+              <a href="#myActiveBetsSection" onclick="event.stopPropagation(); toggleGameProfileDropdown(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-ticket-simple text-amber-400"></i> My Active Bets</span>
+                <span id="dropdownActiveBetsCount" class="badge badge-warning text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono font-bold">0</span>
+              </a>
+              <button type="button" onclick="event.stopPropagation(); openProfileStatementModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice text-cyan-400"></i> Statement</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <button type="button" onclick="event.stopPropagation(); openProfileResultModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-square-poll-vertical text-emerald-400"></i> Result</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <button type="button" onclick="event.stopPropagation(); openProfileProfitLossModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-gold"></i> Profit Loss</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-list-check text-purple-400"></i> Bet History</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </a>
+              <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-user-gear text-blue-400"></i> Profile</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </a>
+              <div class="h-px bg-white/10 my-1"></div>
+              <button type="button" onclick="event.stopPropagation(); performGameUserLogout(event);" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between mb-1">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -942,6 +967,25 @@
       }
       var balEl = document.getElementById('userBalanceText');
       if (balEl) balEl.innerText = window.currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+      if (window.PlatformSync && typeof window.PlatformSync.getUserTokenBalance === 'function') {
+        var tokBal = window.PlatformSync.getUserTokenBalance(curU);
+        var tokFormatted = tokBal.toLocaleString() + ' VTK';
+        var tokEls = document.querySelectorAll('#gameDropdownTokenBalance, #gameTokenBalance, .token-balance-text, [data-token-balance]');
+        tokEls.forEach(function(el) {
+          if (el) el.innerText = tokFormatted;
+        });
+      }
+
+      if (window.PlatformSync && typeof window.PlatformSync.getUserCredentials === 'function') {
+        var creds = window.PlatformSync.getUserCredentials(curU);
+        if (creds) {
+          var idEl = document.getElementById('gameDropdownUserId');
+          if (idEl) idEl.innerText = creds.id;
+          var nameEl = document.getElementById('gameDropdownUserName');
+          if (nameEl) nameEl.innerText = creds.username;
+        }
+      }
     };
 
     // Toast Notification helper
@@ -1330,9 +1374,13 @@
           if (typeof window.renderMyActiveBets === 'function') window.renderMyActiveBets();
           if (typeof window.updateGameWalletUI === 'function') window.updateGameWalletUI();
         } else if (event.type === 'TOKEN_TRANSFER_COMPLETED') {
-          if (event.payload && event.payload.receiver && event.payload.receiver.toLowerCase() === curU.toLowerCase()) {
+          if (typeof window.updateGameWalletUI === 'function') window.updateGameWalletUI();
+          var p = event.payload || {};
+          var isReceiver = (p.receiver && p.receiver.toLowerCase() === curU.toLowerCase()) || 
+                           (p.recipientUserId && (p.recipientUserId.toLowerCase() === curU.toLowerCase() || p.recipientUserId.toLowerCase() === 'bp28233'));
+          if (isReceiver) {
             if (typeof window.showToast === 'function') {
-              window.showToast('🪙 You received ' + event.payload.amount.toLocaleString() + ' Virtual Tokens (VTK)!', 'success');
+              window.showToast('🪙 You received ' + (p.amount ? p.amount.toLocaleString() : 0) + ' Virtual Tokens (VTK)!', 'success');
             }
           }
         }

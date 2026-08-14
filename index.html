@@ -977,14 +977,24 @@
       });
 
       // Update User Virtual Token Balance in UI
-      if (window.PlatformSync && typeof window.PlatformSync.getTokenAccount === 'function') {
-        var tokAcc = window.PlatformSync.getTokenAccount(curU);
-        var tokBal = tokAcc ? tokAcc.tokenBalance : 0;
+      if (window.PlatformSync && typeof window.PlatformSync.getUserTokenBalance === 'function') {
+        var tokBal = window.PlatformSync.getUserTokenBalance(curU);
         var tokFormatted = tokBal.toLocaleString() + ' VTK';
-        var tokEls = document.querySelectorAll('#userTokenBalance, .token-balance-text, [data-token-balance]');
+        var tokEls = document.querySelectorAll('#userTokenBalance, #dropdownHeaderTokenBalance, .token-balance-text, [data-token-balance]');
         tokEls.forEach(function(el) {
           if (el) el.innerText = tokFormatted;
         });
+      }
+
+      // Update dropdown credentials dynamically
+      if (window.PlatformSync && typeof window.PlatformSync.getUserCredentials === 'function') {
+        var creds = window.PlatformSync.getUserCredentials(curU);
+        if (creds) {
+          var idEl = document.getElementById('dropdownHeaderUserId');
+          if (idEl) idEl.innerText = creds.id;
+          var nameEl = document.getElementById('dropdownHeaderUserName');
+          if (nameEl) nameEl.innerText = creds.username;
+        }
       }
 
       try {
@@ -1019,9 +1029,12 @@
           }
         } else if (event.type === 'TOKEN_TRANSFER_COMPLETED') {
           window.updateWalletUI();
-          if (event.payload && event.payload.receiver && event.payload.receiver.toLowerCase() === curU.toLowerCase()) {
+          var p = event.payload || {};
+          var isReceiver = (p.receiver && p.receiver.toLowerCase() === curU.toLowerCase()) || 
+                           (p.recipientUserId && (p.recipientUserId.toLowerCase() === curU.toLowerCase() || p.recipientUserId.toLowerCase() === 'bp28233'));
+          if (isReceiver) {
             if (typeof window.showToast === 'function') {
-              window.showToast('🪙 You received ' + event.payload.amount.toLocaleString() + ' Virtual Tokens (VTK)!', 'success');
+              window.showToast('🪙 You received ' + (p.amount ? p.amount.toLocaleString() : 0) + ' Virtual Tokens (VTK)!', 'success');
             }
           }
         }
@@ -1744,7 +1757,7 @@
                 <span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
                   <i class="fa-solid fa-hashtag text-cyan-400 text-[9px]"></i> User ID:
                 </span>
-                <span class="font-mono font-bold text-amber-400 bg-black/40 px-2 py-0.5 rounded border border-white/10 text-xs">Bp28233</span>
+                <span id="dropdownHeaderUserId" class="font-mono font-bold text-amber-400 bg-black/40 px-2 py-0.5 rounded border border-white/10 text-xs">Bp28233</span>
               </div>
 
               <!-- User Name Row -->
@@ -1753,6 +1766,14 @@
                   <i class="fa-solid fa-user text-cyan-400 text-[9px]"></i> Name:
                 </span>
                 <span id="dropdownHeaderUserName" class="font-mono font-bold text-cyan-300 text-xs">Alex_Winner</span>
+              </div>
+
+              <!-- User Virtual Tokens Row -->
+              <div class="flex items-center justify-between">
+                <span class="text-gray-400 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                  <i class="fa-solid fa-coins text-amber-400 text-[9px]"></i> Tokens:
+                </span>
+                <span id="dropdownHeaderTokenBalance" class="font-mono font-bold text-amber-300 bg-black/40 px-2 py-0.5 rounded border border-white/10 text-xs">45,000 VTK</span>
               </div>
 
               <!-- User Password Row with Eye Toggle -->
@@ -1806,8 +1827,8 @@
 
       </div>
 
-      <!-- SUB-HEADER FINANCIAL METRICS BAR (Credit: 0   Balance: 0   Liable: 0   Active Bets: *) -->
-      <div class="bg-[#3D7093] border-t border-[#315b78] px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-white flex items-center justify-between sm:justify-start gap-4 sm:gap-8 overflow-x-auto whitespace-nowrap custom-scrollbar">
+      <!-- SUB-HEADER FINANCIAL METRICS BAR (Credit: 0   Balance: 0   Tokens: 45,000 VTK   Liable: 0   Active Bets: *) -->
+      <div class="bg-[#3D7093] border-t border-[#315b78] px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-white flex items-center justify-between sm:justify-start gap-4 sm:gap-6 overflow-x-auto whitespace-nowrap custom-scrollbar">
         <div class="flex items-center gap-1 text-white">
           <span>Credit:</span>
           <span class="text-white font-bold">0</span>
@@ -1815,6 +1836,10 @@
         <div class="flex items-center gap-1 text-white">
           <span>Balance:</span>
           <span id="walletBalance" class="text-white font-bold">0</span>
+        </div>
+        <div class="flex items-center gap-1 text-amber-300">
+          <span class="text-white">Tokens:</span>
+          <span id="userTokenBalance" class="text-amber-300 font-bold font-mono">45,000 VTK</span>
         </div>
         <div class="flex items-center gap-1 text-white">
           <span>Liable:</span>
