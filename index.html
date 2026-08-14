@@ -1143,6 +1143,12 @@
         if (bannerInput) bannerInput.value = '';
         if (sheetInput) sheetInput.value = '';
 
+        // Record in Central Platform Activity Ledger
+        if (window.PlatformSync && typeof window.PlatformSync.recordGameActivity === 'function') {
+          var curUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
+          window.PlatformSync.recordGameActivity(curUser, 'GM-THAI-4D', 'Lucky Thai Win 4D Live', '8892', num, amount, Math.round(amount / 10), 'PENDING', 0);
+        }
+
         if (typeof window.showToast === 'function') {
           window.showToast('Bet Placed Successfully! Rs ' + amount.toLocaleString() + ' deducted from wallet.', 'success');
         }

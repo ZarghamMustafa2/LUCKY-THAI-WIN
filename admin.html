@@ -510,6 +510,47 @@
 
         </div>
 
+        <!-- Real-Time Game-Wise Activity Breakdown Table on Dashboard -->
+        <div class="glass-card p-5 flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-borderSubtle pb-3">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-gamepad text-indigo-400 text-base"></i>
+              <h3 class="font-display font-extrabold text-white text-sm">Game-Wise Betting & Turnover Analytics</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="dashGameDateFilter" onchange="renderDashboardGameActivity(this.value)" class="bg-sidebarDark border border-borderSubtle rounded-xl px-2.5 py-1 text-xs text-white font-bold outline-none cursor-pointer">
+                <option value="ALL">All Time</option>
+                <option value="TODAY">Today</option>
+                <option value="YESTERDAY">Yesterday</option>
+                <option value="LAST_7_DAYS">Last 7 Days</option>
+                <option value="LAST_30_DAYS">Last 30 Days</option>
+              </select>
+              <button onclick="switchAdminModule('games')" class="text-xs text-brandBlue hover:underline font-bold">All Games Catalog →</button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto custom-scrollbar rounded-xl border border-borderSubtle">
+            <table class="w-full text-left text-xs whitespace-nowrap min-w-[700px]">
+              <thead class="bg-sidebarDark text-textMuted uppercase text-[10px] font-extrabold tracking-wider border-b border-borderSubtle">
+                <tr>
+                  <th class="p-3.5">Game Title</th>
+                  <th class="p-3.5">Category</th>
+                  <th class="p-3.5 text-center">Active Players</th>
+                  <th class="p-3.5 text-center">Total Entries</th>
+                  <th class="p-3.5">Total Stake (Rs)</th>
+                  <th class="p-3.5">Tokens Used</th>
+                  <th class="p-3.5">Total Payouts</th>
+                  <th class="p-3.5">Net Platform Margin</th>
+                  <th class="p-3.5 text-right">Analytics</th>
+                </tr>
+              </thead>
+              <tbody id="dashGameActivityBody" class="font-semibold text-gray-200 divide-y divide-borderSubtle bg-[#0D1424]">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
       <!-- ============================================================ -->
@@ -1246,16 +1287,36 @@
           </div>
         </div>
 
-        <!-- Tab 4: Game History -->
-        <div id="pane_history" class="hidden flex flex-col gap-3">
-          <span class="font-bold text-white">Recent Rounds & Bet Wagers</span>
-          <div class="p-3 bg-cardDark rounded-xl flex items-center justify-between font-mono">
-            <div>#4D-8890 · 1st Prize [3629]</div>
-            <span class="text-brandGreen font-bold">+Rs 4,500</span>
+        <!-- Tab 4: Game History & Betting Analytics -->
+        <div id="pane_history" class="hidden flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-white text-sm">Game-Wise Performance & Stakes</span>
+            <span class="text-[10px] text-textMuted font-mono">Real-time Player Ledger</span>
           </div>
-          <div class="p-3 bg-cardDark rounded-xl flex items-center justify-between font-mono">
-            <div>#4D-8889 · 2-Digit [84]</div>
-            <span class="text-brandDanger font-bold">-Rs 500</span>
+
+          <!-- User's Game-Wise Breakdown Table -->
+          <div class="overflow-x-auto custom-scrollbar border border-borderSubtle rounded-xl bg-cardDark">
+            <table class="w-full text-left text-xs whitespace-nowrap">
+              <thead class="bg-sidebarDark text-textMuted uppercase text-[10px] font-extrabold border-b border-borderSubtle">
+                <tr>
+                  <th class="p-2.5">Game</th>
+                  <th class="p-2.5 text-center">Entries</th>
+                  <th class="p-2.5">Stake</th>
+                  <th class="p-2.5">Tokens</th>
+                  <th class="p-2.5">Payouts</th>
+                  <th class="p-2.5">Net P/L</th>
+                </tr>
+              </thead>
+              <tbody id="drawerUserGameBreakdownBody" class="divide-y divide-borderSubtle font-semibold">
+                <!-- Populated dynamically by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Recent Bet Tickets for this user -->
+          <span class="font-bold text-white text-xs mt-2">Recent Game Wagers & Tickets</span>
+          <div id="drawerUserTicketsList" class="flex flex-col gap-2 max-h-60 overflow-y-auto custom-scrollbar">
+            <!-- Populated dynamically by JS -->
           </div>
         </div>
 
@@ -1323,6 +1384,93 @@
         <textarea id="adjReason" required rows="2" placeholder="Mandatory Audit Reason (e.g. Approved bank wire deposit ref #992)" class="bg-sidebarDark border border-borderSubtle rounded-xl p-3 text-white outline-none"></textarea>
         <button type="submit" class="w-full py-3 rounded-xl bg-brandGreen text-white font-extrabold uppercase tracking-wider mt-2">Authorize Adjustment</button>
       </form>
+    </div>
+  <!-- Game Analytics & Player Activity Modal -->
+  <div id="gameAnalyticsModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+    <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-4xl w-full max-h-[90vh] flex flex-col gap-4 text-xs overflow-hidden shadow-2xl">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-borderSubtle pb-3 shrink-0">
+        <div class="flex items-center gap-3">
+          <div id="gaModalIcon" class="w-10 h-10 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl"><i class="fa-solid fa-gamepad"></i></div>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <h3 id="gaModalTitle" class="font-display font-black text-white text-base">Lucky Thai Win 4D Live</h3>
+              <span id="gaModalCategory" class="badge badge-purple text-[9px]">Lottery</span>
+            </div>
+            <span id="gaModalRoute" class="text-textMuted font-mono text-[10px]">ID: GM-THAI-4D · Route: game.html</span>
+          </div>
+        </div>
+        <button onclick="closeModal('gameAnalyticsModal')" class="text-textMuted hover:text-white p-2 text-lg cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Date Range Filter Toolbar -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 bg-sidebarDark p-2.5 rounded-xl border border-borderSubtle shrink-0">
+        <div class="flex items-center gap-1.5 overflow-x-auto custom-scrollbar text-[11px] font-bold">
+          <button onclick="setGameAnalyticsDateRange('ALL')" class="ga-date-btn px-2.5 py-1 rounded-lg bg-brandBlue text-white cursor-pointer" id="gadate_ALL">All Time</button>
+          <button onclick="setGameAnalyticsDateRange('TODAY')" class="ga-date-btn px-2.5 py-1 rounded-lg text-textMuted hover:text-white cursor-pointer" id="gadate_TODAY">Today</button>
+          <button onclick="setGameAnalyticsDateRange('YESTERDAY')" class="ga-date-btn px-2.5 py-1 rounded-lg text-textMuted hover:text-white cursor-pointer" id="gadate_YESTERDAY">Yesterday</button>
+          <button onclick="setGameAnalyticsDateRange('LAST_7_DAYS')" class="ga-date-btn px-2.5 py-1 rounded-lg text-textMuted hover:text-white cursor-pointer" id="gadate_LAST_7_DAYS">Last 7 Days</button>
+          <button onclick="setGameAnalyticsDateRange('LAST_30_DAYS')" class="ga-date-btn px-2.5 py-1 rounded-lg text-textMuted hover:text-white cursor-pointer" id="gadate_LAST_30_DAYS">Last 30 Days</button>
+        </div>
+        <button onclick="exportGameActivityCsv()" class="px-3 py-1.5 rounded-lg bg-cardDark hover:bg-white/10 text-brandGreen font-bold flex items-center gap-1.5 cursor-pointer border border-brandGreen/20">
+          <i class="fa-solid fa-file-csv"></i> Export Game Ledger
+        </button>
+      </div>
+
+      <!-- 6 KPI Aggregate Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-6 gap-2.5 shrink-0">
+        <div class="p-3 bg-sidebarDark rounded-xl flex flex-col"><span class="text-[10px] text-textMuted font-bold uppercase">Players</span><span id="gaKpiUsers" class="font-mono font-black text-white text-base">0</span></div>
+        <div class="p-3 bg-sidebarDark rounded-xl flex flex-col"><span class="text-[10px] text-textMuted font-bold uppercase">Entries</span><span id="gaKpiEntries" class="font-mono font-black text-cyan-300 text-base">0</span></div>
+        <div class="p-3 bg-sidebarDark rounded-xl flex flex-col"><span class="text-[10px] text-textMuted font-bold uppercase">Total Stake</span><span id="gaKpiStake" class="font-mono font-black text-brandGreen text-base">Rs 0</span></div>
+        <div class="p-3 bg-sidebarDark rounded-xl flex flex-col"><span class="text-[10px] text-textMuted font-bold uppercase">Tokens Used</span><span id="gaKpiTokens" class="font-mono font-black text-amber-300 text-base">0</span></div>
+        <div class="p-3 bg-sidebarDark rounded-xl flex flex-col"><span class="text-[10px] text-textMuted font-bold uppercase">Total Payouts</span><span id="gaKpiPayouts" class="font-mono font-black text-brandDanger text-base">Rs 0</span></div>
+        <div class="p-3 bg-sidebarDark rounded-xl flex flex-col"><span class="text-[10px] text-textMuted font-bold uppercase">Net Platform Margin</span><span id="gaKpiMargin" class="font-mono font-black text-emerald-400 text-base">+Rs 0</span></div>
+      </div>
+
+      <!-- Sub-tabs: 1. Participating Users · 2. Live Activity Tickets Ledger -->
+      <div class="flex items-center gap-2 border-b border-borderSubtle pb-2 font-bold shrink-0 text-xs">
+        <button onclick="switchGaSubTab('users')" id="gatab_users" class="px-3.5 py-1.5 rounded-lg bg-brandBlue/20 text-brandBlue border border-brandBlue/30 cursor-pointer">Participating Players</button>
+        <button onclick="switchGaSubTab('ledger')" id="gatab_ledger" class="px-3.5 py-1.5 rounded-lg text-textMuted hover:text-white cursor-pointer">Activity Ledger / Tickets</button>
+      </div>
+
+      <!-- Scrollable Tab Content Container -->
+      <div class="flex-1 overflow-y-auto custom-scrollbar border border-borderSubtle rounded-xl bg-sidebarDark min-h-[180px]">
+        <!-- Users Table -->
+        <table id="gaUsersTable" class="w-full text-left text-xs whitespace-nowrap">
+          <thead class="bg-cardDark text-textMuted uppercase text-[10px] font-extrabold border-b border-borderSubtle sticky top-0">
+            <tr>
+              <th class="p-3">Player</th>
+              <th class="p-3">Company</th>
+              <th class="p-3 text-center">Entries</th>
+              <th class="p-3">Total Stake</th>
+              <th class="p-3">Tokens Used</th>
+              <th class="p-3">Payouts</th>
+              <th class="p-3">Net Result</th>
+              <th class="p-3">Last Played</th>
+            </tr>
+          </thead>
+          <tbody id="gaUsersTableBody" class="font-semibold divide-y divide-borderSubtle"></tbody>
+        </table>
+
+        <!-- Ledger Table -->
+        <table id="gaLedgerTable" class="hidden w-full text-left text-xs whitespace-nowrap">
+          <thead class="bg-cardDark text-textMuted uppercase text-[10px] font-extrabold border-b border-borderSubtle sticky top-0">
+            <tr>
+              <th class="p-3">Ticket ID</th>
+              <th class="p-3">Player</th>
+              <th class="p-3">Round / Match</th>
+              <th class="p-3">Selected Bet</th>
+              <th class="p-3">Stake</th>
+              <th class="p-3 text-center">Result</th>
+              <th class="p-3">Payout</th>
+              <th class="p-3">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody id="gaLedgerTableBody" class="font-mono text-[11px] divide-y divide-borderSubtle"></tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 
@@ -1475,25 +1623,37 @@
       `).join('');
     }
 
+    let currentGameAnalyticsId = 'GM-THAI-4D';
+    let currentGameAnalyticsDateRange = 'ALL';
+    let currentGameAnalyticsSubTab = 'users';
+
     function renderGamesTable() {
       const tbody = document.getElementById('gamesTableList');
       if (!tbody) return;
-      const games = AdminCore.repo.get('ADM_GAMES');
-      tbody.innerHTML = games.map(g => `
-        <tr class="hover:bg-white/5 transition-colors">
+      
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const companyId = admin.role === 'SUPER_ADMIN' ? 'ALL' : admin.companyId;
+      const summaries = window.PlatformSync ? window.PlatformSync.getGameWiseSummary(companyId, 'ALL') : [];
+
+      tbody.innerHTML = summaries.map(g => `
+        <tr class="hover:bg-white/5 transition-colors cursor-pointer" onclick="openGameAnalyticsModal('${g.gameId}')">
           <td class="p-3.5 flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center"><i class="fa-solid fa-gamepad"></i></div>
-            <span class="text-white font-bold">${g.name}</span>
+            <div class="flex flex-col">
+              <span class="text-white font-bold hover:text-cyan-300 transition-colors">${g.gameName}</span>
+              <span class="text-[9px] text-textMuted font-mono">ID: ${g.gameId}</span>
+            </div>
           </td>
           <td class="p-3.5"><span class="badge badge-purple text-[9px]">${g.category}</span></td>
           <td class="p-3.5 font-mono text-cyan-300 text-xs">${g.route}</td>
-          <td class="p-3.5 font-mono text-white font-bold">${g.turnover}</td>
+          <td class="p-3.5 font-mono text-white font-bold">${g.turnoverFormatted}</td>
           <td class="p-3.5 text-center">
             <span class="badge ${g.maintenance ? 'badge-danger' : 'badge-success'} text-[9px]">${g.maintenance ? 'IN MAINTENANCE' : 'ACTIVE'}</span>
           </td>
           <td class="p-3.5 text-center"><span class="badge badge-success text-[9px]">${g.status}</span></td>
-          <td class="p-3.5 text-right">
-            <button onclick="toggleGameMaintenance('${g.id}')" class="px-2.5 py-1 rounded bg-cardDark hover:bg-white/10 text-white text-[11px] cursor-pointer">Toggle Maint.</button>
+          <td class="p-3.5 text-right flex items-center justify-end gap-1.5" onclick="event.stopPropagation()">
+            <button onclick="openGameAnalyticsModal('${g.gameId}')" class="px-2.5 py-1 rounded bg-brandBlue/20 hover:bg-brandBlue/30 text-cyan-300 text-[11px] font-bold cursor-pointer">Analytics 📊</button>
+            <button onclick="toggleGameMaintenance('${g.gameId}')" class="px-2.5 py-1 rounded bg-cardDark hover:bg-white/10 text-white text-[11px] cursor-pointer">Toggle Maint.</button>
           </td>
         </tr>
       `).join('');
@@ -1512,6 +1672,193 @@
           </div>
         `).join('');
       }
+
+      // Also refresh dashboard game-wise activity table
+      renderDashboardGameActivity();
+    }
+
+    // Dashboard Game-Wise Activity Table Render
+    function renderDashboardGameActivity(dateRange = 'ALL') {
+      const tbody = document.getElementById('dashGameActivityBody');
+      if (!tbody) return;
+
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const companyId = admin.role === 'SUPER_ADMIN' ? 'ALL' : admin.companyId;
+      const summaries = window.PlatformSync ? window.PlatformSync.getGameWiseSummary(companyId, dateRange) : [];
+
+      tbody.innerHTML = summaries.map(g => `
+        <tr class="hover:bg-white/5 transition-colors cursor-pointer" onclick="openGameAnalyticsModal('${g.gameId}')">
+          <td class="p-3.5 flex items-center gap-2.5 font-bold text-white">
+            <div class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs"><i class="fa-solid fa-gamepad"></i></div>
+            <span>${g.gameName}</span>
+          </td>
+          <td class="p-3.5"><span class="badge badge-purple text-[9px]">${g.category}</span></td>
+          <td class="p-3.5 text-center font-mono font-bold text-cyan-300">${g.uniqueUsers}</td>
+          <td class="p-3.5 text-center font-mono font-bold text-white">${g.totalEntries}</td>
+          <td class="p-3.5 font-mono text-brandGreen font-bold text-xs">Rs ${g.totalStake.toLocaleString()}</td>
+          <td class="p-3.5 font-mono text-amber-300 font-bold text-xs">${g.totalTokens.toLocaleString()}</td>
+          <td class="p-3.5 font-mono text-brandDanger font-bold text-xs">Rs ${g.totalPayouts.toLocaleString()}</td>
+          <td class="p-3.5 font-mono font-bold text-xs ${g.netResult >= 0 ? 'text-emerald-400' : 'text-brandDanger'}">
+            ${g.netResult >= 0 ? '+Rs ' : '-Rs '} ${Math.abs(g.netResult).toLocaleString()}
+          </td>
+          <td class="p-3.5 text-right" onclick="event.stopPropagation()">
+            <button onclick="openGameAnalyticsModal('${g.gameId}')" class="px-2.5 py-1 rounded-lg bg-brandBlue/20 hover:bg-brandBlue/30 text-cyan-300 text-xs font-bold cursor-pointer">
+              Inspect →
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Open Detailed Game Analytics Modal
+    function openGameAnalyticsModal(gameId) {
+      currentGameAnalyticsId = gameId;
+      currentGameAnalyticsDateRange = 'ALL';
+      currentGameAnalyticsSubTab = 'users';
+
+      const games = AdminCore.repo.get('ADM_GAMES');
+      const g = games.find(x => x.id === gameId) || { name: gameId, category: 'General', route: 'game.html' };
+
+      document.getElementById('gaModalTitle').innerText = g.name;
+      document.getElementById('gaModalCategory').innerText = g.category;
+      document.getElementById('gaModalRoute').innerText = `ID: ${g.id || gameId} · Route: ${g.route}`;
+
+      // Reset date filter buttons
+      document.querySelectorAll('.ga-date-btn').forEach(btn => {
+        btn.className = 'ga-date-btn px-2.5 py-1 rounded-lg text-textMuted hover:text-white cursor-pointer';
+      });
+      const activeBtn = document.getElementById('gadate_ALL');
+      if (activeBtn) activeBtn.className = 'ga-date-btn px-2.5 py-1 rounded-lg bg-brandBlue text-white cursor-pointer';
+
+      switchGaSubTab('users');
+      renderGameAnalyticsView();
+      openModal('gameAnalyticsModal');
+    }
+
+    function setGameAnalyticsDateRange(range) {
+      currentGameAnalyticsDateRange = range;
+      document.querySelectorAll('.ga-date-btn').forEach(btn => {
+        btn.className = 'ga-date-btn px-2.5 py-1 rounded-lg text-textMuted hover:text-white cursor-pointer';
+      });
+      const activeBtn = document.getElementById('gadate_' + range);
+      if (activeBtn) activeBtn.className = 'ga-date-btn px-2.5 py-1 rounded-lg bg-brandBlue text-white cursor-pointer';
+
+      renderGameAnalyticsView();
+    }
+
+    function switchGaSubTab(tabKey) {
+      currentGameAnalyticsSubTab = tabKey;
+      const tabUsers = document.getElementById('gatab_users');
+      const tabLedger = document.getElementById('gatab_ledger');
+      const tableUsers = document.getElementById('gaUsersTable');
+      const tableLedger = document.getElementById('gaLedgerTable');
+
+      if (tabKey === 'users') {
+        if (tabUsers) tabUsers.className = 'px-3.5 py-1.5 rounded-lg bg-brandBlue/20 text-brandBlue border border-brandBlue/30 cursor-pointer';
+        if (tabLedger) tabLedger.className = 'px-3.5 py-1.5 rounded-lg text-textMuted hover:text-white cursor-pointer';
+        if (tableUsers) tableUsers.classList.remove('hidden');
+        if (tableLedger) tableLedger.classList.add('hidden');
+      } else {
+        if (tabUsers) tabUsers.className = 'px-3.5 py-1.5 rounded-lg text-textMuted hover:text-white cursor-pointer';
+        if (tabLedger) tabLedger.className = 'px-3.5 py-1.5 rounded-lg bg-brandBlue/20 text-brandBlue border border-brandBlue/30 cursor-pointer';
+        if (tableUsers) tableUsers.classList.add('hidden');
+        if (tableLedger) tableLedger.classList.remove('hidden');
+      }
+    }
+
+    function renderGameAnalyticsView() {
+      if (!window.PlatformSync || !currentGameAnalyticsId) return;
+
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const companyId = admin.role === 'SUPER_ADMIN' ? 'ALL' : admin.companyId;
+      const data = window.PlatformSync.getGameDetailsAnalytics(currentGameAnalyticsId, companyId, currentGameAnalyticsDateRange);
+
+      // KPI Aggregate Cards
+      document.getElementById('gaKpiUsers').innerText = data.totalUsers;
+      document.getElementById('gaKpiEntries').innerText = data.totalEntries;
+      document.getElementById('gaKpiStake').innerText = `Rs ${data.totalStake.toLocaleString()}`;
+      document.getElementById('gaKpiTokens').innerText = data.totalTokens.toLocaleString();
+      document.getElementById('gaKpiPayouts').innerText = `Rs ${data.totalPayouts.toLocaleString()}`;
+      document.getElementById('gaKpiMargin').innerText = `${data.netResult >= 0 ? '+Rs ' : '-Rs '}${Math.abs(data.netResult).toLocaleString()}`;
+      document.getElementById('gaKpiMargin').className = `font-mono font-black text-base ${data.netResult >= 0 ? 'text-emerald-400' : 'text-brandDanger'}`;
+
+      // 1. Participating Users Table
+      const userBody = document.getElementById('gaUsersTableBody');
+      if (userBody) {
+        if (data.participants.length === 0) {
+          userBody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-textMuted font-mono">No participating players found for the selected date range.</td></tr>`;
+        } else {
+          userBody.innerHTML = data.participants.map(p => `
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="p-3 font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-user text-cyan-400 text-xs"></i> ${p.username}
+              </td>
+              <td class="p-3 font-mono text-[11px] text-textMuted">${p.companyId}</td>
+              <td class="p-3 text-center font-mono font-bold text-cyan-300">${p.entries}</td>
+              <td class="p-3 font-mono text-brandGreen font-bold">Rs ${p.stake.toLocaleString()}</td>
+              <td class="p-3 font-mono text-amber-300 font-bold">${p.tokens.toLocaleString()}</td>
+              <td class="p-3 font-mono text-brandDanger font-bold">Rs ${p.payout.toLocaleString()}</td>
+              <td class="p-3 font-mono font-bold ${p.netResult >= 0 ? 'text-brandGreen' : 'text-brandDanger'}">
+                ${p.netResult >= 0 ? '+Rs ' : '-Rs '} ${Math.abs(p.netResult).toLocaleString()}
+              </td>
+              <td class="p-3 text-textMuted text-[10px]">${p.lastPlayed}</td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      // 2. Activity Ledger / Tickets Table
+      const ledgerBody = document.getElementById('gaLedgerTableBody');
+      if (ledgerBody) {
+        if (data.ledger.length === 0) {
+          ledgerBody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-textMuted font-mono">No ticket records in selected date range.</td></tr>`;
+        } else {
+          ledgerBody.innerHTML = data.ledger.map(t => `
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="p-3 font-mono text-cyan-300 font-bold">#${t.id}</td>
+              <td class="p-3 font-bold text-white">${t.username}</td>
+              <td class="p-3 text-amber-300 font-mono text-xs">Round #${t.roundId}</td>
+              <td class="p-3 text-white font-mono font-bold">${t.betNumber}</td>
+              <td class="p-3 font-mono text-brandGreen font-bold">Rs ${t.stake.toLocaleString()}</td>
+              <td class="p-3 text-center">
+                <span class="badge ${t.result === 'WON' ? 'badge-success' : (t.result === 'LOST' ? 'badge-danger' : 'badge-warning')} text-[9px]">${t.result}</span>
+              </td>
+              <td class="p-3 font-mono font-bold ${t.payout > 0 ? 'text-emerald-400' : 'text-textMuted'}">Rs ${t.payout.toLocaleString()}</td>
+              <td class="p-3 text-textMuted text-[10px]">${t.date}</td>
+            </tr>
+          `).join('');
+        }
+      }
+    }
+
+    function exportGameActivityCsv() {
+      if (!AdminCore.repo.hasPermission('reports.export')) {
+        showAdminToast('Access Denied: reports.export permission required.', 'error');
+        return;
+      }
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const companyId = admin.role === 'SUPER_ADMIN' ? 'ALL' : admin.companyId;
+      const data = window.PlatformSync.getGameDetailsAnalytics(currentGameAnalyticsId, companyId, currentGameAnalyticsDateRange);
+
+      if (data.ledger.length === 0) {
+        showAdminToast('No game activity data to export.', 'warning');
+        return;
+      }
+
+      showAdminToast(`Exporting ${currentGameAnalyticsId} activity to CSV...`, 'success');
+      let csvContent = 'data:text/csv;charset=utf-8,';
+      csvContent += 'Ticket ID,Player Username,Company,Game ID,Game Name,Round Number,Selected Bet,Stake (Rs),Tokens Used,Result,Payout (Rs),Timestamp\r\n';
+      data.ledger.forEach(row => {
+        csvContent += `"${row.id}","${row.username}","${row.companyId}","${row.gameId}","${row.gameName}","${row.roundId}","${row.betNumber}",${row.stake},${row.tokens},"${row.result}",${row.payout},"${row.date}"\r\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `${currentGameAnalyticsId}_activity_${currentGameAnalyticsDateRange}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     function renderDepositsTable() {
@@ -1836,6 +2183,52 @@
       document.getElementById('pfield_balance').innerText = `Rs ${u.balance.toLocaleString()}.00`;
       document.getElementById('pfield_locked').innerText = `Rs ${u.locked.toLocaleString()}.00`;
       document.getElementById('drawerNotesInput').value = u.notes || '';
+
+      // Populate User's Game-Wise Breakdown (Tab 4)
+      if (window.PlatformSync && typeof window.PlatformSync.getUserGameBreakdown === 'function') {
+        const userGames = window.PlatformSync.getUserGameBreakdown(u.username);
+        const gbBody = document.getElementById('drawerUserGameBreakdownBody');
+        const ticketsList = document.getElementById('drawerUserTicketsList');
+
+        if (gbBody) {
+          if (userGames.summary.length === 0) {
+            gbBody.innerHTML = `<tr><td colspan="6" class="p-3 text-center text-textMuted font-mono">No game activity recorded yet.</td></tr>`;
+          } else {
+            gbBody.innerHTML = userGames.summary.map(sg => `
+              <tr class="hover:bg-white/5">
+                <td class="p-2.5 font-bold text-white">${sg.gameName}</td>
+                <td class="p-2.5 text-center font-mono text-cyan-300 font-bold">${sg.entries}</td>
+                <td class="p-2.5 font-mono text-brandGreen font-bold">Rs ${sg.stake.toLocaleString()}</td>
+                <td class="p-2.5 font-mono text-amber-300 font-bold">${sg.tokens.toLocaleString()}</td>
+                <td class="p-2.5 font-mono text-brandDanger font-bold">Rs ${sg.payouts.toLocaleString()}</td>
+                <td class="p-2.5 font-mono font-bold ${sg.netResult >= 0 ? 'text-brandGreen' : 'text-brandDanger'}">
+                  ${sg.netResult >= 0 ? '+Rs ' : '-Rs '} ${Math.abs(sg.netResult).toLocaleString()}
+                </td>
+              </tr>
+            `).join('');
+          }
+        }
+
+        if (ticketsList) {
+          if (userGames.recentTickets.length === 0) {
+            ticketsList.innerHTML = `<div class="p-3 text-center text-textMuted font-mono text-xs bg-sidebarDark rounded-xl">No tickets placed yet.</div>`;
+          } else {
+            ticketsList.innerHTML = userGames.recentTickets.map(tk => `
+              <div class="p-2.5 bg-sidebarDark rounded-xl border border-borderSubtle flex items-center justify-between font-mono text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="text-cyan-300 font-bold">#${tk.id}</span>
+                  <span class="text-white font-bold">${tk.gameName} (Round #${tk.roundId})</span>
+                  <span class="text-textMuted">[${tk.betNumber}]</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-textMuted">Stake: Rs ${tk.stake.toLocaleString()}</span>
+                  <span class="badge ${tk.result === 'WON' ? 'badge-success' : 'badge-danger'} text-[9px]">${tk.result} (+Rs ${tk.payout.toLocaleString()})</span>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+      }
 
       switchProfileTab('overview');
       document.getElementById('userProfileDrawer').classList.remove('hidden');

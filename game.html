@@ -992,6 +992,12 @@
       var balEl = document.getElementById('userBalanceText');
       if (balEl) balEl.innerText = window.currentBalance.toLocaleString() + '.00';
 
+      // Record in Central Platform Activity Ledger
+      if (window.PlatformSync && typeof window.PlatformSync.recordGameActivity === 'function') {
+        var curUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
+        window.PlatformSync.recordGameActivity(curUser, 'GM-THAI-4D', 'Lucky Thai Win 4D Live', '8892', window.currentSelectedDigits, totalCost, Math.round(totalCost / 10), 'PENDING', 0);
+      }
+
       window.showToast('Bet Placed Successfully! Sequence: ' + window.currentSelectedDigits + ' | Amount: Rs ' + totalCost, 'success');
       window.clearQuickDigit();
     };
