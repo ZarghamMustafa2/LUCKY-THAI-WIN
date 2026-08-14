@@ -77,10 +77,13 @@
   function _clearAuthState() {
     window.isUserLoggedInFallback = false;
 
-    // Clear localStorage
+    // Clear auth keys specifically
     try {
-      localStorage.clear();
       localStorage.setItem('isUserLoggedIn', 'false');
+      localStorage.removeItem('userLoginName');
+      localStorage.removeItem('isAdminAuth');
+      localStorage.removeItem('userLoginPassword');
+      localStorage.removeItem('userLoginToken');
     } catch (e) {}
 
     // Clear sessionStorage
