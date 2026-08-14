@@ -1102,17 +1102,19 @@
 
     // ─── 6. GAME-WISE BETTING & ACTIVITY TRACKING ──────────────────
 
-    recordGameActivity(username, gameId, gameName, roundId, betNumber, stake, tokens = 0, result = 'PENDING', payout = 0) {
+    recordGameActivity(username, gameId, gameName, roundId, betNumber, stake, tokens = 0, result = 'PENDING', payout = 0, extraMeta = {}) {
       this.init();
       const user = this.getUser(username);
       if (!user) return null;
 
       const actId = 'ACT-' + Math.floor(1000 + Math.random() * 9000);
+      const ticketId = 'TKT-' + Math.floor(10000 + Math.random() * 90000);
       const now = new Date();
       const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
       const activity = {
         id: actId,
+        ticketId: extraMeta.ticketId || ticketId,
         userId: user.id,
         username: user.username,
         companyId: user.companyId || 'COMP-01',
@@ -1120,6 +1122,11 @@
         gameName: gameName || gameId,
         roundId: String(roundId),
         betNumber: String(betNumber),
+        betType: extraMeta.betType || 'figure',
+        betTypeName: extraMeta.betTypeName || (String(betNumber).length + 'D Figure'),
+        multiplier: Number(extraMeta.multiplier || 8),
+        selectedRounds: extraMeta.selectedRounds || ['1st Draw'],
+        potentialPayout: Number(extraMeta.potentialPayout || (stake * (extraMeta.multiplier || 8))),
         stake: Number(stake),
         tokens: Number(tokens || (stake / 10)),
         currency: 'PKR',
@@ -1139,6 +1146,31 @@
 
       broadcastEvent('GAME_ACTIVITY_RECORDED', activity);
       return activity;
+    },
+
+    getUserActiveBets(username, gameId = null) {
+      this.init();
+      const activities = this._get(this.KEYS.GAME_ACTIVITIES);
+      const userActs = activities.filter(a => 
+        String(a.username).toLowerCase() === String(username).toLowerCase() && 
+        (a.result === 'PENDING' || a.result === 'ACTIVE')
+      );
+      if (gameId && gameId !== 'ALL') {
+        return userActs.filter(a => a.gameId === gameId);
+      }
+      return userActs;
+    },
+
+    getUserBetsHistory(username, gameId = null) {
+      this.init();
+      const activities = this._get(this.KEYS.GAME_ACTIVITIES);
+      const userActs = activities.filter(a => 
+        String(a.username).toLowerCase() === String(username).toLowerCase()
+      );
+      if (gameId && gameId !== 'ALL') {
+        return userActs.filter(a => a.gameId === gameId);
+      }
+      return userActs;
     },
 
     _filterByDate(items, dateRange, dateField = 'createdAt') {

@@ -1165,7 +1165,26 @@
         // Record in Central Platform Activity Ledger
         if (window.PlatformSync && typeof window.PlatformSync.recordGameActivity === 'function') {
           var curUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
-          window.PlatformSync.recordGameActivity(curUser, 'GM-THAI-4D', 'Lucky Thai Win 4D Live', '8892', num, amount, Math.round(amount / 10), 'PENDING', 0);
+          var betTypeName = num.length === 1 ? '1D Figure' : (num.length === 2 ? '2D Akada' : (num.length === 3 ? '3D Ring' : '4D Packet'));
+          var mult = num.length === 1 ? 8 : (num.length === 2 ? 80 : (num.length === 3 ? 800 : 6000));
+          window.PlatformSync.recordGameActivity(
+            curUser,
+            'GM-THAI-4D',
+            'Lucky Thai Win 4D Live',
+            '8492',
+            num,
+            amount,
+            Math.round(amount / 10),
+            'PENDING',
+            0,
+            {
+              betType: 'figure',
+              betTypeName: betTypeName,
+              multiplier: mult,
+              selectedRounds: ['1st Draw'],
+              potentialPayout: amount * mult
+            }
+          );
         }
 
         if (typeof window.showToast === 'function') {
