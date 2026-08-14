@@ -579,6 +579,64 @@
           </div>
         </div>
 
+        <!-- Active Player Credentials Quick Inspector (Matching User Platform Widget) -->
+        <div class="bg-[#0B1528] border border-[#1E2E4A] rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center font-mono font-black text-base shadow-md">
+              <i class="fa-solid fa-id-badge"></i>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-white font-bold text-sm flex items-center gap-2">
+                Player Authentication Credentials
+                <span class="badge badge-success text-[9px] font-bold">Live Synchronized</span>
+              </span>
+              <span class="text-[11px] text-textMuted">Real User ID, Username, and Password synchronized between User Platform & Admin Panel</span>
+            </div>
+          </div>
+
+          <!-- Exact Screenshot Styled Card -->
+          <div class="bg-[#080E1C] border border-[#1C2C46] rounded-2xl p-3.5 sm:px-5 sm:py-3 flex flex-col gap-2 min-w-[280px] sm:min-w-[340px] shadow-2xl">
+            <!-- Row 1: USER ID -->
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-[#00D2FF]">
+                <i class="fa-solid fa-hashtag text-[11px]"></i>
+                <span class="text-gray-400 uppercase tracking-wider text-[10px] font-extrabold">USER ID:</span>
+              </div>
+              <div class="bg-[#0E1728] border border-amber-500/50 rounded-md px-2.5 py-0.5 text-amber-400 font-mono font-black text-xs tracking-wider shadow-inner" id="moduleCredUserId">
+                Bp28233
+              </div>
+            </div>
+
+            <!-- Row 2: NAME -->
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-[#00D2FF]">
+                <i class="fa-solid fa-user text-[11px]"></i>
+                <span class="text-gray-400 uppercase tracking-wider text-[10px] font-extrabold">NAME:</span>
+              </div>
+              <div class="text-[#00D2FF] font-mono font-black text-xs tracking-wide" id="moduleCredName">
+                Alex_Winner
+              </div>
+            </div>
+
+            <!-- Row 3: PASSWORD -->
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-[#00D2FF]">
+                <i class="fa-solid fa-key text-[11px]"></i>
+                <span class="text-gray-400 uppercase tracking-wider text-[10px] font-extrabold">PASSWORD:</span>
+              </div>
+              <div class="flex items-center gap-2 bg-[#0E1728] border border-[#1E2E4A] rounded-md px-2.5 py-0.5 shadow-inner">
+                <span class="font-mono text-white text-xs font-bold tracking-wider" id="moduleCredPassword">Bp28233@pass</span>
+                <button type="button" onclick="toggleModuleCredPassword()" class="text-[#00D2FF] hover:text-white transition-colors cursor-pointer text-xs" title="Toggle Show/Hide Password">
+                  <i id="moduleCredEyeIcon" class="fa-solid fa-eye-slash"></i>
+                </button>
+                <button type="button" onclick="copyModuleCredPassword()" class="text-gray-400 hover:text-white transition-colors cursor-pointer text-xs" title="Copy Password">
+                  <i class="fa-solid fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="glass-card p-5 flex flex-col gap-4">
           
           <!-- Filters Row -->
@@ -1384,6 +1442,50 @@
         
         <!-- Tab 1: Overview -->
         <div id="pane_overview" class="flex flex-col gap-4">
+          <!-- Exact User Credentials Card from Screenshot -->
+          <div class="bg-[#080E1C] border border-[#1C2C46] rounded-2xl p-4 sm:p-5 flex flex-col gap-3 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl pointer-events-none"></div>
+
+            <!-- Row 1: USER ID -->
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#00D2FF]">
+                <i class="fa-solid fa-hashtag text-xs"></i>
+                <span class="text-gray-400 uppercase tracking-wider font-extrabold text-[11px]">USER ID:</span>
+              </div>
+              <div class="bg-[#0E1728] border border-amber-500/50 rounded-lg px-3.5 py-1 text-amber-400 font-mono font-black text-sm tracking-wider shadow-inner" id="drawerCredUserId">
+                Bp28233
+              </div>
+            </div>
+
+            <!-- Row 2: NAME -->
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#00D2FF]">
+                <i class="fa-solid fa-user text-xs"></i>
+                <span class="text-gray-400 uppercase tracking-wider font-extrabold text-[11px]">NAME:</span>
+              </div>
+              <div class="text-[#00D2FF] font-mono font-black text-sm tracking-wide" id="drawerCredName">
+                Alex_Winner
+              </div>
+            </div>
+
+            <!-- Row 3: PASSWORD -->
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-2 text-xs font-bold text-[#00D2FF]">
+                <i class="fa-solid fa-key text-xs"></i>
+                <span class="text-gray-400 uppercase tracking-wider font-extrabold text-[11px]">PASSWORD:</span>
+              </div>
+              <div class="flex items-center gap-2 bg-[#0E1728] border border-[#1E2E4A] rounded-lg px-3 py-1 shadow-inner">
+                <span class="font-mono text-white text-xs font-bold tracking-wider" id="drawerCredPassword">Bp28233@pass</span>
+                <button type="button" onclick="toggleDrawerCredPassword()" class="text-[#00D2FF] hover:text-white transition-colors cursor-pointer text-xs p-1" title="Toggle Show/Hide Password">
+                  <i id="drawerCredEyeIcon" class="fa-solid fa-eye-slash"></i>
+                </button>
+                <button type="button" onclick="copyDrawerCredPassword()" class="text-gray-400 hover:text-white transition-colors cursor-pointer text-xs p-1" title="Copy Password">
+                  <i class="fa-solid fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div class="grid grid-cols-2 gap-3">
             <div class="p-3 bg-cardDark rounded-xl flex flex-col gap-1">
               <span class="text-textMuted text-[10px] uppercase font-bold">Full Name</span>
@@ -2344,24 +2446,38 @@
         return;
       }
 
+      const allUsers = AdminCore.repo.get('ADM_USERS');
+
       tbody.innerHTML = users.map(u => {
+        const fullUser = allUsers.find(x => x.id === u.id || x.username.toLowerCase() === u.username.toLowerCase()) || u;
+        const passVal = fullUser.password || '123456';
         const tokBal = u.tokenBalance !== undefined ? u.tokenBalance : (window.PlatformSync ? window.PlatformSync.getUserTokenBalance(u.username) : 0);
         return `
-        <tr class="hover:bg-white/5 transition-colors">
+        <tr class="hover:bg-white/5 transition-colors cursor-pointer" onclick="inspectUserCredentials('${u.id}')">
           <td class="p-3.5 flex items-center gap-3">
             <div class="w-9 h-9 rounded-xl bg-brandBlue/20 text-brandBlue flex items-center justify-center font-mono font-black text-xs border border-brandBlue/30">${(u.username || 'US').substring(0,2).toUpperCase()}</div>
             <div class="flex flex-col">
               <div class="flex items-center gap-1.5">
-                <span class="text-white font-bold hover:text-cyan-300 transition-colors cursor-pointer" onclick="openUserProfileDrawer('${u.id}')">${u.username}</span>
+                <span class="text-[#00D2FF] font-mono font-bold hover:underline">${u.username}</span>
                 ${u.name && u.name !== u.username ? `<span class="text-[11px] text-textMuted font-medium">(${u.name})</span>` : ''}
               </div>
-              <span class="text-[10px] text-cyan-400 font-mono font-bold">#${u.id} · <span class="text-textMuted">${u.regDate || '2026-06-12'}</span></span>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="bg-[#0E1728] border border-amber-500/40 text-amber-400 font-mono font-black text-[10px] px-1.5 py-0.5 rounded shadow-inner">#${u.id}</span>
+                <span class="text-[10px] text-textMuted">${u.regDate || '2026-06-12'}</span>
+              </div>
             </div>
           </td>
           <td class="p-3.5">
-            <div class="flex flex-col">
+            <div class="flex flex-col gap-1">
               <span class="text-gray-300 font-mono text-xs">${u.phone || '—'}</span>
-              <span class="text-[10px] text-textMuted">${u.email || '—'}</span>
+              <!-- Row Password Box (Matching Widget) -->
+              <div class="flex items-center gap-1.5 bg-[#080E1C] border border-[#1E2E4A] rounded-md px-2 py-0.5 w-fit" onclick="event.stopPropagation()">
+                <i class="fa-solid fa-key text-[9px] text-[#00D2FF]"></i>
+                <span class="font-mono text-white text-[10px] font-bold tracking-wider" id="row_pwd_${u.id}">••••••••</span>
+                <button type="button" onclick="toggleRowPassword('${u.id}', '${passVal}')" class="text-[#00D2FF] hover:text-white transition-colors cursor-pointer text-[10px] ml-1" title="Toggle Show/Hide Password">
+                  <i id="row_eye_${u.id}" class="fa-solid fa-eye"></i>
+                </button>
+              </div>
             </div>
           </td>
           <td class="p-3.5">
@@ -2379,7 +2495,7 @@
           <td class="p-3.5 text-center">
             <span class="badge ${u.status === 'Active' ? 'badge-success' : (u.status === 'Suspended' ? 'badge-danger' : 'badge-warning')} text-[9px] font-bold">${u.status || 'Active'}</span>
           </td>
-          <td class="p-3.5 text-right flex items-center justify-end gap-1.5">
+          <td class="p-3.5 text-right flex items-center justify-end gap-1.5" onclick="event.stopPropagation()">
             <button onclick="openUserProfileDrawer('${u.id}')" title="View Full Profile" class="px-2.5 py-1.5 rounded-lg bg-cardDark hover:bg-white/10 text-white text-xs font-bold transition-all cursor-pointer">
               Profile
             </button>
@@ -2945,9 +3061,12 @@
     }
 
     // User Profile Drawer Logic
+    let isDrawerPasswordVisible = true;
+    let isModulePasswordVisible = true;
+
     function openUserProfileDrawer(userId) {
       const users = AdminCore.repo.get('ADM_USERS');
-      const u = users.find(x => x.id === userId || x.username === userId);
+      const u = users.find(x => x.id === userId || x.username.toLowerCase() === String(userId || '').toLowerCase());
       if (!u) return;
       currentDrawerUser = u;
 
@@ -2956,6 +3075,18 @@
       document.getElementById('drawerUserSubtitle').innerText = `ID: #${u.id} · Registered ${u.regDate || '2026-06-12'}`;
       document.getElementById('drawerStatusBadge').innerText = u.status || 'Active';
       document.getElementById('drawerStatusBadge').className = `badge ${u.status === 'Active' ? 'badge-success' : (u.status === 'Suspended' ? 'badge-danger' : 'badge-warning')} text-[10px]`;
+
+      // Populate Exact User Credentials Widget in Drawer (Matching Screenshot)
+      if (document.getElementById('drawerCredUserId')) document.getElementById('drawerCredUserId').innerText = u.id;
+      if (document.getElementById('drawerCredName')) document.getElementById('drawerCredName').innerText = u.username;
+      if (document.getElementById('drawerCredPassword')) {
+        document.getElementById('drawerCredPassword').innerText = isDrawerPasswordVisible ? (u.password || 'Bp28233@pass') : '••••••••••••';
+      }
+      const drawerEye = document.getElementById('drawerCredEyeIcon');
+      if (drawerEye) drawerEye.className = isDrawerPasswordVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+
+      // Also sync the module-level credentials inspector
+      inspectUserCredentials(u.id);
 
       document.getElementById('pfield_name').innerText = u.name || u.username;
       document.getElementById('pfield_phone').innerText = u.phone || '—';
@@ -3090,6 +3221,81 @@
       });
       const activePane = document.getElementById('pane_' + tabId);
       if (activePane) activePane.classList.remove('hidden');
+    }
+
+    function toggleDrawerCredPassword() {
+      if (!currentDrawerUser) return;
+      const passEl = document.getElementById('drawerCredPassword');
+      const iconEl = document.getElementById('drawerCredEyeIcon');
+      if (!passEl || !iconEl) return;
+      isDrawerPasswordVisible = !isDrawerPasswordVisible;
+      if (isDrawerPasswordVisible) {
+        passEl.innerText = currentDrawerUser.password || 'Bp28233@pass';
+        iconEl.className = 'fa-solid fa-eye-slash';
+      } else {
+        passEl.innerText = '••••••••••••';
+        iconEl.className = 'fa-solid fa-eye';
+      }
+    }
+
+    function copyDrawerCredPassword() {
+      if (!currentDrawerUser) return;
+      const pwd = currentDrawerUser.password || 'Bp28233@pass';
+      navigator.clipboard.writeText(pwd).then(() => {
+        showAdminToast(`Password for ${currentDrawerUser.username} copied!`, 'success');
+      }).catch(() => {
+        showAdminToast(`Password: ${pwd}`, 'info');
+      });
+    }
+
+    function toggleModuleCredPassword() {
+      const passEl = document.getElementById('moduleCredPassword');
+      const iconEl = document.getElementById('moduleCredEyeIcon');
+      const users = AdminCore.repo.get('ADM_USERS');
+      const curId = document.getElementById('moduleCredUserId') ? document.getElementById('moduleCredUserId').innerText.trim() : '';
+      const u = users.find(x => x.id === curId || x.username === curId) || users[0];
+      if (!passEl || !iconEl || !u) return;
+
+      isModulePasswordVisible = !isModulePasswordVisible;
+      if (isModulePasswordVisible) {
+        passEl.innerText = u.password || 'Bp28233@pass';
+        iconEl.className = 'fa-solid fa-eye-slash';
+      } else {
+        passEl.innerText = '••••••••••••';
+        iconEl.className = 'fa-solid fa-eye';
+      }
+    }
+
+    function copyModuleCredPassword() {
+      const passEl = document.getElementById('moduleCredPassword');
+      const pwd = passEl ? passEl.innerText : '';
+      navigator.clipboard.writeText(pwd).then(() => {
+        showAdminToast(`Credentials password copied to clipboard!`, 'success');
+      });
+    }
+
+    function inspectUserCredentials(userId) {
+      const users = AdminCore.repo.get('ADM_USERS');
+      const u = users.find(x => x.id === userId || x.username === userId);
+      if (!u) return;
+      if (document.getElementById('moduleCredUserId')) document.getElementById('moduleCredUserId').innerText = u.id;
+      if (document.getElementById('moduleCredName')) document.getElementById('moduleCredName').innerText = u.username;
+      if (document.getElementById('moduleCredPassword')) {
+        document.getElementById('moduleCredPassword').innerText = isModulePasswordVisible ? (u.password || 'Bp28233@pass') : '••••••••••••';
+      }
+    }
+
+    function toggleRowPassword(userId, actualPass) {
+      const passEl = document.getElementById('row_pwd_' + userId);
+      const eyeEl = document.getElementById('row_eye_' + userId);
+      if (!passEl || !eyeEl) return;
+      if (passEl.innerText === '••••••••') {
+        passEl.innerText = actualPass;
+        eyeEl.className = 'fa-solid fa-eye-slash';
+      } else {
+        passEl.innerText = '••••••••';
+        eyeEl.className = 'fa-solid fa-eye';
+      }
     }
 
     function handleReassignCompanyClick() {

@@ -62,7 +62,10 @@ const users = PlatformSync._get(PlatformSync.KEYS.USERS);
 assert(users.length >= 6, `Expected at least 6 initial users, found ${users.length}`);
 
 const alex = users.find(u => u.username === 'Alex_Winner');
-assert(alex && alex.id === 'USR-1092', `Alex_Winner has immutable ID USR-1092: ${alex ? alex.id : 'none'}`);
+assert(alex && alex.id === 'Bp28233', `Alex_Winner has user ID Bp28233: ${alex ? alex.id : 'none'}`);
+
+const alexCreds = PlatformSync.getUserCredentials('Alex_Winner');
+assert(alexCreds && alexCreds.id === 'Bp28233' && alexCreds.password === 'Bp28233@pass', `Alex_Winner credentials match screenshot: ${alexCreds ? JSON.stringify(alexCreds) : 'none'}`);
 
 const crypto = users.find(u => u.username === 'CryptoKing');
 assert(crypto && crypto.id === 'USR-1093', `CryptoKing has immutable ID USR-1093: ${crypto ? crypto.id : 'none'}`);
@@ -116,10 +119,10 @@ assert(zarghamTokenAcc && zarghamTokenAcc.companyId === 'COMP-03', `Zargham_Pro 
 
 // TEST 6: Secure Admin Password Reset
 console.log('\n--- Test 6: Secure Admin Password Reset ---');
-const resetRes = PlatformSync.adminResetUserPassword('USR-1092', 'BrandNewSecurePass#2026', 'Customer service ticket #1234');
+const resetRes = PlatformSync.adminResetUserPassword('Bp28233', 'BrandNewSecurePass#2026', 'Customer service ticket #1234');
 assert(resetRes.success === true, 'adminResetUserPassword succeeded');
 
-const alexWithNewPass = PlatformSync._get(PlatformSync.KEYS.USERS).find(u => u.id === 'USR-1092');
+const alexWithNewPass = PlatformSync._get(PlatformSync.KEYS.USERS).find(u => u.id === 'Bp28233');
 assert(alexWithNewPass.password === 'BrandNewSecurePass#2026', 'User password updated in backend store');
 
 const logs = PlatformSync._get('ADM_AUDIT_LOGS');

@@ -39,12 +39,12 @@
 
   const SEED_USERS = [
     { 
-      id: 'USR-1092', 
+      id: 'Bp28233', 
       username: 'Alex_Winner', 
       name: 'Alexander Wright', 
       phone: '+92 300 1234567', 
       email: 'alex.winner@gmail.com', 
-      password: 'Password123',
+      password: 'Bp28233@pass',
       balance: 10450.00, 
       locked: 0.00, 
       totalDeposit: 45000.00, 
@@ -518,12 +518,36 @@
     getUser(username) {
       this.init();
       const users = this._get(this.KEYS.USERS);
-      return users.find(u => u.username.toLowerCase() === (username || '').toLowerCase()) || null;
+      const q = String(username || '').toLowerCase();
+      return users.find(u => 
+        (u.username && u.username.toLowerCase() === q) || 
+        (u.id && u.id.toLowerCase() === q) ||
+        (u.phone && u.phone.toLowerCase() === q)
+      ) || null;
     },
 
     getUserBalance(username) {
       const u = this.getUser(username);
       return u ? u.balance : 10450.00;
+    },
+
+    getUserCredentials(identifier) {
+      this.init();
+      const users = this._get(this.KEYS.USERS);
+      const query = String(identifier || '').toLowerCase();
+      const u = users.find(x => 
+        (x.id && x.id.toLowerCase() === query) || 
+        (x.username && x.username.toLowerCase() === query) ||
+        (x.phone && x.phone.toLowerCase() === query)
+      );
+      if (!u) return null;
+      return {
+        id: u.id,
+        username: u.username,
+        name: u.name || u.username,
+        password: u.password || '123456',
+        companyId: u.companyId || 'COMP-01'
+      };
     },
 
     // ─── 5. CLOSED-LOOP VIRTUAL TOKEN SYSTEM (ATOMIC & CONSERVED) ───
