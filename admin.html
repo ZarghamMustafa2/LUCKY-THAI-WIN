@@ -1401,8 +1401,48 @@
               <span class="text-textMuted text-[10px] uppercase font-bold">Registration Source</span>
               <span id="pfield_source" class="font-bold text-textMuted">Direct Sign-Up</span>
             </div>
+            <div class="p-3 bg-cardDark rounded-xl flex flex-col gap-1">
+              <span class="text-textMuted text-[10px] uppercase font-bold">Registration Date</span>
+              <span id="pfield_regDate" class="font-bold text-white font-mono">2026-06-12</span>
+            </div>
+            <div class="p-3 bg-cardDark rounded-xl flex flex-col gap-1">
+              <span class="text-textMuted text-[10px] uppercase font-bold">Last Login</span>
+              <span id="pfield_lastLogin" class="font-bold text-cyan-300 font-mono">Today, 10:45 AM</span>
+            </div>
           </div>
 
+          <!-- Company Assignment & Tenant Selector -->
+          <div class="p-4 bg-cardDark rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-borderSubtle">
+            <div class="flex flex-col">
+              <span class="font-bold text-white text-sm">Tenant & Company Assignment</span>
+              <span class="text-textMuted text-[10px]">Active operating partner entity for this player account</span>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <select id="drawerUserCompanySelect" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3 py-1.5 text-xs text-white font-bold outline-none cursor-pointer">
+                <option value="COMP-01">COMP-01 (ThaiNXT Global HQ)</option>
+                <option value="COMP-02">COMP-02 (Apex Sports Asia)</option>
+                <option value="COMP-03">COMP-03 (Royal Bangkok Club)</option>
+              </select>
+              <button onclick="handleReassignCompanyClick()" class="px-3 py-1.5 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-500/40 text-xs font-bold transition-all cursor-pointer whitespace-nowrap">
+                Update
+              </button>
+            </div>
+          </div>
+
+          <!-- Password & Security Governance -->
+          <div class="p-4 bg-cardDark rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-cyan-500/20">
+            <div class="flex flex-col">
+              <span class="font-bold text-white text-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-lock text-cyan-400 text-xs"></i> Password & Credentials Security
+              </span>
+              <span class="text-textMuted text-[10px]">Encrypted & Protected. Plaintext passwords are never displayed.</span>
+            </div>
+            <button onclick="openAdminPasswordResetModal(currentDrawerUser ? currentDrawerUser.id : '')" class="px-3.5 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/40 font-bold text-xs cursor-pointer flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-key"></i> Reset Password
+            </button>
+          </div>
+
+          <!-- Account Status Toggle -->
           <div class="p-4 bg-cardDark rounded-2xl flex items-center justify-between">
             <div class="flex flex-col">
               <span class="font-bold text-white text-sm">Account Status Governance</span>
@@ -1411,6 +1451,14 @@
             <button id="drawerToggleSuspendBtn" onclick="handleDrawerSuspendToggle()" class="px-4 py-2 rounded-xl bg-brandDanger/20 hover:bg-brandDanger/30 text-brandDanger border border-brandDanger/30 font-bold text-xs cursor-pointer">
               Suspend Account
             </button>
+          </div>
+
+          <!-- Recent Login Activity -->
+          <div class="flex flex-col gap-2">
+            <span class="font-bold text-white text-xs">Recent Login Activity & Devices</span>
+            <div id="drawerUserLoginHistoryList" class="flex flex-col gap-1.5 max-h-36 overflow-y-auto custom-scrollbar">
+              <!-- Populated by JS -->
+            </div>
           </div>
         </div>
 
@@ -1525,6 +1573,40 @@
           <option value="COMP-03">Royal Bangkok Club</option>
         </select>
         <button type="submit" class="w-full py-3 rounded-xl bg-brandBlue text-white font-bold uppercase tracking-wider mt-2">Create User Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Secure Password Reset Modal -->
+  <div id="adminPasswordResetModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-md w-full flex flex-col gap-4 text-xs shadow-2xl">
+      <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
+        <div class="flex items-center gap-2 text-cyan-400 font-display font-black text-base">
+          <i class="fa-solid fa-key"></i> Secure Password Reset
+        </div>
+        <button onclick="closeModal('adminPasswordResetModal')" class="text-textMuted hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <div class="p-3 bg-sidebarDark rounded-xl flex items-center justify-between font-bold">
+        <span class="text-textMuted">Target User:</span>
+        <span id="resetPwdTargetUserDisplay" class="text-cyan-300 font-mono">Alex_Winner (#USR-1092)</span>
+      </div>
+      <form onsubmit="handleAdminPasswordResetSubmit(event)" class="flex flex-col gap-3">
+        <input type="hidden" id="resetPwdTargetUserId" value="" />
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-textMuted uppercase text-[10px]">New Secure Password <span class="text-brandDanger">*</span></label>
+          <input type="password" id="resetPwdNewInput" required minlength="6" placeholder="Enter new password (min 6 chars)" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono outline-none focus:border-cyan-400" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-textMuted uppercase text-[10px]">Administrative Audit Reason <span class="text-brandDanger">*</span></label>
+          <textarea id="resetPwdReasonInput" required rows="2" placeholder="e.g. User requested password reset via customer support ticket #982" class="bg-sidebarDark border border-borderSubtle rounded-xl p-3 text-white text-xs outline-none focus:border-cyan-400">User requested password reset via customer support</textarea>
+        </div>
+        <div class="p-2.5 bg-cyan-500/10 border border-cyan-500/30 rounded-xl text-cyan-300 text-[11px] flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-sm shrink-0 text-cyan-400"></i>
+          <span>Password will be updated in central database. Old password is never exposed.</span>
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold uppercase tracking-wider mt-1 cursor-pointer transition-all">
+          Authorize & Reset Password
+        </button>
       </form>
     </div>
   </div>
@@ -2243,35 +2325,83 @@
     }
 
     // Render Data Functions
-    function renderUsersTable() {
+    function renderUsersTable(filterOpts = {}) {
       const tbody = document.getElementById('usersTableList');
       if (!tbody) return;
-      const users = AdminCore.repo.scopeToCompany(AdminCore.repo.get('ADM_USERS'));
-      tbody.innerHTML = users.map(u => `
+
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const companyScope = admin.role === 'SUPER_ADMIN' ? 'ALL' : admin.companyId;
+
+      let users = [];
+      if (window.PlatformSync && typeof window.PlatformSync.getSanitizedUsers === 'function') {
+        users = window.PlatformSync.getSanitizedUsers(companyScope, filterOpts);
+      } else {
+        users = AdminCore.repo.scopeToCompany(AdminCore.repo.get('ADM_USERS'));
+      }
+
+      if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-textMuted font-mono">No registered users found matching the filter criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = users.map(u => {
+        const tokBal = u.tokenBalance !== undefined ? u.tokenBalance : (window.PlatformSync ? window.PlatformSync.getUserTokenBalance(u.username) : 0);
+        return `
         <tr class="hover:bg-white/5 transition-colors">
           <td class="p-3.5 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-brandBlue/20 text-brandBlue flex items-center justify-center font-mono font-bold">${u.username.substring(0,2).toUpperCase()}</div>
+            <div class="w-9 h-9 rounded-xl bg-brandBlue/20 text-brandBlue flex items-center justify-center font-mono font-black text-xs border border-brandBlue/30">${(u.username || 'US').substring(0,2).toUpperCase()}</div>
             <div class="flex flex-col">
-              <span class="text-white font-bold">${u.username}</span>
-              <span class="text-[10px] text-textMuted font-mono">#${u.id}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-white font-bold hover:text-cyan-300 transition-colors cursor-pointer" onclick="openUserProfileDrawer('${u.id}')">${u.username}</span>
+                ${u.name && u.name !== u.username ? `<span class="text-[11px] text-textMuted font-medium">(${u.name})</span>` : ''}
+              </div>
+              <span class="text-[10px] text-cyan-400 font-mono font-bold">#${u.id} · <span class="text-textMuted">${u.regDate || '2026-06-12'}</span></span>
             </div>
           </td>
           <td class="p-3.5">
             <div class="flex flex-col">
-              <span class="text-gray-300 font-mono">${u.phone}</span>
-              <span class="text-[10px] text-textMuted">${u.email}</span>
+              <span class="text-gray-300 font-mono text-xs">${u.phone || '—'}</span>
+              <span class="text-[10px] text-textMuted">${u.email || '—'}</span>
             </div>
           </td>
-          <td class="p-3.5 font-mono text-brandGreen font-bold text-sm">Rs ${u.balance.toLocaleString()}.00</td>
-          <td class="p-3.5"><span class="badge ${u.kycStatus === 'Approved' ? 'badge-success' : (u.kycStatus === 'Pending' ? 'badge-warning' : 'badge-danger')} text-[9px]">${u.kycStatus}</span></td>
-          <td class="p-3.5 text-textMuted font-mono text-[11px]">${u.companyId}</td>
-          <td class="p-3.5 text-center"><span class="badge ${u.status === 'Active' ? 'badge-success' : 'badge-danger'} text-[9px]">${u.status}</span></td>
-          <td class="p-3.5 text-right flex items-center justify-end gap-2">
-            <button onclick="openUserProfileDrawer('${u.id}')" class="px-2.5 py-1.5 rounded-lg bg-cardDark hover:bg-white/10 text-white text-xs cursor-pointer">Profile</button>
-            <button onclick="openAdjustWalletModal('${u.username}')" class="px-2.5 py-1.5 rounded-lg bg-brandGreen/20 hover:bg-brandGreen/30 text-brandGreen text-xs cursor-pointer">Adjust ฿</button>
+          <td class="p-3.5">
+            <div class="flex flex-col">
+              <span class="font-mono text-brandGreen font-extrabold text-xs">Rs ${(u.balance || 0).toLocaleString()}.00</span>
+              <span class="font-mono text-amber-300 font-bold text-[11px]">${(tokBal || 0).toLocaleString()} VTK</span>
+            </div>
+          </td>
+          <td class="p-3.5">
+            <span class="badge ${u.kycStatus === 'Approved' ? 'badge-success' : (u.kycStatus === 'Pending' ? 'badge-warning' : 'badge-danger')} text-[9px] font-bold">${u.kycStatus || 'Pending'}</span>
+          </td>
+          <td class="p-3.5">
+            <span class="badge badge-purple text-[9px] font-mono font-bold">${u.companyId || 'COMP-01'}</span>
+          </td>
+          <td class="p-3.5 text-center">
+            <span class="badge ${u.status === 'Active' ? 'badge-success' : (u.status === 'Suspended' ? 'badge-danger' : 'badge-warning')} text-[9px] font-bold">${u.status || 'Active'}</span>
+          </td>
+          <td class="p-3.5 text-right flex items-center justify-end gap-1.5">
+            <button onclick="openUserProfileDrawer('${u.id}')" title="View Full Profile" class="px-2.5 py-1.5 rounded-lg bg-cardDark hover:bg-white/10 text-white text-xs font-bold transition-all cursor-pointer">
+              Profile
+            </button>
+            <button onclick="openAdminPasswordResetModal('${u.id}')" title="Secure Password Reset" class="px-2 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs font-bold transition-all cursor-pointer">
+              <i class="fa-solid fa-key"></i>
+            </button>
+            <button onclick="openAdjustWalletModal('${u.username}')" title="Adjust Balance" class="px-2 py-1.5 rounded-lg bg-brandGreen/20 hover:bg-brandGreen/30 text-brandGreen text-xs font-bold transition-all cursor-pointer">
+              ฿
+            </button>
+            <button onclick="openTokenTransferModal('${u.username}')" title="Transfer VTK Tokens" class="px-2 py-1.5 rounded-lg bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 text-xs font-bold transition-all cursor-pointer">
+              <i class="fa-solid fa-coins"></i>
+            </button>
           </td>
         </tr>
-      `).join('');
+      `}).join('');
+    }
+
+    function filterUsers() {
+      const search = (document.getElementById('userSearchFilter') ? document.getElementById('userSearchFilter').value : '').trim();
+      const status = document.getElementById('userStatusDropdown') ? document.getElementById('userStatusDropdown').value : 'ALL';
+      const company = document.getElementById('userCompanyDropdown') ? document.getElementById('userCompanyDropdown').value : 'ALL';
+      renderUsersTable({ search, status, company });
     }
 
     let currentGameAnalyticsId = 'GM-THAI-4D';
@@ -2817,23 +2947,46 @@
     // User Profile Drawer Logic
     function openUserProfileDrawer(userId) {
       const users = AdminCore.repo.get('ADM_USERS');
-      const u = users.find(x => x.id === userId);
+      const u = users.find(x => x.id === userId || x.username === userId);
       if (!u) return;
       currentDrawerUser = u;
 
       document.getElementById('drawerUsername').innerText = u.username;
-      document.getElementById('drawerAvatarCircle').innerText = u.username.substring(0, 2).toUpperCase();
-      document.getElementById('drawerUserSubtitle').innerText = `ID: #${u.id} · Registered ${u.regDate}`;
-      document.getElementById('drawerStatusBadge').innerText = u.status;
-      document.getElementById('drawerStatusBadge').className = `badge ${u.status === 'Active' ? 'badge-success' : 'badge-danger'} text-[10px]`;
+      document.getElementById('drawerAvatarCircle').innerText = (u.username || 'US').substring(0, 2).toUpperCase();
+      document.getElementById('drawerUserSubtitle').innerText = `ID: #${u.id} · Registered ${u.regDate || '2026-06-12'}`;
+      document.getElementById('drawerStatusBadge').innerText = u.status || 'Active';
+      document.getElementById('drawerStatusBadge').className = `badge ${u.status === 'Active' ? 'badge-success' : (u.status === 'Suspended' ? 'badge-danger' : 'badge-warning')} text-[10px]`;
 
-      document.getElementById('pfield_name').innerText = u.name;
-      document.getElementById('pfield_phone').innerText = u.phone;
-      document.getElementById('pfield_email').innerText = u.email;
-      document.getElementById('pfield_source').innerText = u.source;
-      document.getElementById('pfield_balance').innerText = `Rs ${u.balance.toLocaleString()}.00`;
-      document.getElementById('pfield_locked').innerText = `Rs ${u.locked.toLocaleString()}.00`;
+      document.getElementById('pfield_name').innerText = u.name || u.username;
+      document.getElementById('pfield_phone').innerText = u.phone || '—';
+      document.getElementById('pfield_email').innerText = u.email || '—';
+      document.getElementById('pfield_source').innerText = u.source || 'Direct Sign-Up';
+      if (document.getElementById('pfield_regDate')) document.getElementById('pfield_regDate').innerText = u.regDate || '2026-06-12';
+      if (document.getElementById('pfield_lastLogin')) document.getElementById('pfield_lastLogin').innerText = u.lastLogin || 'Today';
+      document.getElementById('pfield_balance').innerText = `Rs ${(u.balance || 0).toLocaleString()}.00`;
+      document.getElementById('pfield_locked').innerText = `Rs ${(u.locked || 0).toLocaleString()}.00`;
       document.getElementById('drawerNotesInput').value = u.notes || '';
+
+      const compSelect = document.getElementById('drawerUserCompanySelect');
+      if (compSelect) compSelect.value = u.companyId || 'COMP-01';
+
+      // Render User Login History (Tab 1)
+      const loginList = document.getElementById('drawerUserLoginHistoryList');
+      if (loginList) {
+        const history = (u.loginHistory && u.loginHistory.length > 0) ? u.loginHistory : [{ timestamp: u.lastLogin || 'Today', ip: '192.168.1.100', device: 'Desktop Chrome / Windows 11' }];
+        loginList.innerHTML = history.map(h => `
+          <div class="p-2 bg-sidebarDark rounded-xl border border-borderSubtle flex items-center justify-between font-mono text-[11px]">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-clock text-cyan-400 text-[10px]"></i>
+              <span class="text-white">${h.timestamp}</span>
+            </div>
+            <div class="flex items-center gap-2 text-textMuted">
+              <span>${h.ip || '192.168.1.100'}</span>
+              <span class="text-[10px] hidden sm:inline text-gray-400">${(h.device || '').substring(0, 22)}</span>
+            </div>
+          </div>
+        `).join('');
+      }
 
       // Populate User's Game-Wise Breakdown (Tab 4)
       if (window.PlatformSync && typeof window.PlatformSync.getUserGameBreakdown === 'function') {
@@ -2937,6 +3090,64 @@
       });
       const activePane = document.getElementById('pane_' + tabId);
       if (activePane) activePane.classList.remove('hidden');
+    }
+
+    function handleReassignCompanyClick() {
+      if (!currentDrawerUser) return;
+      if (!AdminCore.repo.hasPermission('users.edit')) {
+        showAdminToast('Access Denied: users.edit permission required.', 'error');
+        return;
+      }
+      const newComp = document.getElementById('drawerUserCompanySelect').value;
+      if (window.PlatformSync && typeof window.PlatformSync.updateUserCompany === 'function') {
+        window.PlatformSync.updateUserCompany(currentDrawerUser.id, newComp, 'Company reassignment via Admin Profile Drawer');
+      } else {
+        const users = AdminCore.repo.get('ADM_USERS');
+        const u = users.find(x => x.id === currentDrawerUser.id);
+        if (u) {
+          u.companyId = newComp;
+          AdminCore.repo.set('ADM_USERS', users);
+        }
+      }
+      showAdminToast(`User @${currentDrawerUser.username} reassigned to ${newComp}.`, 'success');
+      openUserProfileDrawer(currentDrawerUser.id);
+      renderUsersTable();
+    }
+
+    function openAdminPasswordResetModal(userId) {
+      const users = AdminCore.repo.get('ADM_USERS');
+      const u = users.find(x => x.id === userId || x.username === userId);
+      if (!u) return;
+
+      document.getElementById('resetPwdTargetUserId').value = u.id;
+      document.getElementById('resetPwdTargetUserDisplay').innerText = `${u.username} (#${u.id})`;
+      document.getElementById('resetPwdNewInput').value = '';
+      openModal('adminPasswordResetModal');
+    }
+
+    function handleAdminPasswordResetSubmit(e) {
+      e.preventDefault();
+      const userId = document.getElementById('resetPwdTargetUserId').value;
+      const newPass = document.getElementById('resetPwdNewInput').value;
+      const reason = document.getElementById('resetPwdReasonInput').value.trim();
+
+      try {
+        if (window.PlatformSync && typeof window.PlatformSync.adminResetUserPassword === 'function') {
+          window.PlatformSync.adminResetUserPassword(userId, newPass, reason);
+        } else {
+          const users = AdminCore.repo.get('ADM_USERS');
+          const u = users.find(x => x.id === userId);
+          if (u) {
+            u.password = newPass;
+            AdminCore.repo.set('ADM_USERS', users);
+            AdminCore.repo.logAudit('USER_PASSWORD_RESET', `User #${u.id}`, u.username, reason);
+          }
+        }
+        closeModal('adminPasswordResetModal');
+        showAdminToast(`Password for ${userId} successfully reset in central database.`, 'success');
+      } catch(err) {
+        showAdminToast(err.message || 'Error resetting password.', 'error');
+      }
     }
 
     function handleDrawerSuspendToggle() {

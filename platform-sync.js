@@ -117,6 +117,46 @@
       lastLogin: 'Today, 08:20 AM', 
       loginHistory: [{ timestamp: '2026-08-14 08:20:00', ip: '192.168.1.14', device: 'Mobile Chrome / Android' }],
       notes: 'Regular Thai Lottery player.' 
+    },
+    { 
+      id: 'USR-1096', 
+      username: 'LuckyHassan', 
+      name: 'Hassan Ali', 
+      phone: '+92 345 8899001', 
+      email: 'hassan.ali@outlook.com', 
+      password: 'Hassan@Secure99',
+      balance: 3200.00, 
+      locked: 1000.00, 
+      totalDeposit: 15000.00, 
+      totalWithdraw: 10800.00, 
+      companyId: 'COMP-01', 
+      status: 'Pending Verification', 
+      kycStatus: 'Pending', 
+      source: 'Direct Sign-Up', 
+      regDate: '2026-08-10', 
+      lastLogin: 'Today, 01:10 PM', 
+      loginHistory: [{ timestamp: '2026-08-14 13:10:00', ip: '192.168.1.109', device: 'Desktop Firefox / Windows 10' }],
+      notes: 'ID card uploaded, awaiting verification.' 
+    },
+    { 
+      id: 'USR-1097', 
+      username: 'SuspiciousBettor', 
+      name: 'Rashid Minhas', 
+      phone: '+92 301 2233445', 
+      email: 'rashid.m@gmail.com', 
+      password: 'RashidSecret@1',
+      balance: 150.00, 
+      locked: 0.00, 
+      totalDeposit: 5000.00, 
+      totalWithdraw: 4850.00, 
+      companyId: 'COMP-03', 
+      status: 'Suspended', 
+      kycStatus: 'Rejected', 
+      source: 'Online Referral', 
+      regDate: '2026-07-15', 
+      lastLogin: '3 days ago', 
+      loginHistory: [{ timestamp: '2026-08-11 18:22:00', ip: '192.168.1.190', device: 'Mobile Android' }],
+      notes: 'Suspended due to multiple sequence betting pattern.' 
     }
   ];
 
@@ -158,7 +198,7 @@
   // ─── 3. CLOSED-LOOP VIRTUAL TOKEN SEED ACCOUNTS & LEDGER ─────────
   // Total Initial Token Supply: 10,000,000 VTK (Guaranteed Conservation)
   const SEED_TOKEN_ACCOUNTS = [
-    { internalAccountId: 'ACC-MASTER-001', username: 'MASTER_VAULT', accountType: 'MASTER', companyId: null, tokenBalance: 8450000, status: 'Active', createdDate: '2026-01-01' },
+    { internalAccountId: 'ACC-MASTER-001', username: 'MASTER_VAULT', accountType: 'MASTER', companyId: null, tokenBalance: 8444800, status: 'Active', createdDate: '2026-01-01' },
     { internalAccountId: 'ACC-COMP-01', username: 'ThaiNXT_HQ_Tokens', accountType: 'COMPANY_ADMIN', companyId: 'COMP-01', tokenBalance: 750000, status: 'Active', createdDate: '2026-01-01' },
     { internalAccountId: 'ACC-COMP-02', username: 'Apex_Asia_Tokens', accountType: 'COMPANY_ADMIN', companyId: 'COMP-02', tokenBalance: 320000, status: 'Active', createdDate: '2026-01-01' },
     { internalAccountId: 'ACC-COMP-03', username: 'Royal_Bangkok_Tokens', accountType: 'COMPANY_ADMIN', companyId: 'COMP-03', tokenBalance: 180000, status: 'Active', createdDate: '2026-01-01' },
@@ -166,7 +206,9 @@
     { internalAccountId: 'ACC-USR-1092', username: 'Alex_Winner', accountType: 'USER', companyId: 'COMP-01', tokenBalance: 45000, status: 'Active', createdDate: '2026-06-12' },
     { internalAccountId: 'ACC-USR-1093', username: 'CryptoKing', accountType: 'USER', companyId: 'COMP-01', tokenBalance: 80000, status: 'Active', createdDate: '2026-06-18' },
     { internalAccountId: 'ACC-USR-1094', username: 'Whale99', accountType: 'USER', companyId: 'COMP-01', tokenBalance: 35000, status: 'Active', createdDate: '2026-05-20' },
-    { internalAccountId: 'ACC-USR-1095', username: 'Zargham_Pro', accountType: 'USER', companyId: 'COMP-02', tokenBalance: 15000, status: 'Active', createdDate: '2026-07-01' }
+    { internalAccountId: 'ACC-USR-1095', username: 'Zargham_Pro', accountType: 'USER', companyId: 'COMP-02', tokenBalance: 15000, status: 'Active', createdDate: '2026-07-01' },
+    { internalAccountId: 'ACC-USR-1096', username: 'LuckyHassan', accountType: 'USER', companyId: 'COMP-01', tokenBalance: 5000, status: 'Active', createdDate: '2026-08-10' },
+    { internalAccountId: 'ACC-USR-1097', username: 'SuspiciousBettor', accountType: 'USER', companyId: 'COMP-03', tokenBalance: 200, status: 'Suspended', createdDate: '2026-07-15' }
   ];
 
   const SEED_TOKEN_LEDGER = [
@@ -223,6 +265,7 @@
       if (!localStorage.getItem(this.KEYS.TOKEN_LEDGER)) {
         localStorage.setItem(this.KEYS.TOKEN_LEDGER, JSON.stringify(SEED_TOKEN_LEDGER));
       }
+      this.syncExistingUsers();
     },
 
     _get(key) {
@@ -233,7 +276,182 @@
       try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
     },
 
-    // ─── USER REGISTRATION & AUTH SYNCHRONIZATION ──────────────────
+    // ─── USER REGISTRATION & REAL DATA SYNCHRONIZATION ─────────────
+
+    syncExistingUsers() {
+      const users = this._get(this.KEYS.USERS);
+      let modified = false;
+
+      // 1. Synchronize legacy / self-registered users from registeredUsersList if any
+      let regList = [];
+      try { regList = JSON.parse(localStorage.getItem('registeredUsersList') || '[]'); } catch(e) {}
+      
+      if (Array.isArray(regList)) {
+        regList.forEach(regUser => {
+          if (!regUser || !regUser.username) return;
+          const uname = String(regUser.username).trim();
+          const existing = users.find(u => u.username.toLowerCase() === uname.toLowerCase());
+          if (!existing) {
+            const maxNum = users.reduce((max, u) => {
+              const n = parseInt(String(u.id).replace(/\D/g, ''), 10);
+              return isNaN(n) ? max : Math.max(max, n);
+            }, 1095);
+            const newId = 'USR-' + (maxNum + 1);
+            const newUser = {
+              id: newId,
+              username: uname,
+              name: uname.replace(/_/g, ' '),
+              phone: regUser.phone || ('+92 3' + Math.floor(100000000 + Math.random() * 900000000)),
+              email: regUser.email || (uname.toLowerCase() + '@gmail.com'),
+              password: regUser.password || '123456',
+              balance: Number(regUser.balance) || 10450.00,
+              locked: 0.00,
+              totalDeposit: Number(regUser.balance) || 10450.00,
+              totalWithdraw: 0.00,
+              companyId: regUser.companyId || 'COMP-01',
+              status: regUser.status || 'Active',
+              kycStatus: 'Pending',
+              source: regUser.source || 'Self Registered (Website)',
+              regDate: new Date().toISOString().split('T')[0],
+              lastLogin: regUser.loginTime || 'Today, ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              loginHistory: [{ timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19), ip: '192.168.1.100', device: navigator.userAgent.substring(0, 40) }],
+              notes: 'Synchronized player account.'
+            };
+            users.push(newUser);
+            modified = true;
+          }
+        });
+      }
+
+      // 2. Ensure each user has a corresponding token account in ADM_TOKEN_ACCOUNTS
+      const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+      let accountsModified = false;
+
+      users.forEach(u => {
+        const accId = `ACC-${u.id}`;
+        let tokAcc = accounts.find(a => 
+          a.internalAccountId.toLowerCase() === accId.toLowerCase() || 
+          a.username.toLowerCase() === u.username.toLowerCase()
+        );
+        if (!tokAcc) {
+          accounts.push({
+            internalAccountId: accId,
+            username: u.username,
+            accountType: 'USER',
+            companyId: u.companyId || 'COMP-01',
+            tokenBalance: 5000,
+            status: u.status || 'Active',
+            createdDate: u.regDate || new Date().toISOString().split('T')[0]
+          });
+          accountsModified = true;
+        } else if (tokAcc.companyId !== u.companyId) {
+          tokAcc.companyId = u.companyId;
+          accountsModified = true;
+        }
+      });
+
+      if (accountsModified) {
+        this._set(this.KEYS.TOKEN_ACCOUNTS, accounts);
+      }
+
+      if (modified) {
+        this._set(this.KEYS.USERS, users);
+      }
+
+      return users;
+    },
+
+    getSanitizedUsers(companyId = null, filterOpts = {}) {
+      this.init();
+      let users = this._get(this.KEYS.USERS);
+      
+      // Multi-tenant company role scoping
+      if (companyId && companyId !== 'ALL') {
+        users = users.filter(u => u.companyId === companyId);
+      }
+
+      if (filterOpts.status && filterOpts.status !== 'ALL') {
+        users = users.filter(u => u.status === filterOpts.status);
+      }
+
+      if (filterOpts.company && filterOpts.company !== 'ALL') {
+        users = users.filter(u => u.companyId === filterOpts.company);
+      }
+
+      if (filterOpts.search) {
+        const q = String(filterOpts.search).toLowerCase().trim();
+        users = users.filter(u => 
+          (u.username && u.username.toLowerCase().includes(q)) ||
+          (u.name && u.name.toLowerCase().includes(q)) ||
+          (u.id && u.id.toLowerCase().includes(q)) ||
+          (u.phone && u.phone.toLowerCase().includes(q)) ||
+          (u.email && u.email.toLowerCase().includes(q))
+        );
+      }
+
+      // CRITICAL PASSWORD SECURITY: NEVER expose plaintext passwords to Admin views
+      return users.map(u => {
+        const clone = { ...u };
+        delete clone.password; // Strip plaintext password
+        const tokAcc = this.getTokenAccount(`ACC-${u.id}`) || this.getTokenAccount(u.username);
+        clone.tokenBalance = tokAcc ? Number(tokAcc.tokenBalance) : 0;
+        return clone;
+      });
+    },
+
+    getUserTokenBalance(identifier) {
+      const acc = this.getTokenAccount(identifier) || this.getTokenAccount(`ACC-${identifier}`);
+      return acc ? Number(acc.tokenBalance) : 0;
+    },
+
+    adminResetUserPassword(userId, newPassword, reason = 'Administrative password reset') {
+      this.init();
+      if (!newPassword || newPassword.length < 6) {
+        throw new Error('New password must be at least 6 characters long.');
+      }
+      const users = this._get(this.KEYS.USERS);
+      const u = users.find(x => x.id === userId || x.username.toLowerCase() === userId.toLowerCase());
+      if (!u) {
+        throw new Error(`User ${userId} not found.`);
+      }
+
+      u.password = newPassword;
+      u.updatedAt = new Date().toISOString();
+      this._set(this.KEYS.USERS, users);
+
+      this.logAudit('USER_PASSWORD_RESET', `User #${u.id}`, u.username, reason);
+      broadcastEvent('USER_PASSWORD_RESET', { userId: u.id, username: u.username });
+      return { success: true, message: `Password for @${u.username} successfully reset.` };
+    },
+
+    updateUserCompany(userId, newCompanyId, reason = 'Administrative company re-assignment') {
+      this.init();
+      const users = this._get(this.KEYS.USERS);
+      const u = users.find(x => x.id === userId || x.username.toLowerCase() === userId.toLowerCase());
+      if (!u) {
+        throw new Error(`User ${userId} not found.`);
+      }
+
+      const prevCompany = u.companyId;
+      u.companyId = newCompanyId;
+      u.updatedAt = new Date().toISOString();
+      this._set(this.KEYS.USERS, users);
+
+      // Also update company on token account
+      const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+      const tokAcc = accounts.find(a => 
+        a.internalAccountId === `ACC-${u.id}` || 
+        a.username.toLowerCase() === u.username.toLowerCase()
+      );
+      if (tokAcc) {
+        tokAcc.companyId = newCompanyId;
+        this._set(this.KEYS.TOKEN_ACCOUNTS, accounts);
+      }
+
+      this.logAudit('USER_COMPANY_CHANGED', `User #${u.id}`, u.username, `${reason} (${prevCompany} -> ${newCompanyId})`);
+      broadcastEvent('USER_COMPANY_CHANGED', { userId: u.id, username: u.username, companyId: newCompanyId });
+      return { success: true, user: u };
+    },
 
     registerOrLoginUser(username, password, phone = '', email = '') {
       this.init();

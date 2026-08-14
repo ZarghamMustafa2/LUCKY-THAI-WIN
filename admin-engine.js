@@ -215,6 +215,9 @@
       if (!localStorage.getItem('ADM_AUDIT_LOGS')) localStorage.setItem('ADM_AUDIT_LOGS', JSON.stringify(DEFAULT_AUDIT_LOGS));
       if (!localStorage.getItem('ADM_KYC')) localStorage.setItem('ADM_KYC', JSON.stringify(DEFAULT_KYC));
       if (!localStorage.getItem('ADM_BONUSES')) localStorage.setItem('ADM_BONUSES', JSON.stringify(DEFAULT_BONUSES));
+      if (typeof window !== 'undefined' && window.PlatformSync && typeof window.PlatformSync.syncExistingUsers === 'function') {
+        window.PlatformSync.syncExistingUsers();
+      }
     }
 
     get(key) {
