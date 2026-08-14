@@ -104,9 +104,12 @@
     } catch (e) {}
   }
 
-  /** Save user to the registered-users list (for Admin Panel) */
+  /** Save user to central platform database for Admin Panel */
   function _saveToUserList(username, password) {
     try {
+      if (window.PlatformSync && typeof window.PlatformSync.registerOrLoginUser === 'function') {
+        window.PlatformSync.registerOrLoginUser(username, password);
+      }
       var list  = JSON.parse(localStorage.getItem('registeredUsersList') || '[]');
       var found = -1;
       for (var i = 0; i < list.length; i++) {
@@ -255,6 +258,7 @@
   window.handleQuickGuestLogin = function () {
     var guestName = 'Alex_Winner';
     _setLoggedIn(guestName);
+    _saveToUserList(guestName, 'Demo1234');
 
     if (typeof window.updateUserProfileUI === 'function') {
       try { window.updateUserProfileUI(); } catch (err) {}

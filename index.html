@@ -54,6 +54,7 @@
       }
     }
   </script>
+  <script src="platform-sync.js"></script>
   <script src="auth.js?v=2.2"></script>
   <script>
     // Force unregister any stale service workers and clear cache silently
@@ -942,17 +943,26 @@
       });
     };
 
-    // Global Wallet State Initializer
+    // Global Wallet State Initializer with PlatformSync
     try {
-      var savedBal = localStorage.getItem('userWalletBalance');
-      var parsed = (savedBal !== null && !isNaN(parseFloat(savedBal))) ? parseFloat(savedBal) : 10450;
-      window.currentBalance = (parsed < 10) ? 10450 : parsed;
+      var curUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      if (window.PlatformSync && typeof window.PlatformSync.getUserBalance === 'function') {
+        window.currentBalance = window.PlatformSync.getUserBalance(curUser);
+      } else {
+        var savedBal = localStorage.getItem('userWalletBalance');
+        var parsed = (savedBal !== null && !isNaN(parseFloat(savedBal))) ? parseFloat(savedBal) : 10450;
+        window.currentBalance = (parsed < 10) ? 10450 : parsed;
+      }
     } catch(e) {
       window.currentBalance = 10450;
     }
 
     window.updateWalletUI = function() {
-      var bal = (typeof window.currentBalance === 'number' && !isNaN(window.currentBalance) && window.currentBalance >= 10) ? window.currentBalance : 10450;
+      var curU = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      if (window.PlatformSync && typeof window.PlatformSync.getUserBalance === 'function') {
+        window.currentBalance = window.PlatformSync.getUserBalance(curU);
+      }
+      var bal = (typeof window.currentBalance === 'number' && !isNaN(window.currentBalance) && window.currentBalance >= 0) ? window.currentBalance : 10450;
       window.currentBalance = bal;
       var formatted = 'Rs ' + bal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
       var walletEls = document.querySelectorAll('#walletBalance, .wallet-balance-text, [data-wallet-balance]');
@@ -964,6 +974,34 @@
         if (typeof window.saveActiveUserSession === 'function') window.saveActiveUserSession();
       } catch(e) {}
     };
+
+    // Real-Time Cross-Tab Listener for Admin Actions
+    if (window.PlatformSync && typeof window.PlatformSync.onPlatformEvent === 'function') {
+      window.PlatformSync.onPlatformEvent(function(event) {
+        var curU = localStorage.getItem('userLoginName') || 'Alex_Winner';
+        if (event.type === 'DEPOSIT_APPROVED') {
+          window.updateWalletUI();
+          if (typeof window.showToast === 'function') {
+            window.showToast('Deposit Approved! Rs ' + event.payload.deposit.amount.toLocaleString() + ' added to your wallet.', 'success');
+          }
+        } else if (event.type === 'WITHDRAWAL_APPROVED') {
+          window.updateWalletUI();
+          if (typeof window.showToast === 'function') {
+            window.showToast('Withdrawal Approved & Payout Dispatched!', 'success');
+          }
+        } else if (event.type === 'WITHDRAWAL_REJECTED') {
+          window.updateWalletUI();
+          if (typeof window.showToast === 'function') {
+            window.showToast('Withdrawal Rejected: ' + (event.payload.withdrawal.reason || 'Contact Support'), 'warning');
+          }
+        } else if (event.type === 'WALLET_ADJUSTED') {
+          window.updateWalletUI();
+          if (typeof window.showToast === 'function') {
+            window.showToast('Wallet balance updated by Admin.', 'info');
+          }
+        }
+      });
+    }
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function() { window.updateWalletUI(); });

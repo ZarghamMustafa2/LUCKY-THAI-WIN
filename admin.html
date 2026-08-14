@@ -40,6 +40,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800;900&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="platform-sync.js"></script>
   <script src="admin-engine.js"></script>
 
   <style>
@@ -1673,24 +1674,13 @@
         showAdminToast('Access Denied: You do not have deposits.approve permission.', 'error');
         return;
       }
-      const deps = AdminCore.repo.get('ADM_DEPOSITS');
-      const d = deps.find(x => x.id === depId);
-      if (d) {
-        d.status = 'Approved';
-        AdminCore.repo.set('ADM_DEPOSITS', deps);
-        
-        // Credit User Wallet
-        const users = AdminCore.repo.get('ADM_USERS');
-        const u = users.find(x => x.username === d.username);
-        if (u) {
-          u.balance += d.amount;
-          u.totalDeposit += d.amount;
-          AdminCore.repo.set('ADM_USERS', users);
-        }
-
-        AdminCore.repo.logAudit('DEPOSIT_APPROVED', `Deposit #${d.id}`, d.username, `Approved payment proof for Rs ${d.amount}`);
-        showAdminToast(`Deposit #${depId} Approved & Rs ${d.amount.toLocaleString()} credited to ${d.username}!`, 'success');
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const success = window.PlatformSync ? window.PlatformSync.approveDeposit(depId, admin.name) : true;
+      if (success) {
+        showAdminToast(`Deposit #${depId} Approved & Balance Credited!`, 'success');
         renderDepositsTable();
+        renderWalletsTable();
+        renderUsersTable();
       }
     }
 
@@ -1702,13 +1692,9 @@
       const reason = prompt('Please enter rejection reason:', 'Invalid receipt reference / fake transaction proof');
       if (!reason) return;
 
-      const deps = AdminCore.repo.get('ADM_DEPOSITS');
-      const d = deps.find(x => x.id === depId);
-      if (d) {
-        d.status = 'Rejected';
-        d.reason = reason;
-        AdminCore.repo.set('ADM_DEPOSITS', deps);
-        AdminCore.repo.logAudit('DEPOSIT_REJECTED', `Deposit #${d.id}`, d.username, reason);
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const success = window.PlatformSync ? window.PlatformSync.rejectDeposit(depId, reason, admin.name) : true;
+      if (success) {
         showAdminToast(`Deposit #${depId} has been rejected.`, 'info');
         renderDepositsTable();
       }
@@ -1719,15 +1705,13 @@
         showAdminToast('Access Denied: You do not have withdrawals.approve permission.', 'error');
         return;
       }
-      const wths = AdminCore.repo.get('ADM_WITHDRAWALS');
-      const w = wths.find(x => x.id === wthId);
-      if (w) {
-        w.status = 'Approved';
-        w.processedDate = new Date().toLocaleString();
-        AdminCore.repo.set('ADM_WITHDRAWALS', wths);
-        AdminCore.repo.logAudit('WITHDRAWAL_APPROVED', `Withdrawal #${w.id}`, w.username, `Payout settled via ${w.method}`);
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const success = window.PlatformSync ? window.PlatformSync.approveWithdrawal(wthId, admin.name) : true;
+      if (success) {
         showAdminToast(`Withdrawal #${wthId} marked Approved & Settled!`, 'success');
         renderWithdrawalsTable();
+        renderWalletsTable();
+        renderUsersTable();
       }
     }
 
@@ -1739,23 +1723,13 @@
       const reason = prompt('Please enter rejection reason:', 'Incomplete wagering requirements / unverified bank');
       if (!reason) return;
 
-      const wths = AdminCore.repo.get('ADM_WITHDRAWALS');
-      const w = wths.find(x => x.id === wthId);
-      if (w) {
-        w.status = 'Rejected';
-        AdminCore.repo.set('ADM_WITHDRAWALS', wths);
-
-        // Refund Balance to User Wallet
-        const users = AdminCore.repo.get('ADM_USERS');
-        const u = users.find(x => x.username === w.username);
-        if (u) {
-          u.balance += w.amount;
-          AdminCore.repo.set('ADM_USERS', users);
-        }
-
-        AdminCore.repo.logAudit('WITHDRAWAL_REJECTED', `Withdrawal #${w.id}`, w.username, reason);
-        showAdminToast(`Withdrawal #${wthId} rejected & Rs ${w.amount.toLocaleString()} refunded to player.`, 'info');
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const success = window.PlatformSync ? window.PlatformSync.rejectWithdrawal(wthId, reason, admin.name) : true;
+      if (success) {
+        showAdminToast(`Withdrawal #${wthId} rejected & Balance refunded to player.`, 'info');
         renderWithdrawalsTable();
+        renderWalletsTable();
+        renderUsersTable();
       }
     }
 
@@ -2078,6 +2052,50 @@
       renderGamesTable();
       renderDepositsTable();
       renderWithdrawalsTable();
+
+      // Hook Real-Time Platform Synchronization Bus
+      if (window.PlatformSync && typeof window.PlatformSync.onPlatformEvent === 'function') {
+        window.PlatformSync.onPlatformEvent((event) => {
+          console.log('[Admin Sync] Real-time platform event received:', event);
+          
+          // 1. Update Badge Counters & Dynamic KPIs
+          const users = AdminCore.repo.get('ADM_USERS');
+          const deposits = AdminCore.repo.get('ADM_DEPOSITS');
+          const withdrawals = AdminCore.repo.get('ADM_WITHDRAWALS');
+          const pendingDeps = deposits.filter(d => d.status === 'Pending').length;
+          const pendingWths = withdrawals.filter(w => w.status === 'Pending').length;
+
+          const uBadge = document.getElementById('navBadgeUsers');
+          const dBadge = document.getElementById('navBadgeDeposits');
+          const wBadge = document.getElementById('navBadgeWithdrawals');
+          const kpiUsers = document.getElementById('kpiTotalUsers');
+          const kpiPend = document.getElementById('kpiPendingActions');
+
+          if (uBadge) uBadge.innerText = users.length;
+          if (dBadge) dBadge.innerText = `${pendingDeps} Pending`;
+          if (wBadge) wBadge.innerText = `${pendingWths} Pending`;
+          if (kpiUsers) kpiUsers.innerText = users.length.toLocaleString();
+          if (kpiPend) kpiPend.innerText = pendingDeps + pendingWths;
+
+          // 2. Re-render active views
+          renderUsersTable();
+          renderDepositsTable();
+          renderWithdrawalsTable();
+          renderWalletsTable();
+          renderAuditLogsTable();
+
+          // 3. Show live notification toast
+          if (event.type === 'USER_REGISTERED') {
+            showAdminToast(`🔴 LIVE: New user #${event.payload.username} registered!`, 'info');
+          } else if (event.type === 'DEPOSIT_CREATED') {
+            showAdminToast(`💰 LIVE: New deposit request Rs ${event.payload.amount.toLocaleString()} from ${event.payload.username}!`, 'warning');
+          } else if (event.type === 'WITHDRAWAL_CREATED') {
+            showAdminToast(`💸 LIVE: Withdrawal request Rs ${event.payload.amount.toLocaleString()} from ${event.payload.username}!`, 'warning');
+          } else if (event.type === 'BET_PLACED') {
+            showAdminToast(`🎲 LIVE: Bet placed by ${event.payload.username} (Rs ${event.payload.amount.toLocaleString()})`, 'info');
+          }
+        });
+      }
 
       // Recent Transactions in Dashboard
       const dashTxBody = document.getElementById('dashRecentTxBody');
