@@ -980,19 +980,49 @@
 
         <!-- Immutable Token Ledger Table -->
         <div id="tokSection_ledger" class="hidden glass-card p-5 flex flex-col gap-4">
-          <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
-            <h3 class="font-display font-extrabold text-white text-sm">Immutable Virtual Token Ledger (Audit Grade)</h3>
-            <button onclick="exportTokenLedgerCsv()" class="px-3 py-1 rounded-lg bg-cardDark hover:bg-white/10 text-brandGreen font-bold flex items-center gap-1.5 cursor-pointer border border-brandGreen/30 text-xs">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-borderSubtle pb-3">
+            <div>
+              <h3 class="font-display font-extrabold text-white text-sm">Immutable Virtual Token Ledger (Audit Grade)</h3>
+              <p class="text-xs text-textMuted mt-0.5">Real-time ledger of all Master, Company, and User token movements</p>
+            </div>
+            <button onclick="exportTokenLedgerCsv()" class="px-3 py-1.5 rounded-xl bg-cardDark hover:bg-white/10 text-brandGreen font-bold flex items-center gap-1.5 cursor-pointer border border-brandGreen/30 text-xs shadow-sm">
               <i class="fa-solid fa-file-csv"></i> Export Token Ledger CSV
             </button>
           </div>
+
+          <!-- Token Ledger Interactive Filter Toolbar -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5 bg-sidebarDark p-3 rounded-2xl border border-borderSubtle text-xs">
+            <div class="relative">
+              <i class="fa-solid fa-search absolute left-3 top-2.5 text-textMuted text-[11px]"></i>
+              <input type="text" id="tokLedgerSearchInput" oninput="filterTokenLedger()" placeholder="Search User ID, Username, Tx..." class="w-full bg-cardDark border border-borderSubtle rounded-xl pl-8 pr-3 py-2 text-white outline-none text-xs" />
+            </div>
+            <select id="tokLedgerCompanyFilter" onchange="filterTokenLedger()" class="bg-cardDark border border-borderSubtle rounded-xl px-3 py-2 text-white font-bold outline-none cursor-pointer text-xs">
+              <option value="ALL">All Companies</option>
+              <option value="COMP-01">ThaiNXT Global HQ (COMP-01)</option>
+              <option value="COMP-02">Apex Sports Asia (COMP-02)</option>
+              <option value="COMP-03">Royal Bangkok Club (COMP-03)</option>
+            </select>
+            <select id="tokLedgerDateFilter" onchange="filterTokenLedger()" class="bg-cardDark border border-borderSubtle rounded-xl px-3 py-2 text-white font-bold outline-none cursor-pointer text-xs">
+              <option value="ALL">All Time</option>
+              <option value="TODAY">Today</option>
+              <option value="YESTERDAY">Yesterday</option>
+              <option value="LAST_7_DAYS">Last 7 Days</option>
+              <option value="LAST_30_DAYS">Last 30 Days</option>
+            </select>
+            <select id="tokLedgerStatusFilter" onchange="filterTokenLedger()" class="bg-cardDark border border-borderSubtle rounded-xl px-3 py-2 text-white font-bold outline-none cursor-pointer text-xs">
+              <option value="ALL">All Statuses</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="SETTLED">Settled</option>
+            </select>
+          </div>
+
           <div class="overflow-x-auto custom-scrollbar rounded-xl border border-borderSubtle">
             <table class="w-full text-left text-xs whitespace-nowrap min-w-[760px]">
               <thead class="bg-sidebarDark text-textMuted uppercase text-[10px] font-extrabold tracking-wider border-b border-borderSubtle">
                 <tr>
                   <th class="p-3.5">Tx ID</th>
                   <th class="p-3.5">Sender</th>
-                  <th class="p-3.5">Receiver</th>
+                  <th class="p-3.5">Recipient (User ID / Name)</th>
                   <th class="p-3.5">Amount (VTK)</th>
                   <th class="p-3.5">Reason / Game Ref</th>
                   <th class="p-3.5">Operator</th>
@@ -1524,17 +1554,24 @@
         <button type="submit" class="w-full py-3 rounded-xl bg-brandGreen text-white font-extrabold uppercase tracking-wider mt-2">Authorize Adjustment</button>
       </form>
     </div>
-  <!-- Transfer Tokens Modal -->
+  <!-- Transfer Tokens Modal (2-Step Verification & Confirmation Flow) -->
   <div id="transferTokenModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
     <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-lg w-full flex flex-col gap-4 text-xs shadow-2xl">
       <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
         <div class="flex items-center gap-2 text-amber-400 font-display font-black text-base">
-          <i class="fa-solid fa-coins"></i> Transfer Virtual Tokens (Closed-Loop)
+          <i class="fa-solid fa-coins"></i> Send Virtual Tokens (Closed-Loop)
         </div>
         <button onclick="closeModal('transferTokenModal')" class="text-textMuted hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
-      <form onsubmit="handleTokenTransferSubmit(event)" class="flex flex-col gap-3">
+      <!-- Verification Error Banner -->
+      <div id="tokVerifyErrorAlert" class="hidden p-3 bg-brandDanger/15 border border-brandDanger/40 rounded-xl text-brandDanger text-xs font-semibold flex items-center gap-2.5">
+        <i class="fa-solid fa-circle-exclamation text-base shrink-0"></i>
+        <span id="tokVerifyErrorMessage">User ID and Username do not match.</span>
+      </div>
+
+      <!-- STEP 1: Enter User ID + Username + Amount + Reason -->
+      <div id="tokModalStep1" class="flex flex-col gap-3">
         <!-- Sender Account Selector -->
         <div class="flex flex-col gap-1">
           <label class="font-bold text-textMuted uppercase text-[10px]">Source Vault / Sender Account</label>
@@ -1542,39 +1579,87 @@
             <!-- Populated by JS -->
           </select>
           <div class="flex items-center justify-between text-[11px] px-1 text-textMuted mt-0.5">
-            <span>Available Balance:</span>
+            <span>Available Sender Balance:</span>
             <span id="tokSenderAvailBal" class="font-mono font-bold text-amber-300">0 VTK</span>
           </div>
         </div>
 
-        <!-- Receiver Search / Input -->
-        <div class="flex flex-col gap-1">
-          <label class="font-bold text-textMuted uppercase text-[10px]">Destination Account (User ID, Account ID, or Username)</label>
-          <input type="text" id="tokTransferReceiverInput" required placeholder="e.g. ACC-USR-1092 or Alex_Winner or ACC-COMP-01" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono outline-none" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Recipient User ID -->
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-textMuted uppercase text-[10px]">Recipient User ID <span class="text-brandDanger">*</span></label>
+            <input type="text" id="tokTransferUserIdInput" required placeholder="e.g. USR-1092" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono font-bold outline-none uppercase" />
+          </div>
+
+          <!-- Recipient Username -->
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-textMuted uppercase text-[10px]">Recipient Username <span class="text-brandDanger">*</span></label>
+            <input type="text" id="tokTransferUsernameInput" required placeholder="e.g. Alex_Winner" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono font-bold outline-none" />
+          </div>
         </div>
 
         <!-- Amount -->
         <div class="flex flex-col gap-1">
-          <label class="font-bold text-textMuted uppercase text-[10px]">Token Amount (VTK)</label>
-          <input type="number" id="tokTransferAmountInput" required min="1" placeholder="Amount (e.g. 25000)" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono font-bold text-base outline-none" />
+          <label class="font-bold text-textMuted uppercase text-[10px]">Token Amount (VTK) <span class="text-brandDanger">*</span></label>
+          <input type="number" id="tokTransferAmountInput" required min="1" step="1" placeholder="e.g. 500" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono font-bold text-base outline-none" />
         </div>
 
-        <!-- Mandatory Reason -->
+        <!-- Reason -->
         <div class="flex flex-col gap-1">
           <label class="font-bold text-textMuted uppercase text-[10px]">Transfer Reason / Audit Justification</label>
-          <textarea id="tokTransferReasonInput" required rows="2" placeholder="e.g. Monthly promotional token allocation / Event reward" class="bg-sidebarDark border border-borderSubtle rounded-xl p-3 text-white text-xs outline-none"></textarea>
+          <textarea id="tokTransferReasonInput" rows="2" placeholder="e.g. Manual token allocation / VIP loyalty award" class="bg-sidebarDark border border-borderSubtle rounded-xl p-3 text-white text-xs outline-none">Manual token allocation</textarea>
         </div>
 
-        <!-- Warning & Confirmation -->
-        <div class="p-3 bg-amber-400/10 border border-amber-400/20 rounded-xl text-[11px] text-amber-300 flex items-start gap-2">
-          <i class="fa-solid fa-lock text-sm mt-0.5 shrink-0"></i>
-          <span>This transfer is immutable and executes atomically. Virtual in-game tokens cannot be withdrawn as cash.</span>
-        </div>
-
-        <button type="submit" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold uppercase tracking-wider mt-1 cursor-pointer transition-all">
-          Authorize & Execute Transfer
+        <button type="button" onclick="handleVerifyRecipientStep()" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold uppercase tracking-wider mt-1 cursor-pointer transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-user-check"></i> Verify Recipient & Proceed
         </button>
-      </form>
+      </div>
+
+      <!-- STEP 2: Confirmation Card (Show Recipient Before Transfer) -->
+      <div id="tokModalStep2" class="hidden flex flex-col gap-4">
+        <div class="bg-sidebarDark border border-amber-400/30 rounded-2xl p-4 flex flex-col gap-3">
+          <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
+            <span class="font-bold text-amber-300 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-check text-brandGreen"></i> Recipient Identity Verified
+            </span>
+            <span id="tokConfStatusBadge" class="badge badge-success text-[9px]">Active</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div><span class="text-textMuted text-[10px] uppercase">Recipient Name</span><div id="tokConfRecipientName" class="font-bold text-white text-sm">Alexander Wright</div></div>
+            <div><span class="text-textMuted text-[10px] uppercase">Username</span><div id="tokConfUsername" class="font-mono font-bold text-cyan-300">@Alex_Winner</div></div>
+            <div><span class="text-textMuted text-[10px] uppercase">User ID</span><div id="tokConfUserId" class="font-mono font-bold text-white">USR-1092</div></div>
+            <div><span class="text-textMuted text-[10px] uppercase">Company</span><div id="tokConfCompany" class="font-bold text-textMuted">ThaiNXT Global HQ</div></div>
+          </div>
+
+          <div class="p-3 bg-black/40 rounded-xl border border-white/5 flex items-center justify-between font-mono text-xs mt-1">
+            <div class="flex flex-col">
+              <span class="text-textMuted text-[10px]">Current Token Balance</span>
+              <span id="tokConfCurrentBalance" class="text-amber-300 font-bold">45,000 VTK</span>
+            </div>
+            <div class="text-lg text-textMuted font-bold">→</div>
+            <div class="flex flex-col">
+              <span class="text-textMuted text-[10px]">Transfer Amount</span>
+              <span id="tokConfAmount" class="text-brandGreen font-bold text-sm">+500 VTK</span>
+            </div>
+            <div class="text-lg text-textMuted font-bold">=</div>
+            <div class="flex flex-col">
+              <span class="text-textMuted text-[10px]">New Projected Balance</span>
+              <span id="tokConfNewBalance" class="text-cyan-300 font-black text-sm">45,500 VTK</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <button type="button" onclick="backToTokenStep1()" class="w-1/3 py-3 rounded-xl bg-cardDark hover:bg-white/10 text-white font-bold border border-borderSubtle cursor-pointer transition-all">
+            ← Edit Details
+          </button>
+          <button id="tokConfirmSendBtn" type="button" onclick="handleConfirmExecuteTokenTransfer()" class="w-2/3 py-3 rounded-xl bg-brandGreen hover:bg-emerald-600 text-white font-black uppercase tracking-wider cursor-pointer shadow-lg transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-paper-plane"></i> Confirm Send Tokens
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1847,25 +1932,10 @@
       }
 
       // 4. Immutable Token Ledger Table
-      const ledgerBody = document.getElementById('tokenLedgerTableBody');
-      if (ledgerBody) {
-        const ledger = window.PlatformSync.getTokenLedger();
-        ledgerBody.innerHTML = ledger.map(tx => `
-          <tr class="hover:bg-white/5 transition-colors">
-            <td class="p-3.5 font-mono text-cyan-300 font-bold">#${tx.transactionId}</td>
-            <td class="p-3.5 text-white font-bold">${tx.senderUsername}</td>
-            <td class="p-3.5 text-amber-300 font-bold">${tx.receiverUsername}</td>
-            <td class="p-3.5 font-mono font-bold text-brandGreen">${tx.amount.toLocaleString()} VTK</td>
-            <td class="p-3.5 text-textMuted text-xs">${tx.reason}</td>
-            <td class="p-3.5 text-gray-300 text-[10px]">${tx.createdBy}</td>
-            <td class="p-3.5 text-center"><span class="badge badge-success text-[9px]">${tx.status}</span></td>
-            <td class="p-3.5 text-textMuted text-[10px]">${tx.timestamp}</td>
-          </tr>
-        `).join('');
-      }
+      filterTokenLedger();
     }
 
-    function openTokenTransferModal(prefilledReceiver = '') {
+    function openTokenTransferModal(prefilledUserIdOrUsername = '') {
       if (!AdminCore.repo.hasPermission('tokens.transfer')) {
         showAdminToast('Access Denied: tokens.transfer permission required.', 'error');
         return;
@@ -1874,6 +1944,21 @@
       const admin = AdminCore.repo.getCurrentAdmin();
       const accounts = window.PlatformSync.getAllTokenAccounts(admin.role === 'SUPER_ADMIN' ? 'ALL' : admin.companyId);
       
+      // Reset Modal Views
+      const step1 = document.getElementById('tokModalStep1');
+      const step2 = document.getElementById('tokModalStep2');
+      const errAlert = document.getElementById('tokVerifyErrorAlert');
+      const sendBtn = document.getElementById('tokConfirmSendBtn');
+
+      if (step1) step1.classList.remove('hidden');
+      if (step2) step2.classList.add('hidden');
+      if (errAlert) errAlert.classList.add('hidden');
+      if (sendBtn) {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirm Send Tokens';
+      }
+
+      // Populate Senders
       const select = document.getElementById('tokTransferSenderSelect');
       if (select) {
         let senderOptions = [];
@@ -1890,11 +1975,26 @@
         `).join('');
       }
 
-      const recInput = document.getElementById('tokTransferReceiverInput');
-      if (recInput) recInput.value = prefilledReceiver || '';
-
+      // Pre-fill recipient if provided
+      const uIdInput = document.getElementById('tokTransferUserIdInput');
+      const uNameInput = document.getElementById('tokTransferUsernameInput');
       const amountInput = document.getElementById('tokTransferAmountInput');
+      const reasonInput = document.getElementById('tokTransferReasonInput');
+
+      if (uIdInput) uIdInput.value = '';
+      if (uNameInput) uNameInput.value = '';
       if (amountInput) amountInput.value = '';
+      if (reasonInput) reasonInput.value = 'Manual token allocation';
+
+      if (prefilledUserIdOrUsername) {
+        const users = AdminCore.repo.get('ADM_USERS');
+        const query = String(prefilledUserIdOrUsername).toLowerCase();
+        const found = users.find(u => u.id.toLowerCase() === query || u.username.toLowerCase() === query);
+        if (found) {
+          if (uIdInput) uIdInput.value = found.id;
+          if (uNameInput) uNameInput.value = found.username;
+        }
+      }
 
       updateTokenSenderBalancePreview();
       openModal('transferTokenModal');
@@ -1911,28 +2011,168 @@
       }
     }
 
-    function handleTokenTransferSubmit(e) {
-      e.preventDefault();
-      const senderId = document.getElementById('tokTransferSenderSelect').value;
-      const receiverInput = document.getElementById('tokTransferReceiverInput').value.trim();
-      const amount = parseInt(document.getElementById('tokTransferAmountInput').value, 10);
-      const reason = document.getElementById('tokTransferReasonInput').value.trim();
+    function handleVerifyRecipientStep() {
+      const errAlert = document.getElementById('tokVerifyErrorAlert');
+      const errMsg = document.getElementById('tokVerifyErrorMessage');
+      if (errAlert) errAlert.classList.add('hidden');
 
-      if (!senderId || !receiverInput || !amount || amount <= 0) {
-        showAdminToast('Please fill all required transfer parameters correctly.', 'warning');
+      const senderId = document.getElementById('tokTransferSenderSelect').value;
+      const recipientUserId = document.getElementById('tokTransferUserIdInput').value.trim();
+      const recipientUsername = document.getElementById('tokTransferUsernameInput').value.trim();
+      const amount = parseInt(document.getElementById('tokTransferAmountInput').value, 10);
+      const reason = document.getElementById('tokTransferReasonInput').value.trim() || 'Manual token allocation';
+
+      // 1. Basic validation
+      if (!recipientUserId || !recipientUsername) {
+        if (errAlert && errMsg) {
+          errMsg.innerText = 'Both Recipient User ID and Username are required.';
+          errAlert.classList.remove('hidden');
+        }
         return;
       }
 
+      if (isNaN(amount) || amount <= 0) {
+        if (errAlert && errMsg) {
+          errMsg.innerText = 'Enter a valid positive token amount.';
+          errAlert.classList.remove('hidden');
+        }
+        return;
+      }
+
+      // 2. Authoritative Sender Balance Check
+      const senderAcc = window.PlatformSync.getTokenAccount(senderId);
+      if (!senderAcc || senderAcc.tokenBalance < amount) {
+        if (errAlert && errMsg) {
+          errMsg.innerText = `Insufficient token balance. Current balance: ${senderAcc ? senderAcc.tokenBalance.toLocaleString() : 0} VTK.`;
+          errAlert.classList.remove('hidden');
+        }
+        return;
+      }
+
+      // 3. Server-side Recipient Verification
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const verifyRes = window.PlatformSync.verifyRecipient(recipientUserId, recipientUsername, admin);
+
+      if (!verifyRes.success) {
+        if (errAlert && errMsg) {
+          errMsg.innerText = verifyRes.message;
+          errAlert.classList.remove('hidden');
+        }
+        return;
+      }
+
+      // 4. Verification Successful -> Populate Step 2 Confirmation Card
+      const user = verifyRes.user;
+      window._pendingTokenTransfer = {
+        senderAccountId: senderId,
+        recipientUserId: user.id,
+        recipientUsername: user.username,
+        amount: amount,
+        reason: reason,
+        recipient: user
+      };
+
+      document.getElementById('tokConfRecipientName').innerText = user.name;
+      document.getElementById('tokConfUsername').innerText = `@${user.username}`;
+      document.getElementById('tokConfUserId').innerText = user.id;
+      document.getElementById('tokConfCompany').innerText = user.companyName;
+      document.getElementById('tokConfCurrentBalance').innerText = `${user.currentTokenBalance.toLocaleString()} VTK`;
+      document.getElementById('tokConfAmount').innerText = `+${amount.toLocaleString()} VTK`;
+      document.getElementById('tokConfNewBalance').innerText = `${(user.currentTokenBalance + amount).toLocaleString()} VTK`;
+      document.getElementById('tokConfStatusBadge').innerText = user.status;
+      document.getElementById('tokConfStatusBadge').className = `badge ${user.status === 'Active' ? 'badge-success' : 'badge-danger'} text-[9px]`;
+
+      // Show Step 2
+      document.getElementById('tokModalStep1').classList.add('hidden');
+      document.getElementById('tokModalStep2').classList.remove('hidden');
+    }
+
+    function backToTokenStep1() {
+      document.getElementById('tokModalStep2').classList.add('hidden');
+      document.getElementById('tokModalStep1').classList.remove('hidden');
+      const errAlert = document.getElementById('tokVerifyErrorAlert');
+      if (errAlert) errAlert.classList.add('hidden');
+    }
+
+    function handleConfirmExecuteTokenTransfer() {
+      if (!window._pendingTokenTransfer) return;
+
+      const btn = document.getElementById('tokConfirmSendBtn');
+      if (btn) {
+        if (btn.disabled) return;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing Transfer...';
+      }
+
+      const idempotencyKey = `IDEMP-${Date.now()}-${Math.floor(100000 + Math.random() * 900000)}`;
+
       try {
         const admin = AdminCore.repo.getCurrentAdmin();
-        const tx = window.PlatformSync.transferTokens(senderId, receiverInput, amount, reason, admin);
-        showAdminToast(`✓ Successfully transferred ${amount.toLocaleString()} VTK (#${tx.transactionId})`, 'success');
+        const result = window.PlatformSync.executeTokenTransfer({
+          senderAccountId: window._pendingTokenTransfer.senderAccountId,
+          recipientUserId: window._pendingTokenTransfer.recipientUserId,
+          recipientUsername: window._pendingTokenTransfer.recipientUsername,
+          amount: window._pendingTokenTransfer.amount,
+          reason: window._pendingTokenTransfer.reason,
+          operatorAdmin: admin,
+          idempotencyKey: idempotencyKey
+        });
+
+        showAdminToast(`✓ ${result.amount.toLocaleString()} tokens successfully sent to @${result.recipientUsername}.`, 'success');
         closeModal('transferTokenModal');
+        window._pendingTokenTransfer = null;
+
         renderTokenManagementModule();
         if (currentDrawerUser) openUserProfileDrawer(currentDrawerUser.id);
       } catch (err) {
         showAdminToast(`Transfer Failed: ${err.message}`, 'error');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirm Send Tokens';
+        }
       }
+    }
+
+    function filterTokenLedger() {
+      const searchInput = document.getElementById('tokLedgerSearchInput');
+      const compFilter = document.getElementById('tokLedgerCompanyFilter');
+      const dateFilter = document.getElementById('tokLedgerDateFilter');
+      const statusFilter = document.getElementById('tokLedgerStatusFilter');
+
+      const searchQuery = searchInput ? searchInput.value : '';
+      const companyId = compFilter ? compFilter.value : 'ALL';
+      const dateRange = dateFilter ? dateFilter.value : 'ALL';
+      const status = statusFilter ? statusFilter.value : 'ALL';
+
+      const ledger = window.PlatformSync.getTokenLedger({
+        searchQuery,
+        companyId,
+        dateRange,
+        status
+      });
+
+      const ledgerBody = document.getElementById('tokenLedgerTableBody');
+      if (!ledgerBody) return;
+
+      if (ledger.length === 0) {
+        ledgerBody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-textMuted font-mono text-xs">No token ledger records match the selected filters.</td></tr>`;
+        return;
+      }
+
+      ledgerBody.innerHTML = ledger.map(tx => `
+        <tr class="hover:bg-white/5 transition-colors">
+          <td class="p-3.5 font-mono text-cyan-300 font-bold">#${tx.transactionId}</td>
+          <td class="p-3.5 text-white font-bold">${tx.senderUsername}</td>
+          <td class="p-3.5 text-amber-300 font-bold">
+            ${tx.receiverUsername} ${tx.recipientUserId ? `<span class="text-[10px] text-textMuted">(${tx.recipientUserId})</span>` : ''}
+          </td>
+          <td class="p-3.5 font-mono font-bold text-brandGreen">${tx.amount.toLocaleString()} VTK</td>
+          <td class="p-3.5 text-textMuted text-xs">${tx.reason}</td>
+          <td class="p-3.5 text-gray-300 text-[10px]">${tx.createdBy}</td>
+          <td class="p-3.5 text-center"><span class="badge badge-success text-[9px]">${tx.status}</span></td>
+          <td class="p-3.5 text-textMuted text-[10px]">${tx.timestamp}</td>
+        </tr>
+      `).join('');
     }
 
     function exportTokenLedgerCsv() {
@@ -1940,7 +2180,19 @@
         showAdminToast('Access Denied: reports.export permission required.', 'error');
         return;
       }
-      const ledger = window.PlatformSync.getTokenLedger();
+
+      const searchInput = document.getElementById('tokLedgerSearchInput');
+      const compFilter = document.getElementById('tokLedgerCompanyFilter');
+      const dateFilter = document.getElementById('tokLedgerDateFilter');
+      const statusFilter = document.getElementById('tokLedgerStatusFilter');
+
+      const ledger = window.PlatformSync.getTokenLedger({
+        searchQuery: searchInput ? searchInput.value : '',
+        companyId: compFilter ? compFilter.value : 'ALL',
+        dateRange: dateFilter ? dateFilter.value : 'ALL',
+        status: statusFilter ? statusFilter.value : 'ALL'
+      });
+
       if (ledger.length === 0) {
         showAdminToast('No token transactions to export.', 'warning');
         return;
@@ -1948,9 +2200,9 @@
 
       showAdminToast('Exporting Token Ledger to CSV...', 'success');
       let csvContent = 'data:text/csv;charset=utf-8,';
-      csvContent += 'Transaction ID,Sender Account,Sender Username,Receiver Account,Receiver Username,Amount (VTK),Token Type,Reason,Game ID,Round ID,Created By,Status,Timestamp\r\n';
+      csvContent += 'Transaction ID,Sender Account,Sender Username,Receiver Account,Receiver Username,Recipient User ID,Amount (VTK),Token Type,Reason,Company ID,Created By,Status,Timestamp\r\n';
       ledger.forEach(l => {
-        csvContent += `"${l.transactionId}","${l.senderAccountId}","${l.senderUsername}","${l.receiverAccountId}","${l.receiverUsername}",${l.amount},"${l.tokenType}","${l.reason}","${l.gameId || ''}","${l.roundId || ''}","${l.createdBy}","${l.status}","${l.timestamp}"\r\n`;
+        csvContent += `"${l.transactionId}","${l.senderAccountId}","${l.senderUsername}","${l.receiverAccountId}","${l.receiverUsername}","${l.recipientUserId || ''}",${l.amount},"${l.tokenType}","${l.reason}","${l.companyId || ''}","${l.createdBy}","${l.status}","${l.timestamp}"\r\n`;
       });
 
       const encodedUri = encodeURI(csvContent);

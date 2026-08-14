@@ -852,7 +852,22 @@
     window.currentMultiplier = 8;
     window.selectedBetRounds = [1];
     window.currentMainBetAmount = 10;
-    window.currentBalance = 7950;
+    
+    var curUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
+    if (window.PlatformSync && typeof window.PlatformSync.getUserBalance === 'function') {
+      window.currentBalance = window.PlatformSync.getUserBalance(curUser);
+    } else {
+      window.currentBalance = 10450;
+    }
+
+    window.updateGameWalletUI = function() {
+      var curU = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      if (window.PlatformSync && typeof window.PlatformSync.getUserBalance === 'function') {
+        window.currentBalance = window.PlatformSync.getUserBalance(curU);
+      }
+      var balEl = document.getElementById('userBalanceText');
+      if (balEl) balEl.innerText = window.currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    };
 
     // Toast Notification helper
     window.showToast = function(msg, type) {
@@ -1060,6 +1075,22 @@
 
     // Initial calculator refresh
     window.updateBannerProfitCalculator();
+
+    // Real-Time Cross-Tab Listener for Admin Actions
+    if (window.PlatformSync && typeof window.PlatformSync.onPlatformEvent === 'function') {
+      window.PlatformSync.onPlatformEvent(function(event) {
+        var curU = localStorage.getItem('userLoginName') || 'Alex_Winner';
+        if (event.type === 'DEPOSIT_APPROVED' || event.type === 'WITHDRAWAL_APPROVED' || event.type === 'WITHDRAWAL_REJECTED' || event.type === 'WALLET_ADJUSTED') {
+          if (typeof window.updateGameWalletUI === 'function') window.updateGameWalletUI();
+        } else if (event.type === 'TOKEN_TRANSFER_COMPLETED') {
+          if (event.payload && event.payload.receiver && event.payload.receiver.toLowerCase() === curU.toLowerCase()) {
+            if (typeof window.showToast === 'function') {
+              window.showToast('🪙 You received ' + event.payload.amount.toLocaleString() + ' Virtual Tokens (VTK)!', 'success');
+            }
+          }
+        }
+      });
+    }
 
     window.performGameUserLogout = function(e) {
       if (e && e.stopPropagation) e.stopPropagation();

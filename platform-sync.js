@@ -360,56 +360,210 @@
     },
 
     /**
-     * Executes an Atomic Token Transfer with strict permission hierarchy
+     * Verifies Recipient by BOTH User ID and Username
      */
-    transferTokens(senderIdOrName, receiverIdOrName, amount, reason, operatorAdmin = null) {
+    verifyRecipient(userId, username, operatorAdmin = null) {
       this.init();
-      const tokenAmount = Number(amount);
-      if (isNaN(tokenAmount) || tokenAmount <= 0) {
-        throw new Error('Token transfer amount must be a positive number');
+      const rawUserId = String(userId || '').trim();
+      const rawUsername = String(username || '').trim();
+
+      if (!rawUserId || !rawUsername) {
+        return {
+          success: false,
+          error: 'INVALID_INPUT',
+          message: 'Both User ID and Username are required.'
+        };
       }
 
+      const users = this._get(this.KEYS.USERS);
+      const companies = this._get(this.KEYS.COMPANIES);
+      const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+
+      // Check if recipient is a Company Vault or Master Account (e.g. ACC-COMP-01)
+      const isVaultAccount = accounts.find(a => 
+        (a.internalAccountId.toUpperCase() === rawUserId.toUpperCase() || a.internalAccountId.toUpperCase() === rawUsername.toUpperCase() || a.username.toLowerCase() === rawUsername.toLowerCase()) &&
+        (a.accountType === 'COMPANY_ADMIN' || a.accountType === 'MASTER')
+      );
+      if (isVaultAccount) {
+        return {
+          success: true,
+          user: {
+            id: isVaultAccount.internalAccountId,
+            username: isVaultAccount.username,
+            name: isVaultAccount.username.replace(/_/g, ' '),
+            companyId: isVaultAccount.companyId || 'COMP-01',
+            companyName: isVaultAccount.username,
+            status: isVaultAccount.status || 'Active',
+            internalAccountId: isVaultAccount.internalAccountId,
+            currentTokenBalance: Number(isVaultAccount.tokenBalance)
+          }
+        };
+      }
+
+      // Clean ID representation (handle 'USR-1092', '1092', 'ACC-USR-1092')
+      const targetId = rawUserId.toUpperCase().replace(/^ACC-/, '');
+      const targetUsername = rawUsername.toLowerCase();
+
+      // Find user by ID and by Username
+      const userById = users.find(u => {
+        const uId = String(u.id || '').toUpperCase();
+        return uId === targetId || uId === ('USR-' + targetId.replace('USR-', ''));
+      });
+      const userByUsername = users.find(u => String(u.username || '').toLowerCase() === targetUsername);
+
+      // Case 1: Neither found
+      if (!userById && !userByUsername) {
+        return {
+          success: false,
+          error: 'USER_NOT_FOUND',
+          message: 'User ID or Username is incorrect.'
+        };
+      }
+
+      // Case 2: One exists but does NOT match the other
+      if (!userById || !userByUsername || userById.id !== userByUsername.id) {
+        return {
+          success: false,
+          error: 'IDENTITY_MISMATCH',
+          message: 'User ID and Username do not belong to the same account.'
+        };
+      }
+
+      const user = userById;
+
+      // Case 3: Account status check
+      if (user.status && user.status.toLowerCase() === 'suspended') {
+        return {
+          success: false,
+          error: 'USER_SUSPENDED',
+          message: 'User account is suspended and cannot receive tokens.'
+        };
+      }
+
+      // Case 4: Company authorization check for Company Admins
+      const op = operatorAdmin || { role: 'SUPER_ADMIN', companyId: 'COMP-01', name: 'System Admin' };
+      if (op.role === 'COMPANY_ADMIN' && user.companyId && user.companyId !== op.companyId) {
+        return {
+          success: false,
+          error: 'UNAUTHORIZED_SCOPE',
+          message: `Permission Denied: User #${user.id} belongs to ${user.companyId}, outside your company scope (${op.companyId}).`
+        };
+      }
+
+      // Case 5: Ensure token account exists and get live token balance
+      let tokenAcc = this.getTokenAccount(user.username) || this.getTokenAccount(`ACC-${user.id}`);
+      if (!tokenAcc) {
+        try {
+          tokenAcc = this.createTokenAccount(`ACC-${user.id}`, user.username, 'USER', user.companyId, 5000);
+        } catch(e) {
+          tokenAcc = this.getTokenAccount(user.username);
+        }
+      }
+
+      const compObj = companies.find(c => c.id === user.companyId);
+      const companyDisplayName = compObj ? compObj.name : (user.companyId || 'Global HQ');
+
+      return {
+        success: true,
+        user: {
+          id: user.id,
+          username: user.username,
+          name: user.name || user.username,
+          companyId: user.companyId || 'COMP-01',
+          companyName: companyDisplayName,
+          status: user.status || 'Active',
+          internalAccountId: tokenAcc ? tokenAcc.internalAccountId : `ACC-${user.id}`,
+          currentTokenBalance: tokenAcc ? Number(tokenAcc.tokenBalance) : 0
+        }
+      };
+    },
+
+    /**
+     * Executes atomic token transfer with full identity validation, sender balance check,
+     * RBAC permission enforcement, idempotency protection, and immutable token ledger logging.
+     */
+    executeTokenTransfer(params) {
+      this.init();
+      const {
+        senderAccountId,
+        recipientUserId,
+        recipientUsername,
+        amount,
+        reason,
+        operatorAdmin,
+        idempotencyKey
+      } = params || {};
+
+      // 1. Idempotency check to prevent duplicate transfers on multi-clicks
+      if (idempotencyKey) {
+        if (!this._processedIdempotencyKeys) this._processedIdempotencyKeys = new Map();
+        if (this._processedIdempotencyKeys.has(idempotencyKey)) {
+          console.warn('[PlatformSync] Duplicate transfer request blocked by idempotency key:', idempotencyKey);
+          return this._processedIdempotencyKeys.get(idempotencyKey);
+        }
+      }
+
+      // 2. Validate token amount
+      const tokenAmount = Number(amount);
+      if (isNaN(tokenAmount) || tokenAmount <= 0 || !Number.isInteger(tokenAmount)) {
+        throw new Error('Enter a valid token amount.');
+      }
+
+      // 3. Strict Recipient Verification (Both User ID and Username MUST match)
+      const verifyRes = this.verifyRecipient(recipientUserId, recipientUsername, operatorAdmin);
+      if (!verifyRes.success) {
+        throw new Error(verifyRes.message);
+      }
+      const verifiedRecipient = verifyRes.user;
+
+      // 4. Validate Sender Account
       const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
       const sender = accounts.find(a => 
-        a.internalAccountId.toLowerCase() === String(senderIdOrName).toLowerCase() || 
-        a.username.toLowerCase() === String(senderIdOrName).toLowerCase()
+        a.internalAccountId.toLowerCase() === String(senderAccountId || '').toLowerCase() || 
+        a.username.toLowerCase() === String(senderAccountId || '').toLowerCase()
       );
+      if (!sender) {
+        throw new Error(`Sender account [${senderAccountId}] not found.`);
+      }
+
       const receiver = accounts.find(a => 
-        a.internalAccountId.toLowerCase() === String(receiverIdOrName).toLowerCase() || 
-        a.username.toLowerCase() === String(receiverIdOrName).toLowerCase()
+        a.internalAccountId.toLowerCase() === verifiedRecipient.internalAccountId.toLowerCase() ||
+        a.username.toLowerCase() === verifiedRecipient.username.toLowerCase()
       );
+      if (!receiver) {
+        throw new Error(`Recipient token account [${verifiedRecipient.internalAccountId}] not found.`);
+      }
 
-      if (!sender) throw new Error(`Sender account [${senderIdOrName}] not found`);
-      if (!receiver) throw new Error(`Receiver account [${receiverIdOrName}] not found`);
       if (sender.internalAccountId === receiver.internalAccountId) {
-        throw new Error('Sender and Receiver cannot be the same account');
+        throw new Error('Sender and Receiver cannot be the same account.');
       }
 
-      // Check Sender Balance
+      // 5. Authoritative Sender Balance Check
       if (sender.tokenBalance < tokenAmount) {
-        throw new Error(`Insufficient token balance. Current balance: ${sender.tokenBalance} VTK, Requested: ${tokenAmount} VTK`);
+        throw new Error(`Insufficient token balance. Current balance: ${sender.tokenBalance.toLocaleString()} VTK, Requested: ${tokenAmount.toLocaleString()} VTK`);
       }
 
-      // Permission Hierarchy Validation
+      // 6. Permission Hierarchy & Company Isolation
       const op = operatorAdmin || { role: 'SUPER_ADMIN', companyId: 'COMP-01', name: 'System Admin' };
       if (op.role === 'COMPANY_ADMIN') {
-        // Company Admin can only transfer from its own company account
         if (sender.companyId !== op.companyId) {
           throw new Error(`Permission Denied: Sender does not belong to your company ${op.companyId}`);
         }
-        // Company Admin can only send to accounts belonging to its own company scope
         if (receiver.companyId && receiver.companyId !== op.companyId) {
           throw new Error(`Permission Denied: Receiver does not belong to your company ${op.companyId}`);
         }
       }
 
-      // 2-Phase Atomic Balance Update
+      // 7. Atomic Balance Transfer (2-Phase)
+      const prevSenderBal = sender.tokenBalance;
+      const prevReceiverBal = receiver.tokenBalance;
+
       sender.tokenBalance -= tokenAmount;
       receiver.tokenBalance += tokenAmount;
       this._set(this.KEYS.TOKEN_ACCOUNTS, accounts);
 
-      // Create Immutable Ledger Record
-      const txId = 'TXN-VTK-' + Math.floor(10000 + Math.random() * 90000);
+      // 8. Create Permanent Immutable Token Ledger Record
+      const txId = 'TXN-' + Math.floor(100000 + Math.random() * 900000);
       const now = new Date();
       const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -419,42 +573,82 @@
         senderUsername: sender.username,
         receiverAccountId: receiver.internalAccountId,
         receiverUsername: receiver.username,
+        recipientUserId: verifiedRecipient.id,
         amount: tokenAmount,
         tokenType: 'VTK_GAME_TOKEN',
-        reason: reason || 'Internal platform token transfer',
-        gameId: null,
-        roundId: null,
+        reason: reason || 'Manual token allocation',
+        companyId: verifiedRecipient.companyId || 'COMP-01',
         createdBy: op.name || 'Admin Operator',
-        status: 'SETTLED',
+        status: 'COMPLETED',
         timestamp: dateStr,
         createdAt: now.toISOString()
       };
 
       const ledger = this._get(this.KEYS.TOKEN_LEDGER);
       ledger.unshift(ledgerEntry);
-      if (ledger.length > 2000) ledger.pop();
+      if (ledger.length > 3000) ledger.pop();
       this._set(this.KEYS.TOKEN_LEDGER, ledger);
 
-      // Log in Security Audit Trail
+      // 9. Create Immutable Security Audit Log Record
       this.logAudit(
         'TOKEN_TRANSFER',
-        `Account ${receiver.internalAccountId} (${receiver.username})`,
-        receiver.internalAccountId,
-        `Transferred ${tokenAmount.toLocaleString()} VTK from ${sender.username}: ${reason}`,
-        `${sender.tokenBalance + tokenAmount} VTK`,
-        `${sender.tokenBalance} VTK`
+        `User #${verifiedRecipient.id} (@${verifiedRecipient.username})`,
+        verifiedRecipient.id,
+        `Transferred ${tokenAmount.toLocaleString()} VTK from ${sender.username}: ${reason || 'Manual token allocation'}`,
+        `${prevSenderBal.toLocaleString()} VTK`,
+        `${sender.tokenBalance.toLocaleString()} VTK`
       );
+
+      // 10. Real-Time Event Broadcast
+      const resultObj = {
+        success: true,
+        transaction: ledgerEntry,
+        recipientUserId: verifiedRecipient.id,
+        recipientUsername: verifiedRecipient.username,
+        recipientNewBalance: receiver.tokenBalance,
+        senderNewBalance: sender.tokenBalance,
+        amount: tokenAmount,
+        message: `${tokenAmount.toLocaleString()} tokens successfully sent to @${verifiedRecipient.username}.`
+      };
+
+      if (idempotencyKey && this._processedIdempotencyKeys) {
+        this._processedIdempotencyKeys.set(idempotencyKey, resultObj);
+      }
 
       broadcastEvent('TOKEN_TRANSFER_COMPLETED', {
         transactionId: txId,
         sender: sender.username,
         receiver: receiver.username,
+        recipientUserId: verifiedRecipient.id,
         amount: tokenAmount,
         senderNewBalance: sender.tokenBalance,
         receiverNewBalance: receiver.tokenBalance
       });
 
-      return ledgerEntry;
+      return resultObj;
+    },
+
+    /**
+     * Executes an Atomic Token Transfer with strict permission hierarchy (backward-compatible wrapper)
+     */
+    transferTokens(senderIdOrName, receiverIdOrName, amount, reason, operatorAdmin = null) {
+      const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+      const rec = accounts.find(a => 
+        a.internalAccountId.toLowerCase() === String(receiverIdOrName).toLowerCase() || 
+        a.username.toLowerCase() === String(receiverIdOrName).toLowerCase()
+      );
+      const recipientUsername = rec ? rec.username : String(receiverIdOrName).replace(/^ACC-/, '');
+      const recipientUserId = rec ? (rec.internalAccountId.startsWith('ACC-USR-') ? rec.internalAccountId.replace('ACC-', '') : rec.internalAccountId) : receiverIdOrName;
+      
+      const res = this.executeTokenTransfer({
+        senderAccountId: senderIdOrName,
+        recipientUserId: recipientUserId,
+        recipientUsername: recipientUsername,
+        amount: amount,
+        reason: reason,
+        operatorAdmin: operatorAdmin
+      });
+      return res.transaction;
     },
 
     /**
@@ -587,15 +781,55 @@
       };
     },
 
-    getTokenLedger(companyId = null, accountId = null, gameId = null) {
+    getTokenLedger(arg1 = null, arg2 = null, arg3 = null) {
       this.init();
       let ledger = this._get(this.KEYS.TOKEN_LEDGER);
+      let filters = {};
+
+      if (arg1 && typeof arg1 === 'object') {
+        filters = arg1;
+      } else {
+        filters = { companyId: arg1, accountId: arg2, gameId: arg3 };
+      }
+
+      const { companyId, accountId, gameId, dateRange, status, searchQuery } = filters;
+
       if (gameId && gameId !== 'ALL') {
         ledger = ledger.filter(l => l.gameId === gameId);
       }
       if (accountId && accountId !== 'ALL') {
-        ledger = ledger.filter(l => l.senderAccountId === accountId || l.receiverAccountId === accountId);
+        const q = String(accountId).toLowerCase();
+        ledger = ledger.filter(l => 
+          (l.senderAccountId && l.senderAccountId.toLowerCase() === q) || 
+          (l.receiverAccountId && l.receiverAccountId.toLowerCase() === q) ||
+          (l.recipientUserId && l.recipientUserId.toLowerCase() === q) ||
+          (l.senderUsername && l.senderUsername.toLowerCase() === q) ||
+          (l.receiverUsername && l.receiverUsername.toLowerCase() === q)
+        );
       }
+      if (companyId && companyId !== 'ALL') {
+        ledger = ledger.filter(l => l.companyId === companyId);
+      }
+      if (status && status !== 'ALL') {
+        ledger = ledger.filter(l => (l.status || '').toUpperCase() === status.toUpperCase());
+      }
+      if (dateRange && dateRange !== 'ALL') {
+        ledger = this._filterByDate(ledger, dateRange);
+      }
+      if (searchQuery && searchQuery.trim()) {
+        const q = searchQuery.trim().toLowerCase();
+        ledger = ledger.filter(l => 
+          (l.transactionId && l.transactionId.toLowerCase().includes(q)) ||
+          (l.senderUsername && l.senderUsername.toLowerCase().includes(q)) ||
+          (l.receiverUsername && l.receiverUsername.toLowerCase().includes(q)) ||
+          (l.recipientUserId && l.recipientUserId.toLowerCase().includes(q)) ||
+          (l.senderAccountId && l.senderAccountId.toLowerCase().includes(q)) ||
+          (l.receiverAccountId && l.receiverAccountId.toLowerCase().includes(q)) ||
+          (l.reason && l.reason.toLowerCase().includes(q)) ||
+          (l.createdBy && l.createdBy.toLowerCase().includes(q))
+        );
+      }
+
       return ledger;
     },
 

@@ -969,6 +969,18 @@
       walletEls.forEach(function(el) {
         if (el) el.innerText = formatted;
       });
+
+      // Update User Virtual Token Balance in UI
+      if (window.PlatformSync && typeof window.PlatformSync.getTokenAccount === 'function') {
+        var tokAcc = window.PlatformSync.getTokenAccount(curU);
+        var tokBal = tokAcc ? tokAcc.tokenBalance : 0;
+        var tokFormatted = tokBal.toLocaleString() + ' VTK';
+        var tokEls = document.querySelectorAll('#userTokenBalance, .token-balance-text, [data-token-balance]');
+        tokEls.forEach(function(el) {
+          if (el) el.innerText = tokFormatted;
+        });
+      }
+
       try {
         localStorage.setItem('userWalletBalance', String(bal));
         if (typeof window.saveActiveUserSession === 'function') window.saveActiveUserSession();
@@ -998,6 +1010,13 @@
           window.updateWalletUI();
           if (typeof window.showToast === 'function') {
             window.showToast('Wallet balance updated by Admin.', 'info');
+          }
+        } else if (event.type === 'TOKEN_TRANSFER_COMPLETED') {
+          window.updateWalletUI();
+          if (event.payload && event.payload.receiver && event.payload.receiver.toLowerCase() === curU.toLowerCase()) {
+            if (typeof window.showToast === 'function') {
+              window.showToast('🪙 You received ' + event.payload.amount.toLocaleString() + ' Virtual Tokens (VTK)!', 'success');
+            }
           }
         }
       });
