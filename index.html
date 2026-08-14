@@ -366,17 +366,23 @@
     };
 
     window.toggleProfileDropdown = function(e) {
-      if (e && e.stopPropagation) e.stopPropagation();
-      var isLogged = localStorage.getItem('isUserLoggedIn') === 'true';
-      if (!isLogged) {
-        window.showAppLoginOverlay(e);
-        return;
+      if (e) {
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+        if (typeof e.preventDefault === 'function') e.preventDefault();
       }
       var notifDropdown = document.getElementById('notifDropdown');
       if (notifDropdown) notifDropdown.classList.add('hidden');
       var dropdown = document.getElementById('profileDropdown');
       if (dropdown) {
-        dropdown.classList.toggle('hidden');
+        var isHidden = dropdown.classList.contains('hidden') || dropdown.style.display === 'none';
+        if (isHidden) {
+          dropdown.classList.remove('hidden');
+          dropdown.style.display = 'flex';
+          dropdown.style.zIndex = '99999';
+        } else {
+          dropdown.classList.add('hidden');
+          dropdown.style.display = 'none';
+        }
         var nameSpan = document.getElementById('dropdownHeaderUserName');
         if (nameSpan) nameSpan.innerText = localStorage.getItem('userLoginName') || 'Alex_Winner';
       }
@@ -1711,7 +1717,7 @@
 
 
         <!-- RIGHT: Balance Stack & Account ID Dropdown -->
-        <div class="relative select-none">
+        <div class="relative select-none" id="headerProfileContainer">
           <div onclick="toggleProfileDropdown(event)" class="flex flex-col items-end justify-center leading-tight hover:opacity-90 transition-opacity cursor-pointer">
             
             <!-- Row 1: B: 7,950 | L: 0 -->
@@ -1722,10 +1728,10 @@
             </div>
 
             <!-- Row 2: Bp28233 ▾ -->
-            <button id="headerProfileBtn" type="button" class="flex items-center gap-0.5 text-xs sm:text-sm font-bold text-white hover:text-cyan-300 cursor-pointer transition-all">
+            <div id="headerProfileBtn" class="flex items-center gap-0.5 text-xs sm:text-sm font-bold text-white hover:text-cyan-300 cursor-pointer transition-all">
               <span id="headerUserIdBadge" class="font-bold text-white">Bp28233</span>
               <i class="fa-solid fa-caret-down text-white text-[10px]"></i>
-            </button>
+            </div>
           </div>
           
           <!-- Profile Dropdown Menu with User ID, User Name & Password -->
@@ -5121,9 +5127,16 @@
         });
     }
 
-    document.addEventListener('click', () => {
-        if(notifDropdown) notifDropdown.classList.add('hidden');
-        if(profileDropdown) profileDropdown.classList.add('hidden');
+    document.addEventListener('click', (e) => {
+        const pDropdown = document.getElementById('profileDropdown');
+        const pContainer = document.getElementById('headerProfileContainer');
+        if (pDropdown && !pDropdown.contains(e.target) && (!pContainer || !pContainer.contains(e.target))) {
+            pDropdown.classList.add('hidden');
+            pDropdown.style.display = 'none';
+        }
+        if (notifDropdown && !notifDropdown.contains(e.target) && (!notifBtn || !notifBtn.contains(e.target))) {
+            notifDropdown.classList.add('hidden');
+        }
     });
 
     // Deposit Modal
