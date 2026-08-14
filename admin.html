@@ -227,6 +227,12 @@
         <span class="flex items-center gap-2.5"><i class="fa-solid fa-wallet text-amber-300 w-4 text-center"></i> Wallets & Ledger</span>
       </button>
 
+      <!-- 8.5 Closed-Loop Virtual Tokens -->
+      <button id="navBtn_tokens" onclick="switchAdminModule('tokens')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
+        <span class="flex items-center gap-2.5"><i class="fa-solid fa-coins text-amber-400 w-4 text-center"></i> Virtual Tokens</span>
+        <span id="navBadgeTokens" class="badge badge-warning text-[9px] px-1.5 py-0.5">10M VTK</span>
+      </button>
+
       <!-- 9. Bonuses & Promotions -->
       <button id="navBtn_bonuses" onclick="switchAdminModule('bonuses')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
         <span class="flex items-center gap-2.5"><i class="fa-solid fa-gift text-pink-400 w-4 text-center"></i> Bonuses & Promos</span>
@@ -881,6 +887,127 @@
       </div>
 
       <!-- ============================================================ -->
+      <!-- MODULE: CLOSED-LOOP VIRTUAL TOKEN TREASURY                   -->
+      <!-- ============================================================ -->
+      <div id="module_tokens" class="module-view hidden flex flex-col gap-6">
+        
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-display font-black text-amber-400 flex items-center gap-2">
+              <i class="fa-solid fa-coins"></i> Closed-Loop Virtual Token Treasury & Ledger
+            </h2>
+            <p class="text-xs text-textMuted mt-0.5">Strict non-withdrawable internal game tokens · Master vault allocation & atomic peer-to-peer distribution</p>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button onclick="renderTokenManagementModule()" class="px-3 py-2 rounded-xl bg-cardDark hover:bg-white/10 text-white text-xs font-bold border border-borderSubtle transition-all cursor-pointer flex items-center gap-2">
+              <i class="fa-solid fa-arrows-rotate"></i> Revalidate Ledger
+            </button>
+            <button onclick="openTokenTransferModal()" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-xs font-extrabold shadow-lg transition-all cursor-pointer flex items-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i> Transfer Tokens
+            </button>
+          </div>
+        </div>
+
+        <!-- Token Conservation Math & Integrity Banner -->
+        <div class="bg-gradient-to-r from-[#2A200B] via-[#1F190D] to-[#121624] border border-amber-400/40 rounded-2xl p-5 flex flex-col gap-3 shadow-xl">
+          <div class="flex items-center justify-between border-b border-amber-400/20 pb-3">
+            <div class="flex items-center gap-2.5 text-amber-400 font-extrabold text-sm">
+              <i class="fa-solid fa-scale-balanced text-lg"></i> Platform Token Conservation Integrity Check
+            </div>
+            <span id="tokConservationBadge" class="badge badge-success text-[10px] uppercase font-mono">100% CONSERVED (0 DISCREPANCY)</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs font-mono">
+            <div class="p-3 bg-black/40 rounded-xl flex flex-col"><span class="text-[10px] text-textMuted uppercase">Total Supply</span><span class="text-white font-black text-base">10,000,000 VTK</span></div>
+            <div class="p-3 bg-black/40 rounded-xl flex flex-col"><span class="text-[10px] text-textMuted uppercase">Master Vault</span><span id="tokStatMaster" class="text-amber-300 font-black text-base">8,450,000 VTK</span></div>
+            <div class="p-3 bg-black/40 rounded-xl flex flex-col"><span class="text-[10px] text-textMuted uppercase">Company Vaults</span><span id="tokStatCompanies" class="text-cyan-300 font-black text-base">1,250,000 VTK</span></div>
+            <div class="p-3 bg-black/40 rounded-xl flex flex-col"><span class="text-[10px] text-textMuted uppercase">User Wallets</span><span id="tokStatUsers" class="text-brandGreen font-black text-base">175,000 VTK</span></div>
+            <div class="p-3 bg-black/40 rounded-xl flex flex-col"><span class="text-[10px] text-textMuted uppercase">Settlement Pool</span><span id="tokStatSettlement" class="text-pink-400 font-black text-base">125,000 VTK</span></div>
+          </div>
+        </div>
+
+        <!-- Token Sub-tabs: 1. Company Vaults · 2. Player Token Balances · 3. Immutable Token Ledger -->
+        <div class="flex items-center gap-2 border-b border-borderSubtle pb-2 font-bold text-xs">
+          <button onclick="switchTokenSubTab('companies')" id="toksub_companies" class="px-3.5 py-1.5 rounded-lg bg-amber-400/20 text-amber-300 border border-amber-400/30 cursor-pointer">Company Vaults</button>
+          <button onclick="switchTokenSubTab('users')" id="toksub_users" class="px-3.5 py-1.5 rounded-lg text-textMuted hover:text-white cursor-pointer">Player Token Balances</button>
+          <button onclick="switchTokenSubTab('ledger')" id="toksub_ledger" class="px-3.5 py-1.5 rounded-lg text-textMuted hover:text-white cursor-pointer">Immutable Token Ledger</button>
+        </div>
+
+        <!-- Company Token Vaults Grid / Table -->
+        <div id="tokSection_companies" class="glass-card p-5 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
+            <h3 class="font-display font-extrabold text-white text-sm">Company Token Inventory & Distribution Scope</h3>
+            <span class="text-xs text-textMuted font-mono">Multi-Tenant Scoped</span>
+          </div>
+          <div class="overflow-x-auto custom-scrollbar rounded-xl border border-borderSubtle">
+            <table class="w-full text-left text-xs whitespace-nowrap min-w-[700px]">
+              <thead class="bg-sidebarDark text-textMuted uppercase text-[10px] font-extrabold tracking-wider border-b border-borderSubtle">
+                <tr>
+                  <th class="p-3.5">Account ID</th>
+                  <th class="p-3.5">Company Name</th>
+                  <th class="p-3.5">Account Type</th>
+                  <th class="p-3.5">Token Balance</th>
+                  <th class="p-3.5 text-center">Status</th>
+                  <th class="p-3.5 text-right">Transfer</th>
+                </tr>
+              </thead>
+              <tbody id="companyTokensTableBody" class="font-semibold divide-y divide-borderSubtle bg-[#0D1424]"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Player Token Balances Table -->
+        <div id="tokSection_users" class="hidden glass-card p-5 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
+            <h3 class="font-display font-extrabold text-white text-sm">Player Virtual Token Holdings</h3>
+            <span class="text-xs text-textMuted font-mono">In-Game Currency Only</span>
+          </div>
+          <div class="overflow-x-auto custom-scrollbar rounded-xl border border-borderSubtle">
+            <table class="w-full text-left text-xs whitespace-nowrap min-w-[700px]">
+              <thead class="bg-sidebarDark text-textMuted uppercase text-[10px] font-extrabold tracking-wider border-b border-borderSubtle">
+                <tr>
+                  <th class="p-3.5">Account ID</th>
+                  <th class="p-3.5">Username</th>
+                  <th class="p-3.5">Company</th>
+                  <th class="p-3.5">Token Balance</th>
+                  <th class="p-3.5 text-center">Status</th>
+                  <th class="p-3.5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="userTokensTableBody" class="font-semibold divide-y divide-borderSubtle bg-[#0D1424]"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Immutable Token Ledger Table -->
+        <div id="tokSection_ledger" class="hidden glass-card p-5 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
+            <h3 class="font-display font-extrabold text-white text-sm">Immutable Virtual Token Ledger (Audit Grade)</h3>
+            <button onclick="exportTokenLedgerCsv()" class="px-3 py-1 rounded-lg bg-cardDark hover:bg-white/10 text-brandGreen font-bold flex items-center gap-1.5 cursor-pointer border border-brandGreen/30 text-xs">
+              <i class="fa-solid fa-file-csv"></i> Export Token Ledger CSV
+            </button>
+          </div>
+          <div class="overflow-x-auto custom-scrollbar rounded-xl border border-borderSubtle">
+            <table class="w-full text-left text-xs whitespace-nowrap min-w-[760px]">
+              <thead class="bg-sidebarDark text-textMuted uppercase text-[10px] font-extrabold tracking-wider border-b border-borderSubtle">
+                <tr>
+                  <th class="p-3.5">Tx ID</th>
+                  <th class="p-3.5">Sender</th>
+                  <th class="p-3.5">Receiver</th>
+                  <th class="p-3.5">Amount (VTK)</th>
+                  <th class="p-3.5">Reason / Game Ref</th>
+                  <th class="p-3.5">Operator</th>
+                  <th class="p-3.5 text-center">Status</th>
+                  <th class="p-3.5">Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="tokenLedgerTableBody" class="font-mono text-[11px] divide-y divide-borderSubtle bg-[#0D1424]"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================================ -->
       <!-- MODULE 8: KYC & IDENTITY VERIFICATION                        -->
       <!-- ============================================================ -->
       <div id="module_kyc" class="module-view hidden flex flex-col gap-6">
@@ -1257,21 +1384,33 @@
           </div>
         </div>
 
-        <!-- Tab 2: Wallet -->
+        <!-- Tab 2: Wallet & Virtual Tokens -->
         <div id="pane_wallet" class="hidden flex flex-col gap-4">
           <div class="grid grid-cols-2 gap-3">
             <div class="p-4 bg-cardDark rounded-xl flex flex-col gap-1 border-l-4 border-l-brandGreen">
-              <span class="text-textMuted text-[10px] uppercase font-bold">Current Wallet Balance</span>
+              <span class="text-textMuted text-[10px] uppercase font-bold">Fiat Wallet Balance</span>
               <span id="pfield_balance" class="text-xl font-mono font-black text-brandGreen">Rs 10,450.00</span>
             </div>
             <div class="p-4 bg-cardDark rounded-xl flex flex-col gap-1 border-l-4 border-l-amber-400">
-              <span class="text-textMuted text-[10px] uppercase font-bold">Locked in Active Bets</span>
-              <span id="pfield_locked" class="text-xl font-mono font-black text-amber-300">Rs 0.00</span>
+              <span class="text-textMuted text-[10px] uppercase font-bold">Virtual Tokens (VTK)</span>
+              <span id="pfield_tokenBalance" class="text-xl font-mono font-black text-amber-300">45,000 VTK</span>
             </div>
           </div>
-          <button onclick="openAdjustWalletModal(currentDrawerUser.username)" class="w-full py-3 rounded-xl bg-brandGreen/20 hover:bg-brandGreen/30 text-brandGreen border border-brandGreen/30 font-bold text-xs cursor-pointer">
-            <i class="fa-solid fa-wallet"></i> Manually Adjust Balance (Credit / Debit)
-          </button>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="openAdjustWalletModal(currentDrawerUser.username)" class="py-2.5 rounded-xl bg-brandGreen/20 hover:bg-brandGreen/30 text-brandGreen border border-brandGreen/30 font-bold text-xs cursor-pointer">
+              <i class="fa-solid fa-wallet"></i> Adjust Fiat Balance
+            </button>
+            <button onclick="openTokenTransferModal(currentDrawerUser.username)" class="py-2.5 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/30 font-bold text-xs cursor-pointer">
+              <i class="fa-solid fa-coins"></i> Transfer Tokens (VTK)
+            </button>
+          </div>
+
+          <!-- Token History in Drawer -->
+          <span class="font-bold text-white text-xs mt-1">Player Virtual Token History</span>
+          <div id="drawerUserTokenTxList" class="flex flex-col gap-2 max-h-48 overflow-y-auto custom-scrollbar">
+            <!-- Populated by JS -->
+          </div>
         </div>
 
         <!-- Tab 3: KYC -->
@@ -1385,6 +1524,60 @@
         <button type="submit" class="w-full py-3 rounded-xl bg-brandGreen text-white font-extrabold uppercase tracking-wider mt-2">Authorize Adjustment</button>
       </form>
     </div>
+  <!-- Transfer Tokens Modal -->
+  <div id="transferTokenModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+    <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-lg w-full flex flex-col gap-4 text-xs shadow-2xl">
+      <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
+        <div class="flex items-center gap-2 text-amber-400 font-display font-black text-base">
+          <i class="fa-solid fa-coins"></i> Transfer Virtual Tokens (Closed-Loop)
+        </div>
+        <button onclick="closeModal('transferTokenModal')" class="text-textMuted hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form onsubmit="handleTokenTransferSubmit(event)" class="flex flex-col gap-3">
+        <!-- Sender Account Selector -->
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-textMuted uppercase text-[10px]">Source Vault / Sender Account</label>
+          <select id="tokTransferSenderSelect" onchange="updateTokenSenderBalancePreview()" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono font-bold outline-none cursor-pointer">
+            <!-- Populated by JS -->
+          </select>
+          <div class="flex items-center justify-between text-[11px] px-1 text-textMuted mt-0.5">
+            <span>Available Balance:</span>
+            <span id="tokSenderAvailBal" class="font-mono font-bold text-amber-300">0 VTK</span>
+          </div>
+        </div>
+
+        <!-- Receiver Search / Input -->
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-textMuted uppercase text-[10px]">Destination Account (User ID, Account ID, or Username)</label>
+          <input type="text" id="tokTransferReceiverInput" required placeholder="e.g. ACC-USR-1092 or Alex_Winner or ACC-COMP-01" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono outline-none" />
+        </div>
+
+        <!-- Amount -->
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-textMuted uppercase text-[10px]">Token Amount (VTK)</label>
+          <input type="number" id="tokTransferAmountInput" required min="1" placeholder="Amount (e.g. 25000)" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono font-bold text-base outline-none" />
+        </div>
+
+        <!-- Mandatory Reason -->
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-textMuted uppercase text-[10px]">Transfer Reason / Audit Justification</label>
+          <textarea id="tokTransferReasonInput" required rows="2" placeholder="e.g. Monthly promotional token allocation / Event reward" class="bg-sidebarDark border border-borderSubtle rounded-xl p-3 text-white text-xs outline-none"></textarea>
+        </div>
+
+        <!-- Warning & Confirmation -->
+        <div class="p-3 bg-amber-400/10 border border-amber-400/20 rounded-xl text-[11px] text-amber-300 flex items-start gap-2">
+          <i class="fa-solid fa-lock text-sm mt-0.5 shrink-0"></i>
+          <span>This transfer is immutable and executes atomically. Virtual in-game tokens cannot be withdrawn as cash.</span>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold uppercase tracking-wider mt-1 cursor-pointer transition-all">
+          Authorize & Execute Transfer
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- Game Analytics & Player Activity Modal -->
   <div id="gameAnalyticsModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
     <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-4xl w-full max-h-[90vh] flex flex-col gap-4 text-xs overflow-hidden shadow-2xl">
@@ -1537,6 +1730,7 @@
         'deposits': 'Deposit Requests & Approvals',
         'withdrawals': 'Withdrawal Processing & Payouts',
         'wallets': 'User Wallets & Financial Ledger',
+        'tokens': 'Closed-Loop Virtual Token Treasury & Ledger',
         'kyc': 'KYC & Identity Verification Center',
         'risk': 'Risk, Compliance & Fraud Flags',
         'bonuses': 'Promotions & Bonus Campaigns',
@@ -1553,6 +1747,7 @@
       if (moduleId === 'deposits') renderDepositsTable();
       if (moduleId === 'withdrawals') renderWithdrawalsTable();
       if (moduleId === 'wallets') renderWalletsTable();
+      if (moduleId === 'tokens') renderTokenManagementModule();
       if (moduleId === 'kyc') renderKycTable();
       if (moduleId === 'admins') renderAdminsTable();
       if (moduleId === 'audit') renderAuditLogsTable();
@@ -1561,6 +1756,210 @@
       // Close mobile sidebar if open
       const sidebar = document.getElementById('adminSidebar');
       if (sidebar && window.innerWidth < 768) sidebar.classList.add('hidden');
+    }
+
+    // ─── CLOSED-LOOP VIRTUAL TOKEN SYSTEM JS ENGINE ──────────────
+
+    let currentTokenSubTab = 'companies';
+
+    function switchTokenSubTab(tabKey) {
+      currentTokenSubTab = tabKey;
+      ['companies', 'users', 'ledger'].forEach(k => {
+        const sec = document.getElementById('tokSection_' + k);
+        const btn = document.getElementById('toksub_' + k);
+        if (sec) sec.classList.toggle('hidden', k !== tabKey);
+        if (btn) {
+          if (k === tabKey) {
+            btn.className = 'px-3.5 py-1.5 rounded-lg bg-amber-400/20 text-amber-300 border border-amber-400/30 cursor-pointer font-bold';
+          } else {
+            btn.className = 'px-3.5 py-1.5 rounded-lg text-textMuted hover:text-white cursor-pointer font-bold';
+          }
+        }
+      });
+    }
+
+    function renderTokenManagementModule() {
+      if (!window.PlatformSync) return;
+
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const companyId = admin.role === 'SUPER_ADMIN' ? 'ALL' : admin.companyId;
+
+      // 1. Conservation Audit KPIs
+      const audit = window.PlatformSync.getTokenConservationAudit();
+      const badge = document.getElementById('tokConservationBadge');
+      if (badge) {
+        badge.innerText = audit.isConserved ? '100% CONSERVED (0 DISCREPANCY)' : `ERROR: ${audit.discrepancy} VTK DISCREPANCY`;
+        badge.className = `badge ${audit.isConserved ? 'badge-success' : 'badge-danger'} text-[10px] uppercase font-mono`;
+      }
+      const elM = document.getElementById('tokStatMaster');
+      const elC = document.getElementById('tokStatCompanies');
+      const elU = document.getElementById('tokStatUsers');
+      const elS = document.getElementById('tokStatSettlement');
+
+      if (elM) elM.innerText = `${audit.masterVault.toLocaleString()} VTK`;
+      if (elC) elC.innerText = `${audit.companyVaults.toLocaleString()} VTK`;
+      if (elU) elU.innerText = `${audit.userHoldings.toLocaleString()} VTK`;
+      if (elS) elS.innerText = `${audit.settlementPool.toLocaleString()} VTK`;
+
+      // 2. Company Vaults Table
+      const compBody = document.getElementById('companyTokensTableBody');
+      if (compBody) {
+        const compAccounts = window.PlatformSync.getAllTokenAccounts(companyId, 'COMPANY_ADMIN');
+        compBody.innerHTML = compAccounts.map(ca => `
+          <tr class="hover:bg-white/5 transition-colors">
+            <td class="p-3.5 font-mono text-cyan-300 font-bold">${ca.internalAccountId}</td>
+            <td class="p-3.5 font-bold text-white">${ca.username}</td>
+            <td class="p-3.5"><span class="badge badge-purple text-[9px]">${ca.accountType}</span></td>
+            <td class="p-3.5 font-mono font-black text-amber-300 text-sm">${ca.tokenBalance.toLocaleString()} VTK</td>
+            <td class="p-3.5 text-center"><span class="badge badge-success text-[9px]">${ca.status}</span></td>
+            <td class="p-3.5 text-right">
+              <button onclick="openTokenTransferModal('${ca.internalAccountId}')" class="px-2.5 py-1 rounded-lg bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 text-xs font-bold cursor-pointer">
+                Distribute ↗
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // 3. User Token Balances Table
+      const userBody = document.getElementById('userTokensTableBody');
+      if (userBody) {
+        const userAccounts = window.PlatformSync.getAllTokenAccounts(companyId, 'USER');
+        userBody.innerHTML = userAccounts.map(ua => `
+          <tr class="hover:bg-white/5 transition-colors">
+            <td class="p-3.5 font-mono text-cyan-300 font-bold">${ua.internalAccountId}</td>
+            <td class="p-3.5 font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-user text-textMuted text-xs"></i> ${ua.username}
+            </td>
+            <td class="p-3.5 font-mono text-textMuted text-[11px]">${ua.companyId}</td>
+            <td class="p-3.5 font-mono font-black text-brandGreen text-sm">${ua.tokenBalance.toLocaleString()} VTK</td>
+            <td class="p-3.5 text-center"><span class="badge badge-success text-[9px]">${ua.status}</span></td>
+            <td class="p-3.5 text-right flex items-center justify-end gap-2">
+              <button onclick="openTokenTransferModal('${ua.username}')" class="px-2.5 py-1 rounded-lg bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 text-xs font-bold cursor-pointer">
+                Send VTK
+              </button>
+              <button onclick="openUserProfileDrawer('${ua.internalAccountId.replace('ACC-', '')}')" class="px-2.5 py-1 rounded-lg bg-cardDark hover:bg-white/10 text-white text-xs cursor-pointer">
+                Profile
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // 4. Immutable Token Ledger Table
+      const ledgerBody = document.getElementById('tokenLedgerTableBody');
+      if (ledgerBody) {
+        const ledger = window.PlatformSync.getTokenLedger();
+        ledgerBody.innerHTML = ledger.map(tx => `
+          <tr class="hover:bg-white/5 transition-colors">
+            <td class="p-3.5 font-mono text-cyan-300 font-bold">#${tx.transactionId}</td>
+            <td class="p-3.5 text-white font-bold">${tx.senderUsername}</td>
+            <td class="p-3.5 text-amber-300 font-bold">${tx.receiverUsername}</td>
+            <td class="p-3.5 font-mono font-bold text-brandGreen">${tx.amount.toLocaleString()} VTK</td>
+            <td class="p-3.5 text-textMuted text-xs">${tx.reason}</td>
+            <td class="p-3.5 text-gray-300 text-[10px]">${tx.createdBy}</td>
+            <td class="p-3.5 text-center"><span class="badge badge-success text-[9px]">${tx.status}</span></td>
+            <td class="p-3.5 text-textMuted text-[10px]">${tx.timestamp}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function openTokenTransferModal(prefilledReceiver = '') {
+      if (!AdminCore.repo.hasPermission('tokens.transfer')) {
+        showAdminToast('Access Denied: tokens.transfer permission required.', 'error');
+        return;
+      }
+
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const accounts = window.PlatformSync.getAllTokenAccounts(admin.role === 'SUPER_ADMIN' ? 'ALL' : admin.companyId);
+      
+      const select = document.getElementById('tokTransferSenderSelect');
+      if (select) {
+        let senderOptions = [];
+        if (admin.role === 'SUPER_ADMIN') {
+          senderOptions = accounts.filter(a => a.accountType === 'MASTER' || a.accountType === 'COMPANY_ADMIN');
+        } else if (admin.role === 'COMPANY_ADMIN') {
+          senderOptions = accounts.filter(a => a.companyId === admin.companyId && a.accountType === 'COMPANY_ADMIN');
+        } else {
+          senderOptions = accounts.filter(a => a.accountType === 'MASTER');
+        }
+
+        select.innerHTML = senderOptions.map(a => `
+          <option value="${a.internalAccountId}">${a.username} (${a.internalAccountId}) — ${a.tokenBalance.toLocaleString()} VTK</option>
+        `).join('');
+      }
+
+      const recInput = document.getElementById('tokTransferReceiverInput');
+      if (recInput) recInput.value = prefilledReceiver || '';
+
+      const amountInput = document.getElementById('tokTransferAmountInput');
+      if (amountInput) amountInput.value = '';
+
+      updateTokenSenderBalancePreview();
+      openModal('transferTokenModal');
+    }
+
+    function updateTokenSenderBalancePreview() {
+      const select = document.getElementById('tokTransferSenderSelect');
+      const availEl = document.getElementById('tokSenderAvailBal');
+      if (!select || !availEl) return;
+
+      const acc = window.PlatformSync.getTokenAccount(select.value);
+      if (acc) {
+        availEl.innerText = `${acc.tokenBalance.toLocaleString()} VTK`;
+      }
+    }
+
+    function handleTokenTransferSubmit(e) {
+      e.preventDefault();
+      const senderId = document.getElementById('tokTransferSenderSelect').value;
+      const receiverInput = document.getElementById('tokTransferReceiverInput').value.trim();
+      const amount = parseInt(document.getElementById('tokTransferAmountInput').value, 10);
+      const reason = document.getElementById('tokTransferReasonInput').value.trim();
+
+      if (!senderId || !receiverInput || !amount || amount <= 0) {
+        showAdminToast('Please fill all required transfer parameters correctly.', 'warning');
+        return;
+      }
+
+      try {
+        const admin = AdminCore.repo.getCurrentAdmin();
+        const tx = window.PlatformSync.transferTokens(senderId, receiverInput, amount, reason, admin);
+        showAdminToast(`✓ Successfully transferred ${amount.toLocaleString()} VTK (#${tx.transactionId})`, 'success');
+        closeModal('transferTokenModal');
+        renderTokenManagementModule();
+        if (currentDrawerUser) openUserProfileDrawer(currentDrawerUser.id);
+      } catch (err) {
+        showAdminToast(`Transfer Failed: ${err.message}`, 'error');
+      }
+    }
+
+    function exportTokenLedgerCsv() {
+      if (!AdminCore.repo.hasPermission('reports.export') && !AdminCore.repo.hasPermission('tokens.ledger')) {
+        showAdminToast('Access Denied: reports.export permission required.', 'error');
+        return;
+      }
+      const ledger = window.PlatformSync.getTokenLedger();
+      if (ledger.length === 0) {
+        showAdminToast('No token transactions to export.', 'warning');
+        return;
+      }
+
+      showAdminToast('Exporting Token Ledger to CSV...', 'success');
+      let csvContent = 'data:text/csv;charset=utf-8,';
+      csvContent += 'Transaction ID,Sender Account,Sender Username,Receiver Account,Receiver Username,Amount (VTK),Token Type,Reason,Game ID,Round ID,Created By,Status,Timestamp\r\n';
+      ledger.forEach(l => {
+        csvContent += `"${l.transactionId}","${l.senderAccountId}","${l.senderUsername}","${l.receiverAccountId}","${l.receiverUsername}",${l.amount},"${l.tokenType}","${l.reason}","${l.gameId || ''}","${l.roundId || ''}","${l.createdBy}","${l.status}","${l.timestamp}"\r\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `virtual_token_ledger_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     // Role Switching Handler (Demo Testing Tool)
@@ -2230,6 +2629,37 @@
         }
       }
 
+      // Populate User's Closed-Loop Virtual Token Profile (Tab 2)
+      if (window.PlatformSync && typeof window.PlatformSync.getUserTokenProfile === 'function') {
+        const tokProf = window.PlatformSync.getUserTokenProfile(u.username);
+        const tokBalEl = document.getElementById('pfield_tokenBalance');
+        const tokTxList = document.getElementById('drawerUserTokenTxList');
+
+        if (tokBalEl && tokProf) {
+          tokBalEl.innerText = `${tokProf.tokenBalance.toLocaleString()} VTK`;
+        }
+
+        if (tokTxList && tokProf) {
+          if (tokProf.transactions.length === 0) {
+            tokTxList.innerHTML = `<div class="p-3 text-center text-textMuted font-mono text-xs bg-sidebarDark rounded-xl">No token transactions yet.</div>`;
+          } else {
+            tokTxList.innerHTML = tokProf.transactions.map(tx => `
+              <div class="p-2.5 bg-sidebarDark rounded-xl border border-borderSubtle flex items-center justify-between font-mono text-xs">
+                <div class="flex flex-col">
+                  <span class="text-white font-bold">${tx.reason}</span>
+                  <span class="text-textMuted text-[10px]">#${tx.transactionId} · ${tx.timestamp}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold ${tx.receiverAccountId === tokProf.internalAccountId ? 'text-brandGreen' : 'text-amber-300'}">
+                    ${tx.receiverAccountId === tokProf.internalAccountId ? '+' : '-'}${tx.amount.toLocaleString()} VTK
+                  </span>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+      }
+
       switchProfileTab('overview');
       document.getElementById('userProfileDrawer').classList.remove('hidden');
     }
@@ -2475,6 +2905,7 @@
           renderDepositsTable();
           renderWithdrawalsTable();
           renderWalletsTable();
+          renderTokenManagementModule();
           renderAuditLogsTable();
 
           // 3. Show live notification toast
@@ -2486,6 +2917,12 @@
             showAdminToast(`💸 LIVE: Withdrawal request Rs ${event.payload.amount.toLocaleString()} from ${event.payload.username}!`, 'warning');
           } else if (event.type === 'BET_PLACED') {
             showAdminToast(`🎲 LIVE: Bet placed by ${event.payload.username} (Rs ${event.payload.amount.toLocaleString()})`, 'info');
+          } else if (event.type === 'TOKEN_TRANSFER_COMPLETED') {
+            showAdminToast(`🪙 LIVE: Transferred ${event.payload.amount.toLocaleString()} VTK to ${event.payload.receiver}`, 'success');
+          } else if (event.type === 'GAME_TOKEN_BET_PLACED') {
+            showAdminToast(`🎲 LIVE: ${event.payload.username} placed ${event.payload.amount.toLocaleString()} VTK bet in ${event.payload.gameId}`, 'info');
+          } else if (event.type === 'GAME_TOKEN_PAYOUT_SETTLED') {
+            showAdminToast(`🏆 LIVE: ${event.payload.username} won ${event.payload.amount.toLocaleString()} VTK payout in ${event.payload.gameId}`, 'success');
           }
         });
       }

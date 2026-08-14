@@ -54,6 +54,12 @@
     'reports.view': 'View Platform Reports',
     'reports.export': 'Export Data to CSV / Excel',
 
+    // Virtual Token Management (Closed-Loop Economy)
+    'tokens.view': 'View Virtual Token Balances & Master Account',
+    'tokens.transfer': 'Execute Closed-Loop Virtual Token Transfers',
+    'tokens.ledger': 'View Immutable Virtual Token Ledger',
+    'tokens.manage': 'Manage Token Allocation & Master Account',
+
     // Administration & Security
     'admins.view': 'View Administrator Accounts',
     'admins.create': 'Create Administrator Accounts',
@@ -72,6 +78,7 @@
       'deposits.view', 'deposits.approve', 'deposits.reject',
       'withdrawals.view', 'withdrawals.approve', 'withdrawals.reject',
       'wallets.view', 'wallets.adjust', 'reports.financial',
+      'tokens.view', 'tokens.transfer', 'tokens.ledger',
       'kyc.view', 'kyc.approve', 'kyc.reject',
       'bonuses.view', 'bonuses.create',
       'reports.view', 'reports.export',
@@ -80,6 +87,7 @@
     'OPERATIONS_ADMIN': [
       'users.view', 'users.create', 'users.edit', 'users.suspend', 'users.notes',
       'games.view', 'games.manage', 'games.broadcast',
+      'tokens.view', 'tokens.ledger',
       'kyc.view', 'risk.alerts', 'reports.view'
     ],
     'FINANCE_ADMIN': [
@@ -87,6 +95,7 @@
       'deposits.view', 'deposits.approve', 'deposits.reject',
       'withdrawals.view', 'withdrawals.approve', 'withdrawals.reject',
       'wallets.view', 'wallets.adjust', 'reports.financial',
+      'tokens.view', 'tokens.transfer', 'tokens.ledger',
       'reports.view', 'reports.export'
     ],
     'GAME_ADMIN': [

@@ -3,7 +3,8 @@
  *  PLATFORM-SYNC.JS — Central Single Source of Truth & Real-Time Sync
  *  Seamless Two-Way Synchronization between User Platform & Admin Panel
  *  Handles: Real Users · Wallets · Transactions · Deposits · Withdrawals
- *           Game-Wise Activities · Live Bets · Cross-Tab Event Broadcasting
+ *           Game-Wise Activities · Closed-Loop Virtual Token System
+ *           Master Token Account · Atomic Transfers · Immutable Ledger
  * ====================================================================
  */
 
@@ -24,13 +25,12 @@
     if (broadcastChannel) {
       try { broadcastChannel.postMessage(eventObj); } catch(e) {}
     }
-    // Also trigger storage event for cross-tab legacy support
     try {
       localStorage.setItem('THAINXT_LAST_EVENT', JSON.stringify(eventObj));
     } catch(e) {}
   }
 
-  // ─── 2. DEFAULT SEED DATA (Only loaded if storage is empty) ──────
+  // ─── 2. DEFAULT SEED DATA ────────────────────────────────────────
   const SEED_COMPANIES = [
     { id: 'COMP-01', name: 'ThaiNXT Global Exchange (HQ)', code: 'GLOBAL', currency: 'PKR / INR', status: 'Active', usersCount: 1420 },
     { id: 'COMP-02', name: 'Apex Sports Asia Ltd.', code: 'APEX', currency: 'PKR', status: 'Active', usersCount: 580 },
@@ -155,9 +155,31 @@
     { id: 'GM-AVIATOR-CRASH', name: 'Aviator High-Multiplier Crash', category: 'CAT-SLOTS', route: 'index.html#slots', status: 'Active', maintenance: false, order: 6, turnover: 'Rs 5,640,000', players: 520, image: 'aviator_card.jpg' }
   ];
 
-  // ─── 3. CORE PLATFORM SYNCHRONIZATION ENGINE ─────────────────────
+  // ─── 3. CLOSED-LOOP VIRTUAL TOKEN SEED ACCOUNTS & LEDGER ─────────
+  // Total Initial Token Supply: 10,000,000 VTK (Guaranteed Conservation)
+  const SEED_TOKEN_ACCOUNTS = [
+    { internalAccountId: 'ACC-MASTER-001', username: 'MASTER_VAULT', accountType: 'MASTER', companyId: null, tokenBalance: 8450000, status: 'Active', createdDate: '2026-01-01' },
+    { internalAccountId: 'ACC-COMP-01', username: 'ThaiNXT_HQ_Tokens', accountType: 'COMPANY_ADMIN', companyId: 'COMP-01', tokenBalance: 750000, status: 'Active', createdDate: '2026-01-01' },
+    { internalAccountId: 'ACC-COMP-02', username: 'Apex_Asia_Tokens', accountType: 'COMPANY_ADMIN', companyId: 'COMP-02', tokenBalance: 320000, status: 'Active', createdDate: '2026-01-01' },
+    { internalAccountId: 'ACC-COMP-03', username: 'Royal_Bangkok_Tokens', accountType: 'COMPANY_ADMIN', companyId: 'COMP-03', tokenBalance: 180000, status: 'Active', createdDate: '2026-01-01' },
+    { internalAccountId: 'ACC-POOL-SETTLE', username: 'GAME_SETTLEMENT_POOL', accountType: 'MASTER', companyId: null, tokenBalance: 125000, status: 'Active', createdDate: '2026-01-01' },
+    { internalAccountId: 'ACC-USR-1092', username: 'Alex_Winner', accountType: 'USER', companyId: 'COMP-01', tokenBalance: 45000, status: 'Active', createdDate: '2026-06-12' },
+    { internalAccountId: 'ACC-USR-1093', username: 'CryptoKing', accountType: 'USER', companyId: 'COMP-01', tokenBalance: 80000, status: 'Active', createdDate: '2026-06-18' },
+    { internalAccountId: 'ACC-USR-1094', username: 'Whale99', accountType: 'USER', companyId: 'COMP-01', tokenBalance: 35000, status: 'Active', createdDate: '2026-05-20' },
+    { internalAccountId: 'ACC-USR-1095', username: 'Zargham_Pro', accountType: 'USER', companyId: 'COMP-02', tokenBalance: 15000, status: 'Active', createdDate: '2026-07-01' }
+  ];
+
+  const SEED_TOKEN_LEDGER = [
+    { transactionId: 'TXN-VTK-1001', senderAccountId: 'ACC-MASTER-001', senderUsername: 'MASTER_VAULT', receiverAccountId: 'ACC-COMP-01', receiverUsername: 'ThaiNXT_HQ_Tokens', amount: 1000000, tokenType: 'VTK_GAME_TOKEN', reason: 'Initial Master Token Allocation to Company HQ', gameId: null, roundId: null, createdBy: 'Super Admin', status: 'SETTLED', timestamp: '2026-08-10 10:00:00', createdAt: '2026-08-10T10:00:00Z' },
+    { transactionId: 'TXN-VTK-1002', senderAccountId: 'ACC-COMP-01', senderUsername: 'ThaiNXT_HQ_Tokens', receiverAccountId: 'ACC-USR-1092', receiverUsername: 'Alex_Winner', amount: 50000, tokenType: 'VTK_GAME_TOKEN', reason: 'VIP Player Promotional Virtual Token Grant', gameId: null, roundId: null, createdBy: 'Company Admin A', status: 'SETTLED', timestamp: '2026-08-14 09:00:00', createdAt: '2026-08-14T09:00:00Z' },
+    { transactionId: 'TXN-VTK-1003', senderAccountId: 'ACC-USR-1092', senderUsername: 'Alex_Winner', receiverAccountId: 'ACC-POOL-SETTLE', receiverUsername: 'GAME_SETTLEMENT_POOL', amount: 5000, tokenType: 'VTK_GAME_TOKEN', reason: 'Lucky Thai 4D Virtual Bet Entry - Round #8890', gameId: 'GM-THAI-4D', roundId: '8890', createdBy: 'Game Engine', status: 'SETTLED', timestamp: '2026-08-14 10:00:00', createdAt: '2026-08-14T10:00:00Z' }
+  ];
+
+  // ─── 4. CORE PLATFORM SYNCHRONIZATION ENGINE ─────────────────────
 
   const PlatformSync = {
+    TOTAL_TOKEN_SUPPLY: 10000000, // Fixed Platform Conservation Total
+
     KEYS: {
       USERS: 'ADM_USERS',
       DEPOSITS: 'ADM_DEPOSITS',
@@ -168,7 +190,9 @@
       GAMES: 'ADM_GAMES',
       AUDIT_LOGS: 'ADM_AUDIT_LOGS',
       KYC: 'ADM_KYC',
-      BONUSES: 'ADM_BONUSES'
+      BONUSES: 'ADM_BONUSES',
+      TOKEN_ACCOUNTS: 'ADM_TOKEN_ACCOUNTS',
+      TOKEN_LEDGER: 'ADM_TOKEN_LEDGER'
     },
 
     init() {
@@ -193,6 +217,12 @@
       if (!localStorage.getItem(this.KEYS.GAMES)) {
         localStorage.setItem(this.KEYS.GAMES, JSON.stringify(SEED_GAMES));
       }
+      if (!localStorage.getItem(this.KEYS.TOKEN_ACCOUNTS)) {
+        localStorage.setItem(this.KEYS.TOKEN_ACCOUNTS, JSON.stringify(SEED_TOKEN_ACCOUNTS));
+      }
+      if (!localStorage.getItem(this.KEYS.TOKEN_LEDGER)) {
+        localStorage.setItem(this.KEYS.TOKEN_LEDGER, JSON.stringify(SEED_TOKEN_LEDGER));
+      }
     },
 
     _get(key) {
@@ -215,7 +245,11 @@
       const dateStr = now.toISOString().split('T')[0];
 
       if (!user) {
-        const newId = 'USR-' + (1090 + users.length + 1);
+        const maxNum = users.reduce((max, u) => {
+          const n = parseInt(String(u.id).replace(/\D/g, ''), 10);
+          return isNaN(n) ? max : Math.max(max, n);
+        }, 1095);
+        const newId = 'USR-' + (maxNum + 1);
         user = {
           id: newId,
           username: username,
@@ -238,6 +272,13 @@
         };
         users.unshift(user);
         this._set(this.KEYS.USERS, users);
+
+        // Also create closed-loop virtual token account for this new user if not present
+        if (!this.getTokenAccount(`ACC-${user.id}`) && !this.getTokenAccount(user.username)) {
+          try {
+            this.createTokenAccount(`ACC-${user.id}`, user.username, 'USER', user.companyId, 5000);
+          } catch(e) {}
+        }
 
         this.logAudit('USER_REGISTERED', `User #${user.id}`, user.username, 'Player self-registered from website portal');
         broadcastEvent('USER_REGISTERED', user);
@@ -265,6 +306,334 @@
     getUserBalance(username) {
       const u = this.getUser(username);
       return u ? u.balance : 10450.00;
+    },
+
+    // ─── 5. CLOSED-LOOP VIRTUAL TOKEN SYSTEM (ATOMIC & CONSERVED) ───
+
+    getTokenAccount(identifier) {
+      this.init();
+      const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+      const query = String(identifier || '').toLowerCase();
+      return accounts.find(a => 
+        a.internalAccountId.toLowerCase() === query || 
+        a.username.toLowerCase() === query
+      ) || null;
+    },
+
+    createTokenAccount(internalAccountId, username, accountType = 'USER', companyId = 'COMP-01', initialBalance = 0) {
+      this.init();
+      const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+      
+      // Server-side uniqueness check
+      if (accounts.some(a => a.internalAccountId.toLowerCase() === internalAccountId.toLowerCase())) {
+        throw new Error(`Account ID ${internalAccountId} already exists`);
+      }
+      if (accounts.some(a => a.username.toLowerCase() === username.toLowerCase())) {
+        throw new Error(`Username ${username} already has a token account`);
+      }
+
+      const newAccount = {
+        internalAccountId,
+        username,
+        accountType,
+        companyId,
+        tokenBalance: Number(initialBalance),
+        status: 'Active',
+        createdDate: new Date().toISOString().split('T')[0]
+      };
+
+      accounts.push(newAccount);
+      this._set(this.KEYS.TOKEN_ACCOUNTS, accounts);
+      return newAccount;
+    },
+
+    getAllTokenAccounts(companyId = null, accountType = null) {
+      this.init();
+      let accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+      if (companyId && companyId !== 'ALL') {
+        accounts = accounts.filter(a => a.companyId === companyId || a.accountType === 'MASTER');
+      }
+      if (accountType && accountType !== 'ALL') {
+        accounts = accounts.filter(a => a.accountType === accountType);
+      }
+      return accounts;
+    },
+
+    /**
+     * Executes an Atomic Token Transfer with strict permission hierarchy
+     */
+    transferTokens(senderIdOrName, receiverIdOrName, amount, reason, operatorAdmin = null) {
+      this.init();
+      const tokenAmount = Number(amount);
+      if (isNaN(tokenAmount) || tokenAmount <= 0) {
+        throw new Error('Token transfer amount must be a positive number');
+      }
+
+      const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+      const sender = accounts.find(a => 
+        a.internalAccountId.toLowerCase() === String(senderIdOrName).toLowerCase() || 
+        a.username.toLowerCase() === String(senderIdOrName).toLowerCase()
+      );
+      const receiver = accounts.find(a => 
+        a.internalAccountId.toLowerCase() === String(receiverIdOrName).toLowerCase() || 
+        a.username.toLowerCase() === String(receiverIdOrName).toLowerCase()
+      );
+
+      if (!sender) throw new Error(`Sender account [${senderIdOrName}] not found`);
+      if (!receiver) throw new Error(`Receiver account [${receiverIdOrName}] not found`);
+      if (sender.internalAccountId === receiver.internalAccountId) {
+        throw new Error('Sender and Receiver cannot be the same account');
+      }
+
+      // Check Sender Balance
+      if (sender.tokenBalance < tokenAmount) {
+        throw new Error(`Insufficient token balance. Current balance: ${sender.tokenBalance} VTK, Requested: ${tokenAmount} VTK`);
+      }
+
+      // Permission Hierarchy Validation
+      const op = operatorAdmin || { role: 'SUPER_ADMIN', companyId: 'COMP-01', name: 'System Admin' };
+      if (op.role === 'COMPANY_ADMIN') {
+        // Company Admin can only transfer from its own company account
+        if (sender.companyId !== op.companyId) {
+          throw new Error(`Permission Denied: Sender does not belong to your company ${op.companyId}`);
+        }
+        // Company Admin can only send to accounts belonging to its own company scope
+        if (receiver.companyId && receiver.companyId !== op.companyId) {
+          throw new Error(`Permission Denied: Receiver does not belong to your company ${op.companyId}`);
+        }
+      }
+
+      // 2-Phase Atomic Balance Update
+      sender.tokenBalance -= tokenAmount;
+      receiver.tokenBalance += tokenAmount;
+      this._set(this.KEYS.TOKEN_ACCOUNTS, accounts);
+
+      // Create Immutable Ledger Record
+      const txId = 'TXN-VTK-' + Math.floor(10000 + Math.random() * 90000);
+      const now = new Date();
+      const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const ledgerEntry = {
+        transactionId: txId,
+        senderAccountId: sender.internalAccountId,
+        senderUsername: sender.username,
+        receiverAccountId: receiver.internalAccountId,
+        receiverUsername: receiver.username,
+        amount: tokenAmount,
+        tokenType: 'VTK_GAME_TOKEN',
+        reason: reason || 'Internal platform token transfer',
+        gameId: null,
+        roundId: null,
+        createdBy: op.name || 'Admin Operator',
+        status: 'SETTLED',
+        timestamp: dateStr,
+        createdAt: now.toISOString()
+      };
+
+      const ledger = this._get(this.KEYS.TOKEN_LEDGER);
+      ledger.unshift(ledgerEntry);
+      if (ledger.length > 2000) ledger.pop();
+      this._set(this.KEYS.TOKEN_LEDGER, ledger);
+
+      // Log in Security Audit Trail
+      this.logAudit(
+        'TOKEN_TRANSFER',
+        `Account ${receiver.internalAccountId} (${receiver.username})`,
+        receiver.internalAccountId,
+        `Transferred ${tokenAmount.toLocaleString()} VTK from ${sender.username}: ${reason}`,
+        `${sender.tokenBalance + tokenAmount} VTK`,
+        `${sender.tokenBalance} VTK`
+      );
+
+      broadcastEvent('TOKEN_TRANSFER_COMPLETED', {
+        transactionId: txId,
+        sender: sender.username,
+        receiver: receiver.username,
+        amount: tokenAmount,
+        senderNewBalance: sender.tokenBalance,
+        receiverNewBalance: receiver.tokenBalance
+      });
+
+      return ledgerEntry;
+    },
+
+    /**
+     * User places an in-game virtual token bet (User -> Game Settlement Pool)
+     */
+    recordGameTokenBet(username, gameId, roundId, tokenAmount, selectedBet = '') {
+      this.init();
+      const amount = Number(tokenAmount);
+      if (isNaN(amount) || amount <= 0) return false;
+
+      const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+      const userAcc = accounts.find(a => a.username.toLowerCase() === (username || '').toLowerCase());
+      const poolAcc = accounts.find(a => a.internalAccountId === 'ACC-POOL-SETTLE');
+
+      if (!userAcc || !poolAcc || userAcc.tokenBalance < amount) return false;
+
+      // Atomic Balance Transfer
+      userAcc.tokenBalance -= amount;
+      poolAcc.tokenBalance += amount;
+      this._set(this.KEYS.TOKEN_ACCOUNTS, accounts);
+
+      const txId = 'TXN-VTK-' + Math.floor(10000 + Math.random() * 90000);
+      const now = new Date();
+      const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const entry = {
+        transactionId: txId,
+        senderAccountId: userAcc.internalAccountId,
+        senderUsername: userAcc.username,
+        receiverAccountId: poolAcc.internalAccountId,
+        receiverUsername: poolAcc.username,
+        amount: amount,
+        tokenType: 'VTK_GAME_TOKEN',
+        reason: `${gameId} Token Bet Entry (Round #${roundId}, Bet: ${selectedBet})`,
+        gameId: gameId,
+        roundId: String(roundId),
+        createdBy: 'Game Engine',
+        status: 'SETTLED',
+        timestamp: dateStr,
+        createdAt: now.toISOString()
+      };
+
+      const ledger = this._get(this.KEYS.TOKEN_LEDGER);
+      ledger.unshift(entry);
+      this._set(this.KEYS.TOKEN_LEDGER, ledger);
+
+      broadcastEvent('GAME_TOKEN_BET_PLACED', { username, gameId, amount, newBalance: userAcc.tokenBalance });
+      return entry;
+    },
+
+    /**
+     * Settles in-game virtual token win payout (Game Settlement Pool -> User)
+     */
+    settleGameTokenPayout(username, gameId, roundId, winTokens) {
+      this.init();
+      const amount = Number(winTokens);
+      if (isNaN(amount) || amount <= 0) return false;
+
+      const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+      const userAcc = accounts.find(a => a.username.toLowerCase() === (username || '').toLowerCase());
+      const poolAcc = accounts.find(a => a.internalAccountId === 'ACC-POOL-SETTLE');
+
+      if (!userAcc || !poolAcc) return false;
+
+      // Atomic Balance Transfer
+      poolAcc.tokenBalance = Math.max(0, poolAcc.tokenBalance - amount);
+      userAcc.tokenBalance += amount;
+      this._set(this.KEYS.TOKEN_ACCOUNTS, accounts);
+
+      const txId = 'TXN-VTK-' + Math.floor(10000 + Math.random() * 90000);
+      const now = new Date();
+      const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const entry = {
+        transactionId: txId,
+        senderAccountId: poolAcc.internalAccountId,
+        senderUsername: poolAcc.username,
+        receiverAccountId: userAcc.internalAccountId,
+        receiverUsername: userAcc.username,
+        amount: amount,
+        tokenType: 'VTK_GAME_TOKEN',
+        reason: `${gameId} Token Win Settlement (Round #${roundId})`,
+        gameId: gameId,
+        roundId: String(roundId),
+        createdBy: 'Game Engine Settlement',
+        status: 'SETTLED',
+        timestamp: dateStr,
+        createdAt: now.toISOString()
+      };
+
+      const ledger = this._get(this.KEYS.TOKEN_LEDGER);
+      ledger.unshift(entry);
+      this._set(this.KEYS.TOKEN_LEDGER, ledger);
+
+      broadcastEvent('GAME_TOKEN_PAYOUT_SETTLED', { username, gameId, amount, newBalance: userAcc.tokenBalance });
+      return entry;
+    },
+
+    /**
+     * Evaluates Platform Token Conservation (Total Master + Companies + Users + Settlement Pool)
+     */
+    getTokenConservationAudit() {
+      this.init();
+      const accounts = this._get(this.KEYS.TOKEN_ACCOUNTS);
+      
+      const masterAccount = accounts.find(a => a.internalAccountId === 'ACC-MASTER-001');
+      const settlementPool = accounts.find(a => a.internalAccountId === 'ACC-POOL-SETTLE');
+      const companyAccounts = accounts.filter(a => a.accountType === 'COMPANY_ADMIN');
+      const userAccounts = accounts.filter(a => a.accountType === 'USER');
+
+      const masterBalance = masterAccount ? masterAccount.tokenBalance : 0;
+      const settlementBalance = settlementPool ? settlementPool.tokenBalance : 0;
+      const totalCompanyBalance = companyAccounts.reduce((sum, a) => sum + a.tokenBalance, 0);
+      const totalUserBalance = userAccounts.reduce((sum, a) => sum + a.tokenBalance, 0);
+
+      const calculatedTotal = masterBalance + settlementBalance + totalCompanyBalance + totalUserBalance;
+      const discrepancy = calculatedTotal - this.TOTAL_TOKEN_SUPPLY;
+
+      return {
+        totalSupply: this.TOTAL_TOKEN_SUPPLY,
+        masterVault: masterBalance,
+        settlementPool: settlementBalance,
+        companyVaults: totalCompanyBalance,
+        userHoldings: totalUserBalance,
+        calculatedTotal: calculatedTotal,
+        discrepancy: discrepancy,
+        isConserved: discrepancy === 0,
+        companyBreakdown: companyAccounts,
+        totalUsers: userAccounts.length
+      };
+    },
+
+    getTokenLedger(companyId = null, accountId = null, gameId = null) {
+      this.init();
+      let ledger = this._get(this.KEYS.TOKEN_LEDGER);
+      if (gameId && gameId !== 'ALL') {
+        ledger = ledger.filter(l => l.gameId === gameId);
+      }
+      if (accountId && accountId !== 'ALL') {
+        ledger = ledger.filter(l => l.senderAccountId === accountId || l.receiverAccountId === accountId);
+      }
+      return ledger;
+    },
+
+    getUserTokenProfile(username) {
+      this.init();
+      const acc = this.getTokenAccount(username);
+      if (!acc) return null;
+
+      const ledger = this._get(this.KEYS.TOKEN_LEDGER);
+      const userTx = ledger.filter(l => 
+        l.senderAccountId === acc.internalAccountId || 
+        l.receiverAccountId === acc.internalAccountId
+      );
+
+      const totalReceived = userTx
+        .filter(l => l.receiverAccountId === acc.internalAccountId && l.senderAccountId !== 'ACC-POOL-SETTLE')
+        .reduce((sum, l) => sum + l.amount, 0);
+
+      const totalSpent = userTx
+        .filter(l => l.senderAccountId === acc.internalAccountId && l.receiverAccountId === 'ACC-POOL-SETTLE')
+        .reduce((sum, l) => sum + l.amount, 0);
+
+      const totalWon = userTx
+        .filter(l => l.receiverAccountId === acc.internalAccountId && l.senderAccountId === 'ACC-POOL-SETTLE')
+        .reduce((sum, l) => sum + l.amount, 0);
+
+      return {
+        internalAccountId: acc.internalAccountId,
+        username: acc.username,
+        companyId: acc.companyId,
+        tokenBalance: acc.tokenBalance,
+        status: acc.status,
+        createdDate: acc.createdDate,
+        totalReceived,
+        totalSpent,
+        totalWon,
+        transactions: userTx
+      };
     },
 
     // ─── DEPOSIT WORKFLOW SYNCHRONIZATION ──────────────────────────
@@ -497,11 +866,8 @@
       return true;
     },
 
-    // ─── 4. GAME-WISE BETTING & ACTIVITY TRACKING ──────────────────
+    // ─── 6. GAME-WISE BETTING & ACTIVITY TRACKING ──────────────────
 
-    /**
-     * Records a detailed game participation activity ledger entry
-     */
     recordGameActivity(username, gameId, gameName, roundId, betNumber, stake, tokens = 0, result = 'PENDING', payout = 0) {
       this.init();
       const user = this.getUser(username);
@@ -521,9 +887,9 @@
         roundId: String(roundId),
         betNumber: String(betNumber),
         stake: Number(stake),
-        tokens: Number(tokens || (stake / 10)), // 1 Token = 10 currency unit conversion
+        tokens: Number(tokens || (stake / 10)),
         currency: 'PKR',
-        result: result, // 'WON' | 'LOST' | 'PENDING'
+        result: result,
         payout: Number(payout),
         netResult: Number(payout) - Number(stake),
         date: dateStr,
@@ -535,16 +901,12 @@
       if (activities.length > 1000) activities.pop();
       this._set(this.KEYS.GAME_ACTIVITIES, activities);
 
-      // Deduct balance and record transaction
       this.recordBet(username, gameId, roundId, betNumber, stake);
 
       broadcastEvent('GAME_ACTIVITY_RECORDED', activity);
       return activity;
     },
 
-    /**
-     * Date filtering helper
-     */
     _filterByDate(items, dateRange, dateField = 'createdAt') {
       if (!dateRange || dateRange === 'ALL') return items;
       const now = new Date();
@@ -570,9 +932,6 @@
       return items.filter(i => new Date(i[dateField]) >= start);
     },
 
-    /**
-     * Calculates Game-Wise Summary for Admin Dashboard / Games Table
-     */
     getGameWiseSummary(companyId = null, dateRange = 'ALL') {
       this.init();
       let activities = this._get(this.KEYS.GAME_ACTIVITIES);
@@ -590,7 +949,7 @@
         const totalStake = gameActs.reduce((sum, a) => sum + (Number(a.stake) || 0), 0);
         const totalTokens = gameActs.reduce((sum, a) => sum + (Number(a.tokens) || 0), 0);
         const totalPayouts = gameActs.reduce((sum, a) => sum + (Number(a.payout) || 0), 0);
-        const netResult = totalStake - totalPayouts; // Positive is house gross margin
+        const netResult = totalStake - totalPayouts;
 
         return {
           gameId: g.id,
@@ -610,9 +969,6 @@
       });
     },
 
-    /**
-     * Detailed Analytics for a single specific game
-     */
     getGameDetailsAnalytics(gameId, companyId = null, dateRange = 'ALL') {
       this.init();
       let activities = this._get(this.KEYS.GAME_ACTIVITIES).filter(a => a.gameId === gameId);
@@ -629,7 +985,6 @@
       const totalWins = activities.filter(a => a.result === 'WON').length;
       const totalLosses = activities.filter(a => a.result === 'LOST').length;
 
-      // Group by user for participating users list
       const userMap = {};
       activities.forEach(a => {
         if (!userMap[a.username]) {
@@ -667,9 +1022,6 @@
       };
     },
 
-    /**
-     * User's game-wise breakdown for User Profile Drawer Tab 4
-     */
     getUserGameBreakdown(username) {
       this.init();
       const activities = this._get(this.KEYS.GAME_ACTIVITIES).filter(a => a.username.toLowerCase() === (username || '').toLowerCase());
