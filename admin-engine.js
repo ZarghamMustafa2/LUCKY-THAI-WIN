@@ -84,6 +84,38 @@
       'reports.view', 'reports.export',
       'admins.view', 'admins.create', 'audit_logs.view'
     ],
+    'SENIOR_SUPER_MASTER': [
+      'users.view', 'users.create', 'users.edit', 'users.notes',
+      'deposits.view', 'deposits.approve',
+      'withdrawals.view', 'withdrawals.approve',
+      'wallets.view', 'reports.financial',
+      'tokens.view', 'tokens.transfer', 'tokens.ledger',
+      'admins.view', 'admins.create', 'reports.view', 'reports.export'
+    ],
+    'SUPER_MASTER': [
+      'users.view', 'users.create', 'users.edit', 'users.notes',
+      'deposits.view', 'deposits.approve',
+      'withdrawals.view', 'withdrawals.approve',
+      'wallets.view', 'reports.financial',
+      'tokens.view', 'tokens.transfer', 'tokens.ledger',
+      'admins.view', 'admins.create', 'reports.view', 'reports.export'
+    ],
+    'MASTER_AGENT': [
+      'users.view', 'users.create', 'users.edit', 'users.notes',
+      'deposits.view', 'deposits.approve',
+      'withdrawals.view',
+      'wallets.view',
+      'tokens.view', 'tokens.transfer',
+      'admins.view', 'admins.create', 'reports.view'
+    ],
+    'AGENT': [
+      'users.view', 'users.create', 'users.edit',
+      'deposits.view',
+      'withdrawals.view',
+      'wallets.view',
+      'tokens.view', 'tokens.transfer',
+      'reports.view'
+    ],
     'OPERATIONS_ADMIN': [
       'users.view', 'users.create', 'users.edit', 'users.suspend', 'users.notes',
       'games.view', 'games.manage', 'games.broadcast',
@@ -129,11 +161,28 @@
   ];
 
   const DEFAULT_ADMINS = [
-    { id: 'ADM-001', name: 'Amir Khan (Super Admin)', username: 'admin', email: 'admin@thainxt.com', role: 'SUPER_ADMIN', companyId: 'COMP-01', status: 'Active', lastLogin: 'Just now', pass: 'admin123' },
-    { id: 'ADM-002', name: 'Zargham Mustafa', username: 'zargham_ops', email: 'zargham@thainxt.com', role: 'OPERATIONS_ADMIN', companyId: 'COMP-01', status: 'Active', lastLogin: '10 mins ago', pass: 'Qwer1234' },
-    { id: 'ADM-003', name: 'Siddiq Finance Officer', username: 'finance_lead', email: 'finance@thainxt.com', role: 'FINANCE_ADMIN', companyId: 'COMP-01', status: 'Active', lastLogin: '1 hour ago', pass: '123456' },
-    { id: 'ADM-004', name: 'Priya Sharma (Apex Partner)', username: 'priya_apex', email: 'priya@apex-sports.com', role: 'COMPANY_ADMIN', companyId: 'COMP-02', status: 'Active', lastLogin: 'Yesterday', pass: '123456' },
-    { id: 'ADM-005', name: 'David Compliance Officer', username: 'compliance_risk', email: 'compliance@thainxt.com', role: 'RISK_ADMIN', companyId: 'COMP-01', status: 'Active', lastLogin: '3 hours ago', pass: '123456' }
+    { id: 'ADM-001', name: 'Amir Khan (Super Admin)', username: 'admin', email: 'admin@thainxt.com', role: 'SUPER_ADMIN', level: 'SUPER_ADMIN', companyId: 'COMP-01', uplineId: null, uplineUsername: null, commissionRate: 10.0, creditLimit: 10000000, tokenLimit: 5000000, status: 'Active', lastLogin: 'Just now', pass: 'admin123' },
+    { id: 'ADM-004', name: 'Priya Sharma (Company Partner)', username: 'priya_apex', email: 'priya@apex-sports.com', role: 'COMPANY_ADMIN', level: 'COMPANY_ADMIN', companyId: 'COMP-02', uplineId: 'ADM-001', uplineUsername: 'admin', commissionRate: 8.0, creditLimit: 5000000, tokenLimit: 2000000, status: 'Active', lastLogin: 'Yesterday', pass: '123456' },
+    
+    // Level 3: Senior Super Master
+    { id: 'ADM-SSM-01', name: 'Sultan Al-Rashid', username: 'Sultan_SSM', email: 'ssm.sultan@thainxt.com', role: 'SENIOR_SUPER_MASTER', level: 'SENIOR_SUPER_MASTER', companyId: 'COMP-01', uplineId: 'ADM-001', uplineUsername: 'admin', commissionRate: 7.0, creditLimit: 3000000, tokenLimit: 1000000, status: 'Active', lastLogin: 'Today, 11:00 AM', pass: 'Ssm@2026' },
+
+    // Level 4: Super Master (Direct Example from User)
+    { id: 'ADM-SM-01', name: 'Faisal Khan (Super Master)', username: 'SuperMaster_Apex', email: 'sm.faisal@thainxt.com', role: 'SUPER_MASTER', level: 'SUPER_MASTER', companyId: 'COMP-01', uplineId: 'ADM-SSM-01', uplineUsername: 'Sultan_SSM', commissionRate: 5.0, creditLimit: 1500000, tokenLimit: 500000, status: 'Active', lastLogin: 'Today, 10:15 AM', pass: 'Sm@2026' },
+    { id: 'ADM-SM-02', name: 'Rajesh Varma (Super Master)', username: 'SuperMaster_Royal', email: 'sm.rajesh@royalbangkok.com', role: 'SUPER_MASTER', level: 'SUPER_MASTER', companyId: 'COMP-03', uplineId: 'ADM-001', uplineUsername: 'admin', commissionRate: 5.0, creditLimit: 800000, tokenLimit: 300000, status: 'Active', lastLogin: 'Yesterday, 04:30 PM', pass: 'RoyalSm@1' },
+
+    // Level 5: Master Agent
+    { id: 'ADM-MA-01', name: 'Bilal Tariq (Master Agent)', username: 'Master_Agent_01', email: 'master.bilal@thainxt.com', role: 'MASTER_AGENT', level: 'MASTER_AGENT', companyId: 'COMP-01', uplineId: 'ADM-SM-01', uplineUsername: 'SuperMaster_Apex', commissionRate: 3.5, creditLimit: 500000, tokenLimit: 200000, status: 'Active', lastLogin: 'Today, 09:30 AM', pass: 'Master@123' },
+    { id: 'ADM-MA-02', name: 'Titan Sports (Master Agent)', username: 'Master_Titan', email: 'titan.master@apex.com', role: 'MASTER_AGENT', level: 'MASTER_AGENT', companyId: 'COMP-01', uplineId: 'ADM-SM-01', uplineUsername: 'SuperMaster_Apex', commissionRate: 3.5, creditLimit: 400000, tokenLimit: 150000, status: 'Active', lastLogin: 'Yesterday, 11:20 PM', pass: 'Titan@2026' },
+
+    // Level 6: Agent / Sub-Agent
+    { id: 'ADM-AG-01', name: 'Apex Agent Karachi', username: 'Apex_Agent', email: 'agent.apex@thainxt.com', role: 'AGENT', level: 'AGENT', companyId: 'COMP-01', uplineId: 'ADM-MA-01', uplineUsername: 'Master_Agent_01', commissionRate: 2.0, creditLimit: 200000, tokenLimit: 80000, status: 'Active', lastLogin: 'Today, 08:45 AM', pass: 'Agent@123' },
+    { id: 'ADM-AG-02', name: 'Agent Lahore Direct', username: 'Agent_02', email: 'agent.lahore@thainxt.com', role: 'AGENT', level: 'AGENT', companyId: 'COMP-01', uplineId: 'ADM-MA-02', uplineUsername: 'Master_Titan', commissionRate: 2.0, creditLimit: 150000, tokenLimit: 50000, status: 'Active', lastLogin: 'Today, 07:15 AM', pass: 'Lahore@123' },
+
+    // Departmental Admins
+    { id: 'ADM-002', name: 'Zargham Mustafa', username: 'zargham_ops', email: 'zargham@thainxt.com', role: 'OPERATIONS_ADMIN', level: 'OPERATIONS_ADMIN', companyId: 'COMP-01', uplineId: 'ADM-001', uplineUsername: 'admin', commissionRate: 0, creditLimit: 0, tokenLimit: 0, status: 'Active', lastLogin: '10 mins ago', pass: 'Qwer1234' },
+    { id: 'ADM-003', name: 'Siddiq Finance Officer', username: 'finance_lead', email: 'finance@thainxt.com', role: 'FINANCE_ADMIN', level: 'FINANCE_ADMIN', companyId: 'COMP-01', uplineId: 'ADM-001', uplineUsername: 'admin', commissionRate: 0, creditLimit: 0, tokenLimit: 0, status: 'Active', lastLogin: '1 hour ago', pass: '123456' },
+    { id: 'ADM-005', name: 'David Compliance Officer', username: 'compliance_risk', email: 'compliance@thainxt.com', role: 'RISK_ADMIN', level: 'RISK_ADMIN', companyId: 'COMP-01', uplineId: 'ADM-001', uplineUsername: 'admin', commissionRate: 0, creditLimit: 0, tokenLimit: 0, status: 'Active', lastLogin: '3 hours ago', pass: '123456' }
   ];
 
   const DEFAULT_CATEGORIES = [
@@ -155,12 +204,12 @@
   ];
 
   const DEFAULT_USERS = [
-    { id: 'Bp28233', username: 'Alex_Winner', name: 'Alexander Wright', password: 'Bp28233@pass', phone: '+92 300 1234567', email: 'alex.winner@gmail.com', balance: 10450.00, locked: 0.00, totalDeposit: 45000.00, totalWithdraw: 34550.00, companyId: 'COMP-01', status: 'Active', kycStatus: 'Approved', source: 'Direct Sign-Up', regDate: '2026-06-12', lastLogin: 'Today, 10:45 AM', notes: 'VIP customer, prefers Thai 4D and Live Roulette.' },
-    { id: 'USR-1093', username: 'CryptoKing', name: 'Fahad Rehman', phone: '+92 321 9876543', email: 'crypto.fahad@gmail.com', balance: 45000.00, locked: 5000.00, totalDeposit: 120000.00, totalWithdraw: 70000.00, companyId: 'COMP-01', status: 'Active', kycStatus: 'Approved', source: 'Super_Agent_02', regDate: '2026-06-18', lastLogin: 'Today, 09:15 AM', notes: 'High turnover bettor.' },
-    { id: 'USR-1094', username: 'Whale99', name: 'Bilal Tariq', phone: '+92 333 4567890', email: 'bilal.tariq@yahoo.com', balance: 120000.00, locked: 20000.00, totalDeposit: 500000.00, totalWithdraw: 360000.00, companyId: 'COMP-01', status: 'Active', kycStatus: 'Approved', source: 'Master_Agent_01', regDate: '2026-05-20', lastLogin: 'Yesterday, 11:30 PM', notes: 'Corporate client.' },
-    { id: 'USR-1095', username: 'Zargham_Pro', name: 'Zargham Raza', phone: '+92 312 3456789', email: 'zargham.pro@gmail.com', balance: 25000.00, locked: 0.00, totalDeposit: 60000.00, totalWithdraw: 35000.00, companyId: 'COMP-02', status: 'Active', kycStatus: 'Approved', source: 'Apex_Agent', regDate: '2026-07-01', lastLogin: 'Today, 08:20 AM', notes: 'Regular Thai Lottery player.' },
-    { id: 'USR-1096', username: 'LuckyHassan', name: 'Hassan Ali', phone: '+92 345 8899001', email: 'hassan.ali@outlook.com', balance: 3200.00, locked: 1000.00, totalDeposit: 15000.00, totalWithdraw: 10800.00, companyId: 'COMP-01', status: 'Pending Verification', kycStatus: 'Pending', source: 'Direct Sign-Up', regDate: '2026-08-10', lastLogin: 'Today, 01:10 PM', notes: 'ID card uploaded, awaiting verification.' },
-    { id: 'USR-1097', username: 'SuspiciousBettor', name: 'Rashid Minhas', phone: '+92 301 2233445', email: 'rashid.m@gmail.com', balance: 150.00, locked: 0.00, totalDeposit: 5000.00, totalWithdraw: 4850.00, companyId: 'COMP-03', status: 'Suspended', kycStatus: 'Rejected', source: 'Online Referral', regDate: '2026-07-15', lastLogin: '3 days ago', notes: 'Suspended due to multiple sequence betting pattern.' }
+    { id: 'Bp28233', username: 'Alex_Winner', name: 'Alexander Wright', password: 'Bp28233@pass', phone: '+92 300 1234567', email: 'alex.winner@gmail.com', balance: 10450.00, locked: 0.00, totalDeposit: 45000.00, totalWithdraw: 34550.00, companyId: 'COMP-01', status: 'Active', kycStatus: 'Approved', source: 'Apex_Agent', agentUsername: 'Apex_Agent', masterUsername: 'Master_Agent_01', superMasterUsername: 'SuperMaster_Apex', regDate: '2026-06-12', lastLogin: 'Today, 10:45 AM', notes: 'VIP customer, prefers Thai 4D and Live Roulette.' },
+    { id: 'USR-1093', username: 'CryptoKing', name: 'Fahad Rehman', phone: '+92 321 9876543', email: 'crypto.fahad@gmail.com', balance: 45000.00, locked: 5000.00, totalDeposit: 120000.00, totalWithdraw: 70000.00, companyId: 'COMP-01', status: 'Active', kycStatus: 'Approved', source: 'Apex_Agent', agentUsername: 'Apex_Agent', masterUsername: 'Master_Agent_01', superMasterUsername: 'SuperMaster_Apex', regDate: '2026-06-18', lastLogin: 'Today, 09:15 AM', notes: 'High turnover bettor.' },
+    { id: 'USR-1094', username: 'Whale99', name: 'Bilal Tariq', phone: '+92 333 4567890', email: 'bilal.tariq@yahoo.com', balance: 120000.00, locked: 20000.00, totalDeposit: 500000.00, totalWithdraw: 360000.00, companyId: 'COMP-01', status: 'Active', kycStatus: 'Approved', source: 'Master_Agent_01', agentUsername: 'Master_Agent_01', masterUsername: 'Master_Agent_01', superMasterUsername: 'SuperMaster_Apex', regDate: '2026-05-20', lastLogin: 'Yesterday, 11:30 PM', notes: 'Corporate client.' },
+    { id: 'USR-1095', username: 'Zargham_Pro', name: 'Zargham Raza', phone: '+92 312 3456789', email: 'zargham.pro@gmail.com', balance: 25000.00, locked: 0.00, totalDeposit: 60000.00, totalWithdraw: 35000.00, companyId: 'COMP-01', status: 'Active', kycStatus: 'Approved', source: 'Agent_02', agentUsername: 'Agent_02', masterUsername: 'Master_Titan', superMasterUsername: 'SuperMaster_Apex', regDate: '2026-07-01', lastLogin: 'Today, 08:20 AM', notes: 'Regular Thai Lottery player.' },
+    { id: 'USR-1096', username: 'LuckyHassan', name: 'Hassan Ali', phone: '+92 345 8899001', email: 'hassan.ali@outlook.com', balance: 3200.00, locked: 1000.00, totalDeposit: 15000.00, totalWithdraw: 10800.00, companyId: 'COMP-01', status: 'Pending Verification', kycStatus: 'Pending', source: 'Direct Sign-Up', agentUsername: 'Direct_HQ', masterUsername: 'Direct', superMasterUsername: 'Direct', regDate: '2026-08-10', lastLogin: 'Today, 01:10 PM', notes: 'ID card uploaded, awaiting verification.' },
+    { id: 'USR-1097', username: 'SuspiciousBettor', name: 'Rashid Minhas', phone: '+92 301 2233445', email: 'rashid.m@gmail.com', balance: 150.00, locked: 0.00, totalDeposit: 5000.00, totalWithdraw: 4850.00, companyId: 'COMP-03', status: 'Suspended', kycStatus: 'Rejected', source: 'Royal_Agent_01', agentUsername: 'Royal_Agent_01', masterUsername: 'Royal_Master_01', superMasterUsername: 'SuperMaster_Royal', regDate: '2026-07-15', lastLogin: '3 days ago', notes: 'Suspended due to multiple sequence betting pattern.' }
   ];
 
   const DEFAULT_DEPOSITS = [
@@ -250,11 +299,80 @@
       return allowed.includes(permissionKey);
     }
 
+    // Downline Agent Resolution (Recursive Subtree)
+    getDownlineAdmins(agentUsername) {
+      const admins = this.get('ADM_ADMINS');
+      const targetUser = String(agentUsername || '').toLowerCase();
+      const directChildren = admins.filter(a => 
+        (a.uplineUsername && a.uplineUsername.toLowerCase() === targetUser) ||
+        (a.uplineId && a.uplineId.toLowerCase() === targetUser)
+      );
+
+      let allDownline = [...directChildren];
+      directChildren.forEach(child => {
+        const sub = this.getDownlineAdmins(child.username);
+        allDownline = allDownline.concat(sub);
+      });
+      return allDownline;
+    }
+
+    // Downline Players / Users Resolution
+    getDownlineUsernames(agentUsername) {
+      const targetUser = String(agentUsername || '').toLowerCase();
+      const admins = this.get('ADM_ADMINS');
+      const curAdmin = admins.find(a => a.username.toLowerCase() === targetUser);
+
+      // If Super Admin, return all
+      if (curAdmin && curAdmin.role === 'SUPER_ADMIN') {
+        const users = this.get('ADM_USERS');
+        return users.map(u => u.username);
+      }
+
+      // Collect all agent usernames in this tree including self
+      const downlineAgents = this.getDownlineAdmins(targetUser);
+      const allAgentUsernames = [targetUser, ...downlineAgents.map(a => a.username.toLowerCase())];
+
+      const users = this.get('ADM_USERS');
+      return users.filter(u => {
+        const agU = (u.agentUsername || u.source || '').toLowerCase();
+        const maU = (u.masterUsername || '').toLowerCase();
+        const smU = (u.superMasterUsername || '').toLowerCase();
+        const s = (u.source || '').toLowerCase();
+        return allAgentUsernames.includes(agU) || 
+               allAgentUsernames.includes(maU) || 
+               allAgentUsernames.includes(smU) ||
+               allAgentUsernames.includes(s);
+      }).map(u => u.username);
+    }
+
+    // Agent Level-Scoped Data Filter
+    scopeToAgentLevel(list, currentAdmin = null, usernameField = 'username') {
+      const cur = currentAdmin || this.getCurrentAdmin();
+      if (!cur || cur.role === 'SUPER_ADMIN') return list;
+
+      if (cur.role === 'COMPANY_ADMIN') {
+        return list.filter(item => item.companyId === cur.companyId);
+      }
+
+      if (['SENIOR_SUPER_MASTER', 'SUPER_MASTER', 'MASTER_AGENT', 'AGENT'].includes(cur.role)) {
+        const permittedUsers = this.getDownlineUsernames(cur.username);
+        return list.filter(item => {
+          const u = item[usernameField] || item.username || item.targetUser || item.senderUsername || item.receiverUsername;
+          return permittedUsers.map(x => x.toLowerCase()).includes(String(u || '').toLowerCase());
+        });
+      }
+
+      return list;
+    }
+
     // Company Data Scoper
     scopeToCompany(list, companyField = 'companyId') {
       const current = this.getCurrentAdmin();
       if (!current || current.role === 'SUPER_ADMIN') return list;
-      return list.filter(item => item[companyField] === current.companyId);
+      if (current.role === 'COMPANY_ADMIN') {
+        return list.filter(item => item[companyField] === current.companyId);
+      }
+      return this.scopeToAgentLevel(list, current, 'username');
     }
 
     // Immutable Audit Logger

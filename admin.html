@@ -298,13 +298,16 @@
         <div class="hidden lg:flex items-center gap-1.5 bg-sidebarDark border border-borderSubtle rounded-xl px-2.5 py-1 text-xs">
           <span class="text-textMuted text-[10px] font-bold uppercase"><i class="fa-solid fa-masks-theater text-brandBlue"></i> Role:</span>
           <select id="roleSwitcherSelect" onchange="handleRoleSwitch(this.value)" class="bg-transparent text-white font-bold text-xs outline-none cursor-pointer">
-            <option value="SUPER_ADMIN">Super Admin (Global)</option>
-            <option value="COMPANY_ADMIN">Company Admin (Apex Ltd)</option>
-            <option value="OPERATIONS_ADMIN">Operations Admin</option>
-            <option value="FINANCE_ADMIN">Finance Admin</option>
-            <option value="GAME_ADMIN">Game Admin</option>
-            <option value="RISK_ADMIN">Risk & Compliance Admin</option>
-            <option value="VIEWER">Read-Only Viewer</option>
+            <option value="SUPER_ADMIN">👑 Super Admin (Global Root)</option>
+            <option value="COMPANY_ADMIN">🏢 Company Admin (Apex Partner HQ)</option>
+            <option value="SENIOR_SUPER_MASTER">💎 Senior Super Master (Sultan_SSM)</option>
+            <option value="SUPER_MASTER">⭐ Super Master (SuperMaster_Apex)</option>
+            <option value="MASTER_AGENT">🔰 Master Agent (Master_Agent_01)</option>
+            <option value="AGENT">👤 Direct Agent (Apex_Agent)</option>
+            <option value="OPERATIONS_ADMIN">⚙️ Operations Admin</option>
+            <option value="FINANCE_ADMIN">💰 Finance Admin</option>
+            <option value="RISK_ADMIN">🛡️ Risk & Compliance Admin</option>
+            <option value="VIEWER">👁️ Read-Only Viewer</option>
           </select>
         </div>
 
@@ -365,6 +368,54 @@
       <!-- ============================================================ -->
       <div id="module_dashboard" class="module-view flex flex-col gap-6">
         
+        <!-- Dynamic Level Details & Downline Card (Auto-adapts to assigned level) -->
+        <div id="levelDetailsCard" class="hidden bg-gradient-to-r from-[#0C1527] via-[#0E1B33] to-[#0A1224] border border-amber-500/40 rounded-2xl p-4 sm:p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-2xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="flex items-center gap-3.5 z-10">
+            <div id="levelBadgeIconBox" class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center font-black text-xl shadow-lg shrink-0">
+              <i class="fa-solid fa-crown"></i>
+            </div>
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span id="levelCardRoleBadge" class="badge badge-warning text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5">SUPER MASTER LEVEL</span>
+                <span id="levelCardAgentId" class="text-xs font-mono font-bold text-cyan-300 bg-black/40 px-2 py-0.5 rounded border border-white/10">#ADM-SM-01</span>
+                <span id="levelCardCompanyBadge" class="text-[10px] text-purple-300 bg-purple-900/30 px-2 py-0.5 rounded border border-purple-500/30 font-mono">COMP-01</span>
+              </div>
+              <h3 id="levelCardAgentName" class="text-base sm:text-lg font-display font-extrabold text-white">Faisal Khan (@SuperMaster_Apex)</h3>
+              <div class="flex items-center gap-2 text-[11px] text-textMuted font-mono flex-wrap">
+                <span id="levelCardLineage" class="flex items-center gap-1 text-gray-300">
+                  <i class="fa-solid fa-sitemap text-amber-400 text-[10px]"></i> Lineage: ThaiNXT Global ➔ Sultan_SSM ➔ <strong class="text-amber-300 font-bold">SuperMaster_Apex</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Level Metrics Quad -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full lg:w-auto bg-[#070D1A] border border-[#1C2C46] rounded-xl p-3 text-xs z-10">
+            <div class="flex flex-col">
+              <span class="text-[9px] uppercase font-extrabold text-gray-400 flex items-center gap-1"><i class="fa-solid fa-percent text-amber-400"></i> Commission</span>
+              <span id="levelCardCommission" class="text-amber-400 font-mono font-black text-sm sm:text-base">5.0%</span>
+              <span class="text-[9px] text-textMuted">Turnover Share</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[9px] uppercase font-extrabold text-gray-400 flex items-center gap-1"><i class="fa-solid fa-users text-cyan-400"></i> Downline</span>
+              <span id="levelCardDownlineCount" class="text-cyan-300 font-mono font-black text-sm sm:text-base">2 MA · 4 Players</span>
+              <span class="text-[9px] text-textMuted">Subordinate Net</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[9px] uppercase font-extrabold text-gray-400 flex items-center gap-1"><i class="fa-solid fa-coins text-brandGreen"></i> Credit Limit</span>
+              <span id="levelCardCredit" class="text-brandGreen font-mono font-black text-sm sm:text-base">Rs 1.50M</span>
+              <span class="text-[9px] text-textMuted">Assigned Quota</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[9px] uppercase font-extrabold text-gray-400 flex items-center gap-1"><i class="fa-solid fa-gem text-amber-300"></i> Token Quota</span>
+              <span id="levelCardTokens" class="text-amber-300 font-mono font-black text-sm sm:text-base">500K VTK</span>
+              <span class="text-[9px] text-textMuted">Virtual Pool</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Top Metrics Row -->
         <div class="grid grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
           
@@ -1270,29 +1321,48 @@
       </div>
 
       <!-- ============================================================ -->
-      <!-- MODULE 12: ADMINS & ROLE MANAGEMENT                          -->
+      <!-- MODULE 12: ADMINS, AGENTS & MULTI-LEVEL HIERARCHY             -->
       <!-- ============================================================ -->
       <div id="module_admins" class="module-view hidden flex flex-col gap-6">
         
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h2 class="text-xl font-display font-black text-white">Administrators & RBAC Governance</h2>
-            <p class="text-xs text-textMuted mt-0.5">Manage operator accounts, assign companies and configure granular permission matrices</p>
+            <h2 class="text-xl font-display font-black text-white flex items-center gap-2">
+              <i class="fa-solid fa-sitemap text-amber-400"></i> Multi-Level Agent Hierarchy & RBAC Governance
+            </h2>
+            <p class="text-xs text-textMuted mt-0.5">Manage Super Masters, Master Agents, Sub-Agents, commissions, downline lineage, and scoped permissions</p>
           </div>
-          <button onclick="openAddAdminModal()" class="px-4 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white text-xs font-extrabold shadow-lg transition-all cursor-pointer flex items-center gap-2">
-            <i class="fa-solid fa-user-plus"></i> Create Admin Account
-          </button>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="switchAdminSubTab('table')" id="adminSubTab_table" class="px-3.5 py-2 rounded-xl bg-brandBlue text-white text-xs font-bold shadow-md cursor-pointer transition-all">
+              <i class="fa-solid fa-table-list"></i> Accounts List
+            </button>
+            <button onclick="switchAdminSubTab('tree')" id="adminSubTab_tree" class="px-3.5 py-2 rounded-xl bg-sidebarDark hover:bg-white/10 text-textMuted hover:text-white border border-borderSubtle text-xs font-bold cursor-pointer transition-all">
+              <i class="fa-solid fa-network-wired text-amber-400"></i> Downline Network Tree
+            </button>
+            <button onclick="openAddAgentAccountModal()" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-black text-xs font-black shadow-lg transition-all cursor-pointer flex items-center gap-2">
+              <i class="fa-solid fa-user-plus"></i> Create Level Account
+            </button>
+          </div>
         </div>
 
-        <div class="glass-card p-5 flex flex-col gap-4">
+        <!-- Sub-View 1: Accounts List Table -->
+        <div id="adminView_table" class="glass-card p-5 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
+            <span class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-users-gear text-cyan-400"></i> Active Operator Accounts & Downline Nodes
+            </span>
+            <span id="adminsCountBadge" class="badge badge-purple text-[10px]">8 Nodes</span>
+          </div>
+
           <div class="overflow-x-auto custom-scrollbar rounded-xl border border-borderSubtle">
-            <table class="w-full text-left text-xs whitespace-nowrap min-w-[700px]">
+            <table class="w-full text-left text-xs whitespace-nowrap min-w-[850px]">
               <thead class="bg-sidebarDark text-textMuted uppercase text-[10px] font-extrabold tracking-wider border-b border-borderSubtle">
                 <tr>
-                  <th class="p-3.5">Admin Staff</th>
-                  <th class="p-3.5">Assigned Role</th>
-                  <th class="p-3.5">Company Scope</th>
-                  <th class="p-3.5">Last Active</th>
+                  <th class="p-3.5">Agent / Operator</th>
+                  <th class="p-3.5">Hierarchy Level</th>
+                  <th class="p-3.5">Upline Parent</th>
+                  <th class="p-3.5">Commission</th>
+                  <th class="p-3.5">Credit Quota</th>
                   <th class="p-3.5 text-center">Status</th>
                   <th class="p-3.5 text-right">Actions</th>
                 </tr>
@@ -1301,6 +1371,26 @@
                 <!-- Populated by JS -->
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- Sub-View 2: Interactive Downline Network Visual Tree Explorer -->
+        <div id="adminView_tree" class="hidden glass-card p-5 flex flex-col gap-5">
+          <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
+            <div class="flex flex-col">
+              <span class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-diagram-project text-amber-400"></i> Interactive Downline Tree (Scoped to Active Session)
+              </span>
+              <span class="text-[11px] text-textMuted">Shows downline lineage: Super Master ➔ Master Agents ➔ Sub-Agents ➔ Players</span>
+            </div>
+            <button onclick="renderDownlineTree()" class="px-3 py-1.5 rounded-lg bg-cardDark hover:bg-white/10 text-xs font-bold text-cyan-300 border border-borderSubtle cursor-pointer flex items-center gap-1.5">
+              <i class="fa-solid fa-arrows-rotate"></i> Refresh Tree
+            </button>
+          </div>
+
+          <!-- Tree Container (Rendered dynamically by renderDownlineTree) -->
+          <div id="downlineTreeContainer" class="p-4 bg-[#080E1C] border border-borderSubtle rounded-2xl flex flex-col gap-3 font-mono text-xs overflow-x-auto custom-scrollbar">
+            <!-- Populated by JS -->
           </div>
         </div>
 
@@ -1738,6 +1828,99 @@
         <button type="submit" class="w-full py-3 rounded-xl bg-brandGreen text-white font-extrabold uppercase tracking-wider mt-2">Authorize Adjustment</button>
       </form>
     </div>
+  </div>
+
+  <!-- Create Multi-Level Agent / Operator Account Modal -->
+  <div id="addAgentAccountModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+    <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-lg w-full max-h-[90vh] flex flex-col gap-4 text-xs overflow-y-auto custom-scrollbar shadow-2xl">
+      <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
+        <div class="flex items-center gap-2 text-amber-400 font-display font-black text-base">
+          <i class="fa-solid fa-sitemap"></i> Create Hierarchy Level ID
+        </div>
+        <button onclick="closeModal('addAgentAccountModal')" class="text-textMuted hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form onsubmit="handleAddAgentAccountSubmit(event)" class="flex flex-col gap-3.5">
+        
+        <!-- Hierarchy Level Selector -->
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-textMuted uppercase text-[10px] flex items-center gap-1">
+            <i class="fa-solid fa-layer-group text-amber-400"></i> Assigned Hierarchy Level *
+          </label>
+          <select id="newAgentRole" onchange="updateUplineSelectorOptions(this.value)" required class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-bold outline-none cursor-pointer">
+            <option value="SUPER_MASTER">⭐ Super Master (SM) — 5.0% Commission</option>
+            <option value="MASTER_AGENT">🔰 Master Agent (MA) — 3.5% Commission</option>
+            <option value="AGENT">👤 Direct Agent (AG) — 2.0% Commission</option>
+            <option value="SENIOR_SUPER_MASTER">💎 Senior Super Master (SSM) — 7.0% Commission</option>
+            <option value="COMPANY_ADMIN">🏢 Company Admin (White-Label Partner)</option>
+            <option value="OPERATIONS_ADMIN">⚙️ Operations Admin</option>
+            <option value="FINANCE_ADMIN">💰 Finance Admin</option>
+          </select>
+        </div>
+
+        <!-- Upline Parent Node Selector -->
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-textMuted uppercase text-[10px] flex items-center gap-1">
+            <i class="fa-solid fa-turn-up text-cyan-400"></i> Assigned Upline / Parent Node *
+          </label>
+          <select id="newAgentUpline" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono font-bold outline-none cursor-pointer">
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-textMuted uppercase text-[10px]">Full Name *</label>
+            <input type="text" id="newAgentName" required placeholder="e.g. Tariq Mehmood" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2 text-white font-bold outline-none" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-textMuted uppercase text-[10px]">Username / ID Code *</label>
+            <input type="text" id="newAgentUsername" required placeholder="e.g. SuperMaster_Tariq" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2 text-cyan-300 font-mono font-bold outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-textMuted uppercase text-[10px]">Password *</label>
+            <input type="text" id="newAgentPassword" required placeholder="e.g. Tariq@Pass2026" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2 text-white font-mono font-bold outline-none" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-textMuted uppercase text-[10px]">Email Address</label>
+            <input type="email" id="newAgentEmail" placeholder="tariq@thainxt.com" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2 text-white outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2.5">
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-textMuted uppercase text-[9px]">Commission %</label>
+            <input type="number" step="0.1" id="newAgentCommission" value="5.0" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3 py-2 text-amber-400 font-mono font-black outline-none" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-textMuted uppercase text-[9px]">Credit Limit (Rs)</label>
+            <input type="number" id="newAgentCredit" value="1000000" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3 py-2 text-brandGreen font-mono font-black outline-none" />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-textMuted uppercase text-[9px]">Token Quota (VTK)</label>
+            <input type="number" id="newAgentTokens" value="500000" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3 py-2 text-amber-300 font-mono font-black outline-none" />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-textMuted uppercase text-[10px]">Operating Company Scope *</label>
+          <select id="newAgentCompany" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-bold outline-none cursor-pointer">
+            <option value="COMP-01">COMP-01 (ThaiNXT Global HQ)</option>
+            <option value="COMP-02">COMP-02 (Apex Sports Asia)</option>
+            <option value="COMP-03">COMP-03 (Royal Bangkok Club)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-wider mt-2 cursor-pointer shadow-lg transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-check"></i> Authorize & Create Level ID
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- Transfer Tokens Modal (2-Step Verification & Confirmation Flow) -->
   <div id="transferTokenModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
     <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-lg w-full flex flex-col gap-4 text-xs shadow-2xl">
@@ -2403,7 +2586,7 @@
       const admins = AdminCore.repo.get('ADM_ADMINS');
       let target = admins.find(a => a.role === roleKey);
       if (!target) {
-        target = { id: 'ADM-TEMP', name: roleKey.replace(/_/g, ' '), role: roleKey, companyId: 'COMP-01' };
+        target = { id: 'ADM-TEMP', name: roleKey.replace(/_/g, ' '), role: roleKey, companyId: 'COMP-01', commissionRate: 5.0, creditLimit: 1000000, tokenLimit: 500000 };
       }
       AdminCore.repo.setCurrentAdmin(target);
       updateAdminHeaderInfo();
@@ -2418,12 +2601,137 @@
       const roleBadge = document.getElementById('sidebarRoleBadge');
       const compBadge = document.getElementById('sidebarCompanyBadge');
       const selectEl = document.getElementById('roleSwitcherSelect');
+      const scopeBadge = document.getElementById('moduleScopeBadge');
 
       if (nameEl) nameEl.innerText = cur.name;
-      if (avatarEl) avatarEl.innerText = cur.name.substring(0, 2).toUpperCase();
-      if (roleBadge) roleBadge.innerText = cur.role.replace('_ADMIN', '');
-      if (compBadge) compBadge.innerText = cur.companyId === 'COMP-01' ? 'ThaiNXT Global HQ' : (cur.companyId === 'COMP-02' ? 'Apex Sports Asia' : 'Royal Bangkok Club');
+      if (avatarEl) avatarEl.innerText = (cur.name || 'AD').substring(0, 2).toUpperCase();
+      if (roleBadge) {
+        roleBadge.innerText = cur.role.replace('_ADMIN', '').replace(/_/g, ' ');
+      }
+      if (compBadge) {
+        compBadge.innerText = cur.companyId === 'COMP-01' ? 'ThaiNXT Global HQ' : (cur.companyId === 'COMP-02' ? 'Apex Sports Asia' : 'Royal Bangkok Club');
+      }
       if (selectEl) selectEl.value = cur.role;
+
+      // Update Top Scope Badge
+      if (scopeBadge) {
+        if (cur.role === 'SUPER_ADMIN') {
+          scopeBadge.className = 'badge badge-info text-[10px] hidden sm:inline-flex';
+          scopeBadge.innerText = 'GLOBAL ROOT SCOPE';
+        } else if (cur.role === 'COMPANY_ADMIN') {
+          scopeBadge.className = 'badge badge-purple text-[10px] hidden sm:inline-flex';
+          scopeBadge.innerText = `COMPANY SCOPE (${cur.companyId})`;
+        } else if (cur.role === 'SENIOR_SUPER_MASTER') {
+          scopeBadge.className = 'badge badge-warning text-[10px] hidden sm:inline-flex';
+          scopeBadge.innerText = 'SSM DOWNLINE SCOPE';
+        } else if (cur.role === 'SUPER_MASTER') {
+          scopeBadge.className = 'badge badge-warning text-[10px] hidden sm:inline-flex';
+          scopeBadge.innerText = 'SUPER MASTER DOWNLINE SCOPE';
+        } else if (cur.role === 'MASTER_AGENT') {
+          scopeBadge.className = 'badge badge-primary text-[10px] hidden sm:inline-flex';
+          scopeBadge.innerText = 'MASTER AGENT SCOPE';
+        } else if (cur.role === 'AGENT') {
+          scopeBadge.className = 'badge badge-success text-[10px] hidden sm:inline-flex';
+          scopeBadge.innerText = 'DIRECT PLAYERS SCOPE';
+        } else {
+          scopeBadge.className = 'badge badge-info text-[10px] hidden sm:inline-flex';
+          scopeBadge.innerText = `${cur.role} SCOPE`;
+        }
+      }
+
+      // Update Dynamic Level Details Card on Dashboard
+      const levelCard = document.getElementById('levelDetailsCard');
+      if (levelCard) {
+        if (cur.role === 'SUPER_ADMIN') {
+          levelCard.classList.add('hidden');
+        } else {
+          levelCard.classList.remove('hidden');
+          const rBadge = document.getElementById('levelCardRoleBadge');
+          const idEl = document.getElementById('levelCardAgentId');
+          const compEl = document.getElementById('levelCardCompanyBadge');
+          const nameCardEl = document.getElementById('levelCardAgentName');
+          const lineageEl = document.getElementById('levelCardLineage');
+          const commEl = document.getElementById('levelCardCommission');
+          const downlineEl = document.getElementById('levelCardDownlineCount');
+          const creditEl = document.getElementById('levelCardCredit');
+          const tokensEl = document.getElementById('levelCardTokens');
+
+          if (rBadge) rBadge.innerText = `${cur.role.replace(/_/g, ' ')} LEVEL`;
+          if (idEl) idEl.innerText = cur.id || '#ADM-SM-01';
+          if (compEl) compEl.innerText = cur.companyId || 'COMP-01';
+          if (nameCardEl) nameCardEl.innerText = `${cur.name} (@${cur.username})`;
+
+          // Resolve downline items
+          const downlineAgents = AdminCore.repo.getDownlineAdmins(cur.username);
+          const downlineUsers = AdminCore.repo.getDownlineUsernames(cur.username);
+
+          if (lineageEl) {
+            const uplineName = cur.uplineUsername || 'Global HQ';
+            lineageEl.innerHTML = `<i class="fa-solid fa-sitemap text-amber-400 text-[10px]"></i> Lineage: ThaiNXT HQ ➔ ${uplineName} ➔ <strong class="text-amber-300 font-bold">${cur.username}</strong>`;
+          }
+          if (commEl) commEl.innerText = `${cur.commissionRate || 5.0}%`;
+          if (downlineEl) {
+            const mastersCount = downlineAgents.filter(a => a.role === 'MASTER_AGENT').length;
+            const agentsCount = downlineAgents.filter(a => a.role === 'AGENT').length;
+            downlineEl.innerText = `${mastersCount} MA · ${agentsCount} AG · ${downlineUsers.length} Players`;
+          }
+          if (creditEl) creditEl.innerText = `Rs ${(cur.creditLimit || 1500000).toLocaleString()}`;
+          if (tokensEl) tokensEl.innerText = `${(cur.tokenLimit || 500000).toLocaleString()} VTK`;
+        }
+      }
+
+      applySidebarPermissions();
+      updateDashboardMetrics();
+    }
+
+    function applySidebarPermissions() {
+      const cur = AdminCore.repo.getCurrentAdmin();
+      const isLevelAgent = ['SENIOR_SUPER_MASTER', 'SUPER_MASTER', 'MASTER_AGENT', 'AGENT'].includes(cur.role);
+
+      // Elements to hide/show for Level Agents
+      const restrictedNavIds = ['navBtn_settings', 'navBtn_risk', 'navBtn_thai4d', 'navBtn_games', 'navBtn_bonuses', 'navBtn_audit'];
+      restrictedNavIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (isLevelAgent) {
+            el.classList.add('hidden');
+          } else {
+            el.classList.remove('hidden');
+          }
+        }
+      });
+    }
+
+    function updateDashboardMetrics() {
+      const cur = AdminCore.repo.getCurrentAdmin();
+      const scopedUsers = AdminCore.repo.scopeToAgentLevel(AdminCore.repo.get('ADM_USERS'));
+      const scopedDeps = AdminCore.repo.scopeToAgentLevel(AdminCore.repo.get('ADM_DEPOSITS'));
+      const scopedWths = AdminCore.repo.scopeToAgentLevel(AdminCore.repo.get('ADM_WITHDRAWALS'));
+
+      const totalUsers = scopedUsers.length;
+      const activeUsers = scopedUsers.filter(u => u.status === 'Active').length;
+      const totalDepositsSum = scopedDeps.filter(d => d.status === 'Approved').reduce((acc, d) => acc + (d.amount || 0), 0);
+      const totalWithdrawalsSum = scopedWths.filter(w => w.status === 'Approved').reduce((acc, w) => acc + (w.amount || 0), 0);
+      const pendingActionsCount = scopedDeps.filter(d => d.status === 'Pending').length + scopedWths.filter(w => w.status === 'Pending').length;
+
+      const kpiUsers = document.getElementById('kpiTotalUsers');
+      const kpiActive = document.getElementById('kpiActiveUsers');
+      const kpiDeps = document.getElementById('kpiTotalDeposits');
+      const kpiWths = document.getElementById('kpiTotalWithdrawals');
+      const kpiPending = document.getElementById('kpiPendingActions');
+
+      if (kpiUsers) kpiUsers.innerText = totalUsers.toLocaleString();
+      if (kpiActive) kpiActive.innerText = activeUsers.toLocaleString();
+      if (kpiDeps) kpiDeps.innerText = `Rs ${(totalDepositsSum / 1000).toFixed(0)}k`;
+      if (kpiWths) kpiWths.innerText = `Rs ${(totalWithdrawalsSum / 1000).toFixed(0)}k`;
+      if (kpiPending) kpiPending.innerText = pendingActionsCount;
+
+      const uBadge = document.getElementById('navBadgeUsers');
+      const dBadge = document.getElementById('navBadgeDeposits');
+      const wBadge = document.getElementById('navBadgeWithdrawals');
+      if (uBadge) uBadge.innerText = totalUsers;
+      if (dBadge) dBadge.innerText = `${scopedDeps.filter(d => d.status === 'Pending').length} Pending`;
+      if (wBadge) wBadge.innerText = `${scopedWths.filter(w => w.status === 'Pending').length} Pending`;
     }
 
     // Render Data Functions
@@ -2845,28 +3153,274 @@
       `).join('');
     }
 
+    function switchAdminSubTab(tab) {
+      const tableBtn = document.getElementById('adminSubTab_table');
+      const treeBtn = document.getElementById('adminSubTab_tree');
+      const tableView = document.getElementById('adminView_table');
+      const treeView = document.getElementById('adminView_tree');
+
+      if (tab === 'table') {
+        if (tableBtn) { tableBtn.className = 'px-3.5 py-2 rounded-xl bg-brandBlue text-white text-xs font-bold shadow-md cursor-pointer transition-all'; }
+        if (treeBtn) { treeBtn.className = 'px-3.5 py-2 rounded-xl bg-sidebarDark hover:bg-white/10 text-textMuted hover:text-white border border-borderSubtle text-xs font-bold cursor-pointer transition-all'; }
+        if (tableView) tableView.classList.remove('hidden');
+        if (treeView) treeView.classList.add('hidden');
+        renderAdminsTable();
+      } else {
+        if (tableBtn) { tableBtn.className = 'px-3.5 py-2 rounded-xl bg-sidebarDark hover:bg-white/10 text-textMuted hover:text-white border border-borderSubtle text-xs font-bold cursor-pointer transition-all'; }
+        if (treeBtn) { treeBtn.className = 'px-3.5 py-2 rounded-xl bg-brandBlue text-white text-xs font-bold shadow-md cursor-pointer transition-all'; }
+        if (tableView) tableView.classList.add('hidden');
+        if (treeView) treeView.classList.remove('hidden');
+        renderDownlineTree();
+      }
+    }
+
     function renderAdminsTable() {
       const tbody = document.getElementById('adminsTableList');
+      const countBadge = document.getElementById('adminsCountBadge');
       if (!tbody) return;
-      const admins = AdminCore.repo.get('ADM_ADMINS');
-      tbody.innerHTML = admins.map(a => `
-        <tr class="hover:bg-white/5 transition-colors">
+
+      const curAdmin = AdminCore.repo.getCurrentAdmin();
+      let admins = AdminCore.repo.get('ADM_ADMINS');
+
+      if (curAdmin.role === 'SUPER_ADMIN') {
+        // Global Super Admin sees all
+      } else if (curAdmin.role === 'COMPANY_ADMIN') {
+        admins = admins.filter(a => a.companyId === curAdmin.companyId);
+      } else if (['SENIOR_SUPER_MASTER', 'SUPER_MASTER', 'MASTER_AGENT', 'AGENT'].includes(curAdmin.role)) {
+        const downline = AdminCore.repo.getDownlineAdmins(curAdmin.username);
+        const self = admins.find(a => a.username === curAdmin.username) || curAdmin;
+        admins = [self, ...downline];
+      }
+
+      if (countBadge) countBadge.innerText = `${admins.length} Nodes`;
+
+      if (admins.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-textMuted font-mono">No subordinate agent accounts found in this downline tree.</td></tr>`;
+        return;
+      }
+
+      const roleBadgeColors = {
+        'SUPER_ADMIN': 'badge-danger',
+        'COMPANY_ADMIN': 'badge-purple',
+        'SENIOR_SUPER_MASTER': 'badge-warning',
+        'SUPER_MASTER': 'badge-warning',
+        'MASTER_AGENT': 'badge-primary',
+        'AGENT': 'badge-success'
+      };
+
+      tbody.innerHTML = admins.map(a => {
+        const isSelf = a.username === curAdmin.username;
+        const comm = a.commissionRate !== undefined ? `${a.commissionRate}%` : '—';
+        const credit = a.creditLimit ? `Rs ${(a.creditLimit/1000).toFixed(0)}k` : '—';
+        const upline = a.uplineUsername ? `@${a.uplineUsername}` : (a.companyId || 'HQ');
+
+        return `
+        <tr class="hover:bg-white/5 transition-colors ${isSelf ? 'bg-amber-500/5' : ''}">
           <td class="p-3.5 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold font-mono">${a.username.substring(0,2).toUpperCase()}</div>
+            <div class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold font-mono">
+              ${(a.username || 'AD').substring(0,2).toUpperCase()}
+            </div>
             <div class="flex flex-col">
-              <span class="text-white font-bold">${a.name}</span>
-              <span class="text-[10px] text-textMuted">${a.email}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-white font-bold">${a.name}</span>
+                ${isSelf ? '<span class="badge badge-warning text-[8px] py-0 px-1">YOU</span>' : ''}
+              </div>
+              <span class="text-[10px] text-cyan-300 font-mono">@${a.username} (${a.id || 'ADM'})</span>
             </div>
           </td>
-          <td class="p-3.5"><span class="badge badge-purple text-[9px]">${a.role}</span></td>
-          <td class="p-3.5 text-cyan-300 font-mono">${a.companyId}</td>
-          <td class="p-3.5 text-textMuted">${a.lastLogin}</td>
-          <td class="p-3.5 text-center"><span class="badge badge-success text-[9px]">${a.status}</span></td>
-          <td class="p-3.5 text-right">
-            <button onclick="showAdminToast('Password reset link generated for ${a.username}', 'info')" class="px-2.5 py-1 rounded bg-cardDark hover:bg-white/10 text-white text-[11px] cursor-pointer">Reset Pass</button>
+          <td class="p-3.5">
+            <span class="badge ${roleBadgeColors[a.role] || 'badge-purple'} text-[9px] font-bold">
+              ${a.role.replace(/_/g, ' ')}
+            </span>
+          </td>
+          <td class="p-3.5 text-gray-300 font-mono text-xs">${upline}</td>
+          <td class="p-3.5 font-mono text-amber-400 font-bold">${comm}</td>
+          <td class="p-3.5 font-mono text-brandGreen font-bold">${credit}</td>
+          <td class="p-3.5 text-center"><span class="badge badge-success text-[9px]">${a.status || 'Active'}</span></td>
+          <td class="p-3.5 text-right flex items-center justify-end gap-1.5">
+            <button onclick="showAdminToast('Security credentials verified for ${a.username}', 'info')" class="px-2.5 py-1 rounded bg-cardDark hover:bg-white/10 text-white text-[11px] font-bold cursor-pointer">
+              Details
+            </button>
+            <button onclick="showAdminToast('Password reset link sent to ${a.username}', 'info')" class="px-2.5 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-[11px] font-bold cursor-pointer">
+              Reset Pass
+            </button>
           </td>
         </tr>
+      `}).join('');
+    }
+
+    function renderDownlineTree() {
+      const container = document.getElementById('downlineTreeContainer');
+      if (!container) return;
+
+      const curAdmin = AdminCore.repo.getCurrentAdmin();
+      const allAdmins = AdminCore.repo.get('ADM_ADMINS');
+      const allUsers = AdminCore.repo.get('ADM_USERS');
+
+      let rootNodes = [];
+      if (curAdmin.role === 'SUPER_ADMIN') {
+        rootNodes = allAdmins.filter(a => a.role === 'SENIOR_SUPER_MASTER' || a.role === 'SUPER_MASTER');
+      } else {
+        const self = allAdmins.find(a => a.username === curAdmin.username) || curAdmin;
+        rootNodes = [self];
+      }
+
+      function buildNodeHtml(agent) {
+        const subordinates = allAdmins.filter(a => (a.uplineUsername && a.uplineUsername.toLowerCase() === agent.username.toLowerCase()));
+        const players = allUsers.filter(u => {
+          const src = (u.agentUsername || u.masterUsername || u.superMasterUsername || u.source || '').toLowerCase();
+          return src === agent.username.toLowerCase();
+        });
+
+        return `
+          <div class="flex flex-col gap-2 p-3 bg-cardDark/80 rounded-xl border border-borderSubtle mb-2">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <div class="flex items-center gap-2">
+                <span class="badge ${agent.role === 'SUPER_MASTER' ? 'badge-warning' : (agent.role === 'MASTER_AGENT' ? 'badge-primary' : 'badge-success')} text-[9px] font-black uppercase">${agent.role.replace(/_/g, ' ')}</span>
+                <span class="text-white font-bold text-xs">${agent.name}</span>
+                <span class="text-cyan-300 font-mono text-[11px]">(@${agent.username})</span>
+              </div>
+              <div class="flex items-center gap-3 text-[11px] font-mono">
+                <span class="text-amber-400 font-bold">Comm: ${agent.commissionRate || 5}%</span>
+                <span class="text-brandGreen">Credit: Rs ${(agent.creditLimit || 500000).toLocaleString()}</span>
+                <span class="text-cyan-300">Tokens: ${(agent.tokenLimit || 100000).toLocaleString()} VTK</span>
+              </div>
+            </div>
+
+            <!-- Subordinates List -->
+            ${subordinates.length > 0 ? `
+              <div class="pl-4 ml-2 border-l-2 border-amber-500/40 flex flex-col gap-2 mt-1">
+                ${subordinates.map(sub => buildNodeHtml(sub)).join('')}
+              </div>
+            ` : ''}
+
+            <!-- Direct Players List under this node -->
+            ${players.length > 0 ? `
+              <div class="pl-4 ml-2 border-l-2 border-cyan-500/40 flex flex-col gap-1.5 mt-1 bg-black/20 p-2 rounded-lg">
+                <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <i class="fa-solid fa-user-group text-cyan-400"></i> Direct Players (${players.length})
+                </span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  ${players.map(p => `
+                    <div class="p-2 bg-[#080E1C] rounded border border-white/5 flex items-center justify-between">
+                      <div class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-user text-textMuted text-[10px]"></i>
+                        <span class="text-white font-bold">${p.username}</span>
+                        <span class="text-[9px] text-amber-400 font-mono">#${p.id}</span>
+                      </div>
+                      <span class="text-brandGreen font-mono font-bold">Rs ${(p.balance || 0).toLocaleString()}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      container.innerHTML = rootNodes.map(r => buildNodeHtml(r)).join('');
+    }
+
+    function openAddAgentAccountModal() {
+      const curAdmin = AdminCore.repo.getCurrentAdmin();
+      updateUplineSelectorOptions(document.getElementById('newAgentRole') ? document.getElementById('newAgentRole').value : 'SUPER_MASTER');
+      openModal('addAgentAccountModal');
+    }
+
+    function updateUplineSelectorOptions(role) {
+      const select = document.getElementById('newAgentUpline');
+      if (!select) return;
+
+      const curAdmin = AdminCore.repo.getCurrentAdmin();
+      const allAdmins = AdminCore.repo.get('ADM_ADMINS');
+
+      let candidateUplines = [];
+      if (role === 'SUPER_MASTER') {
+        candidateUplines = allAdmins.filter(a => a.role === 'SUPER_ADMIN' || a.role === 'SENIOR_SUPER_MASTER');
+      } else if (role === 'MASTER_AGENT') {
+        candidateUplines = allAdmins.filter(a => a.role === 'SUPER_MASTER' || a.role === 'SENIOR_SUPER_MASTER' || a.role === 'SUPER_ADMIN');
+      } else if (role === 'AGENT') {
+        candidateUplines = allAdmins.filter(a => a.role === 'MASTER_AGENT' || a.role === 'SUPER_MASTER');
+      } else {
+        candidateUplines = allAdmins.filter(a => a.role === 'SUPER_ADMIN' || a.role === 'COMPANY_ADMIN');
+      }
+
+      if (candidateUplines.length === 0) candidateUplines = [curAdmin];
+
+      select.innerHTML = candidateUplines.map(u => `
+        <option value="${u.username}">${u.name} (@${u.username} - ${u.role})</option>
       `).join('');
+    }
+
+    function handleAddAgentAccountSubmit(e) {
+      e.preventDefault();
+      const role = document.getElementById('newAgentRole').value;
+      const uplineUsername = document.getElementById('newAgentUpline').value;
+      const name = document.getElementById('newAgentName').value.trim();
+      const username = document.getElementById('newAgentUsername').value.trim();
+      const password = document.getElementById('newAgentPassword').value.trim();
+      const email = document.getElementById('newAgentEmail').value.trim() || `${username.toLowerCase()}@thainxt.com`;
+      const commissionRate = parseFloat(document.getElementById('newAgentCommission').value) || 5.0;
+      const creditLimit = parseFloat(document.getElementById('newAgentCredit').value) || 500000;
+      const tokenLimit = parseFloat(document.getElementById('newAgentTokens').value) || 200000;
+      const companyId = document.getElementById('newAgentCompany').value;
+
+      const admins = AdminCore.repo.get('ADM_ADMINS');
+      const existing = admins.find(a => a.username.toLowerCase() === username.toLowerCase());
+      if (existing) {
+        showAdminToast(`Username @${username} already exists.`, 'error');
+        return;
+      }
+
+      const prefixMap = {
+        'SENIOR_SUPER_MASTER': 'ADM-SSM',
+        'SUPER_MASTER': 'ADM-SM',
+        'MASTER_AGENT': 'ADM-MA',
+        'AGENT': 'ADM-AG'
+      };
+
+      const newId = (prefixMap[role] || 'ADM') + '-' + Math.floor(100 + Math.random() * 900);
+
+      const newAgent = {
+        id: newId,
+        name,
+        username,
+        email,
+        role,
+        level: role,
+        companyId,
+        uplineId: uplineUsername,
+        uplineUsername: uplineUsername,
+        commissionRate,
+        creditLimit,
+        tokenLimit,
+        status: 'Active',
+        lastLogin: 'Never',
+        pass: password
+      };
+
+      admins.push(newAgent);
+      AdminCore.repo.set('ADM_ADMINS', admins);
+
+      // Auto-provision Token Account for this Agent in PlatformSync
+      if (window.PlatformSync && typeof window.PlatformSync._get === 'function') {
+        const accounts = window.PlatformSync._get(window.PlatformSync.KEYS.TOKEN_ACCOUNTS);
+        accounts.push({
+          internalAccountId: `ACC-${newId}`,
+          accountType: 'COMPANY_ADMIN',
+          companyId: companyId,
+          username: username,
+          tokenBalance: tokenLimit,
+          status: 'Active'
+        });
+        window.PlatformSync._set(window.PlatformSync.KEYS.TOKEN_ACCOUNTS, accounts);
+      }
+
+      AdminCore.repo.logAudit('AGENT_CREATED', `Level ID #${newId}`, username, `Created ${role} with ${commissionRate}% commission upline @${uplineUsername}`);
+      closeModal('addAgentAccountModal');
+      showAdminToast(`Successfully created ${role.replace(/_/g, ' ')} ID @${username}!`, 'success');
+      renderAdminsTable();
+      renderDownlineTree();
     }
 
     function renderAuditLogsTable() {
@@ -3550,27 +4104,12 @@
         window.PlatformSync.onPlatformEvent((event) => {
           console.log('[Admin Sync] Real-time platform event received:', event);
           
-          // 1. Update Badge Counters & Dynamic KPIs
-          const users = AdminCore.repo.get('ADM_USERS');
-          const deposits = AdminCore.repo.get('ADM_DEPOSITS');
-          const withdrawals = AdminCore.repo.get('ADM_WITHDRAWALS');
-          const pendingDeps = deposits.filter(d => d.status === 'Pending').length;
-          const pendingWths = withdrawals.filter(w => w.status === 'Pending').length;
-
-          const uBadge = document.getElementById('navBadgeUsers');
-          const dBadge = document.getElementById('navBadgeDeposits');
-          const wBadge = document.getElementById('navBadgeWithdrawals');
-          const kpiUsers = document.getElementById('kpiTotalUsers');
-          const kpiPend = document.getElementById('kpiPendingActions');
-
-          if (uBadge) uBadge.innerText = users.length;
-          if (dBadge) dBadge.innerText = `${pendingDeps} Pending`;
-          if (wBadge) wBadge.innerText = `${pendingWths} Pending`;
-          if (kpiUsers) kpiUsers.innerText = users.length.toLocaleString();
-          if (kpiPend) kpiPend.innerText = pendingDeps + pendingWths;
+          // 1. Update Badge Counters & Dynamic KPIs scoped to active level
+          updateDashboardMetrics();
 
           // 2. Re-render active views
           renderUsersTable();
+          renderAdminsTable();
           renderDepositsTable();
           renderWithdrawalsTable();
           renderWalletsTable();

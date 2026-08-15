@@ -361,12 +361,24 @@
       return users;
     },
 
-    getSanitizedUsers(companyId = null, filterOpts = {}) {
+    getSanitizedUsers(companyId = null, filterOpts = {}, currentAdmin = null) {
       this.init();
       let users = this._get(this.KEYS.USERS);
       
-      // Multi-tenant company role scoping
-      if (companyId && companyId !== 'ALL') {
+      const admin = currentAdmin || (typeof window !== 'undefined' && window.AdminCore ? window.AdminCore.repo.getCurrentAdmin() : null);
+
+      if (admin && admin.role) {
+        if (admin.role === 'SUPER_ADMIN') {
+          // All users visible to Super Admin
+        } else if (admin.role === 'COMPANY_ADMIN') {
+          users = users.filter(u => u.companyId === admin.companyId);
+        } else if (['SENIOR_SUPER_MASTER', 'SUPER_MASTER', 'MASTER_AGENT', 'AGENT'].includes(admin.role)) {
+          if (typeof window !== 'undefined' && window.AdminCore) {
+            const downlineUsers = window.AdminCore.repo.getDownlineUsernames(admin.username);
+            users = users.filter(u => downlineUsers.map(x => x.toLowerCase()).includes(u.username.toLowerCase()));
+          }
+        }
+      } else if (companyId && companyId !== 'ALL') {
         users = users.filter(u => u.companyId === companyId);
       }
 
