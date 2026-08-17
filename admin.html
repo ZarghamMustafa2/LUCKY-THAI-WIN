@@ -116,7 +116,7 @@
   </div>
 
   <!-- 2. TOP HEADER (Matches Screenshot Exact Layout & Responsive on Mobile) -->
-  <header class="h-[50px] bg-white border-b border-[#E5E7EB] px-2.5 sm:px-4 flex items-center justify-between shrink-0 shadow-sm z-30 relative">
+  <header class="h-[50px] bg-white border-b border-[#E5E7EB] px-2.5 sm:px-4 flex items-center justify-between shrink-0 shadow-sm z-[60] relative">
     
     <!-- Left: Brand Logo, Hamburger & Nav Links -->
     <div class="flex items-center gap-2.5 sm:gap-6">
@@ -189,7 +189,7 @@
   <div class="flex-1 flex overflow-hidden relative">
 
     <!-- Mobile Sidebar Backdrop Overlay -->
-    <div id="sidebarBackdrop" onclick="toggleAdminSidebar(true)" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"></div>
+    <div id="sidebarBackdrop" onclick="toggleAdminSidebar(true)" class="hidden fixed inset-0 top-[50px] bg-black/50 z-40 md:hidden transition-opacity"></div>
 
     <!-- BPEXCH / LUCKY THAI WIN LEFT SIDEBAR -->
     <aside id="adminSidebar" class="fixed md:static inset-y-0 left-0 top-[50px] md:top-0 h-[calc(100vh-50px)] md:h-auto w-[230px] sm:w-[215px] bg-[#2E3842] border-r border-[#222B32] flex flex-col z-50 md:z-40 shrink-0 transition-transform duration-200 ease-in-out -translate-x-full md:translate-x-0 text-[#D1D5DB] shadow-2xl md:shadow-none">
@@ -4330,22 +4330,29 @@
       const backdrop = document.getElementById('sidebarBackdrop');
       if (!sidebar) return;
 
-      if (window.innerWidth < 768) {
-        // Mobile drawer behavior
+      const isMobile = window.innerWidth < 768;
+
+      if (forceClose === true) {
+        // Explicitly close
+        sidebar.classList.add('-translate-x-full');
+        sidebar.classList.remove('translate-x-0');
+        if (backdrop) backdrop.classList.add('hidden');
+        return;
+      }
+
+      if (isMobile) {
         const isClosed = sidebar.classList.contains('-translate-x-full');
-        if (forceClose || !isClosed) {
-          sidebar.classList.add('-translate-x-full');
-          sidebar.classList.remove('translate-x-0');
-          if (backdrop) backdrop.classList.add('hidden');
-        } else {
+        if (isClosed) {
           sidebar.classList.remove('-translate-x-full');
           sidebar.classList.add('translate-x-0');
           if (backdrop) backdrop.classList.remove('hidden');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          sidebar.classList.remove('translate-x-0');
+          if (backdrop) backdrop.classList.add('hidden');
         }
       } else {
-        // Desktop collapse behavior
-        sidebar.classList.toggle('md:w-0');
-        sidebar.classList.toggle('md:overflow-hidden');
+        sidebar.classList.toggle('hidden');
       }
     }
 
