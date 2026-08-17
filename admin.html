@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.5, user-scalable=yes, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>ThaiNXT Gaming Platform — Enterprise Admin SaaS v2.5</title>
   
   <!-- Tailwind CSS & Fonts -->
@@ -115,20 +115,20 @@
     </div>
   </div>
 
-  <!-- 2. BPEXCH TOP HEADER (Matches Screenshot Exact Layout) -->
-  <header class="h-[50px] bg-white border-b border-[#E5E7EB] px-4 flex items-center justify-between shrink-0 shadow-sm z-30">
+  <!-- 2. TOP HEADER (Matches Screenshot Exact Layout & Responsive on Mobile) -->
+  <header class="h-[50px] bg-white border-b border-[#E5E7EB] px-2.5 sm:px-4 flex items-center justify-between shrink-0 shadow-sm z-30 relative">
     
     <!-- Left: Brand Logo, Hamburger & Nav Links -->
-    <div class="flex items-center gap-4 sm:gap-6">
-      <!-- LUCKY THAI WIN Brand -->
-      <div class="flex items-center gap-2 cursor-pointer" onclick="switchAdminModule('dashboard')">
-        <span class="text-[#00884F] font-black text-2xl tracking-tight font-sans">LUCKY THAI WIN</span>
-      </div>
-
+    <div class="flex items-center gap-2.5 sm:gap-6">
       <!-- Hamburger Menu Toggle Button -->
-      <button onclick="toggleAdminSidebar()" class="text-[#4B5563] hover:text-[#111827] text-lg p-1 focus:outline-none transition-colors" title="Toggle Navigation Sidebar">
+      <button onclick="toggleAdminSidebar()" class="text-[#4B5563] hover:text-[#111827] text-lg p-1.5 focus:outline-none transition-colors cursor-pointer rounded hover:bg-gray-100 flex items-center justify-center" title="Toggle Navigation Sidebar">
         <i class="fa-solid fa-bars"></i>
       </button>
+
+      <!-- LUCKY THAI WIN Brand -->
+      <div class="flex items-center gap-2 cursor-pointer" onclick="switchAdminModule('dashboard')">
+        <span class="text-[#00884F] font-black text-base sm:text-2xl tracking-tight font-sans whitespace-nowrap">LUCKY THAI WIN</span>
+      </div>
 
       <!-- Top Nav Links -->
       <nav class="hidden md:flex items-center gap-2 text-sm font-medium text-[#4B5563]">
@@ -139,14 +139,14 @@
     </div>
 
     <!-- Right: Account Info & Exposure / Balance (Matches Screenshot) -->
-    <div class="flex items-center gap-4 sm:gap-6 text-xs text-[#374151]">
+    <div class="flex items-center gap-2 sm:gap-4 text-xs text-[#374151]">
       
       <!-- User & Role Dropdown Button -->
       <div class="relative">
-        <button onclick="toggleAdminAccountDropdown()" class="flex items-center gap-1.5 font-medium text-[#374151] hover:text-[#111827] transition-colors cursor-pointer py-1">
-          <span id="topBarAdminName" class="font-semibold text-gray-800">Ahmad5050x</span>
-          <span id="topBarAdminRole" class="text-gray-600 font-medium">(SuperMaster)</span>
-          <i class="fa-solid fa-caret-down text-[10px] text-gray-500 ml-0.5"></i>
+        <button onclick="toggleAdminAccountDropdown()" class="flex items-center gap-1 font-medium text-[#374151] hover:text-[#111827] transition-colors cursor-pointer py-1">
+          <span id="topBarAdminName" class="font-semibold text-gray-800 text-[11px] sm:text-xs max-w-[70px] sm:max-w-none truncate">Ahmad5050x</span>
+          <span id="topBarAdminRole" class="text-gray-600 font-medium text-[10px] sm:text-xs hidden xs:inline">(SuperMaster)</span>
+          <i class="fa-solid fa-caret-down text-[10px] text-gray-500"></i>
         </button>
 
         <!-- Dropdown Menu for Roles & Switcher -->
@@ -176,9 +176,9 @@
       </div>
 
       <!-- B: 0 Exp: 0 Status -->
-      <div class="flex items-center gap-2.5 font-bold text-[#111827] text-xs sm:text-[13px]">
-        <span>B: <span id="topBarBalance" class="font-bold">0</span></span>
-        <span>Exp: <span id="topBarExposure" class="font-bold">0</span></span>
+      <div class="flex items-center gap-1 sm:gap-2.5 font-bold text-[#111827] text-[10px] sm:text-[13px] bg-gray-50 px-1.5 sm:px-2 py-0.5 rounded border border-gray-200 whitespace-nowrap">
+        <span>B:<span id="topBarBalance" class="font-bold ml-0.5">0</span></span>
+        <span>Exp:<span id="topBarExposure" class="font-bold ml-0.5">0</span></span>
       </div>
 
     </div>
@@ -186,10 +186,13 @@
   </header>
 
   <!-- 3. MAIN WRAPPER (SIDEBAR + CONTENT) -->
-  <div class="flex-1 flex overflow-hidden">
+  <div class="flex-1 flex overflow-hidden relative">
 
-    <!-- BPEXCH LEFT SIDEBAR (Matches Screenshot) -->
-    <aside id="adminSidebar" class="w-[215px] bg-[#2E3842] border-r border-[#222B32] flex flex-col z-40 shrink-0 transition-all text-[#D1D5DB]">
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="sidebarBackdrop" onclick="toggleAdminSidebar(true)" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"></div>
+
+    <!-- BPEXCH / LUCKY THAI WIN LEFT SIDEBAR -->
+    <aside id="adminSidebar" class="fixed md:static inset-y-0 left-0 top-[50px] md:top-0 h-[calc(100vh-50px)] md:h-auto w-[230px] sm:w-[215px] bg-[#2E3842] border-r border-[#222B32] flex flex-col z-50 md:z-40 shrink-0 transition-transform duration-200 ease-in-out -translate-x-full md:translate-x-0 text-[#D1D5DB] shadow-2xl md:shadow-none">
       
       <!-- Sidebar Navigation Menu List -->
       <div class="flex-1 py-1 flex flex-col overflow-y-auto custom-scrollbar text-[13px] font-medium">
@@ -503,7 +506,7 @@
           </div>
 
           <!-- Table Search Row -->
-          <div class="flex items-center justify-end gap-2 text-xs pt-1">
+          <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2 text-xs pt-1">
             <span class="text-gray-700 font-medium">Search:</span>
             <input 
               type="text" 
@@ -1282,29 +1285,29 @@
               <i class="fa-solid fa-filter text-[#1F2937] text-xs"></i>
               <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Report Filter</h3>
             </div>
-            <div class="p-4 sm:p-5 flex flex-wrap items-center gap-3 text-xs">
+            <div class="p-3 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 text-xs">
               <!-- Start Date Time -->
-              <div class="flex items-center border border-[#D1D5DB] rounded bg-white overflow-hidden shadow-sm">
+              <div class="flex items-center border border-[#D1D5DB] rounded bg-white overflow-hidden shadow-sm w-full sm:w-auto">
                 <input 
                   type="text" 
                   id="reportStartDateInput" 
                   value="08/17/2026 12:00 AM" 
-                  class="px-3 py-1.5 text-xs text-gray-800 font-mono outline-none bg-transparent w-44" 
+                  class="px-3 py-1.5 text-xs text-gray-800 font-mono outline-none bg-transparent flex-1 sm:w-44" 
                 />
                 <span class="px-2.5 py-1.5 bg-gray-100 text-gray-600 border-l border-[#E5E7EB]">
                   <i class="fa-regular fa-calendar"></i>
                 </span>
               </div>
 
-              <span class="text-gray-500 font-bold">-</span>
+              <span class="text-gray-500 font-bold hidden sm:inline">-</span>
 
               <!-- End Date Time -->
-              <div class="flex items-center border border-[#D1D5DB] rounded bg-white overflow-hidden shadow-sm">
+              <div class="flex items-center border border-[#D1D5DB] rounded bg-white overflow-hidden shadow-sm w-full sm:w-auto">
                 <input 
                   type="text" 
                   id="reportEndDateInput" 
                   value="08/17/2026 11:59 PM" 
-                  class="px-3 py-1.5 text-xs text-gray-800 font-mono outline-none bg-transparent w-44" 
+                  class="px-3 py-1.5 text-xs text-gray-800 font-mono outline-none bg-transparent flex-1 sm:w-44" 
                 />
                 <span class="px-2.5 py-1.5 bg-gray-100 text-gray-600 border-l border-[#E5E7EB]">
                   <i class="fa-regular fa-calendar"></i>
@@ -1314,7 +1317,7 @@
               <!-- Submit Button -->
               <button 
                 onclick="submitReportFilter()" 
-                class="bg-[#00884F] hover:bg-[#007443] text-white font-bold px-4 py-1.5 rounded transition-colors cursor-pointer shadow-sm">
+                class="bg-[#00884F] hover:bg-[#007443] text-white font-bold px-4 py-1.5 rounded transition-colors cursor-pointer shadow-sm w-full sm:w-auto text-center">
                 Submit
               </button>
             </div>
@@ -2178,6 +2181,10 @@
 
     // Module Switcher Engine
     function switchAdminModule(moduleId) {
+      if (window.innerWidth < 768) {
+        toggleAdminSidebar(true);
+      }
+
       document.querySelectorAll('.module-view').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.nav-item').forEach(el => {
         el.classList.remove('bg-[#1F2832]', 'border-l-4', 'border-l-[#00D2FF]', 'text-white');
@@ -4317,10 +4324,29 @@
       document.body.removeChild(link);
     }
 
-    // Toggle Mobile Sidebar
-    function toggleAdminSidebar() {
+    // Toggle Mobile Sidebar Drawer
+    function toggleAdminSidebar(forceClose = false) {
       const sidebar = document.getElementById('adminSidebar');
-      if (sidebar) sidebar.classList.toggle('hidden');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (!sidebar) return;
+
+      if (window.innerWidth < 768) {
+        // Mobile drawer behavior
+        const isClosed = sidebar.classList.contains('-translate-x-full');
+        if (forceClose || !isClosed) {
+          sidebar.classList.add('-translate-x-full');
+          sidebar.classList.remove('translate-x-0');
+          if (backdrop) backdrop.classList.add('hidden');
+        } else {
+          sidebar.classList.remove('-translate-x-full');
+          sidebar.classList.add('translate-x-0');
+          if (backdrop) backdrop.classList.remove('hidden');
+        }
+      } else {
+        // Desktop collapse behavior
+        sidebar.classList.toggle('md:w-0');
+        sidebar.classList.toggle('md:overflow-hidden');
+      }
     }
 
     // Toggle Notifications Drawer
