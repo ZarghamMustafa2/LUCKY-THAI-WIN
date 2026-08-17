@@ -372,123 +372,169 @@
       </div>
 
       <!-- ============================================================ -->
-      <!-- MODULE 2: USER MANAGEMENT & PROFILES                         -->
+      <!-- MODULE 2: USER MANAGEMENT & CLIENTS LIST (Matches Screenshot) -->
       <!-- ============================================================ -->
-      <div id="module_users" class="module-view hidden flex flex-col gap-6">
+      <div id="module_users" class="module-view hidden flex flex-col gap-4">
         
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-xl font-display font-black text-white">Player Accounts & User Profiles</h2>
-            <p class="text-xs text-textMuted mt-0.5">Manage player credentials, balances, verification statuses and restrictions</p>
+        <!-- CARD 1: REPORT TYPE (Matches Screenshot) -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
+          <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-2.5">
+            <i class="fa-solid fa-filter text-[#1F2937] text-xs"></i>
+            <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Report Type</h3>
           </div>
-          <div class="flex items-center gap-2.5">
-            <button onclick="renderUsersTable()" class="px-3 py-2 rounded-xl bg-cardDark hover:bg-white/10 text-white text-xs font-bold border border-borderSubtle transition-all cursor-pointer flex items-center gap-2">
-              <i class="fa-solid fa-arrows-rotate"></i> Refresh
-            </button>
-            <button onclick="openAddUserModal()" class="px-4 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white text-xs font-extrabold shadow-lg transition-all cursor-pointer flex items-center gap-2">
-              <i class="fa-solid fa-user-plus"></i> Add New User
-            </button>
+          <div class="p-3 sm:p-4 flex flex-wrap items-center gap-2 text-xs">
+            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Book Detail</button>
+            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Book Detail 2</button>
+            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Daily PL</button>
+            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Daily Report</button>
+            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Final Sheet</button>
+            <button class="px-3.5 py-1 bg-[#00884F] text-white rounded font-bold transition-colors cursor-pointer shadow-sm">Accounts</button>
+            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Commission Report</button>
           </div>
         </div>
 
-        <!-- Active Player Credentials Quick Inspector (Matching User Platform Widget) -->
-        <div class="bg-[#0B1528] border border-[#1E2E4A] rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center font-mono font-black text-base shadow-md">
-              <i class="fa-solid fa-id-badge"></i>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-white font-bold text-sm flex items-center gap-2">
-                Player Authentication Credentials
-                <span class="badge badge-success text-[9px] font-bold">Live Synchronized</span>
-              </span>
-              <span class="text-[11px] text-textMuted">Real User ID, Username, and Password synchronized between User Platform & Admin Panel</span>
-            </div>
+        <!-- CARD 2: SEARCH-USERS (Matches Screenshot) -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
+          <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-2.5">
+            <i class="fa-solid fa-filter text-[#1F2937] text-xs"></i>
+            <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Search-Users</h3>
           </div>
-
-          <!-- Exact Screenshot Styled Card -->
-          <div class="bg-[#080E1C] border border-[#1C2C46] rounded-2xl p-3.5 sm:px-5 sm:py-3 flex flex-col gap-2 min-w-[280px] sm:min-w-[340px] shadow-2xl">
-            <!-- Row 1: USER ID -->
-            <div class="flex items-center justify-between gap-4">
-              <div class="flex items-center gap-1.5 text-xs font-bold text-[#00D2FF]">
-                <i class="fa-solid fa-hashtag text-[11px]"></i>
-                <span class="text-gray-400 uppercase tracking-wider text-[10px] font-extrabold">USER ID:</span>
-              </div>
-              <div class="bg-[#0E1728] border border-amber-500/50 rounded-md px-2.5 py-0.5 text-amber-400 font-mono font-black text-xs tracking-wider shadow-inner" id="moduleCredUserId">
-                Bp28233
-              </div>
-            </div>
-
-            <!-- Row 2: NAME -->
-            <div class="flex items-center justify-between gap-4">
-              <div class="flex items-center gap-1.5 text-xs font-bold text-[#00D2FF]">
-                <i class="fa-solid fa-user text-[11px]"></i>
-                <span class="text-gray-400 uppercase tracking-wider text-[10px] font-extrabold">NAME:</span>
-              </div>
-              <div class="text-[#00D2FF] font-mono font-black text-xs tracking-wide" id="moduleCredName">
-                Alex_Winner
-              </div>
-            </div>
-
-            <!-- Row 3: PASSWORD -->
-            <div class="flex items-center justify-between gap-4">
-              <div class="flex items-center gap-1.5 text-xs font-bold text-[#00D2FF]">
-                <i class="fa-solid fa-key text-[11px]"></i>
-                <span class="text-gray-400 uppercase tracking-wider text-[10px] font-extrabold">PASSWORD:</span>
-              </div>
-              <div class="flex items-center gap-2 bg-[#0E1728] border border-[#1E2E4A] rounded-md px-2.5 py-0.5 shadow-inner">
-                <span class="font-mono text-white text-xs font-bold tracking-wider" id="moduleCredPassword">Bp28233@pass</span>
-                <button type="button" onclick="toggleModuleCredPassword()" class="text-[#00D2FF] hover:text-white transition-colors cursor-pointer text-xs" title="Toggle Show/Hide Password">
-                  <i id="moduleCredEyeIcon" class="fa-solid fa-eye-slash"></i>
-                </button>
-                <button type="button" onclick="copyModuleCredPassword()" class="text-gray-400 hover:text-white transition-colors cursor-pointer text-xs" title="Copy Password">
-                  <i class="fa-solid fa-copy"></i>
-                </button>
-              </div>
+          <div class="p-4 sm:p-5 flex items-center">
+            <div class="flex items-center w-full max-w-md">
+              <input 
+                id="userSearchModuleInput" 
+                type="text" 
+                placeholder="Username" 
+                class="w-full sm:w-80 px-3.5 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded-l outline-none focus:border-[#00884F] transition-colors"
+                onkeydown="if(event.key==='Enter') filterUsersFromSearchCard()"
+              />
+              <button 
+                onclick="filterUsersFromSearchCard()" 
+                class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-4 py-1.5 rounded-r flex items-center gap-1.5 transition-colors cursor-pointer shrink-0">
+                <i class="fa-solid fa-magnifying-glass text-[11px]"></i> Search
+              </button>
             </div>
           </div>
         </div>
 
-        <div class="glass-card p-5 flex flex-col gap-4">
+        <!-- CARD 3: CLIENTS LIST & SUMMARY (Matches Screenshot) -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden flex flex-col gap-4 p-4">
           
-          <!-- Filters Row -->
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 pb-3 border-b border-borderSubtle">
-            <div class="sm:col-span-2 flex items-center gap-2 bg-sidebarDark border border-borderSubtle rounded-xl px-3 py-2">
-              <i class="fa-solid fa-magnifying-glass text-textMuted text-xs"></i>
-              <input type="text" id="userSearchFilter" onkeyup="filterUsers()" placeholder="Search by name, username, phone or ID..." class="w-full bg-transparent text-white text-xs outline-none" />
-            </div>
-            <select id="userStatusDropdown" onchange="filterUsers()" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white font-bold outline-none cursor-pointer">
-              <option value="ALL">All Statuses</option>
-              <option value="Active">Active</option>
-              <option value="Pending Verification">Pending Verification</option>
-              <option value="Suspended">Suspended</option>
-            </select>
-            <select id="userCompanyDropdown" onchange="filterUsers()" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3 py-2 text-xs text-white font-bold outline-none cursor-pointer">
-              <option value="ALL">All Companies</option>
-              <option value="COMP-01">ThaiNXT Global HQ</option>
-              <option value="COMP-02">Apex Sports Asia</option>
-              <option value="COMP-03">Royal Bangkok Club</option>
-            </select>
+          <!-- Card Header Title -->
+          <div class="border-b border-[#E5E7EB] pb-2.5 flex items-center justify-between">
+            <h3 id="usersClientsListTitle" class="font-bold text-[#1F2937] text-sm sm:text-base">Ahmad5050x - Clients List | Default</h3>
+            <span class="text-xs text-gray-400 font-mono">Live Data</span>
           </div>
 
-          <!-- Users Table -->
-          <div class="overflow-x-auto custom-scrollbar rounded-xl border border-borderSubtle">
-            <table class="w-full text-left text-xs whitespace-nowrap min-w-[760px]">
-              <thead class="bg-sidebarDark text-textMuted uppercase text-[10px] font-extrabold tracking-wider border-b border-borderSubtle">
-                <tr>
-                  <th class="p-3.5">User Account</th>
-                  <th class="p-3.5">Contact Details</th>
-                  <th class="p-3.5">Wallet Balance</th>
-                  <th class="p-3.5">KYC Status</th>
-                  <th class="p-3.5">Company</th>
-                  <th class="p-3.5 text-center">Status</th>
-                  <th class="p-3.5 text-right">Actions</th>
+          <!-- Summary Metrics Quad Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full border border-[#D8DEE4] text-xs text-left">
+              <thead>
+                <tr class="bg-[#FAFAFA] border-b border-[#D8DEE4]">
+                  <th class="p-2.5 font-bold text-[#1F2937] border-r border-[#D8DEE4]">Credit Remaining</th>
+                  <th class="p-2.5 font-bold text-[#1F2937] border-r border-[#D8DEE4]">Cash</th>
+                  <th class="p-2.5 font-bold text-[#1F2937] border-r border-[#D8DEE4]">P/L Downline</th>
+                  <th class="p-2.5 font-bold text-[#1F2937]">Users</th>
                 </tr>
               </thead>
-              <tbody id="usersTableList" class="font-semibold text-gray-200 divide-y divide-borderSubtle bg-[#0D1424]">
+              <tbody>
+                <tr class="border-b border-[#D8DEE4]">
+                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCreditRemaining">0</td>
+                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCash">0</td>
+                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsPlDownline">0</td>
+                  <td class="p-2.5 font-bold text-[#111827]" id="clientsUsersCount">6</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Action Buttons & Legend Strip -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs pt-1">
+            <!-- Left Action Buttons -->
+            <div class="flex items-center gap-2">
+              <button onclick="openAddUserModal()" class="bg-[#00884F] hover:bg-[#007443] text-white font-bold px-3.5 py-1.5 rounded cursor-pointer transition-colors shadow-sm">
+                New User
+              </button>
+              <button onclick="switchAdminModule('tokens')" class="bg-[#00884F] hover:bg-[#007443] text-white font-bold px-3.5 py-1.5 rounded flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm">
+                <i class="fa-regular fa-rectangle-list"></i> Account Ledger
+              </button>
+            </div>
+
+            <!-- Right Legend Badges -->
+            <div class="flex items-center gap-3 text-xs text-gray-700 flex-wrap">
+              <div class="flex items-center gap-1">
+                <span class="bg-[#F59E0B] text-white font-black px-1.5 py-0.5 rounded text-[10px]">C</span>
+                <span class="text-gray-600">Cash / Credit</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="bg-[#0D9488] text-white px-1.5 py-0.5 rounded text-[10px]"><i class="fa-solid fa-pencil text-[9px]"></i></span>
+                <span class="text-gray-600">Edit</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="bg-[#0284C7] text-white font-black px-1.5 py-0.5 rounded text-[10px]">L</span>
+                <span class="text-gray-600">Ledger</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="bg-[#10B981] text-white font-black px-1.5 py-0.5 rounded text-[10px]">A</span>
+                <span class="text-gray-600">Active</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="border border-[#EF4444] text-[#EF4444] font-black px-1.5 py-0.5 rounded text-[10px]">D</span>
+                <span class="text-gray-600">InActive</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Search Row -->
+          <div class="flex items-center justify-end gap-2 text-xs pt-1">
+            <span class="text-gray-700 font-medium">Search:</span>
+            <input 
+              type="text" 
+              id="userSearchFilter" 
+              onkeyup="filterUsers()" 
+              class="border border-[#D1D5DB] rounded px-2.5 py-1 text-xs outline-none focus:border-[#00884F] bg-white text-gray-900 w-44 sm:w-56 transition-colors" 
+            />
+          </div>
+
+          <!-- Clients Table -->
+          <div class="overflow-x-auto border border-[#E5E7EB] rounded">
+            <table class="w-full text-left text-xs whitespace-nowrap">
+              <thead class="bg-[#FAFAFA] text-[#1F2937] text-xs font-bold border-b border-[#E5E7EB]">
+                <tr>
+                  <th class="p-3">User Account</th>
+                  <th class="p-3">Contact</th>
+                  <th class="p-3">Wallet / Tokens</th>
+                  <th class="p-3">Credit Limit</th>
+                  <th class="p-3">KYC Status</th>
+                  <th class="p-3 text-center">Status</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableList" class="divide-y divide-[#F3F4F6] text-xs text-gray-800">
                 <!-- Populated by JS -->
               </tbody>
             </table>
+          </div>
+
+          <!-- Preserved Active Player Credentials Quick Inspector -->
+          <div class="mt-2 bg-[#080E1C] border border-[#1C2C46] rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2 text-[#00D2FF] font-bold">
+              <i class="fa-solid fa-id-badge"></i>
+              <span class="text-white">Active Synchronized Player:</span>
+              <span class="text-amber-400 font-mono" id="moduleCredUserId">Bp28233</span>
+              <span class="text-white">(@<span id="moduleCredName" class="text-[#00D2FF]">Alex_Winner</span>)</span>
+            </div>
+            <div class="flex items-center gap-2 bg-[#0E1728] border border-[#1E2E4A] rounded px-2.5 py-1">
+              <i class="fa-solid fa-key text-[10px] text-[#00D2FF]"></i>
+              <span class="text-gray-400 text-[10px] uppercase font-bold">Password:</span>
+              <span class="font-mono text-white text-xs font-bold" id="moduleCredPassword">Bp28233@pass</span>
+              <button type="button" onclick="toggleModuleCredPassword()" class="text-[#00D2FF] hover:text-white transition-colors cursor-pointer text-xs ml-1" title="Toggle Show/Hide Password">
+                <i id="moduleCredEyeIcon" class="fa-solid fa-eye-slash"></i>
+              </button>
+              <button type="button" onclick="copyModuleCredPassword()" class="text-gray-400 hover:text-white transition-colors cursor-pointer text-xs" title="Copy Password">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
           </div>
 
         </div>
@@ -2605,12 +2651,43 @@
     }
 
     // Render Data Functions
+    function filterUsersFromSearchCard() {
+      const cardInput = document.getElementById('userSearchModuleInput');
+      const tableInput = document.getElementById('userSearchFilter');
+      if (cardInput && tableInput) {
+        tableInput.value = cardInput.value.trim();
+      }
+      filterUsers();
+    }
+
+    function toggleUserStatus(userId) {
+      const users = AdminCore.repo.get('ADM_USERS');
+      const target = users.find(u => u.id === userId);
+      if (!target) return;
+      target.status = target.status === 'Active' ? 'Suspended' : 'Active';
+      AdminCore.repo.set('ADM_USERS', users);
+      renderUsersTable();
+      showAdminToast(`User @${target.username} status set to: ${target.status}`, 'info');
+    }
+
     function renderUsersTable(filterOpts = {}) {
       const tbody = document.getElementById('usersTableList');
       if (!tbody) return;
 
       const admin = AdminCore.repo.getCurrentAdmin();
       const companyScope = admin.role === 'SUPER_ADMIN' ? 'ALL' : admin.companyId;
+
+      // Update Clients List Header and Quad Metrics
+      const titleEl = document.getElementById('usersClientsListTitle');
+      const credRemEl = document.getElementById('clientsCreditRemaining');
+      const cashEl = document.getElementById('clientsCash');
+      const plEl = document.getElementById('clientsPlDownline');
+      const usersCountEl = document.getElementById('clientsUsersCount');
+
+      if (titleEl) titleEl.innerText = `${admin.username || admin.name || 'Ahmad5050x'} - Clients List | Default`;
+      if (credRemEl) credRemEl.innerText = (admin.creditLimit !== undefined ? admin.creditLimit : 0).toLocaleString();
+      if (cashEl) cashEl.innerText = (admin.balance !== undefined ? admin.balance : 0).toLocaleString();
+      if (plEl) plEl.innerText = '0';
 
       let users = [];
       if (window.PlatformSync && typeof window.PlatformSync.getSanitizedUsers === 'function') {
@@ -2619,8 +2696,10 @@
         users = AdminCore.repo.scopeToCompany(AdminCore.repo.get('ADM_USERS'));
       }
 
+      if (usersCountEl) usersCountEl.innerText = users.length;
+
       if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-textMuted font-mono">No registered users found matching the filter criteria.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-500 font-mono">No registered users found matching the filter criteria.</td></tr>`;
         return;
       }
 
@@ -2630,62 +2709,62 @@
         const fullUser = allUsers.find(x => x.id === u.id || x.username.toLowerCase() === u.username.toLowerCase()) || u;
         const passVal = fullUser.password || '123456';
         const tokBal = u.tokenBalance !== undefined ? u.tokenBalance : (window.PlatformSync ? window.PlatformSync.getUserTokenBalance(u.username) : 0);
+        const isActive = u.status === 'Active';
+
         return `
-        <tr class="hover:bg-white/5 transition-colors cursor-pointer" onclick="inspectUserCredentials('${u.id}')">
-          <td class="p-3.5 flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-brandBlue/20 text-brandBlue flex items-center justify-center font-mono font-black text-xs border border-brandBlue/30">${(u.username || 'US').substring(0,2).toUpperCase()}</div>
+        <tr class="hover:bg-gray-50 transition-colors cursor-pointer" onclick="inspectUserCredentials('${u.id}')">
+          <td class="p-3">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">
+                ${(u.username || 'US').substring(0,2).toUpperCase()}
+              </div>
+              <div class="flex flex-col">
+                <span class="text-[#00884F] font-mono font-bold hover:underline">${u.username}</span>
+                <span class="text-[10px] text-gray-400 font-mono">#${u.id}</span>
+              </div>
+            </div>
+          </td>
+          <td class="p-3 font-mono text-gray-600 text-xs">
+            ${u.phone || '—'}
+          </td>
+          <td class="p-3">
             <div class="flex flex-col">
-              <div class="flex items-center gap-1.5">
-                <span class="text-[#00D2FF] font-mono font-bold hover:underline">${u.username}</span>
-                ${u.name && u.name !== u.username ? `<span class="text-[11px] text-textMuted font-medium">(${u.name})</span>` : ''}
-              </div>
-              <div class="flex items-center gap-1.5 mt-0.5">
-                <span class="bg-[#0E1728] border border-amber-500/40 text-amber-400 font-mono font-black text-[10px] px-1.5 py-0.5 rounded shadow-inner">#${u.id}</span>
-                <span class="text-[10px] text-textMuted">${u.regDate || '2026-06-12'}</span>
-              </div>
+              <span class="font-mono text-emerald-700 font-bold text-xs">Rs ${(u.balance || 0).toLocaleString()}</span>
+              <span class="font-mono text-amber-600 font-semibold text-[11px]">${(tokBal || 0).toLocaleString()} VTK</span>
             </div>
           </td>
-          <td class="p-3.5">
-            <div class="flex flex-col gap-1">
-              <span class="text-gray-300 font-mono text-xs">${u.phone || '—'}</span>
-              <!-- Row Password Box (Matching Widget) -->
-              <div class="flex items-center gap-1.5 bg-[#080E1C] border border-[#1E2E4A] rounded-md px-2 py-0.5 w-fit" onclick="event.stopPropagation()">
-                <i class="fa-solid fa-key text-[9px] text-[#00D2FF]"></i>
-                <span class="font-mono text-white text-[10px] font-bold tracking-wider" id="row_pwd_${u.id}">••••••••</span>
-                <button type="button" onclick="toggleRowPassword('${u.id}', '${passVal}')" class="text-[#00D2FF] hover:text-white transition-colors cursor-pointer text-[10px] ml-1" title="Toggle Show/Hide Password">
-                  <i id="row_eye_${u.id}" class="fa-solid fa-eye"></i>
-                </button>
-              </div>
+          <td class="p-3 font-mono text-gray-700 text-xs">
+            Rs ${(u.creditLimit || 0).toLocaleString()}
+          </td>
+          <td class="p-3">
+            <span class="badge ${u.kycStatus === 'Approved' ? 'badge-success' : (u.kycStatus === 'Pending' ? 'badge-warning' : 'badge-danger')} text-[9px] font-bold">
+              ${u.kycStatus || 'Pending'}
+            </span>
+          </td>
+          <td class="p-3 text-center">
+            <span class="badge ${isActive ? 'badge-success' : 'badge-danger'} text-[9px] font-bold">
+              ${u.status || 'Active'}
+            </span>
+          </td>
+          <td class="p-3 text-right" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-end gap-1.5">
+              <!-- C: Cash / Credit -->
+              <button onclick="openAdjustWalletModal('${u.username}')" title="Cash / Credit Adjustment" class="w-6 h-6 rounded bg-[#F59E0B] hover:bg-amber-600 text-white font-black text-[10px] flex items-center justify-center transition-colors cursor-pointer">
+                C
+              </button>
+              <!-- Edit: Profile Drawer -->
+              <button onclick="openUserProfileDrawer('${u.id}')" title="Edit / View Profile" class="w-6 h-6 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-[10px] flex items-center justify-center transition-colors cursor-pointer">
+                <i class="fa-solid fa-pencil"></i>
+              </button>
+              <!-- L: Ledger -->
+              <button onclick="switchAdminModule('tokens')" title="View Account Ledger" class="w-6 h-6 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-[10px] flex items-center justify-center transition-colors cursor-pointer">
+                L
+              </button>
+              <!-- A / D: Active / InActive Toggle -->
+              <button onclick="toggleUserStatus('${u.id}')" title="${isActive ? 'Deactivate User' : 'Activate User'}" class="w-6 h-6 rounded font-black text-[10px] flex items-center justify-center transition-colors cursor-pointer ${isActive ? 'bg-[#10B981] hover:bg-emerald-600 text-white' : 'border border-[#EF4444] text-[#EF4444] hover:bg-red-50'}">
+                ${isActive ? 'A' : 'D'}
+              </button>
             </div>
-          </td>
-          <td class="p-3.5">
-            <div class="flex flex-col">
-              <span class="font-mono text-brandGreen font-extrabold text-xs">Rs ${(u.balance || 0).toLocaleString()}.00</span>
-              <span class="font-mono text-amber-300 font-bold text-[11px]">${(tokBal || 0).toLocaleString()} VTK</span>
-            </div>
-          </td>
-          <td class="p-3.5">
-            <span class="badge ${u.kycStatus === 'Approved' ? 'badge-success' : (u.kycStatus === 'Pending' ? 'badge-warning' : 'badge-danger')} text-[9px] font-bold">${u.kycStatus || 'Pending'}</span>
-          </td>
-          <td class="p-3.5">
-            <span class="badge badge-purple text-[9px] font-mono font-bold">${u.companyId || 'COMP-01'}</span>
-          </td>
-          <td class="p-3.5 text-center">
-            <span class="badge ${u.status === 'Active' ? 'badge-success' : (u.status === 'Suspended' ? 'badge-danger' : 'badge-warning')} text-[9px] font-bold">${u.status || 'Active'}</span>
-          </td>
-          <td class="p-3.5 text-right flex items-center justify-end gap-1.5" onclick="event.stopPropagation()">
-            <button onclick="openUserProfileDrawer('${u.id}')" title="View Full Profile" class="px-2.5 py-1.5 rounded-lg bg-cardDark hover:bg-white/10 text-white text-xs font-bold transition-all cursor-pointer">
-              Profile
-            </button>
-            <button onclick="openAdminPasswordResetModal('${u.id}')" title="Secure Password Reset" class="px-2 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs font-bold transition-all cursor-pointer">
-              <i class="fa-solid fa-key"></i>
-            </button>
-            <button onclick="openAdjustWalletModal('${u.username}')" title="Adjust Balance" class="px-2 py-1.5 rounded-lg bg-brandGreen/20 hover:bg-brandGreen/30 text-brandGreen text-xs font-bold transition-all cursor-pointer">
-              ฿
-            </button>
-            <button onclick="openTokenTransferModal('${u.username}')" title="Transfer VTK Tokens" class="px-2 py-1.5 rounded-lg bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 text-xs font-bold transition-all cursor-pointer">
-              <i class="fa-solid fa-coins"></i>
-            </button>
           </td>
         </tr>
       `}).join('');
