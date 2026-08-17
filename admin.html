@@ -359,16 +359,33 @@
       </div>
 
       <!-- ============================================================ -->
-      <!-- MODULE 1.5: CURRENT POSITION                                 -->
+      <!-- MODULE 1.5: CURRENT POSITION (Matches Screenshot)            -->
       <!-- ============================================================ -->
-      <div id="module_current_position" class="module-view hidden flex flex-col gap-4">
-        <div class="bg-white border border-[#D8DEE4] rounded p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <h2 class="text-base font-bold text-gray-900">Current Position & Live Bets</h2>
-            <p class="text-xs text-gray-500">Real-time open exposures and active market books</p>
+      <div id="module_current_position" class="module-view hidden flex flex-col justify-between min-h-[calc(100vh-120px)] gap-4">
+        
+        <!-- CARD 1: MARKET POSITION CARD (Matches Screenshot) -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
+          <!-- Card Header Strip -->
+          <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-3">
+            <h3 class="font-bold text-[#1F2937] text-sm sm:text-base">Market Position</h3>
+            <button 
+              onclick="refreshMarketPosition()" 
+              class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-2.5 py-0.5 rounded cursor-pointer transition-colors">
+              Refresh
+            </button>
           </div>
-          <button onclick="renderSportHighlights()" class="px-3 py-1 bg-[#00884F] text-white rounded text-xs font-bold">Refresh Markets</button>
+
+          <!-- Card Body / Empty State Container -->
+          <div class="p-4 bg-white min-h-[50px] flex items-center text-xs text-gray-500" id="marketPositionContent">
+            <!-- Market Position Table/Data -->
+          </div>
         </div>
+
+        <!-- BOTTOM FOOTER (Matches Screenshot) -->
+        <div class="py-3 text-center text-xs font-bold text-[#1F2937] border-t border-[#D8DEE4]">
+          Welcome to Exchange.
+        </div>
+
       </div>
 
       <!-- ============================================================ -->
@@ -2400,6 +2417,10 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+
+    function refreshMarketPosition() {
+      showAdminToast('✓ Market Position refreshed', 'success');
     }
 
     // Sport Highlights Dataset & Handlers (Matches Reference Screenshot)
