@@ -44,25 +44,26 @@
   <script src="admin-engine.js"></script>
 
   <style>
-    body { background-color: #0A0E17; color: #F1F5F9; margin: 0; font-family: 'Inter', sans-serif; }
+    body { background-color: #EAEFF2; color: #1E293B; margin: 0; font-family: 'Inter', sans-serif; }
     .glass-card {
-      background: #162038;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      background: #FFFFFF;
+      border: 1px solid #D8DEE4;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      color: #1E293B;
     }
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
-    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-    .badge-success { background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .badge-warning { background: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .badge-danger { background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
-    .badge-info { background: rgba(6, 182, 212, 0.15); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); }
-    .badge-purple { background: rgba(139, 92, 246, 0.15); color: #8B5CF6; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #232B32; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .badge-success { background: #DEF7EC; color: #03543F; border: 1px solid #BCF0DA; }
+    .badge-warning { background: #FEF08A; color: #713F12; border: 1px solid #FDE047; }
+    .badge-danger { background: #FDE8E8; color: #9B1C1C; border: 1px solid #FBD5D5; }
+    .badge-info { background: #E1EFFE; color: #1E429F; border: 1px solid #C3DDFD; }
+    .badge-purple { background: #EDEBFE; color: #5521B5; border: 1px solid #DCD7FE; }
   </style>
 </head>
-<body class="flex flex-col md:flex-row min-h-screen md:h-screen overflow-x-hidden overflow-y-auto md:overflow-hidden bg-bgDark relative text-gray-200">
+<body class="flex flex-col h-screen overflow-hidden bg-[#EAEFF2] text-gray-800 font-sans">
 
   <!-- 1. FULL SCREEN LUXURY ADMIN SECURITY GATEWAY -->
   <div id="adminAuthOverlay" class="fixed inset-0 z-[999999] bg-[#070B14]/95 backdrop-blur-2xl flex items-center justify-center p-4 transition-all duration-500 overflow-y-auto">
@@ -74,7 +75,7 @@
       </div>
 
       <div class="flex flex-col items-center text-center gap-1">
-        <h2 class="text-xl sm:text-2xl font-display font-black text-white tracking-wider">ENTERPRISE ADMIN LOCK</h2>
+        <h2 class="text-xl sm:text-2xl font-display font-black text-white tracking-wider">BPEXCH ADMIN LOCK</h2>
         <p class="text-xs text-textMuted font-semibold">Enter Administrator Credentials to Access Control Hub</p>
       </div>
 
@@ -96,7 +97,7 @@
 
         <button 
           type="submit" 
-          class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brandBlue via-blue-600 to-indigo-600 text-white font-extrabold text-xs uppercase tracking-widest shadow-[0_8px_25px_rgba(37,99,235,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 mt-2">
+          class="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00884F] to-emerald-600 text-white font-extrabold text-xs uppercase tracking-widest shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 mt-2">
           <i class="fa-solid fa-unlock text-xs"></i> Authenticate & Unlock
         </button>
       </form>
@@ -114,500 +115,291 @@
     </div>
   </div>
 
-  <!-- 2. MOBILE TOP STICKY HEADER -->
-  <header class="flex md:hidden items-center justify-between px-4 py-3 bg-sidebarDark border-b border-borderSubtle sticky top-0 z-50 shadow-md">
-    <div class="flex items-center gap-3" onclick="window.location.href='index.html'">
-      <div class="w-8 h-8 rounded-lg bg-brandBlue/20 border border-brandBlue/50 flex items-center justify-center text-brandBlue font-black text-sm">
-        <i class="fa-solid fa-shield-halved"></i>
-      </div>
-      <div class="flex flex-col">
-        <h1 class="text-sm font-display font-black text-white leading-tight">THAI<span class="text-brandBlue">WIN</span></h1>
-        <span class="text-[8px] text-textMuted font-bold uppercase tracking-widest">Admin Hub</span>
-      </div>
-    </div>
-    <div class="flex items-center gap-2">
-      <button onclick="toggleAdminNotifications()" class="text-textMuted hover:text-white p-2 relative">
-        <i class="fa-solid fa-bell text-base"></i>
-        <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brandDanger animate-ping"></span>
-      </button>
-      <button onclick="lockAdminPanel()" title="Lock Admin Panel" class="text-brandDanger p-2 hover:scale-110 transition-transform">
-        <i class="fa-solid fa-lock text-base"></i>
-      </button>
-      <button onclick="toggleAdminSidebar()" class="text-gray-300 p-2 hover:text-white focus:outline-none">
-        <i class="fa-solid fa-bars text-lg"></i>
-      </button>
-    </div>
-  </header>
-
-  <!-- 3. DESKTOP/MOBILE SIDEBAR NAVIGATION -->
-  <aside id="adminSidebar" class="w-full md:w-[260px] bg-sidebarDark border-r border-borderSubtle flex flex-col z-40 shrink-0 hidden md:flex transition-all">
+  <!-- 2. BPEXCH TOP HEADER (Matches Screenshot Exact Layout) -->
+  <header class="h-[50px] bg-white border-b border-[#E5E7EB] px-4 flex items-center justify-between shrink-0 shadow-sm z-30">
     
-    <!-- Brand Logo Header -->
-    <div class="hidden md:flex h-[70px] items-center justify-between px-5 border-b border-borderSubtle">
-      <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
-        <div class="w-9 h-9 rounded-xl bg-brandBlue/20 border border-brandBlue/50 flex items-center justify-center text-brandBlue font-black text-lg shadow-[0_0_15px_rgba(37,99,235,0.3)]">
-          <i class="fa-solid fa-shield-halved"></i>
-        </div>
-        <div class="flex flex-col">
-          <h1 class="text-base font-display font-black text-white tracking-wider">THAI<span class="text-brandBlue">NXT</span></h1>
-          <span class="text-[8px] text-cyan-400 font-bold uppercase tracking-widest font-mono">Enterprise Admin</span>
-        </div>
-      </div>
-      <button onclick="lockAdminPanel()" title="Lock Panel" class="text-textMuted hover:text-brandDanger text-xs transition-colors p-1.5 rounded-lg hover:bg-white/5">
-        <i class="fa-solid fa-lock"></i>
-      </button>
-    </div>
-
-    <!-- Active Admin Info Card -->
-    <div class="px-4 py-3 bg-[#0B101D] border-b border-borderSubtle flex items-center gap-3">
-      <div id="sidebarAdminAvatar" class="w-9 h-9 rounded-full bg-brandBlue/30 border border-brandBlue/50 text-brandBlue flex items-center justify-center font-black text-xs font-mono">AK</div>
-      <div class="flex flex-col min-w-0 flex-1">
-        <div class="flex items-center justify-between">
-          <span id="sidebarAdminName" class="text-xs font-bold text-white truncate">Amir Khan</span>
-          <span id="sidebarRoleBadge" class="badge badge-purple text-[9px] px-1.5 py-0.2">SUPER</span>
-        </div>
-        <span id="sidebarCompanyBadge" class="text-[10px] text-textMuted truncate font-mono">ThaiNXT Global HQ</span>
-      </div>
-    </div>
-
-    <!-- Navigation Menu Items -->
-    <div class="flex-1 py-3 px-2 flex flex-col gap-1 overflow-y-auto custom-scrollbar text-xs font-bold">
-      
-      <div class="text-[9px] font-extrabold text-textMuted/60 uppercase tracking-widest px-3 py-1 mt-1">Command Center</div>
-      
-      <!-- 1. Dashboard -->
-      <button id="navBtn_dashboard" onclick="switchAdminModule('dashboard')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-white font-bold bg-brandBlue/20 border border-brandBlue/40 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-gauge-high text-brandBlue w-4 text-center"></i> Dashboard</span>
-      </button>
-
-      <div class="text-[9px] font-extrabold text-textMuted/60 uppercase tracking-widest px-3 py-1 mt-2">Player & User Ops</div>
-
-      <!-- 2. Users -->
-      <button id="navBtn_users" onclick="switchAdminModule('users')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-users text-cyan-400 w-4 text-center"></i> User Accounts</span>
-        <span id="navBadgeUsers" class="text-[10px] text-textMuted font-mono font-bold bg-black/40 px-1.5 py-0.5 rounded">6</span>
-      </button>
-
-      <!-- 3. KYC Verification -->
-      <button id="navBtn_kyc" onclick="switchAdminModule('kyc')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-id-card-clip text-emerald-400 w-4 text-center"></i> KYC Verification</span>
-        <span id="navBadgeKyc" class="badge badge-warning text-[9px] px-1.5 py-0.5">1 Pending</span>
-      </button>
-
-      <div class="text-[9px] font-extrabold text-textMuted/60 uppercase tracking-widest px-3 py-1 mt-2">Game & Content Engine</div>
-
-      <!-- 4. Games -->
-      <button id="navBtn_games" onclick="switchAdminModule('games')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-gamepad text-indigo-400 w-4 text-center"></i> Games & Categories</span>
-        <span class="text-[10px] text-textMuted font-mono font-bold bg-black/40 px-1.5 py-0.5 rounded">6</span>
-      </button>
-
-      <!-- 5. Lucky Thai 4D Live Controls -->
-      <button id="navBtn_thai4d" onclick="switchAdminModule('thai4d')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-clover text-amber-400 w-4 text-center"></i> Thai 4D Live Engine</span>
-        <span class="badge badge-success text-[9px] px-1.5 py-0.2">LIVE</span>
-      </button>
-
-      <div class="text-[9px] font-extrabold text-textMuted/60 uppercase tracking-widest px-3 py-1 mt-2">Financial Governance</div>
-
-      <!-- 6. Deposits -->
-      <button id="navBtn_deposits" onclick="switchAdminModule('deposits')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-circle-down text-brandGreen w-4 text-center"></i> Deposits</span>
-        <span id="navBadgeDeposits" class="badge badge-warning text-[9px] px-1.5 py-0.5">2 Pending</span>
-      </button>
-
-      <!-- 7. Withdrawals -->
-      <button id="navBtn_withdrawals" onclick="switchAdminModule('withdrawals')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-circle-up text-brandDanger w-4 text-center"></i> Withdrawals</span>
-        <span id="navBadgeWithdrawals" class="badge badge-danger text-[9px] px-1.5 py-0.5">2 Pending</span>
-      </button>
-
-      <!-- 8. Wallets & Ledger -->
-      <button id="navBtn_wallets" onclick="switchAdminModule('wallets')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-wallet text-amber-300 w-4 text-center"></i> Wallets & Ledger</span>
-      </button>
-
-      <!-- 8.5 Closed-Loop Virtual Tokens -->
-      <button id="navBtn_tokens" onclick="switchAdminModule('tokens')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-coins text-amber-400 w-4 text-center"></i> Virtual Tokens</span>
-        <span id="navBadgeTokens" class="badge badge-warning text-[9px] px-1.5 py-0.5">10M VTK</span>
-      </button>
-
-      <!-- 9. Bonuses & Promotions -->
-      <button id="navBtn_bonuses" onclick="switchAdminModule('bonuses')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-gift text-pink-400 w-4 text-center"></i> Bonuses & Promos</span>
-      </button>
-
-      <div class="text-[9px] font-extrabold text-textMuted/60 uppercase tracking-widest px-3 py-1 mt-2">Compliance & Intelligence</div>
-
-      <!-- 10. Risk & Compliance -->
-      <button id="navBtn_risk" onclick="switchAdminModule('risk')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-triangle-exclamation text-amber-500 w-4 text-center"></i> Risk & Compliance</span>
-      </button>
-
-      <!-- 11. Reports & Exports -->
-      <button id="navBtn_reports" onclick="switchAdminModule('reports')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-file-invoice text-sky-400 w-4 text-center"></i> Reports & Exports</span>
-      </button>
-
-      <div class="text-[9px] font-extrabold text-textMuted/60 uppercase tracking-widest px-3 py-1 mt-2">Administration</div>
-
-      <!-- 12. Admins & Roles -->
-      <button id="navBtn_admins" onclick="switchAdminModule('admins')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-user-shield text-purple-400 w-4 text-center"></i> Admins & Roles</span>
-      </button>
-
-      <!-- 13. Audit Trail -->
-      <button id="navBtn_audit" onclick="switchAdminModule('audit')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-clock-rotate-left text-teal-400 w-4 text-center"></i> Security Audit Logs</span>
-      </button>
-
-      <!-- 14. System Settings -->
-      <button id="navBtn_settings" onclick="switchAdminModule('settings')" class="nav-item w-full px-3.5 py-2.5 rounded-xl text-textMuted hover:text-white hover:bg-white/5 flex items-center justify-between cursor-pointer transition-all">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-sliders text-gray-400 w-4 text-center"></i> System Settings</span>
-      </button>
-
-    </div>
-
-    <!-- Bottom Action Return to Site -->
-    <div class="p-3 border-t border-borderSubtle bg-[#080D18] flex items-center justify-between">
-      <a href="index.html" class="text-xs font-semibold text-textMuted hover:text-cyan-400 flex items-center gap-2 transition-colors">
-        <i class="fa-solid fa-arrow-left"></i> Player Portal
-      </a>
-      <span class="text-[9px] font-mono text-textMuted">v2.5.0</span>
-    </div>
-
-  </aside>
-
-  <!-- 4. MAIN ADMINISTRATIVE CONTENT AREA -->
-  <main class="flex-1 flex flex-col h-screen overflow-hidden bg-bgDark">
-    
-    <!-- Top Sticky Header -->
-    <header class="h-[65px] bg-headerDark border-b border-borderSubtle px-6 flex items-center justify-between shrink-0 shadow-sm">
-      
-      <!-- Left: Breadcrumb / Route Title -->
-      <div class="flex items-center gap-3">
-        <h2 id="currentModuleTitle" class="text-base sm:text-lg font-display font-extrabold text-white">Executive Command Dashboard</h2>
-        <span id="moduleScopeBadge" class="badge badge-info text-[10px] hidden sm:inline-flex">GLOBAL SCOPE</span>
+    <!-- Left: Brand Logo, Hamburger & Nav Links -->
+    <div class="flex items-center gap-4 sm:gap-6">
+      <!-- BPEXCH Brand -->
+      <div class="flex items-center gap-2 cursor-pointer" onclick="switchAdminModule('dashboard')">
+        <span class="text-[#00884F] font-black text-2xl tracking-tight font-sans">BPEXCH</span>
       </div>
 
-      <!-- Right Controls: Role Switcher Demo Tool, Notifications & Profile -->
-      <div class="flex items-center gap-3">
-        
-        <!-- Live Role Switcher (RBAC Simulation Tool) -->
-        <div class="hidden lg:flex items-center gap-1.5 bg-sidebarDark border border-borderSubtle rounded-xl px-2.5 py-1 text-xs">
-          <span class="text-textMuted text-[10px] font-bold uppercase"><i class="fa-solid fa-masks-theater text-brandBlue"></i> Role:</span>
-          <select id="roleSwitcherSelect" onchange="handleRoleSwitch(this.value)" class="bg-transparent text-white font-bold text-xs outline-none cursor-pointer">
-            <option value="SUPER_ADMIN">👑 Super Admin (Global Root)</option>
-            <option value="COMPANY_ADMIN">🏢 Company Admin (Apex Partner HQ)</option>
-            <option value="SENIOR_SUPER_MASTER">💎 Senior Super Master (Sultan_SSM)</option>
-            <option value="SUPER_MASTER">⭐ Super Master (SuperMaster_Apex)</option>
-            <option value="MASTER_AGENT">🔰 Master Agent (Master_Agent_01)</option>
-            <option value="AGENT">👤 Direct Agent (Apex_Agent)</option>
-            <option value="OPERATIONS_ADMIN">⚙️ Operations Admin</option>
-            <option value="FINANCE_ADMIN">💰 Finance Admin</option>
-            <option value="RISK_ADMIN">🛡️ Risk & Compliance Admin</option>
-            <option value="VIEWER">👁️ Read-Only Viewer</option>
-          </select>
-        </div>
+      <!-- Hamburger Menu Toggle Button -->
+      <button onclick="toggleAdminSidebar()" class="text-[#4B5563] hover:text-[#111827] text-lg p-1 focus:outline-none transition-colors" title="Toggle Navigation Sidebar">
+        <i class="fa-solid fa-bars"></i>
+      </button>
 
-        <!-- Notification Bell Dropdown Button -->
-        <div class="relative">
-          <button onclick="toggleAdminNotifications()" class="w-9 h-9 rounded-xl bg-cardDark hover:bg-white/10 border border-borderSubtle text-textMuted hover:text-white flex items-center justify-center transition-all cursor-pointer relative">
-            <i class="fa-solid fa-bell text-sm"></i>
-            <span class="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-brandDanger animate-ping"></span>
-            <span class="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-brandDanger"></span>
-          </button>
+      <!-- Top Nav Links -->
+      <nav class="hidden md:flex items-center gap-2 text-sm font-medium text-[#4B5563]">
+        <button onclick="switchAdminModule('dashboard')" id="topNavLink_dashboard" class="px-2.5 py-1 rounded text-[#111827] font-semibold hover:bg-gray-100 transition-colors">Dashboard</button>
+        <button onclick="switchAdminModule('users')" id="topNavLink_users" class="px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors">Users</button>
+        <button onclick="switchAdminModule('reports')" id="topNavLink_reports" class="px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors">Reports</button>
+      </nav>
+    </div>
 
-          <!-- Notification Drawer Dropdown -->
-          <div id="adminNotifDrawer" class="hidden absolute top-12 right-0 w-80 sm:w-96 bg-cardDark border border-borderSubtle rounded-2xl shadow-2xl z-50 p-4 flex flex-col gap-3">
-            <div class="flex items-center justify-between pb-2 border-b border-borderSubtle">
-              <span class="font-display font-extrabold text-white text-sm">Admin Notification Center</span>
-              <span class="badge badge-danger text-[9px]">3 New</span>
-            </div>
-            <div class="flex flex-col gap-2 max-h-72 overflow-y-auto custom-scrollbar text-xs">
-              <div onclick="switchAdminModule('deposits')" class="p-2.5 bg-sidebarDark rounded-xl border border-borderSubtle hover:border-brandGreen/40 cursor-pointer transition-all flex items-start gap-2.5">
-                <i class="fa-solid fa-circle-down text-brandGreen mt-0.5"></i>
-                <div class="flex flex-col">
-                  <span class="text-white font-bold">New Deposit Request #DEP-8841</span>
-                  <span class="text-textMuted text-[10px]">Rs 15,000 from Alex_Winner via Easypaisa</span>
-                </div>
-              </div>
-              <div onclick="switchAdminModule('withdrawals')" class="p-2.5 bg-sidebarDark rounded-xl border border-borderSubtle hover:border-brandDanger/40 cursor-pointer transition-all flex items-start gap-2.5">
-                <i class="fa-solid fa-circle-up text-brandDanger mt-0.5"></i>
-                <div class="flex flex-col">
-                  <span class="text-white font-bold">Withdrawal Request #WTH-4102</span>
-                  <span class="text-textMuted text-[10px]">Rs 25,000 to CryptoKing (HBL Bank)</span>
-                </div>
-              </div>
-              <div onclick="switchAdminModule('kyc')" class="p-2.5 bg-sidebarDark rounded-xl border border-borderSubtle hover:border-amber-400/40 cursor-pointer transition-all flex items-start gap-2.5">
-                <i class="fa-solid fa-id-card text-amber-400 mt-0.5"></i>
-                <div class="flex flex-col">
-                  <span class="text-white font-bold">KYC Verification Submitted</span>
-                  <span class="text-textMuted text-[10px]">LuckyHassan uploaded National CNIC documents</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Lock Button -->
-        <button onclick="lockAdminPanel()" class="px-3 py-1.5 rounded-xl bg-brandDanger/20 hover:bg-brandDanger/30 text-brandDanger border border-brandDanger/30 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all">
-          <i class="fa-solid fa-lock text-xs"></i> <span class="hidden sm:inline">Lock</span>
+    <!-- Right: Account Info & Exposure / Balance (Matches Screenshot) -->
+    <div class="flex items-center gap-4 sm:gap-6 text-xs text-[#374151]">
+      
+      <!-- User & Role Dropdown Button -->
+      <div class="relative">
+        <button onclick="toggleAdminAccountDropdown()" class="flex items-center gap-1.5 font-medium text-[#374151] hover:text-[#111827] transition-colors cursor-pointer py-1">
+          <span id="topBarAdminName" class="font-semibold text-gray-800">Ahmad5050x</span>
+          <span id="topBarAdminRole" class="text-gray-600 font-medium">(SuperMaster)</span>
+          <i class="fa-solid fa-caret-down text-[10px] text-gray-500 ml-0.5"></i>
         </button>
 
+        <!-- Dropdown Menu for Roles & Switcher -->
+        <div id="adminAccountDropdownMenu" class="hidden absolute top-9 right-0 w-64 bg-white border border-[#E5E7EB] rounded-lg shadow-xl z-50 p-2 text-xs text-gray-700 flex flex-col gap-1">
+          <div class="p-2 border-b border-gray-100 flex flex-col">
+            <span class="text-[10px] uppercase font-bold text-gray-400">Current Session</span>
+            <span id="topBarDropdownAdminFullName" class="font-bold text-gray-900">Faisal Khan</span>
+            <span id="topBarDropdownAdminScope" class="text-[11px] text-emerald-600 font-mono font-semibold">SUPER MASTER LEVEL</span>
+          </div>
+          
+          <div class="p-1">
+            <label class="text-[10px] uppercase font-bold text-gray-400 block px-1 mb-1">Switch Testing Level</label>
+            <select id="roleSwitcherSelect" onchange="handleRoleSwitch(this.value); toggleAdminAccountDropdown();" class="w-full bg-gray-50 border border-gray-200 rounded p-1.5 text-xs text-gray-800 font-bold outline-none cursor-pointer">
+              <option value="SUPER_ADMIN">👑 Super Admin (Global Root)</option>
+              <option value="COMPANY_ADMIN">🏢 Company Admin (Apex Partner)</option>
+              <option value="SENIOR_SUPER_MASTER">💎 Senior Super Master (Sultan_SSM)</option>
+              <option value="SUPER_MASTER" selected>⭐ Super Master (SuperMaster_Apex / Ahmad5050x)</option>
+              <option value="MASTER_AGENT">🔰 Master Agent (Master_Agent_01)</option>
+              <option value="AGENT">👤 Direct Agent (Apex_Agent)</option>
+            </select>
+          </div>
+
+          <button onclick="lockAdminPanel(); toggleAdminAccountDropdown();" class="w-full text-left px-2.5 py-1.5 text-red-600 hover:bg-red-50 rounded font-bold flex items-center gap-2 mt-1 cursor-pointer">
+            <i class="fa-solid fa-lock text-xs"></i> Lock Dashboard
+          </button>
+        </div>
       </div>
 
-    </header>
+      <!-- B: 0 Exp: 0 Status -->
+      <div class="flex items-center gap-2.5 font-bold text-[#111827] text-xs sm:text-[13px]">
+        <span>B: <span id="topBarBalance" class="font-bold">0</span></span>
+        <span>Exp: <span id="topBarExposure" class="font-bold">0</span></span>
+      </div>
 
-    <!-- Scrollable Module Content Viewport -->
-    <div class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar flex flex-col gap-6" id="moduleContainer">
+    </div>
 
-      <!-- ============================================================ -->
-      <!-- MODULE 1: EXECUTIVE DASHBOARD                                -->
-      <!-- ============================================================ -->
-      <div id="module_dashboard" class="module-view flex flex-col gap-6">
+  </header>
+
+  <!-- 3. MAIN WRAPPER (SIDEBAR + CONTENT) -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- BPEXCH LEFT SIDEBAR (Matches Screenshot) -->
+    <aside id="adminSidebar" class="w-[215px] bg-[#2E3842] border-r border-[#222B32] flex flex-col z-40 shrink-0 transition-all text-[#D1D5DB]">
+      
+      <!-- Sidebar Navigation Menu List -->
+      <div class="flex-1 py-1 flex flex-col overflow-y-auto custom-scrollbar text-[13px] font-medium">
         
-        <!-- Dynamic Level Details & Downline Card (Auto-adapts to assigned level) -->
-        <div id="levelDetailsCard" class="hidden bg-gradient-to-r from-[#0C1527] via-[#0E1B33] to-[#0A1224] border border-amber-500/40 rounded-2xl p-4 sm:p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-2xl relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
+        <!-- 1. Dashboard (Active in Screenshot) -->
+        <button id="navBtn_dashboard" onclick="switchAdminModule('dashboard')" class="nav-item w-full px-4 py-2.5 text-left text-white bg-[#1F2832] flex items-center gap-3 cursor-pointer transition-colors border-l-4 border-l-[#00D2FF]">
+          <i class="fa-solid fa-gauge-high text-[#00D2FF] text-sm w-4 text-center"></i>
+          <span>Dashboard</span>
+        </button>
 
-          <div class="flex items-center gap-3.5 z-10">
-            <div id="levelBadgeIconBox" class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center font-black text-xl shadow-lg shrink-0">
-              <i class="fa-solid fa-crown"></i>
-            </div>
-            <div class="flex flex-col gap-1">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span id="levelCardRoleBadge" class="badge badge-warning text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5">SUPER MASTER LEVEL</span>
-                <span id="levelCardAgentId" class="text-xs font-mono font-bold text-cyan-300 bg-black/40 px-2 py-0.5 rounded border border-white/10">#ADM-SM-01</span>
-                <span id="levelCardCompanyBadge" class="text-[10px] text-purple-300 bg-purple-900/30 px-2 py-0.5 rounded border border-purple-500/30 font-mono">COMP-01</span>
-              </div>
-              <h3 id="levelCardAgentName" class="text-base sm:text-lg font-display font-extrabold text-white">Faisal Khan (@SuperMaster_Apex)</h3>
-              <div class="flex items-center gap-2 text-[11px] text-textMuted font-mono flex-wrap">
-                <span id="levelCardLineage" class="flex items-center gap-1 text-gray-300">
-                  <i class="fa-solid fa-sitemap text-amber-400 text-[10px]"></i> Lineage: ThaiNXT Global ➔ Sultan_SSM ➔ <strong class="text-amber-300 font-bold">SuperMaster_Apex</strong>
-                </span>
-              </div>
-            </div>
-          </div>
+        <!-- 2. Users -->
+        <button id="navBtn_users" onclick="switchAdminModule('users')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-users text-gray-400 text-sm w-4 text-center"></i>
+          <span>Users</span>
+        </button>
 
-          <!-- Dynamic Level Metrics Quad -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full lg:w-auto bg-[#070D1A] border border-[#1C2C46] rounded-xl p-3 text-xs z-10">
-            <div class="flex flex-col">
-              <span class="text-[9px] uppercase font-extrabold text-gray-400 flex items-center gap-1"><i class="fa-solid fa-percent text-amber-400"></i> Commission</span>
-              <span id="levelCardCommission" class="text-amber-400 font-mono font-black text-sm sm:text-base">5.0%</span>
-              <span class="text-[9px] text-textMuted">Turnover Share</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-[9px] uppercase font-extrabold text-gray-400 flex items-center gap-1"><i class="fa-solid fa-users text-cyan-400"></i> Downline</span>
-              <span id="levelCardDownlineCount" class="text-cyan-300 font-mono font-black text-sm sm:text-base">2 MA · 4 Players</span>
-              <span class="text-[9px] text-textMuted">Subordinate Net</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-[9px] uppercase font-extrabold text-gray-400 flex items-center gap-1"><i class="fa-solid fa-coins text-brandGreen"></i> Credit Limit</span>
-              <span id="levelCardCredit" class="text-brandGreen font-mono font-black text-sm sm:text-base">Rs 1.50M</span>
-              <span class="text-[9px] text-textMuted">Assigned Quota</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-[9px] uppercase font-extrabold text-gray-400 flex items-center gap-1"><i class="fa-solid fa-gem text-amber-300"></i> Token Quota</span>
-              <span id="levelCardTokens" class="text-amber-300 font-mono font-black text-sm sm:text-base">500K VTK</span>
-              <span class="text-[9px] text-textMuted">Virtual Pool</span>
-            </div>
-          </div>
-        </div>
+        <!-- 3. Current Position -->
+        <button id="navBtn_current_position" onclick="switchAdminModule('current_position')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-crosshairs text-gray-400 text-sm w-4 text-center"></i>
+          <span>Current Position</span>
+        </button>
 
-        <!-- Top Metrics Row -->
-        <div class="grid grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
+        <!-- 4. Reports -->
+        <button id="navBtn_reports" onclick="switchAdminModule('reports')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-regular fa-rectangle-list text-gray-400 text-sm w-4 text-center"></i>
+          <span>Reports</span>
+        </button>
+
+        <!-- 5. Bet Lock -->
+        <button id="navBtn_risk" onclick="switchAdminModule('risk')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-lock text-gray-400 text-sm w-4 text-center"></i>
+          <span>Bet Lock</span>
+        </button>
+
+        <!-- 6. Star Casino -->
+        <button id="navBtn_star_casino" onclick="switchAdminModule('games')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-star text-gray-400 text-sm w-4 text-center"></i>
+          <span>Star Casino</span>
+        </button>
+
+        <!-- 7. World Casino -->
+        <button id="navBtn_world_casino" onclick="switchAdminModule('thai4d')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-globe text-gray-400 text-sm w-4 text-center"></i>
+          <span>World Casino</span>
+        </button>
+
+        <!-- 8. BetFair Games -->
+        <button id="navBtn_betfair_games" onclick="switchAdminModule('games')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-dice text-gray-400 text-sm w-4 text-center"></i>
+          <span>BetFair Games</span>
+        </button>
+
+        <!-- 9. Soccer -->
+        <button id="navBtn_soccer" onclick="filterHighlightsSport('Soccer')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-regular fa-futbol text-gray-400 text-sm w-4 text-center"></i>
+          <span>Soccer</span>
+        </button>
+
+        <!-- 10. Tennis -->
+        <button id="navBtn_tennis" onclick="filterHighlightsSport('Tennis')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-baseball text-gray-400 text-sm w-4 text-center"></i>
+          <span>Tennis</span>
+        </button>
+
+        <!-- 11. Cricket -->
+        <button id="navBtn_cricket" onclick="filterHighlightsSport('Cricket')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-baseball-bat-ball text-gray-400 text-sm w-4 text-center"></i>
+          <span>Cricket</span>
+        </button>
+
+        <!-- Additional Enterprise Modules (Management Group) -->
+        <div class="pt-2 mt-2 border-t border-[#3A4652] px-2 flex flex-col gap-0.5">
+          <div class="text-[10px] uppercase font-bold text-gray-400 px-2 py-1">Management</div>
           
-          <div class="glass-card p-4 flex flex-col gap-1 border-l-4 border-l-cyan-400">
-            <span class="text-[10px] font-bold text-textMuted uppercase tracking-wider">Total Users</span>
-            <span id="kpiTotalUsers" class="text-xl sm:text-2xl font-mono font-black text-white">2,310</span>
-            <span class="text-[10px] text-brandGreen flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> +12% this week</span>
-          </div>
+          <button id="navBtn_deposits" onclick="switchAdminModule('deposits')" class="nav-item w-full px-3 py-1.5 text-left text-xs text-gray-300 hover:text-white hover:bg-[#252E37] rounded flex items-center justify-between">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-circle-down text-emerald-400 text-xs"></i> Deposits</span>
+            <span id="navBadgeDeposits" class="badge badge-warning text-[8px] py-0 px-1">2</span>
+          </button>
 
-          <div class="glass-card p-4 flex flex-col gap-1 border-l-4 border-l-brandGreen">
-            <span class="text-[10px] font-bold text-textMuted uppercase tracking-wider">Active Players</span>
-            <span id="kpiActiveUsers" class="text-xl sm:text-2xl font-mono font-black text-brandGreen">1,840</span>
-            <span class="text-[10px] text-textMuted">82% retention</span>
-          </div>
+          <button id="navBtn_withdrawals" onclick="switchAdminModule('withdrawals')" class="nav-item w-full px-3 py-1.5 text-left text-xs text-gray-300 hover:text-white hover:bg-[#252E37] rounded flex items-center justify-between">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-circle-up text-red-400 text-xs"></i> Withdrawals</span>
+            <span id="navBadgeWithdrawals" class="badge badge-danger text-[8px] py-0 px-1">2</span>
+          </button>
 
-          <div class="glass-card p-4 flex flex-col gap-1 border-l-4 border-l-emerald-400">
-            <span class="text-[10px] font-bold text-textMuted uppercase tracking-wider">Total Deposits</span>
-            <span id="kpiTotalDeposits" class="text-xl sm:text-2xl font-mono font-black text-white">Rs 4.85M</span>
-            <span class="text-[10px] text-brandGreen flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> Inflow positive</span>
-          </div>
+          <button id="navBtn_tokens" onclick="switchAdminModule('tokens')" class="nav-item w-full px-3 py-1.5 text-left text-xs text-gray-300 hover:text-white hover:bg-[#252E37] rounded flex items-center justify-between">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-coins text-amber-400 text-xs"></i> Virtual Tokens</span>
+          </button>
 
-          <div class="glass-card p-4 flex flex-col gap-1 border-l-4 border-l-brandDanger">
-            <span class="text-[10px] font-bold text-textMuted uppercase tracking-wider">Total Withdrawals</span>
-            <span id="kpiTotalWithdrawals" class="text-xl sm:text-2xl font-mono font-black text-white">Rs 2.91M</span>
-            <span class="text-[10px] text-textMuted">98.4% processed</span>
-          </div>
+          <button id="navBtn_admins" onclick="switchAdminModule('admins')" class="nav-item w-full px-3 py-1.5 text-left text-xs text-gray-300 hover:text-white hover:bg-[#252E37] rounded flex items-center justify-between">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-user-shield text-purple-400 text-xs"></i> Agent Network</span>
+          </button>
 
-          <div class="glass-card p-4 flex flex-col gap-1 border-l-4 border-l-indigo-400">
-            <span class="text-[10px] font-bold text-textMuted uppercase tracking-wider">Active Games</span>
-            <span id="kpiActiveGames" class="text-xl sm:text-2xl font-mono font-black text-indigo-300">6 Live</span>
-            <span class="text-[10px] text-cyan-400">Thai 4D broadcast active</span>
-          </div>
+          <button id="navBtn_kyc" onclick="switchAdminModule('kyc')" class="nav-item w-full px-3 py-1.5 text-left text-xs text-gray-300 hover:text-white hover:bg-[#252E37] rounded flex items-center justify-between">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-id-card-clip text-cyan-400 text-xs"></i> KYC Center</span>
+          </button>
 
-          <div class="glass-card p-4 flex flex-col gap-1 border-l-4 border-l-amber-400">
-            <span class="text-[10px] font-bold text-textMuted uppercase tracking-wider">Pending Actions</span>
-            <span id="kpiPendingActions" class="text-xl sm:text-2xl font-mono font-black text-amber-400">5</span>
-            <span class="text-[10px] text-amber-400 flex items-center gap-1"><i class="fa-solid fa-bell"></i> Immediate review</span>
-          </div>
-
+          <button id="navBtn_audit" onclick="switchAdminModule('audit')" class="nav-item w-full px-3 py-1.5 text-left text-xs text-gray-300 hover:text-white hover:bg-[#252E37] rounded flex items-center justify-between">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-teal-400 text-xs"></i> Audit Logs</span>
+          </button>
         </div>
 
-        <!-- Action Required Quick-Response Strip -->
-        <div class="bg-gradient-to-r from-[#1C2847] via-[#162038] to-[#121B30] border border-brandBlue/30 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg border border-amber-500/30 shrink-0">
-              <i class="fa-solid fa-triangle-exclamation animate-bounce"></i>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-sm font-extrabold text-white">Attention Required: 5 Platform Action Items</span>
-              <span class="text-xs text-textMuted">2 Pending Deposits · 2 Pending Withdrawals · 1 Pending KYC Identity Verification</span>
-            </div>
+      </div>
+
+      <!-- Bottom Collapse Bar (Matches Screenshot) -->
+      <div class="h-9 bg-[#232B32] border-t border-[#1C2329] flex items-center justify-end px-3">
+        <button onclick="toggleAdminSidebar()" class="text-gray-400 hover:text-white text-xs p-1 cursor-pointer">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- 4. MAIN CONTENT VIEWPORT -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-5 custom-scrollbar flex flex-col gap-4 bg-[#EAEFF2]" id="moduleContainer">
+
+      <!-- ============================================================ -->
+      <!-- MODULE 1: BPEXCH EXECUTIVE DASHBOARD (Matches Screenshot)   -->
+      <!-- ============================================================ -->
+      <div id="module_dashboard" class="module-view flex flex-col gap-4">
+        
+        <!-- SECTION 1: SEARCH-USERS CARD (Matches Screenshot) -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
+          <!-- Card Header Strip -->
+          <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-2.5">
+            <i class="fa-solid fa-filter text-[#1F2937] text-xs"></i>
+            <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Search-Users</h3>
           </div>
-          <div class="flex items-center gap-2">
-            <button onclick="switchAdminModule('deposits')" class="px-3 py-2 rounded-xl bg-brandGreen/20 hover:bg-brandGreen/30 text-brandGreen border border-brandGreen/30 text-xs font-bold cursor-pointer transition-all">Review Deposits (2)</button>
-            <button onclick="switchAdminModule('withdrawals')" class="px-3 py-2 rounded-xl bg-brandDanger/20 hover:bg-brandDanger/30 text-brandDanger border border-brandDanger/30 text-xs font-bold cursor-pointer transition-all">Review Withdrawals (2)</button>
-            <button onclick="switchAdminModule('kyc')" class="px-3 py-2 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/30 text-xs font-bold cursor-pointer transition-all">Verify KYC (1)</button>
+          <!-- Card Body -->
+          <div class="p-4 sm:p-5 flex items-center">
+            <div class="flex items-center w-full max-w-md">
+              <input 
+                id="dashSearchUserInput" 
+                type="text" 
+                placeholder="Username" 
+                class="w-full sm:w-80 px-3.5 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded-l outline-none focus:border-[#00884F] transition-colors"
+                onkeydown="if(event.key==='Enter') handleDashboardUserSearch()"
+              />
+              <button 
+                onclick="handleDashboardUserSearch()" 
+                class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-4 py-1.5 rounded-r flex items-center gap-1.5 transition-colors cursor-pointer shrink-0">
+                <i class="fa-solid fa-magnifying-glass text-[11px]"></i> Search
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Interactive Charts Grid (Chart.js) -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          <!-- Financial Inflow / Outflow Line Chart -->
-          <div class="glass-card p-5 lg:col-span-2 flex flex-col gap-4">
-            <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-chart-line text-brandBlue text-base"></i>
-                <h3 class="font-display font-extrabold text-white text-sm">24-Hour Financial Cashflow Analytics</h3>
-              </div>
-              <span class="text-[10px] text-textMuted font-mono">Live Inflow vs Outflow</span>
-            </div>
-            <div class="h-64 w-full relative">
-              <canvas id="dashboardFinancialChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Turnover by Game Category Doughnut Chart -->
-          <div class="glass-card p-5 flex flex-col gap-4">
-            <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-chart-pie text-cyan-400 text-base"></i>
-                <h3 class="font-display font-extrabold text-white text-sm">Turnover By Category</h3>
-              </div>
-              <span class="text-[10px] text-textMuted font-mono">Rs 26.9M Total</span>
-            </div>
-            <div class="h-64 w-full relative flex items-center justify-center">
-              <canvas id="dashboardCategoryChart"></canvas>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Recent Activity Feed & Quick Controls -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          <!-- Recent User Transactions Table -->
-          <div class="glass-card p-5 lg:col-span-2 flex flex-col gap-3">
-            <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
-              <h3 class="font-display font-extrabold text-white text-sm flex items-center gap-2">
-                <i class="fa-solid fa-receipt text-brandGreen"></i> Recent Financial Operations
-              </h3>
-              <button onclick="switchAdminModule('deposits')" class="text-xs text-brandBlue hover:underline font-bold">View All →</button>
-            </div>
-            <div class="overflow-x-auto custom-scrollbar">
-              <table class="w-full text-left text-xs whitespace-nowrap">
-                <thead class="text-textMuted text-[10px] uppercase font-bold border-b border-borderSubtle">
-                  <tr>
-                    <th class="py-2.5">TX ID</th>
-                    <th class="py-2.5">User</th>
-                    <th class="py-2.5">Type</th>
-                    <th class="py-2.5">Amount</th>
-                    <th class="py-2.5">Method</th>
-                    <th class="py-2.5 text-center">Status</th>
-                  </tr>
-                </thead>
-                <tbody id="dashRecentTxBody" class="font-semibold text-gray-200">
-                  <!-- Populated by JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Lucky Thai Win 4D Quick Status Card -->
-          <div class="glass-card p-5 flex flex-col gap-4 border border-amber-400/20">
-            <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
-              <h3 class="font-display font-extrabold text-white text-sm flex items-center gap-2">
-                <i class="fa-solid fa-clover text-amber-400"></i> Lucky Thai 4D Live Engine
-              </h3>
-              <span class="badge badge-success text-[9px]">ONLINE</span>
-            </div>
-            <div class="flex flex-col gap-2 text-xs">
-              <div class="flex items-center justify-between p-2.5 bg-sidebarDark rounded-xl">
-                <span class="text-textMuted">Current Draw #</span>
-                <span class="font-mono font-bold text-amber-300">#4D-8892 (Scheduled :00 / :30)</span>
-              </div>
-              <div class="flex items-center justify-between p-2.5 bg-sidebarDark rounded-xl">
-                <span class="text-textMuted">1st Prize Number</span>
-                <span class="font-mono font-bold text-brandGreen text-sm">3629</span>
-              </div>
-              <div class="flex items-center justify-between p-2.5 bg-sidebarDark rounded-xl">
-                <span class="text-textMuted">2nd Prize Sequence</span>
-                <span class="font-mono font-bold text-cyan-300 text-xs">5584, 8071, 9142</span>
-              </div>
-            </div>
-            <button onclick="switchAdminModule('thai4d')" class="w-full py-2.5 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/30 text-xs font-bold cursor-pointer transition-all">
-              Manage Thai 4D Parameters & Broadcasts →
+        <!-- SECTION 2: SPORT HIGHLIGHTS CARD (Matches Screenshot) -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden flex flex-col">
+          <!-- Card Header Strip -->
+          <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-3">
+            <h3 id="highlightsTitle" class="font-bold text-[#1F2937] text-sm sm:text-base">Sport Highlights</h3>
+            <button 
+              onclick="refreshSportHighlights()" 
+              class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-2.5 py-0.5 rounded cursor-pointer transition-colors">
+              Refresh
             </button>
           </div>
 
-        </div>
-
-        <!-- Real-Time Game-Wise Activity Breakdown Table on Dashboard -->
-        <div class="glass-card p-5 flex flex-col gap-4">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-borderSubtle pb-3">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-gamepad text-indigo-400 text-base"></i>
-              <h3 class="font-display font-extrabold text-white text-sm">Game-Wise Betting & Turnover Analytics</h3>
-            </div>
-            <div class="flex items-center gap-2">
-              <select id="dashGameDateFilter" onchange="renderDashboardGameActivity(this.value)" class="bg-sidebarDark border border-borderSubtle rounded-xl px-2.5 py-1 text-xs text-white font-bold outline-none cursor-pointer">
-                <option value="ALL">All Time</option>
-                <option value="TODAY">Today</option>
-                <option value="YESTERDAY">Yesterday</option>
-                <option value="LAST_7_DAYS">Last 7 Days</option>
-                <option value="LAST_30_DAYS">Last 30 Days</option>
-              </select>
-              <button onclick="switchAdminModule('games')" class="text-xs text-brandBlue hover:underline font-bold">All Games Catalog →</button>
-            </div>
-          </div>
-
-          <div class="overflow-x-auto custom-scrollbar rounded-xl border border-borderSubtle">
-            <table class="w-full text-left text-xs whitespace-nowrap min-w-[700px]">
-              <thead class="bg-sidebarDark text-textMuted uppercase text-[10px] font-extrabold tracking-wider border-b border-borderSubtle">
-                <tr>
-                  <th class="p-3.5">Game Title</th>
-                  <th class="p-3.5">Category</th>
-                  <th class="p-3.5 text-center">Active Players</th>
-                  <th class="p-3.5 text-center">Total Entries</th>
-                  <th class="p-3.5">Total Stake (Rs)</th>
-                  <th class="p-3.5">Tokens Used</th>
-                  <th class="p-3.5">Total Payouts</th>
-                  <th class="p-3.5">Net Platform Margin</th>
-                  <th class="p-3.5 text-right">Analytics</th>
+          <!-- Highlights Data Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-[#E5E7EB] bg-[#FAFAFA]">
+                  <th id="highlightsCategoryHeader" class="px-4 py-2.5 font-bold text-[#1F2937] text-xs">Soccer</th>
+                  <th class="px-4 py-2.5 font-bold text-[#1F2937] text-xs text-right">Amount</th>
                 </tr>
               </thead>
-              <tbody id="dashGameActivityBody" class="font-semibold text-gray-200 divide-y divide-borderSubtle bg-[#0D1424]">
-                <!-- Populated by JS -->
+              <tbody id="sportHighlightsTableBody" class="divide-y divide-[#F3F4F6] text-xs">
+                <!-- Populated dynamically / with screenshot reference items -->
               </tbody>
             </table>
           </div>
         </div>
 
+        <!-- Dynamic Level Details & Downline Card (Preserved from Previous Work) -->
+        <div id="levelDetailsCard" class="bg-white border border-[#D8DEE4] rounded p-4 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-base">
+              <i class="fa-solid fa-crown"></i>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span id="levelCardRoleBadge" class="bg-amber-100 text-amber-800 border border-amber-300 font-bold text-[10px] px-2 py-0.5 rounded">SUPER MASTER LEVEL</span>
+                <span id="levelCardAgentId" class="text-xs font-mono font-bold text-gray-700">#ADM-SM-01</span>
+              </div>
+              <span id="levelCardAgentName" class="text-sm font-bold text-gray-900">Faisal Khan (@SuperMaster_Apex)</span>
+              <span id="levelCardLineage" class="text-[11px] text-gray-500 font-mono">Lineage: ThaiNXT HQ ➔ Sultan_SSM ➔ SuperMaster_Apex</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 text-xs font-mono">
+            <div><span class="text-gray-500 text-[10px] block">Commission</span> <strong id="levelCardCommission" class="text-amber-600 font-bold">5.0%</strong></div>
+            <div><span class="text-gray-500 text-[10px] block">Downline</span> <strong id="levelCardDownlineCount" class="text-cyan-700 font-bold">2 MA · 4 Players</strong></div>
+            <div><span class="text-gray-500 text-[10px] block">Credit Limit</span> <strong id="levelCardCredit" class="text-emerald-600 font-bold">Rs 1.50M</strong></div>
+            <div><span class="text-gray-500 text-[10px] block">Token Quota</span> <strong id="levelCardTokens" class="text-purple-600 font-bold">500K VTK</strong></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- MODULE 1.5: CURRENT POSITION                                 -->
+      <!-- ============================================================ -->
+      <div id="module_current_position" class="module-view hidden flex flex-col gap-4">
+        <div class="bg-white border border-[#D8DEE4] rounded p-4 shadow-sm flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-bold text-gray-900">Current Position & Live Bets</h2>
+            <p class="text-xs text-gray-500">Real-time open exposures and active market books</p>
+          </div>
+          <button onclick="renderSportHighlights()" class="px-3 py-1 bg-[#00884F] text-white rounded text-xs font-bold">Refresh Markets</button>
+        </div>
       </div>
 
       <!-- ============================================================ -->
@@ -2159,8 +1951,20 @@
     function switchAdminModule(moduleId) {
       document.querySelectorAll('.module-view').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.nav-item').forEach(el => {
-        el.classList.remove('bg-brandBlue/20', 'border', 'border-brandBlue/40', 'text-white');
-        el.classList.add('text-textMuted');
+        el.classList.remove('bg-[#1F2832]', 'border-l-4', 'border-l-[#00D2FF]', 'text-white');
+        el.classList.add('text-[#D1D5DB]');
+      });
+
+      // Reset Top Nav Links
+      ['dashboard', 'users', 'reports'].forEach(k => {
+        const topLink = document.getElementById('topNavLink_' + k);
+        if (topLink) {
+          if (k === moduleId) {
+            topLink.className = 'px-2.5 py-1 rounded text-[#111827] font-semibold bg-gray-100 transition-colors';
+          } else {
+            topLink.className = 'px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors';
+          }
+        }
       });
 
       const target = document.getElementById('module_' + moduleId);
@@ -2169,14 +1973,15 @@
 
       if (target) target.classList.remove('hidden');
       if (navBtn) {
-        navBtn.classList.remove('text-textMuted');
-        navBtn.classList.add('bg-brandBlue/20', 'border', 'border-brandBlue/40', 'text-white');
+        navBtn.classList.remove('text-[#D1D5DB]');
+        navBtn.classList.add('bg-[#1F2832]', 'border-l-4', 'border-l-[#00D2FF]', 'text-white');
       }
 
       // Format Header Title
       const titles = {
         'dashboard': 'Executive Command Dashboard',
         'users': 'Player Accounts & User Profiles',
+        'current_position': 'Current Position & Open Books',
         'games': 'Game Catalog & Categories',
         'thai4d': 'Lucky Thai Win 4D & Broadcast Engine',
         'deposits': 'Deposit Requests & Approvals',
@@ -2194,6 +1999,7 @@
       if (titleEl) titleEl.innerText = titles[moduleId] || 'Management Module';
 
       // Re-render relevant data table
+      if (moduleId === 'dashboard') renderSportHighlights();
       if (moduleId === 'users') renderUsersTable();
       if (moduleId === 'games') renderGamesTable();
       if (moduleId === 'deposits') renderDepositsTable();
@@ -2581,6 +2387,107 @@
       document.body.removeChild(link);
     }
 
+    // Sport Highlights Dataset & Handlers (Matches Reference Screenshot)
+    const SPORT_HIGHLIGHTS_DATA = {
+      'Soccer': [
+        { match: 'Almeria v Eldense / Match Odds', amount: 71009 },
+        { match: 'Batman Petrolspor v Boluspor / Match Odds', amount: 24113 },
+        { match: 'Brondby v SonderjyskE / Match Odds', amount: 364260 },
+        { match: 'Cardiff v Wrexham / Match Odds', amount: 487619 },
+        { match: 'Casa Pia v Benfica / Match Odds', amount: 531306 },
+        { match: 'Deportivo v Elche / Match Odds', amount: 1723041 },
+        { match: 'FCSB v Botosani / Match Odds', amount: 35247 },
+        { match: 'FK Decic v FK Bokelj / Match Odds', amount: 53384 },
+        { match: 'Girona v Rayo Vallecano / Match Odds', amount: 42910 },
+        { match: 'Inter v AC Milan / Match Odds', amount: 890320 }
+      ],
+      'Tennis': [
+        { match: 'Alcaraz v Sinner / Match Odds', amount: 1420500 },
+        { match: 'Djokovic v Medvedev / Match Odds', amount: 2110800 },
+        { match: 'Swiatek v Sabalenka / Match Odds', amount: 650200 },
+        { match: 'Zverev v Rune / Match Odds', amount: 380400 }
+      ],
+      'Cricket': [
+        { match: 'Pakistan v India / Match Odds', amount: 3850000 },
+        { match: 'England v Australia / Match Odds', amount: 2450000 },
+        { match: 'South Africa v New Zealand / Match Odds', amount: 890000 },
+        { match: 'Peshawar Zalmi v Lahore Qalandars / Match Odds', amount: 1670000 }
+      ]
+    };
+
+    let currentHighlightsSport = 'Soccer';
+
+    function renderSportHighlights(sport = currentHighlightsSport) {
+      currentHighlightsSport = sport;
+      const tbody = document.getElementById('sportHighlightsTableBody');
+      const headerTitle = document.getElementById('highlightsCategoryHeader');
+      if (!tbody) return;
+
+      if (headerTitle) headerTitle.innerText = sport;
+
+      const list = SPORT_HIGHLIGHTS_DATA[sport] || SPORT_HIGHLIGHTS_DATA['Soccer'];
+      tbody.innerHTML = list.map(item => `
+        <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#F3F4F6] cursor-pointer" onclick="handleHighlightClick('${item.match.replace(/'/g, "\\'")}', ${item.amount})">
+          <td class="px-4 py-2.5 text-[#00884F] hover:underline font-medium">${item.match}</td>
+          <td class="px-4 py-2.5 text-[#374151] font-mono text-right font-medium">${item.amount.toLocaleString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    function refreshSportHighlights() {
+      const list = SPORT_HIGHLIGHTS_DATA[currentHighlightsSport] || SPORT_HIGHLIGHTS_DATA['Soccer'];
+      list.forEach(item => {
+        const delta = Math.floor((Math.random() - 0.45) * 500);
+        item.amount = Math.max(1000, item.amount + delta);
+      });
+      renderSportHighlights(currentHighlightsSport);
+      showAdminToast('✓ Sport Highlights refreshed', 'success');
+    }
+
+    function filterHighlightsSport(sport) {
+      switchAdminModule('dashboard');
+      renderSportHighlights(sport);
+    }
+
+    function handleHighlightClick(matchTitle, amount) {
+      showAdminToast(`Match: ${matchTitle} | Total Matched Volume: Rs ${amount.toLocaleString()}`, 'info');
+    }
+
+    function handleDashboardUserSearch() {
+      const input = document.getElementById('dashSearchUserInput');
+      if (!input) return;
+      const query = input.value.trim();
+      if (!query) {
+        showAdminToast('Please enter a username to search.', 'warning');
+        return;
+      }
+
+      const users = AdminCore.repo.get('ADM_USERS');
+      const found = users.find(u => 
+        u.username.toLowerCase() === query.toLowerCase() || 
+        u.id.toLowerCase() === query.toLowerCase() ||
+        (u.phone && u.phone.includes(query))
+      );
+
+      if (found) {
+        showAdminToast(`✓ Found player account: @${found.username} (#${found.id})`, 'success');
+        switchAdminModule('users');
+        const filterInput = document.getElementById('userSearchFilter');
+        if (filterInput) {
+          filterInput.value = found.username;
+          filterUsers();
+        }
+        inspectUserCredentials(found.id);
+      } else {
+        showAdminToast(`No user account found matching "${query}"`, 'error');
+      }
+    }
+
+    function toggleAdminAccountDropdown() {
+      const menu = document.getElementById('adminAccountDropdownMenu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
     // Role Switching Handler (Demo Testing Tool)
     function handleRoleSwitch(roleKey) {
       const admins = AdminCore.repo.get('ADM_ADMINS');
@@ -2596,6 +2503,26 @@
 
     function updateAdminHeaderInfo() {
       const cur = AdminCore.repo.getCurrentAdmin();
+      
+      // Top BPEXCH Header Elements (Matches Screenshot)
+      const topNameEl = document.getElementById('topBarAdminName');
+      const topRoleEl = document.getElementById('topBarAdminRole');
+      const topBalEl = document.getElementById('topBarBalance');
+      const topExpEl = document.getElementById('topBarExposure');
+      const topDropFullName = document.getElementById('topBarDropdownAdminFullName');
+      const topDropScope = document.getElementById('topBarDropdownAdminScope');
+
+      if (topNameEl) topNameEl.innerText = cur.username || cur.name || 'Ahmad5050x';
+      if (topRoleEl) {
+        const formattedRole = cur.role === 'SUPER_ADMIN' ? 'SuperAdmin' : (cur.role === 'SUPER_MASTER' ? 'SuperMaster' : (cur.role === 'MASTER_AGENT' ? 'MasterAgent' : (cur.role === 'AGENT' ? 'Agent' : cur.role)));
+        topRoleEl.innerText = `(${formattedRole})`;
+      }
+      if (topBalEl) topBalEl.innerText = (cur.balance !== undefined ? cur.balance : 0).toLocaleString();
+      if (topExpEl) topExpEl.innerText = (cur.exposure !== undefined ? cur.exposure : 0).toLocaleString();
+      if (topDropFullName) topDropFullName.innerText = `${cur.name} (@${cur.username})`;
+      if (topDropScope) topDropScope.innerText = `${cur.role.replace(/_/g, ' ')} LEVEL`;
+
+      // Legacy sidebar element support
       const nameEl = document.getElementById('sidebarAdminName');
       const avatarEl = document.getElementById('sidebarAdminAvatar');
       const roleBadge = document.getElementById('sidebarRoleBadge');
@@ -2613,42 +2540,17 @@
       }
       if (selectEl) selectEl.value = cur.role;
 
-      // Update Top Scope Badge
-      if (scopeBadge) {
-        if (cur.role === 'SUPER_ADMIN') {
-          scopeBadge.className = 'badge badge-info text-[10px] hidden sm:inline-flex';
-          scopeBadge.innerText = 'GLOBAL ROOT SCOPE';
-        } else if (cur.role === 'COMPANY_ADMIN') {
-          scopeBadge.className = 'badge badge-purple text-[10px] hidden sm:inline-flex';
-          scopeBadge.innerText = `COMPANY SCOPE (${cur.companyId})`;
-        } else if (cur.role === 'SENIOR_SUPER_MASTER') {
-          scopeBadge.className = 'badge badge-warning text-[10px] hidden sm:inline-flex';
-          scopeBadge.innerText = 'SSM DOWNLINE SCOPE';
-        } else if (cur.role === 'SUPER_MASTER') {
-          scopeBadge.className = 'badge badge-warning text-[10px] hidden sm:inline-flex';
-          scopeBadge.innerText = 'SUPER MASTER DOWNLINE SCOPE';
-        } else if (cur.role === 'MASTER_AGENT') {
-          scopeBadge.className = 'badge badge-primary text-[10px] hidden sm:inline-flex';
-          scopeBadge.innerText = 'MASTER AGENT SCOPE';
-        } else if (cur.role === 'AGENT') {
-          scopeBadge.className = 'badge badge-success text-[10px] hidden sm:inline-flex';
-          scopeBadge.innerText = 'DIRECT PLAYERS SCOPE';
-        } else {
-          scopeBadge.className = 'badge badge-info text-[10px] hidden sm:inline-flex';
-          scopeBadge.innerText = `${cur.role} SCOPE`;
-        }
-      }
-
       // Update Dynamic Level Details Card on Dashboard
       const levelCard = document.getElementById('levelDetailsCard');
       if (levelCard) {
         if (cur.role === 'SUPER_ADMIN') {
-          levelCard.classList.add('hidden');
+          levelCard.classList.remove('hidden');
+          const rBadge = document.getElementById('levelCardRoleBadge');
+          if (rBadge) rBadge.innerText = 'SUPER ADMIN LEVEL (GLOBAL HQ)';
         } else {
           levelCard.classList.remove('hidden');
           const rBadge = document.getElementById('levelCardRoleBadge');
           const idEl = document.getElementById('levelCardAgentId');
-          const compEl = document.getElementById('levelCardCompanyBadge');
           const nameCardEl = document.getElementById('levelCardAgentName');
           const lineageEl = document.getElementById('levelCardLineage');
           const commEl = document.getElementById('levelCardCommission');
@@ -2658,7 +2560,6 @@
 
           if (rBadge) rBadge.innerText = `${cur.role.replace(/_/g, ' ')} LEVEL`;
           if (idEl) idEl.innerText = cur.id || '#ADM-SM-01';
-          if (compEl) compEl.innerText = cur.companyId || 'COMP-01';
           if (nameCardEl) nameCardEl.innerText = `${cur.name} (@${cur.username})`;
 
           // Resolve downline items
@@ -2667,7 +2568,7 @@
 
           if (lineageEl) {
             const uplineName = cur.uplineUsername || 'Global HQ';
-            lineageEl.innerHTML = `<i class="fa-solid fa-sitemap text-amber-400 text-[10px]"></i> Lineage: ThaiNXT HQ ➔ ${uplineName} ➔ <strong class="text-amber-300 font-bold">${cur.username}</strong>`;
+            lineageEl.innerHTML = `<i class="fa-solid fa-sitemap text-amber-500 text-[10px]"></i> Lineage: ThaiNXT HQ ➔ ${uplineName} ➔ <strong class="text-gray-900 font-bold">${cur.username}</strong>`;
           }
           if (commEl) commEl.innerText = `${cur.commissionRate || 5.0}%`;
           if (downlineEl) {
@@ -4094,6 +3995,7 @@
       }
 
       updateAdminHeaderInfo();
+      renderSportHighlights();
       renderUsersTable();
       renderGamesTable();
       renderDepositsTable();
