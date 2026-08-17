@@ -1006,77 +1006,226 @@
       </div>
 
       <!-- ============================================================ -->
-      <!-- MODULE 9: RISK & COMPLIANCE                                  -->
+      <!-- MODULE 9: BET LOCK / ALLOWED MARKET TYPES (Matches Screenshot)-->
       <!-- ============================================================ -->
-      <div id="module_risk" class="module-view hidden flex flex-col gap-6">
+      <div id="module_risk" class="module-view hidden flex flex-col gap-4">
         
-        <div>
-          <h2 class="text-xl font-display font-black text-white">Risk, Compliance & Fraud Prevention</h2>
-          <p class="text-xs text-textMuted mt-0.5">Automated high-velocity bettor alerts, pattern recognition and account freezing</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- CARD: ALLOWED MARKET TYPES (Matches Screenshot) -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm max-w-lg w-full sm:w-[460px] overflow-hidden">
           
-          <div class="glass-card p-5 flex flex-col gap-3">
-            <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
-              <h3 class="font-display font-extrabold text-white text-sm flex items-center gap-2">
-                <i class="fa-solid fa-bell text-brandWarning"></i> Active Security & Risk Alerts
-              </h3>
-              <span class="badge badge-warning text-[9px]">2 Flags</span>
-            </div>
-            <div class="flex flex-col gap-2.5 text-xs">
-              <div class="p-3 bg-sidebarDark rounded-xl border border-brandDanger/30 flex flex-col gap-1">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-brandDanger">High Frequency Betting Sequence</span>
-                  <span class="text-[10px] text-textMuted">10 mins ago</span>
-                </div>
-                <span class="text-gray-300">User <strong>SuspiciousBettor</strong> placed 45 sequential 1-digit bets within 60 seconds.</span>
-                <div class="flex items-center gap-2 mt-1">
-                  <button onclick="showAdminToast('Account frozen for investigation.', 'warning')" class="px-2.5 py-1 rounded bg-brandDanger/20 hover:bg-brandDanger/30 text-brandDanger font-bold text-[11px]">Freeze Account</button>
-                  <button onclick="showAdminToast('Alert dismissed.', 'info')" class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-gray-300 text-[11px]">Dismiss</button>
-                </div>
-              </div>
-
-              <div class="p-3 bg-sidebarDark rounded-xl border border-brandWarning/30 flex flex-col gap-1">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-brandWarning">Large Withdrawal vs Deposit Ratio</span>
-                  <span class="text-[10px] text-textMuted">1 hour ago</span>
-                </div>
-                <span class="text-gray-300">User <strong>CryptoKing</strong> requested Rs 25,000 cashout with rapid 3x win turnover.</span>
-              </div>
-            </div>
+          <!-- Card Header Strip -->
+          <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-[#F8FAFC]">
+            <h3 id="betLockTitle" class="font-bold text-[#1F2937] text-sm">Allowed Market Types (Ahmad5050x)</h3>
           </div>
 
-          <div class="glass-card p-5 flex flex-col gap-3">
-            <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
-              <h3 class="font-display font-extrabold text-white text-sm flex items-center gap-2">
-                <i class="fa-solid fa-shield-halved text-brandBlue"></i> Responsible Gaming & Caps
-              </h3>
-              <span class="badge badge-info text-[9px]">Enforced</span>
+          <!-- Card Body / Market Types Tree List -->
+          <div class="p-4 sm:p-5 flex flex-col gap-3 text-xs text-gray-800">
+            
+            <!-- 1. All Casino -->
+            <div class="flex flex-col gap-1.5">
+              <label class="flex items-center gap-2 font-bold cursor-pointer text-gray-900">
+                <input type="checkbox" id="chk_cat_all_casino" onchange="toggleBetLockCategory('all_casino', this.checked)" checked class="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer accent-[#0075FF]" />
+                <span>All Casino</span>
+              </label>
+              <div class="flex flex-col gap-1.5 pl-6">
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-all_casino w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>TeenPatti Studio</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-all_casino w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Royal Casino</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-all_casino w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Betfair Games</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-all_casino w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Star Casino</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-all_casino w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Galaxy Casino</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-all_casino w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Sports Book</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-all_casino w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Super Nowa</span>
+                </label>
+              </div>
             </div>
-            <div class="flex flex-col gap-3 text-xs">
-              <div class="p-3 bg-sidebarDark rounded-xl flex items-center justify-between">
-                <div>
-                  <div class="font-bold text-white">Max Single Bet Cap</div>
-                  <div class="text-[10px] text-textMuted">Limits maximum exposure per ticket</div>
-                </div>
-                <span class="font-mono font-bold text-amber-300">Rs 50,000</span>
-              </div>
-              <div class="p-3 bg-sidebarDark rounded-xl flex items-center justify-between">
-                <div>
-                  <div class="font-bold text-white">Daily Deposit Ceiling</div>
-                  <div class="text-[10px] text-textMuted">Automatic AML compliance threshold</div>
-                </div>
-                <span class="font-mono font-bold text-brandGreen">Rs 500,000</span>
-              </div>
-              <div class="p-3 bg-sidebarDark rounded-xl flex items-center justify-between">
-                <div>
-                  <div class="font-bold text-white">Suspicious IP Multi-Accounting Filter</div>
-                  <div class="text-[10px] text-textMuted">Blocks multiple registrations from identical IPs</div>
-                </div>
-                <span class="badge badge-success text-[9px]">ACTIVE</span>
+
+            <hr class="border-[#E5E7EB] my-1" />
+
+            <!-- 2. Cricket -->
+            <div class="flex flex-col gap-1.5">
+              <label class="flex items-center gap-2 font-bold cursor-pointer text-gray-900">
+                <input type="checkbox" id="chk_cat_cricket" onchange="toggleBetLockCategory('cricket', this.checked)" checked class="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer accent-[#0075FF]" />
+                <span>Cricket</span>
+              </label>
+              <div class="flex flex-col gap-1.5 pl-6">
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-cricket w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Figure</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-cricket w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Fancy</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-cricket w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Match Odds</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-cricket w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Even / Odd</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-cricket w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Toss</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-cricket w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Cup Winner</span>
+                </label>
               </div>
             </div>
+
+            <hr class="border-[#E5E7EB] my-1" />
+
+            <!-- 3. Greyhound -->
+            <div class="flex flex-col gap-1.5">
+              <label class="flex items-center gap-2 font-bold cursor-pointer text-gray-900">
+                <input type="checkbox" id="chk_cat_greyhound" onchange="toggleBetLockCategory('greyhound', this.checked)" checked class="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer accent-[#0075FF]" />
+                <span>Greyhound</span>
+              </label>
+              <div class="flex flex-col gap-1.5 pl-6">
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-greyhound w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Australia</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-greyhound w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Britian</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-greyhound w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>New Zealand</span>
+                </label>
+              </div>
+            </div>
+
+            <hr class="border-[#E5E7EB] my-1" />
+
+            <!-- 4. Horse Race -->
+            <div class="flex flex-col gap-1.5">
+              <label class="flex items-center gap-2 font-bold cursor-pointer text-gray-900">
+                <input type="checkbox" id="chk_cat_horse_race" onchange="toggleBetLockCategory('horse_race', this.checked)" checked class="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer accent-[#0075FF]" />
+                <span>Horse Race</span>
+              </label>
+              <div class="flex flex-col gap-1.5 pl-6">
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Dubai</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Australia</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Bahrain</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>France</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>England</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>England (PLACE)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Ireland</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Ireland (PLACE)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>New Zealand</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Sweden</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Singapore</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>America</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-horse_race w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Africa</span>
+                </label>
+              </div>
+            </div>
+
+            <hr class="border-[#E5E7EB] my-1" />
+
+            <!-- 5. Soccer -->
+            <div class="flex flex-col gap-1.5">
+              <label class="flex items-center gap-2 font-bold cursor-pointer text-gray-900">
+                <input type="checkbox" id="chk_cat_soccer" onchange="toggleBetLockCategory('soccer', this.checked)" checked class="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer accent-[#0075FF]" />
+                <span>Soccer</span>
+              </label>
+              <div class="flex flex-col gap-1.5 pl-6">
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-soccer w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Match Odds</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-soccer w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Over/Under Goals</span>
+                </label>
+              </div>
+            </div>
+
+            <hr class="border-[#E5E7EB] my-1" />
+
+            <!-- 6. Tennis -->
+            <div class="flex flex-col gap-1.5">
+              <label class="flex items-center gap-2 font-bold cursor-pointer text-gray-900">
+                <input type="checkbox" id="chk_cat_tennis" onchange="toggleBetLockCategory('tennis', this.checked)" checked class="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer accent-[#0075FF]" />
+                <span>Tennis</span>
+              </label>
+              <div class="flex flex-col gap-1.5 pl-6">
+                <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+                  <input type="checkbox" class="chk-sub-tennis w-3.5 h-3.5 rounded accent-[#0075FF] cursor-pointer" checked />
+                  <span>Match Odds</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Save Button -->
+            <button 
+              onclick="saveBetLockSettings()" 
+              class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-4 py-1.5 rounded transition-colors cursor-pointer shadow-sm w-fit mt-2">
+              Save
+            </button>
+
           </div>
 
         </div>
@@ -2467,6 +2616,17 @@
       document.body.removeChild(link);
     }
 
+    function toggleBetLockCategory(catKey, isChecked) {
+      document.querySelectorAll('.chk-sub-' + catKey).forEach(chk => {
+        chk.checked = isChecked;
+      });
+    }
+
+    function saveBetLockSettings() {
+      const admin = AdminCore.repo.getCurrentAdmin();
+      showAdminToast(`✓ Allowed market type permissions saved for @${admin.username || 'Ahmad5050x'}`, 'success');
+    }
+
     function refreshMarketPosition() {
       showAdminToast('✓ Market Position refreshed', 'success');
     }
@@ -2689,6 +2849,11 @@
       if (topExpEl) topExpEl.innerText = (cur.exposure !== undefined ? cur.exposure : 0).toLocaleString();
       if (topDropFullName) topDropFullName.innerText = `${cur.name} (@${cur.username})`;
       if (topDropScope) topDropScope.innerText = `${cur.role.replace(/_/g, ' ')} LEVEL`;
+
+      const betLockTitle = document.getElementById('betLockTitle');
+      if (betLockTitle) {
+        betLockTitle.innerText = `Allowed Market Types (${cur.username || cur.name || 'Ahmad5050x'})`;
+      }
 
       // Legacy sidebar element support
       const nameEl = document.getElementById('sidebarAdminName');
