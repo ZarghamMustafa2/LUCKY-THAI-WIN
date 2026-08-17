@@ -1105,41 +1105,89 @@
       </div>
 
       <!-- ============================================================ -->
-      <!-- MODULE 11: REPORTS & EXPORTS HUB                             -->
+      <!-- MODULE 11: REPORTS & EXPORTS HUB (Matches Screenshot)         -->
       <!-- ============================================================ -->
-      <div id="module_reports" class="module-view hidden flex flex-col gap-6">
+      <div id="module_reports" class="module-view hidden flex flex-col justify-between min-h-[calc(100vh-120px)] gap-4">
         
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-xl font-display font-black text-white">Platform Reports & Data Export Hub</h2>
-            <p class="text-xs text-textMuted mt-0.5">Generate, filter and export executive accounting, turnover and user growth ledgers</p>
+        <div class="flex flex-col gap-4">
+          <!-- CARD 1: REPORT TYPE (Matches Screenshot) -->
+          <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
+            <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-2.5">
+              <i class="fa-solid fa-filter text-[#1F2937] text-xs"></i>
+              <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Report Type</h3>
+            </div>
+            <div class="p-3 sm:p-4 flex flex-wrap items-center gap-2 text-xs">
+              <button onclick="switchReportTypeTab('book_detail')" id="repTab_book_detail" class="px-3.5 py-1 bg-[#00884F] text-white rounded font-bold transition-colors cursor-pointer shadow-sm">Book Detail</button>
+              <button onclick="switchReportTypeTab('book_detail_2')" id="repTab_book_detail_2" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Book Detail 2</button>
+              <button onclick="switchReportTypeTab('daily_pl')" id="repTab_daily_pl" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Daily PL</button>
+              <button onclick="switchReportTypeTab('daily_report')" id="repTab_daily_report" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Daily Report</button>
+              <button onclick="switchReportTypeTab('final_sheet')" id="repTab_final_sheet" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Final Sheet</button>
+              <button onclick="switchAdminModule('users')" id="repTab_accounts" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Accounts</button>
+              <button onclick="switchReportTypeTab('commission_report')" id="repTab_commission_report" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Commission Report</button>
+            </div>
           </div>
-          <div class="flex items-center gap-2">
-            <button onclick="exportDataToCsv('users')" class="px-3.5 py-2 rounded-xl bg-cardDark hover:bg-white/10 text-white text-xs font-bold border border-borderSubtle transition-all cursor-pointer flex items-center gap-2">
-              <i class="fa-solid fa-file-csv text-brandGreen"></i> Export Users CSV
-            </button>
-            <button onclick="exportDataToCsv('finance')" class="px-3.5 py-2 rounded-xl bg-brandBlue hover:bg-blue-700 text-white text-xs font-extrabold shadow-lg transition-all cursor-pointer flex items-center gap-2">
-              <i class="fa-solid fa-download"></i> Export Financial Ledger
-            </button>
+
+          <!-- CARD 2: REPORT FILTER (Matches Screenshot) -->
+          <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
+            <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-2.5">
+              <i class="fa-solid fa-filter text-[#1F2937] text-xs"></i>
+              <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Report Filter</h3>
+            </div>
+            <div class="p-4 sm:p-5 flex flex-wrap items-center gap-3 text-xs">
+              <!-- Start Date Time -->
+              <div class="flex items-center border border-[#D1D5DB] rounded bg-white overflow-hidden shadow-sm">
+                <input 
+                  type="text" 
+                  id="reportStartDateInput" 
+                  value="08/17/2026 12:00 AM" 
+                  class="px-3 py-1.5 text-xs text-gray-800 font-mono outline-none bg-transparent w-44" 
+                />
+                <span class="px-2.5 py-1.5 bg-gray-100 text-gray-600 border-l border-[#E5E7EB]">
+                  <i class="fa-regular fa-calendar"></i>
+                </span>
+              </div>
+
+              <span class="text-gray-500 font-bold">-</span>
+
+              <!-- End Date Time -->
+              <div class="flex items-center border border-[#D1D5DB] rounded bg-white overflow-hidden shadow-sm">
+                <input 
+                  type="text" 
+                  id="reportEndDateInput" 
+                  value="08/17/2026 11:59 PM" 
+                  class="px-3 py-1.5 text-xs text-gray-800 font-mono outline-none bg-transparent w-44" 
+                />
+                <span class="px-2.5 py-1.5 bg-gray-100 text-gray-600 border-l border-[#E5E7EB]">
+                  <i class="fa-regular fa-calendar"></i>
+                </span>
+              </div>
+
+              <!-- Submit Button -->
+              <button 
+                onclick="submitReportFilter()" 
+                class="bg-[#00884F] hover:bg-[#007443] text-white font-bold px-4 py-1.5 rounded transition-colors cursor-pointer shadow-sm">
+                Submit
+              </button>
+            </div>
+          </div>
+
+          <!-- Report Output Container -->
+          <div id="reportOutputContainer" class="bg-white border border-[#D8DEE4] rounded shadow-sm p-4 hidden">
+            <div class="flex items-center justify-between border-b border-gray-200 pb-2 mb-3">
+              <h4 id="reportOutputTitle" class="font-bold text-gray-800 text-sm">Book Detail Report</h4>
+              <button onclick="exportDataToCsv('finance')" class="text-xs bg-[#00884F] text-white px-2.5 py-1 rounded font-bold flex items-center gap-1">
+                <i class="fa-solid fa-download"></i> Export CSV
+              </button>
+            </div>
+            <div class="overflow-x-auto text-xs text-gray-700" id="reportOutputBody">
+              <!-- Report Data -->
+            </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="glass-card p-5 flex flex-col gap-2">
-            <span class="text-xs font-bold text-textMuted uppercase">Monthly Gross Turnover</span>
-            <span class="text-2xl font-mono font-black text-white">Rs 26,890,200</span>
-            <span class="text-[11px] text-brandGreen">Platform Margin: 8.4% (Rs 2.25M)</span>
-          </div>
-          <div class="glass-card p-5 flex flex-col gap-2">
-            <span class="text-xs font-bold text-textMuted uppercase">Total Deposited Volume</span>
-            <span class="text-2xl font-mono font-black text-emerald-400">Rs 4,850,000</span>
-            <span class="text-[11px] text-textMuted">Across 3 Companies</span>
-          </div>
-          <div class="glass-card p-5 flex flex-col gap-2">
-            <span class="text-xs font-bold text-textMuted uppercase">Total Withdrawals Volume</span>
-            <span class="text-2xl font-mono font-black text-brandDanger">Rs 2,910,000</span>
-            <span class="text-[11px] text-brandGreen">Net Platform Liquidity: +Rs 1.94M</span>
-          </div>
+        <!-- BOTTOM FOOTER (Matches Screenshot) -->
+        <div class="py-3 text-center text-xs font-bold text-[#1F2937] border-t border-[#D8DEE4]">
+          Welcome to Exchange.
         </div>
 
       </div>
@@ -2421,6 +2469,90 @@
 
     function refreshMarketPosition() {
       showAdminToast('✓ Market Position refreshed', 'success');
+    }
+
+    let currentReportType = 'book_detail';
+
+    function switchReportTypeTab(tabName) {
+      currentReportType = tabName;
+      const tabs = ['book_detail', 'book_detail_2', 'daily_pl', 'daily_report', 'final_sheet', 'commission_report'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('repTab_' + t);
+        if (btn) {
+          if (t === tabName) {
+            btn.className = 'px-3.5 py-1 bg-[#00884F] text-white rounded font-bold transition-colors cursor-pointer shadow-sm';
+          } else {
+            btn.className = 'px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer';
+          }
+        }
+      });
+      submitReportFilter();
+    }
+
+    function submitReportFilter() {
+      const container = document.getElementById('reportOutputContainer');
+      const titleEl = document.getElementById('reportOutputTitle');
+      const bodyEl = document.getElementById('reportOutputBody');
+      const startVal = document.getElementById('reportStartDateInput') ? document.getElementById('reportStartDateInput').value : 'Today';
+      const endVal = document.getElementById('reportEndDateInput') ? document.getElementById('reportEndDateInput').value : 'Now';
+
+      if (!container || !titleEl || !bodyEl) return;
+
+      const titles = {
+        'book_detail': 'Book Detail Report',
+        'book_detail_2': 'Book Detail 2 (Aggregated)',
+        'daily_pl': 'Daily Profit & Loss Ledger',
+        'daily_report': 'Daily Operating Report',
+        'final_sheet': 'Final Settlement Sheet',
+        'commission_report': 'Downline Commission Report'
+      };
+
+      titleEl.innerText = `${titles[currentReportType] || 'Financial Report'} (${startVal} - ${endVal})`;
+      
+      const deps = AdminCore.repo.get('ADM_DEPOSITS') || [];
+      const wths = AdminCore.repo.get('ADM_WITHDRAWALS') || [];
+      const totalIn = deps.filter(d => d.status === 'Approved').reduce((a, b) => a + (b.amount || 0), 0);
+      const totalOut = wths.filter(w => w.status === 'Approved').reduce((a, b) => a + (b.amount || 0), 0);
+
+      bodyEl.innerHTML = `
+        <table class="w-full text-left border-collapse border border-gray-200">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="p-2.5 font-bold">Category / Metric</th>
+              <th class="p-2.5 font-bold">Entries</th>
+              <th class="p-2.5 font-bold">Volume (Rs)</th>
+              <th class="p-2.5 font-bold">Net P/L</th>
+              <th class="p-2.5 font-bold text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr>
+              <td class="p-2.5 font-medium">Inflow / Total Deposits</td>
+              <td class="p-2.5 font-mono">${deps.length}</td>
+              <td class="p-2.5 font-mono text-emerald-700 font-bold">Rs ${totalIn.toLocaleString()}</td>
+              <td class="p-2.5 font-mono text-emerald-600">+Rs ${totalIn.toLocaleString()}</td>
+              <td class="p-2.5 text-center"><span class="badge badge-success text-[9px]">SETTLED</span></td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-medium">Outflow / Total Withdrawals</td>
+              <td class="p-2.5 font-mono">${wths.length}</td>
+              <td class="p-2.5 font-mono text-red-700 font-bold">Rs ${totalOut.toLocaleString()}</td>
+              <td class="p-2.5 font-mono text-red-600">-Rs ${totalOut.toLocaleString()}</td>
+              <td class="p-2.5 text-center"><span class="badge badge-warning text-[9px]">PROCESSED</span></td>
+            </tr>
+            <tr class="bg-gray-50 font-bold">
+              <td class="p-2.5">Net Position / Platform Margin</td>
+              <td class="p-2.5 font-mono">${deps.length + wths.length}</td>
+              <td class="p-2.5 font-mono">Rs ${(totalIn - totalOut).toLocaleString()}</td>
+              <td class="p-2.5 font-mono text-emerald-700">+Rs ${(totalIn - totalOut).toLocaleString()}</td>
+              <td class="p-2.5 text-center"><span class="badge badge-success text-[9px]">BALANCED</span></td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+
+      container.classList.remove('hidden');
+      showAdminToast(`✓ ${titles[currentReportType] || 'Report'} updated`, 'success');
     }
 
     // Sport Highlights Dataset & Handlers (Matches Reference Screenshot)
