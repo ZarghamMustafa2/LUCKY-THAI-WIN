@@ -3425,10 +3425,20 @@
       if (plEl) plEl.innerText = '0';
 
       let users = [];
-      if (window.PlatformSync && typeof window.PlatformSync.getSanitizedUsers === 'function') {
-        users = window.PlatformSync.getSanitizedUsers(companyScope, filterOpts);
+      const allUsers = AdminCore.repo.get('ADM_USERS') || [];
+      if (admin.role === 'SUPER_ADMIN') {
+        if (window.PlatformSync && typeof window.PlatformSync.getSanitizedUsers === 'function') {
+          users = window.PlatformSync.getSanitizedUsers(companyScope, filterOpts);
+        } else {
+          users = AdminCore.repo.scopeToCompany(allUsers);
+        }
       } else {
-        users = AdminCore.repo.scopeToCompany(AdminCore.repo.get('ADM_USERS'));
+        const agentName = admin.username || admin.name || 'Ahmad5050x';
+        users = allUsers.filter(u => u.agentId === admin.id || u.createdUnder === agentName || u.agentId === agentName);
+        if (filterOpts && filterOpts.search) {
+          const s = filterOpts.search.toLowerCase();
+          users = users.filter(u => u.username.toLowerCase().includes(s) || u.id.toLowerCase().includes(s));
+        }
       }
 
       if (usersCountEl) usersCountEl.innerText = users.length;
@@ -3440,8 +3450,6 @@
         tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-500 font-sans text-xs">No data available in table</td></tr>`;
         return;
       }
-
-      const allUsers = AdminCore.repo.get('ADM_USERS');
 
       tbody.innerHTML = users.map(u => {
         const fullUser = allUsers.find(x => x.id === u.id || x.username.toLowerCase() === u.username.toLowerCase()) || u;
