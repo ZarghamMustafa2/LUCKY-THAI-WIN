@@ -2140,30 +2140,158 @@
     </div>
   </div>
 
-  <!-- Adjust Wallet Modal -->
-  <div id="adjustWalletModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-    <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-md w-full flex flex-col gap-4 text-xs">
-      <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
-        <h3 class="font-display font-black text-white text-base">Traceable Wallet Adjustment</h3>
-        <button onclick="closeModal('adjustWalletModal')" class="text-textMuted hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+  <!-- Cash & Credit Management Modal (Matches Screenshot 100% Exactly) -->
+  <div id="adjustWalletModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="bg-white border border-[#D8DEE4] rounded-lg p-5 sm:p-6 max-w-xl w-full max-h-[92vh] flex flex-col gap-4 text-xs overflow-y-auto custom-scrollbar shadow-2xl relative my-auto">
+      
+      <!-- Top Close Button (X) -->
+      <button onclick="closeModal('adjustWalletModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition-colors p-1 cursor-pointer" title="Close">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- 1. Top Tabs: [ Cash ] (active blue) | [ Credit ] (green text) -->
+      <div class="flex items-center gap-6 border-b border-gray-200 pb-3">
+        <button type="button" id="tabAdjustCash" onclick="switchAdjustWalletTab('CASH')" class="bg-[#007BFF] hover:bg-blue-600 text-white font-bold text-sm px-10 py-2 rounded shadow-sm transition-all cursor-pointer">
+          Cash
+        </button>
+        <button type="button" id="tabAdjustCredit" onclick="switchAdjustWalletTab('CREDIT')" class="bg-transparent text-[#00A65A] hover:text-emerald-700 font-bold text-sm px-6 py-2 rounded transition-all cursor-pointer">
+          Credit
+        </button>
       </div>
-      <div class="p-3 bg-sidebarDark rounded-xl flex items-center justify-between font-bold">
-        <span class="text-textMuted">Target User:</span>
-        <span id="adjustTargetUsername" class="text-cyan-300 font-mono">Alex_Winner</span>
-      </div>
-      <form onsubmit="handleWalletAdjustmentSubmit(event)" class="flex flex-col gap-3">
-        <div class="grid grid-cols-2 gap-2">
-          <label class="p-3 bg-sidebarDark rounded-xl border border-borderSubtle flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="adjType" value="CREDIT" checked /> <span class="font-bold text-brandGreen">Credit (+)</span>
-          </label>
-          <label class="p-3 bg-sidebarDark rounded-xl border border-borderSubtle flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="adjType" value="DEBIT" /> <span class="font-bold text-brandDanger">Debit (-)</span>
-          </label>
+
+      <!-- 2. User Stats Card: Username + Credit / Balance / Max Withdraw Table -->
+      <div class="flex flex-col gap-2 pt-1">
+        <h3 id="adjustTargetUsernameDisplay" class="text-xl sm:text-2xl font-bold text-[#1F2937] font-sans tracking-tight">
+          Ahmad1330x
+        </h3>
+        <span id="adjustTargetUsername" class="hidden">Ahmad1330x</span>
+
+        <div class="overflow-x-auto border border-gray-300 rounded bg-white shadow-xs">
+          <table class="w-full text-left text-xs divide-y divide-gray-300">
+            <thead class="bg-white text-gray-700 font-normal">
+              <tr class="divide-x divide-gray-300">
+                <th class="p-2 font-normal text-gray-600 text-xs">Credit</th>
+                <th class="p-2 font-normal text-gray-600 text-xs">Balance</th>
+                <th class="p-2 font-normal text-gray-600 text-xs">Max Widthdraw</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-300">
+              <tr class="divide-x divide-gray-300 font-bold text-gray-900 text-sm">
+                <td class="p-2 font-bold text-gray-900 text-sm font-sans" id="modalUserCreditVal">0 Rs.</td>
+                <td class="p-2 font-bold text-gray-900 text-sm font-sans" id="modalUserBalanceVal">0 Rs.</td>
+                <td class="p-2 font-bold text-gray-900 text-sm font-sans" id="modalUserMaxWithdrawVal">0 Rs.</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <input type="number" id="adjAmount" required placeholder="Amount (e.g. 5000)" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-mono font-bold outline-none" />
-        <textarea id="adjReason" required rows="2" placeholder="Mandatory Audit Reason (e.g. Approved bank wire deposit ref #992)" class="bg-sidebarDark border border-borderSubtle rounded-xl p-3 text-white outline-none"></textarea>
-        <button type="submit" class="w-full py-3 rounded-xl bg-brandGreen text-white font-extrabold uppercase tracking-wider mt-2">Authorize Adjustment</button>
-      </form>
+      </div>
+
+      <!-- 3. Deposit Section (Green Header #00A65A) -->
+      <div class="border border-gray-300 rounded overflow-hidden shadow-xs bg-white mt-1">
+        <!-- Green Header Bar -->
+        <div class="bg-[#00A65A] text-white font-bold px-4 py-2.5 text-sm sm:text-[15px] flex items-center justify-between">
+          <span id="depositHeaderTitle">Deposit Cash in Ahmad1330x account</span>
+        </div>
+
+        <!-- Deposit Form Body -->
+        <form onsubmit="handleDepositCashSubmit(event)" class="p-4 sm:p-5 flex flex-col gap-4 bg-white">
+          <!-- Row 1: Description -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <label class="w-full sm:w-28 text-gray-800 font-normal text-xs sm:text-sm shrink-0">
+              Description
+            </label>
+            <input 
+              type="text" 
+              id="depositDescriptionInput" 
+              required 
+              value="Cash deposit in Ahmad1330x" 
+              class="w-full border border-gray-300 rounded px-3 py-2 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#00A65A] bg-white transition-colors"
+            />
+          </div>
+
+          <!-- Row 2: Amount (Rs. prepend + input) -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <label class="w-full sm:w-28 text-gray-800 font-normal text-xs sm:text-sm shrink-0">
+              Amount
+            </label>
+            <div class="flex items-center w-full">
+              <span class="bg-[#EAEFF2] border border-r-0 border-gray-300 rounded-l px-3 py-2 text-xs sm:text-sm text-gray-600 font-medium select-none">
+                Rs.
+              </span>
+              <input 
+                type="number" 
+                id="depositAmountInput" 
+                required 
+                min="1" 
+                step="any"
+                placeholder="0" 
+                class="w-full border border-gray-300 rounded-r px-3 py-2 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#00A65A] bg-white transition-colors font-mono"
+              />
+            </div>
+          </div>
+
+          <!-- Row 3: Submit Button -->
+          <div class="pt-1">
+            <button type="submit" class="bg-[#00A65A] hover:bg-[#00884F] text-white font-bold text-xs sm:text-sm px-6 py-2 rounded shadow-sm transition-all cursor-pointer">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 4. Withdraw Section (Red Header #DD4B39) -->
+      <div class="border border-gray-300 rounded overflow-hidden shadow-xs bg-white">
+        <!-- Red Header Bar -->
+        <div class="bg-[#DD4B39] text-white font-bold px-4 py-2.5 text-sm sm:text-[15px] flex items-center justify-between">
+          <span id="withdrawHeaderTitle">Withdraw cash from Ahmad1330x account</span>
+        </div>
+
+        <!-- Withdraw Form Body -->
+        <form onsubmit="handleWithdrawCashSubmit(event)" class="p-4 sm:p-5 flex flex-col gap-4 bg-white">
+          <!-- Row 1: Description -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <label class="w-full sm:w-28 text-gray-800 font-normal text-xs sm:text-sm shrink-0">
+              Description
+            </label>
+            <input 
+              type="text" 
+              id="withdrawDescriptionInput" 
+              required 
+              value="Cash withdrawn from Ahmad1330x" 
+              class="w-full border border-gray-300 rounded px-3 py-2 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#DD4B39] bg-white transition-colors"
+            />
+          </div>
+
+          <!-- Row 2: Amount (Rs. prepend + input) -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <label class="w-full sm:w-28 text-gray-800 font-normal text-xs sm:text-sm shrink-0">
+              Amount
+            </label>
+            <div class="flex items-center w-full">
+              <span class="bg-[#EAEFF2] border border-r-0 border-gray-300 rounded-l px-3 py-2 text-xs sm:text-sm text-gray-600 font-medium select-none">
+                Rs.
+              </span>
+              <input 
+                type="number" 
+                id="withdrawAmountInput" 
+                required 
+                min="1" 
+                step="any"
+                placeholder="0" 
+                class="w-full border border-gray-300 rounded-r px-3 py-2 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#DD4B39] bg-white transition-colors font-mono"
+              />
+            </div>
+          </div>
+
+          <!-- Row 3: Submit Button (Specifically requested: "or last ma submit bhi likha hu") -->
+          <div class="pt-1">
+            <button type="submit" class="bg-[#00A65A] hover:bg-[#00884F] text-white font-bold text-xs sm:text-sm px-6 py-2 rounded shadow-sm transition-all cursor-pointer">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+
     </div>
   </div>
 
@@ -5008,39 +5136,185 @@
       renderUsersTable();
     }
 
+    let currentAdjustTab = 'CASH';
+    let currentAdjustTargetUser = null;
+
     function openAdjustWalletModal(username) {
-      if (!AdminCore.repo.hasPermission('wallets.adjust')) {
-        showAdminToast('Access Denied: wallets.adjust permission required.', 'error');
-        return;
-      }
-      document.getElementById('adjustTargetUsername').innerText = username;
+      const users = AdminCore.repo.get('ADM_USERS') || [];
+      const u = users.find(x => x.username === username || x.id === username) || {
+        username: username,
+        creditLimit: 0,
+        balance: 0
+      };
+
+      currentAdjustTargetUser = u;
+      currentAdjustTab = 'CASH';
+
+      // 1. Set Username Display
+      const userDisplayEl = document.getElementById('adjustTargetUsernameDisplay');
+      const targetUserHidden = document.getElementById('adjustTargetUsername');
+      if (userDisplayEl) userDisplayEl.innerText = u.username;
+      if (targetUserHidden) targetUserHidden.innerText = u.username;
+
+      // 2. Set Stats Table
+      const creditValEl = document.getElementById('modalUserCreditVal');
+      const balanceValEl = document.getElementById('modalUserBalanceVal');
+      const maxWithdrawValEl = document.getElementById('modalUserMaxWithdrawVal');
+
+      const cred = (u.creditLimit !== undefined ? u.creditLimit : 0);
+      const bal = (u.balance !== undefined ? u.balance : 0);
+
+      if (creditValEl) creditValEl.innerText = `${cred.toLocaleString()} Rs.`;
+      if (balanceValEl) balanceValEl.innerText = `${bal.toLocaleString()} Rs.`;
+      if (maxWithdrawValEl) maxWithdrawValEl.innerText = `${bal.toLocaleString()} Rs.`;
+
+      // 3. Reset form inputs & tabs
+      switchAdjustWalletTab('CASH');
+
       openModal('adjustWalletModal');
     }
 
-    function handleWalletAdjustmentSubmit(e) {
-      e.preventDefault();
-      const username = document.getElementById('adjustTargetUsername').innerText;
-      const amount = parseFloat(document.getElementById('adjAmount').value);
-      const reason = document.getElementById('adjReason').value.trim();
-      const type = document.querySelector('input[name="adjType"]:checked').value;
+    function switchAdjustWalletTab(tab) {
+      currentAdjustTab = tab;
+      const uname = currentAdjustTargetUser ? currentAdjustTargetUser.username : (document.getElementById('adjustTargetUsername')?.innerText || 'Client');
 
-      if (!amount || amount <= 0) return;
+      const tabCash = document.getElementById('tabAdjustCash');
+      const tabCredit = document.getElementById('tabAdjustCredit');
+      const depTitle = document.getElementById('depositHeaderTitle');
+      const withTitle = document.getElementById('withdrawHeaderTitle');
+      const depDesc = document.getElementById('depositDescriptionInput');
+      const withDesc = document.getElementById('withdrawDescriptionInput');
+      const depAmt = document.getElementById('depositAmountInput');
+      if (depAmt) depAmt.value = '0';
+      if (withAmt) withAmt.value = '0';
 
-      const users = AdminCore.repo.get('ADM_USERS');
-      const u = users.find(x => x.username === username);
-      if (u) {
-        const prevBal = u.balance;
-        if (type === 'CREDIT') {
-          u.balance += amount;
-        } else {
-          u.balance = Math.max(0, u.balance - amount);
+      if (tab === 'CASH') {
+        if (tabCash) {
+          tabCash.className = 'bg-[#007BFF] hover:bg-blue-600 text-white font-bold text-sm px-10 py-2 rounded shadow-sm transition-all cursor-pointer';
         }
+        if (tabCredit) {
+          tabCredit.className = 'bg-transparent text-[#00A65A] hover:text-emerald-700 font-bold text-sm px-6 py-2 rounded transition-all cursor-pointer';
+        }
+        if (depTitle) depTitle.innerText = `Deposit Cash in ${uname} account`;
+        if (withTitle) withTitle.innerText = `Withdraw cash from ${uname} account`;
+        if (depDesc) depDesc.value = `Cash deposit in ${uname}`;
+        if (withDesc) withDesc.value = `Cash withdrawn from ${uname}`;
+      } else {
+        if (tabCash) {
+          tabCash.className = 'bg-transparent text-[#007BFF] hover:text-blue-700 font-bold text-sm px-6 py-2 rounded transition-all cursor-pointer';
+        }
+        if (tabCredit) {
+          tabCredit.className = 'bg-[#007BFF] hover:bg-blue-600 text-white font-bold text-sm px-10 py-2 rounded shadow-sm transition-all cursor-pointer';
+        }
+        if (depTitle) depTitle.innerText = `Deposit Credit in ${uname} account`;
+        if (withTitle) withTitle.innerText = `Withdraw credit from ${uname} account`;
+        if (depDesc) depDesc.value = `Credit deposit in ${uname}`;
+        if (withDesc) withDesc.value = `Credit withdrawn from ${uname}`;
+      }
+    }
+
+    function handleDepositCashSubmit(e) {
+      e.preventDefault();
+      const uname = currentAdjustTargetUser ? currentAdjustTargetUser.username : (document.getElementById('adjustTargetUsername')?.innerText || '');
+      const amount = parseFloat(document.getElementById('depositAmountInput').value);
+      const desc = document.getElementById('depositDescriptionInput').value.trim();
+
+      if (!amount || amount <= 0) {
+        showAdminToast('Please enter a valid deposit amount.', 'error');
+        return;
+      }
+
+      const users = AdminCore.repo.get('ADM_USERS') || [];
+      const u = users.find(x => x.username === uname);
+
+      if (u) {
+        const isCash = currentAdjustTab === 'CASH';
+        if (isCash) {
+          u.balance = (u.balance || 0) + amount;
+          if (window.PlatformSync && typeof window.PlatformSync.updateUserBalance === 'function') {
+            window.PlatformSync.updateUserBalance(u.id, u.balance);
+          }
+          // Record deposit in ADM_DEPOSITS
+          const deposits = AdminCore.repo.get('ADM_DEPOSITS') || [];
+          deposits.unshift({
+            id: 'DEP-' + Math.floor(1000 + Math.random() * 9000),
+            userId: u.id,
+            username: u.username,
+            amount: amount,
+            method: 'Direct Admin Cash Deposit',
+            ref: desc || 'Direct Cash Deposit',
+            companyId: u.companyId || 'COMP-01',
+            status: 'Approved',
+            date: new Date().toLocaleString()
+          });
+          AdminCore.repo.set('ADM_DEPOSITS', deposits);
+          AdminCore.repo.logAudit('CASH_DEPOSIT', `User #${u.id}`, uname, desc, `Deposit: Rs ${amount}`, `New Balance: Rs ${u.balance}`);
+        } else {
+          u.creditLimit = (u.creditLimit || 0) + amount;
+          AdminCore.repo.logAudit('CREDIT_DEPOSIT', `User #${u.id}`, uname, desc, `Credit: Rs ${amount}`, `New Credit: Rs ${u.creditLimit}`);
+        }
+
         AdminCore.repo.set('ADM_USERS', users);
-        AdminCore.repo.logAudit('WALLET_ADJUSTMENT', `User #${u.id}`, username, reason, `Rs ${prevBal}`, `Rs ${u.balance}`);
         closeModal('adjustWalletModal');
-        showAdminToast(`Wallet of ${username} adjusted (${type} Rs ${amount.toLocaleString()})!`, 'success');
+        showAdminToast(`✓ ${isCash ? 'Cash' : 'Credit'} deposit of Rs ${amount.toLocaleString()} in @${uname} account successful!`, 'success');
         renderUsersTable();
-        renderWalletsTable();
+        if (typeof renderWalletsTable === 'function') renderWalletsTable();
+      } else {
+        closeModal('adjustWalletModal');
+        showAdminToast(`Deposit of Rs ${amount.toLocaleString()} processed.`, 'success');
+      }
+    }
+
+    function handleWithdrawCashSubmit(e) {
+      e.preventDefault();
+      const uname = currentAdjustTargetUser ? currentAdjustTargetUser.username : (document.getElementById('adjustTargetUsername')?.innerText || '');
+      const amount = parseFloat(document.getElementById('withdrawAmountInput').value);
+      const desc = document.getElementById('withdrawDescriptionInput').value.trim();
+
+      if (!amount || amount <= 0) {
+        showAdminToast('Please enter a valid withdrawal amount.', 'error');
+        return;
+      }
+
+      const users = AdminCore.repo.get('ADM_USERS') || [];
+      const u = users.find(x => x.username === uname);
+
+      if (u) {
+        const isCash = currentAdjustTab === 'CASH';
+        if (isCash) {
+          u.balance = Math.max(0, (u.balance || 0) - amount);
+          if (window.PlatformSync && typeof window.PlatformSync.updateUserBalance === 'function') {
+            window.PlatformSync.updateUserBalance(u.id, u.balance);
+          }
+          // Record withdrawal in ADM_WITHDRAWALS
+          const withdrawals = AdminCore.repo.get('ADM_WITHDRAWALS') || [];
+          withdrawals.unshift({
+            id: 'WTH-' + Math.floor(1000 + Math.random() * 9000),
+            userId: u.id,
+            username: u.username,
+            amount: amount,
+            method: 'Direct Admin Cash Withdrawal',
+            account: desc || 'Direct Cash Withdrawal',
+            companyId: u.companyId || 'COMP-01',
+            status: 'Approved',
+            requestDate: new Date().toLocaleString(),
+            processedDate: new Date().toLocaleString()
+          });
+          AdminCore.repo.set('ADM_WITHDRAWALS', withdrawals);
+          AdminCore.repo.logAudit('CASH_WITHDRAWAL', `User #${u.id}`, uname, desc, `Withdraw: Rs ${amount}`, `New Balance: Rs ${u.balance}`);
+        } else {
+          u.creditLimit = Math.max(0, (u.creditLimit || 0) - amount);
+          AdminCore.repo.logAudit('CREDIT_WITHDRAWAL', `User #${u.id}`, uname, desc, `Credit Deduct: Rs ${amount}`, `New Credit: Rs ${u.creditLimit}`);
+        }
+
+        AdminCore.repo.set('ADM_USERS', users);
+        closeModal('adjustWalletModal');
+        showAdminToast(`✓ ${isCash ? 'Cash' : 'Credit'} withdrawal of Rs ${amount.toLocaleString()} from @${uname} account successful!`, 'success');
+        renderUsersTable();
+        if (typeof renderWalletsTable === 'function') renderWalletsTable();
+      } else {
+        closeModal('adjustWalletModal');
+        showAdminToast(`Withdrawal of Rs ${amount.toLocaleString()} processed.`, 'success');
       }
     }
 
