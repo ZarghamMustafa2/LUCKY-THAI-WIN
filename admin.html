@@ -143,36 +143,22 @@
     <!-- RIGHT: AGENT (Agent) ▼ | B: 0 | Exp: 0 -->
     <div class="flex items-center gap-2 sm:gap-4 md:gap-5 shrink-0 ml-3">
       
-      <!-- User & Role Dropdown Button -->
+      <!-- User & Role Dropdown Button (Matches Screenshot Exactly) -->
       <div class="relative">
-        <button onclick="toggleAdminAccountDropdown()" class="flex items-center gap-1 text-[13px] sm:text-[14px] md:text-[15px] font-normal text-[#1F2937] hover:text-black transition-colors cursor-pointer py-1">
+        <button onclick="toggleAdminAccountDropdown()" class="flex items-center gap-1 text-[13px] sm:text-[14px] md:text-[15px] font-normal text-[#1F2937] hover:text-black transition-colors cursor-pointer py-1 select-none">
           <span id="topBarAdminName" class="font-normal text-[#1F2937]">Ahmad5050x</span>
           <span id="topBarAdminRole" class="text-[#374151] font-normal">(SuperMaster)</span>
           <i class="fa-solid fa-caret-down text-[11px] text-[#374151] ml-0.5"></i>
         </button>
 
-        <!-- Dropdown Menu for Roles & Switcher -->
-        <div id="adminAccountDropdownMenu" class="hidden absolute top-9 right-0 w-64 bg-white border border-[#E5E7EB] rounded-lg shadow-xl z-50 p-2 text-xs text-gray-700 flex flex-col gap-1">
-          <div class="p-2 border-b border-gray-100 flex flex-col">
-            <span class="text-[10px] uppercase font-bold text-gray-400">Current Session</span>
-            <span id="topBarDropdownAdminFullName" class="font-bold text-gray-900">Faisal Khan</span>
-            <span id="topBarDropdownAdminScope" class="text-[11px] text-emerald-600 font-mono font-semibold">SUPER MASTER LEVEL</span>
-          </div>
-          
-          <div class="p-1">
-            <label class="text-[10px] uppercase font-bold text-gray-400 block px-1 mb-1">Switch Testing Level</label>
-            <select id="roleSwitcherSelect" onchange="handleRoleSwitch(this.value); toggleAdminAccountDropdown();" class="w-full bg-gray-50 border border-gray-200 rounded p-1.5 text-xs text-gray-800 font-bold outline-none cursor-pointer">
-              <option value="SUPER_ADMIN">👑 Super Admin (Global Root)</option>
-              <option value="COMPANY_ADMIN">🏢 Company Admin (Apex Partner)</option>
-              <option value="SENIOR_SUPER_MASTER">💎 Senior Super Master (Sultan_SSM)</option>
-              <option value="SUPER_MASTER" selected>⭐ Super Master (SuperMaster_Apex / Ahmad5050x)</option>
-              <option value="MASTER_AGENT">🔰 Master Agent (Master_Agent_01)</option>
-              <option value="AGENT">👤 Direct Agent (Apex_Agent)</option>
-            </select>
-          </div>
-
-          <button onclick="lockAdminPanel(); toggleAdminAccountDropdown();" class="w-full text-left px-2.5 py-1.5 text-red-600 hover:bg-red-50 rounded font-bold flex items-center gap-2 mt-1 cursor-pointer">
-            <i class="fa-solid fa-lock text-xs"></i> Lock Dashboard
+        <!-- Dropdown Menu (Matches Reference Screenshot Exactly) -->
+        <div id="adminAccountDropdownMenu" class="hidden absolute top-8 sm:top-9 right-0 w-36 sm:w-40 bg-white border border-[#D1D5DB] rounded shadow-md z-50 overflow-hidden text-xs text-gray-700 divide-y divide-gray-200">
+          <button onclick="openCurrentAdminProfileModal(); toggleAdminAccountDropdown();" class="w-full px-4 py-2.5 hover:bg-gray-50 flex items-center gap-2.5 text-xs text-gray-800 transition-colors cursor-pointer text-left font-normal">
+            <i class="fa-solid fa-user text-gray-400 text-xs shrink-0"></i>
+            <span>Profile</span>
+          </button>
+          <button onclick="lockAdminPanel(); toggleAdminAccountDropdown();" class="w-full px-4 py-2.5 hover:bg-gray-50 flex items-center justify-center text-xs text-gray-800 transition-colors cursor-pointer font-normal text-center">
+            <span>Logout</span>
           </button>
         </div>
       </div>
@@ -1823,6 +1809,56 @@
 
   <!-- 6. MODALS FOR WORKFLOWS (Add User, Add Game, Adjust Wallet, Action Reason Dialog) -->
 
+  <!-- ADMIN PROFILE MODAL -->
+  <div id="adminProfileModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-white border border-[#D8DEE4] rounded-lg shadow-2xl max-w-md w-full flex flex-col overflow-hidden text-xs">
+      <div class="px-5 py-3 bg-[#F8FAFC] border-b border-[#E5E7EB] flex items-center justify-between">
+        <h3 class="font-bold text-[#1F2937] text-sm tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-user text-[#00884F]"></i> Profile Details
+        </h3>
+        <button type="button" onclick="closeModal('adminProfileModal')" class="text-gray-400 hover:text-gray-700 transition-colors cursor-pointer text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-5 flex flex-col gap-3.5 bg-white text-gray-800">
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded border border-gray-200">
+          <div class="w-10 h-10 rounded-full bg-[#00884F] text-white font-bold flex items-center justify-center text-sm uppercase">
+            <span id="profModalAvatar">AH</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold text-gray-900 text-sm" id="profModalUsername">Ahmad5050x</span>
+            <span class="text-gray-500 text-xs font-mono" id="profModalRole">SuperMaster</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="p-2.5 bg-gray-50 rounded border border-gray-200 flex flex-col">
+            <span class="text-[10px] text-gray-500 uppercase font-bold">Balance</span>
+            <span class="font-bold text-sm text-[#00884F] font-mono" id="profModalBalance">0</span>
+          </div>
+          <div class="p-2.5 bg-gray-50 rounded border border-gray-200 flex flex-col">
+            <span class="text-[10px] text-gray-500 uppercase font-bold">Exposure</span>
+            <span class="font-bold text-sm text-gray-800 font-mono" id="profModalExposure">0</span>
+          </div>
+          <div class="p-2.5 bg-gray-50 rounded border border-gray-200 flex flex-col">
+            <span class="text-[10px] text-gray-500 uppercase font-bold">Credit Limit</span>
+            <span class="font-bold text-sm text-gray-800 font-mono" id="profModalCredit">0</span>
+          </div>
+          <div class="p-2.5 bg-gray-50 rounded border border-gray-200 flex flex-col">
+            <span class="text-[10px] text-gray-500 uppercase font-bold">Status</span>
+            <span class="font-bold text-sm text-[#00884F]">Active</span>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2 border-t border-gray-100">
+          <button type="button" onclick="closeModal('adminProfileModal')" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded cursor-pointer transition-colors">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- CREATE NEW USER MODAL (Matches User Reference Screenshot Exact Layout) -->
   <div id="addUserModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
     <div class="bg-white border border-[#D8DEE4] rounded-lg shadow-2xl max-w-2xl w-full flex flex-col overflow-hidden text-xs">
@@ -3272,6 +3308,26 @@
     function toggleAdminAccountDropdown() {
       const menu = document.getElementById('adminAccountDropdownMenu');
       if (menu) menu.classList.toggle('hidden');
+    }
+
+    function openCurrentAdminProfileModal() {
+      const cur = AdminCore.repo.getCurrentAdmin();
+      const uEl = document.getElementById('profModalUsername');
+      const rEl = document.getElementById('profModalRole');
+      const bEl = document.getElementById('profModalBalance');
+      const eEl = document.getElementById('profModalExposure');
+      const cEl = document.getElementById('profModalCredit');
+      const aEl = document.getElementById('profModalAvatar');
+
+      const uname = cur.username || cur.name || 'Ahmad5050x';
+      if (uEl) uEl.innerText = uname;
+      if (rEl) rEl.innerText = cur.role === 'SUPER_MASTER' ? 'SuperMaster' : (cur.role ? cur.role.replace(/_/g, ' ') : 'SuperMaster');
+      if (bEl) bEl.innerText = (cur.balance !== undefined ? cur.balance : 0).toLocaleString();
+      if (eEl) eEl.innerText = (cur.exposure !== undefined ? cur.exposure : 0).toLocaleString();
+      if (cEl) cEl.innerText = (cur.creditLimit !== undefined ? cur.creditLimit : 0).toLocaleString();
+      if (aEl) aEl.innerText = uname.substring(0, 2).toUpperCase();
+
+      openModal('adminProfileModal');
     }
 
     // Role Switching Handler (Demo Testing Tool)
