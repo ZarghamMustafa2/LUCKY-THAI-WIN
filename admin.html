@@ -405,13 +405,13 @@
             <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Report Type</h3>
           </div>
           <div class="p-3 sm:p-4 flex flex-wrap items-center gap-2 text-xs">
-            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Book Detail</button>
-            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Book Detail 2</button>
-            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Daily PL</button>
-            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Daily Report</button>
-            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Final Sheet</button>
+            <button onclick="switchAdminModule('reports'); switchReportTypeTab('book_detail');" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Book Detail</button>
+            <button onclick="switchAdminModule('reports'); switchReportTypeTab('book_detail_2');" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Book Detail 2</button>
+            <button onclick="switchAdminModule('reports'); switchReportTypeTab('daily_pl');" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Daily PL</button>
+            <button onclick="switchAdminModule('reports'); switchReportTypeTab('daily_report');" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Daily Report</button>
+            <button onclick="switchAdminModule('reports'); switchReportTypeTab('final_sheet');" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Final Sheet</button>
             <button class="px-3.5 py-1 bg-[#00884F] text-white rounded font-bold transition-colors cursor-pointer shadow-sm">Accounts</button>
-            <button class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Commission Report</button>
+            <button onclick="switchAdminModule('reports'); switchReportTypeTab('commission_report');" class="px-3 py-1 bg-white border border-[#00A3FF] text-[#00A3FF] hover:bg-sky-50 rounded font-medium transition-colors cursor-pointer">Commission Report</button>
           </div>
         </div>
 
@@ -1343,25 +1343,25 @@
                 <input 
                   type="text" 
                   id="reportStartDateInput" 
-                  value="08/17/2026 12:00 AM" 
+                  value="08/18/2026 12:00 AM" 
                   class="px-3 py-1.5 text-xs text-gray-800 font-mono outline-none bg-transparent flex-1 sm:w-44" 
                 />
-                <span class="px-2.5 py-1.5 bg-gray-100 text-gray-600 border-l border-[#E5E7EB]">
+                <span class="px-2.5 py-1.5 bg-gray-50 text-gray-500 border-l border-[#E5E7EB]">
                   <i class="fa-regular fa-calendar"></i>
                 </span>
               </div>
 
-              <span class="text-gray-500 font-bold hidden sm:inline">-</span>
+              <span class="text-gray-400 font-bold hidden sm:inline">-</span>
 
               <!-- End Date Time -->
               <div class="flex items-center border border-[#D1D5DB] rounded bg-white overflow-hidden shadow-sm w-full sm:w-auto">
                 <input 
                   type="text" 
                   id="reportEndDateInput" 
-                  value="08/17/2026 11:59 PM" 
+                  value="08/18/2026 11:59 PM" 
                   class="px-3 py-1.5 text-xs text-gray-800 font-mono outline-none bg-transparent flex-1 sm:w-44" 
                 />
-                <span class="px-2.5 py-1.5 bg-gray-100 text-gray-600 border-l border-[#E5E7EB]">
+                <span class="px-2.5 py-1.5 bg-gray-50 text-gray-500 border-l border-[#E5E7EB]">
                   <i class="fa-regular fa-calendar"></i>
                 </span>
               </div>
