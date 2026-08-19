@@ -115,42 +115,26 @@
     </div>
   </div>
 
-  <!-- 2. TOP HEADER (Matches Screenshot Exact Layout & Responsive on Mobile) -->
-  <header class="h-[50px] bg-white border-b border-[#E5E7EB] px-2.5 sm:px-4 flex items-center justify-between shrink-0 shadow-sm z-[60] relative">
+  <!-- 2. TOP HEADER (Exact Match to User Screenshot: ☰ Ahmad5050x (SuperMaster) ▾ B: 0 Exp: 0) -->
+  <header class="h-[50px] bg-white border-b border-[#E5E7EB] px-3 sm:px-4 flex items-center justify-between shrink-0 shadow-sm z-[60] relative">
     
-    <!-- Left: Brand Logo, Hamburger & Nav Links -->
-    <div class="flex items-center gap-2.5 sm:gap-6">
-      <!-- Hamburger Menu Toggle Button -->
-      <button onclick="toggleAdminSidebar()" class="text-[#4B5563] hover:text-[#111827] text-lg p-1.5 focus:outline-none transition-colors cursor-pointer rounded hover:bg-gray-100 flex items-center justify-center" title="Toggle Navigation Sidebar">
+    <!-- Left: Hamburger Icon + Session Name + B: 0 Exp: 0 (Exact Match) -->
+    <div class="flex items-center gap-3 sm:gap-5">
+      <!-- Hamburger Menu Toggle Button (☰) -->
+      <button onclick="toggleAdminSidebar()" class="text-[#6B7280] hover:text-[#111827] text-xl p-1 focus:outline-none transition-colors cursor-pointer rounded hover:bg-gray-100 flex items-center justify-center" title="Toggle Navigation Sidebar">
         <i class="fa-solid fa-bars"></i>
       </button>
 
-      <!-- LUCKY THAI WIN Brand -->
-      <div class="flex items-center gap-2 cursor-pointer" onclick="switchAdminModule('dashboard')">
-        <span class="text-[#00884F] font-black text-base sm:text-2xl tracking-tight font-sans whitespace-nowrap">LUCKY THAI WIN</span>
-      </div>
-
-      <!-- Top Nav Links -->
-      <nav class="hidden md:flex items-center gap-2 text-sm font-medium text-[#4B5563]">
-        <button onclick="switchAdminModule('dashboard')" id="topNavLink_dashboard" class="px-2.5 py-1 rounded text-[#111827] font-semibold hover:bg-gray-100 transition-colors">Dashboard</button>
-        <button onclick="switchAdminModule('users')" id="topNavLink_users" class="px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors">Users</button>
-        <button onclick="switchAdminModule('reports')" id="topNavLink_reports" class="px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors">Reports</button>
-      </nav>
-    </div>
-
-    <!-- Right: Account Info & Exposure / Balance (Matches Screenshot) -->
-    <div class="flex items-center gap-2 sm:gap-4 text-xs text-[#374151]">
-      
       <!-- User & Role Dropdown Button -->
       <div class="relative">
-        <button onclick="toggleAdminAccountDropdown()" class="flex items-center gap-1 font-medium text-[#374151] hover:text-[#111827] transition-colors cursor-pointer py-1">
-          <span id="topBarAdminName" class="font-semibold text-gray-800 text-[11px] sm:text-xs max-w-[70px] sm:max-w-none truncate">Ahmad5050x</span>
-          <span id="topBarAdminRole" class="text-gray-600 font-medium text-[10px] sm:text-xs hidden xs:inline">(SuperMaster)</span>
-          <i class="fa-solid fa-caret-down text-[10px] text-gray-500"></i>
+        <button onclick="toggleAdminAccountDropdown()" class="flex items-center gap-1 text-[13px] sm:text-[15px] font-normal text-[#1F2937] hover:text-black transition-colors cursor-pointer py-1">
+          <span id="topBarAdminName" class="font-normal text-[#1F2937]">Ahmad5050x</span>
+          <span id="topBarAdminRole" class="text-[#374151] font-normal">(SuperMaster)</span>
+          <i class="fa-solid fa-caret-down text-[11px] text-[#374151] ml-0.5"></i>
         </button>
 
         <!-- Dropdown Menu for Roles & Switcher -->
-        <div id="adminAccountDropdownMenu" class="hidden absolute top-9 right-0 w-64 bg-white border border-[#E5E7EB] rounded-lg shadow-xl z-50 p-2 text-xs text-gray-700 flex flex-col gap-1">
+        <div id="adminAccountDropdownMenu" class="hidden absolute top-9 left-0 w-64 bg-white border border-[#E5E7EB] rounded-lg shadow-xl z-50 p-2 text-xs text-gray-700 flex flex-col gap-1">
           <div class="p-2 border-b border-gray-100 flex flex-col">
             <span class="text-[10px] uppercase font-bold text-gray-400">Current Session</span>
             <span id="topBarDropdownAdminFullName" class="font-bold text-gray-900">Faisal Khan</span>
@@ -175,12 +159,26 @@
         </div>
       </div>
 
-      <!-- B: 0 Exp: 0 Status -->
-      <div class="flex items-center gap-1 sm:gap-2.5 font-bold text-[#111827] text-[10px] sm:text-[13px] bg-gray-50 px-1.5 sm:px-2 py-0.5 rounded border border-gray-200 whitespace-nowrap">
-        <span>B:<span id="topBarBalance" class="font-bold ml-0.5">0</span></span>
-        <span>Exp:<span id="topBarExposure" class="font-bold ml-0.5">0</span></span>
+      <!-- B: 0 Exp: 0 Status (Exact Match) -->
+      <div class="flex items-center gap-2 font-bold text-[#4B5563] text-[13px] sm:text-[15px] whitespace-nowrap">
+        <span>B: <span id="topBarBalance" class="font-bold text-[#4B5563]">0</span></span>
+        <span>Exp: <span id="topBarExposure" class="font-bold text-[#4B5563]">0</span></span>
       </div>
+    </div>
 
+    <!-- Right: Brand Logo & Desktop Nav Links -->
+    <div class="flex items-center gap-3 sm:gap-6">
+      <!-- Top Nav Links (Desktop) -->
+      <nav class="hidden lg:flex items-center gap-2 text-sm font-medium text-[#4B5563]">
+        <button onclick="switchAdminModule('dashboard')" id="topNavLink_dashboard" class="px-2.5 py-1 rounded text-[#111827] font-semibold hover:bg-gray-100 transition-colors">Dashboard</button>
+        <button onclick="switchAdminModule('users')" id="topNavLink_users" class="px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors">Users</button>
+        <button onclick="switchAdminModule('reports')" id="topNavLink_reports" class="px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors">Reports</button>
+      </nav>
+
+      <!-- LUCKY THAI WIN Brand -->
+      <div class="flex items-center gap-2 cursor-pointer" onclick="switchAdminModule('dashboard')">
+        <span class="text-[#00884F] font-black text-sm sm:text-lg tracking-tight font-sans whitespace-nowrap">LUCKY THAI WIN</span>
+      </div>
     </div>
 
   </header>
