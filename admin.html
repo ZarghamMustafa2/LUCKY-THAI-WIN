@@ -115,19 +115,36 @@
     </div>
   </div>
 
-  <!-- 2. TOP HEADER (Reorganized Layout: [☰] [Agent (Role) ▼] [B: 0] [Exp: 0]   [Dashboard] [Users] [Reports]                   [LUCKY THAIWIN]) -->
+  <!-- 2. TOP HEADER ([☰] [LUCKY THAIWIN] [Dashboard] [Users] [Reports] ----------------- [Agent (Role) ▼] [B: 0] [Exp: 0]) -->
   <header class="h-[50px] bg-white border-b border-[#E5E7EB] px-3 sm:px-4 flex items-center justify-between shrink-0 shadow-sm z-[60] relative">
     
-    <!-- LEFT & CENTER-LEFT: Hamburger + Agent Info + Balance + Exposure + Navigation Links -->
-    <div class="flex items-center gap-2 sm:gap-4 md:gap-5 overflow-x-auto no-scrollbar">
+    <!-- LEFT: Hamburger + LUCKY THAIWIN Brand + Nav Links (Dashboard, Users, Reports) -->
+    <div class="flex items-center gap-2.5 sm:gap-4 md:gap-6 overflow-x-auto no-scrollbar">
       
       <!-- Hamburger Menu Toggle Button (☰) -->
       <button onclick="toggleAdminSidebar()" class="text-[#6B7280] hover:text-[#111827] text-xl p-1 focus:outline-none transition-colors cursor-pointer rounded hover:bg-gray-100 flex items-center justify-center shrink-0" title="Toggle Navigation Sidebar">
         <i class="fa-solid fa-bars"></i>
       </button>
 
+      <!-- LUCKY THAIWIN Brand Logo -->
+      <div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="switchAdminModule('dashboard')">
+        <span class="text-[#00884F] font-black text-sm sm:text-base md:text-xl tracking-tight font-sans whitespace-nowrap">LUCKY THAIWIN</span>
+      </div>
+
+      <!-- Top Nav Links: Dashboard | Users | Reports -->
+      <nav class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium text-[#4B5563] shrink-0">
+        <button onclick="switchAdminModule('dashboard')" id="topNavLink_dashboard" class="px-2.5 py-1 rounded text-[#111827] font-semibold bg-gray-100 transition-colors cursor-pointer">Dashboard</button>
+        <button onclick="switchAdminModule('users')" id="topNavLink_users" class="px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors cursor-pointer">Users</button>
+        <button onclick="switchAdminModule('reports')" id="topNavLink_reports" class="px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors cursor-pointer">Reports</button>
+      </nav>
+
+    </div>
+
+    <!-- RIGHT: AGENT (Agent) ▼ | B: 0 | Exp: 0 -->
+    <div class="flex items-center gap-2 sm:gap-4 md:gap-5 shrink-0 ml-3">
+      
       <!-- User & Role Dropdown Button -->
-      <div class="relative shrink-0">
+      <div class="relative">
         <button onclick="toggleAdminAccountDropdown()" class="flex items-center gap-1 text-[13px] sm:text-[14px] md:text-[15px] font-normal text-[#1F2937] hover:text-black transition-colors cursor-pointer py-1">
           <span id="topBarAdminName" class="font-normal text-[#1F2937]">Ahmad5050x</span>
           <span id="topBarAdminRole" class="text-[#374151] font-normal">(SuperMaster)</span>
@@ -135,7 +152,7 @@
         </button>
 
         <!-- Dropdown Menu for Roles & Switcher -->
-        <div id="adminAccountDropdownMenu" class="hidden absolute top-9 left-0 w-64 bg-white border border-[#E5E7EB] rounded-lg shadow-xl z-50 p-2 text-xs text-gray-700 flex flex-col gap-1">
+        <div id="adminAccountDropdownMenu" class="hidden absolute top-9 right-0 w-64 bg-white border border-[#E5E7EB] rounded-lg shadow-xl z-50 p-2 text-xs text-gray-700 flex flex-col gap-1">
           <div class="p-2 border-b border-gray-100 flex flex-col">
             <span class="text-[10px] uppercase font-bold text-gray-400">Current Session</span>
             <span id="topBarDropdownAdminFullName" class="font-bold text-gray-900">Faisal Khan</span>
@@ -161,23 +178,11 @@
       </div>
 
       <!-- B: 0 Exp: 0 Status -->
-      <div class="flex items-center gap-2 sm:gap-3 font-bold text-[#4B5563] text-[13px] sm:text-[14px] md:text-[15px] whitespace-nowrap shrink-0">
+      <div class="flex items-center gap-2 sm:gap-3 font-bold text-[#4B5563] text-[13px] sm:text-[14px] md:text-[15px] whitespace-nowrap">
         <span>B: <span id="topBarBalance" class="font-bold text-[#4B5563]">0</span></span>
         <span>Exp: <span id="topBarExposure" class="font-bold text-[#4B5563]">0</span></span>
       </div>
 
-      <!-- Top Nav Links (Dashboard, Users, Reports immediately after Agent info) -->
-      <nav class="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium text-[#4B5563] ml-1 sm:ml-2 md:ml-3 shrink-0">
-        <button onclick="switchAdminModule('dashboard')" id="topNavLink_dashboard" class="px-2.5 py-1 rounded text-[#111827] font-semibold bg-gray-100 transition-colors cursor-pointer">Dashboard</button>
-        <button onclick="switchAdminModule('users')" id="topNavLink_users" class="px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors cursor-pointer">Users</button>
-        <button onclick="switchAdminModule('reports')" id="topNavLink_reports" class="px-2.5 py-1 rounded text-[#4B5563] hover:text-[#111827] hover:bg-gray-100 transition-colors cursor-pointer">Reports</button>
-      </nav>
-
-    </div>
-
-    <!-- FAR RIGHT: LUCKY THAIWIN Brand Logo -->
-    <div class="flex items-center gap-2 cursor-pointer shrink-0 ml-3" onclick="switchAdminModule('dashboard')">
-      <span class="text-[#00884F] font-black text-sm sm:text-base md:text-lg tracking-tight font-sans whitespace-nowrap">LUCKY THAIWIN</span>
     </div>
 
   </header>
