@@ -2189,12 +2189,12 @@
       <!-- 3. Deposit Section (Green Header #00A65A) -->
       <div class="border border-gray-300 rounded overflow-hidden shadow-xs bg-white mt-1">
         <!-- Green Header Bar -->
-        <div class="bg-[#00A65A] text-white font-bold px-4 py-2.5 text-sm sm:text-[15px] flex items-center justify-between">
+        <div class="bg-[#00A65A] text-white font-bold px-4 py-2 text-xs sm:text-sm flex items-center justify-between">
           <span id="depositHeaderTitle">Deposit Cash in Ahmad1330x account</span>
         </div>
 
         <!-- Deposit Form Body -->
-        <form onsubmit="handleDepositCashSubmit(event)" class="p-4 sm:p-5 flex flex-col gap-4 bg-white">
+        <form onsubmit="handleDepositCashSubmit(event)" class="p-3 sm:p-4 flex flex-col gap-3 bg-white">
           <!-- Row 1: Description -->
           <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <label class="w-full sm:w-28 text-gray-800 font-normal text-xs sm:text-sm shrink-0">
@@ -2205,7 +2205,7 @@
               id="depositDescriptionInput" 
               required 
               value="Cash deposit in Ahmad1330x" 
-              class="w-full border border-gray-300 rounded px-3 py-2 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#00A65A] bg-white transition-colors"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#00A65A] bg-white transition-colors"
             />
           </div>
 
@@ -2215,7 +2215,7 @@
               Amount
             </label>
             <div class="flex items-center w-full">
-              <span class="bg-[#EAEFF2] border border-r-0 border-gray-300 rounded-l px-3 py-2 text-xs sm:text-sm text-gray-600 font-medium select-none">
+              <span class="bg-[#EAEFF2] border border-r-0 border-gray-300 rounded-l px-3 py-1.5 text-xs sm:text-sm text-gray-600 font-medium select-none">
                 Rs.
               </span>
               <input 
@@ -2225,13 +2225,13 @@
                 min="1" 
                 step="any"
                 placeholder="0" 
-                class="w-full border border-gray-300 rounded-r px-3 py-2 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#00A65A] bg-white transition-colors font-mono"
+                class="w-full border border-gray-300 rounded-r px-3 py-1.5 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#00A65A] bg-white transition-colors font-mono"
               />
             </div>
           </div>
 
           <!-- Row 3: Submit Button -->
-          <div class="pt-1">
+          <div class="pt-0.5">
             <button type="submit" class="bg-[#00A65A] hover:bg-[#00884F] text-white font-bold text-xs sm:text-sm px-6 py-2 rounded shadow-sm transition-all cursor-pointer">
               Submit
             </button>
@@ -2242,12 +2242,12 @@
       <!-- 4. Withdraw Section (Red Header #DD4B39) -->
       <div class="border border-gray-300 rounded overflow-hidden shadow-xs bg-white">
         <!-- Red Header Bar -->
-        <div class="bg-[#DD4B39] text-white font-bold px-4 py-2.5 text-sm sm:text-[15px] flex items-center justify-between">
+        <div class="bg-[#DD4B39] text-white font-bold px-4 py-2 text-xs sm:text-sm flex items-center justify-between">
           <span id="withdrawHeaderTitle">Withdraw cash from Ahmad1330x account</span>
         </div>
 
         <!-- Withdraw Form Body -->
-        <form onsubmit="handleWithdrawCashSubmit(event)" class="p-4 sm:p-5 flex flex-col gap-4 bg-white">
+        <form onsubmit="handleWithdrawCashSubmit(event)" class="p-3 sm:p-4 flex flex-col gap-3 bg-white">
           <!-- Row 1: Description -->
           <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <label class="w-full sm:w-28 text-gray-800 font-normal text-xs sm:text-sm shrink-0">
@@ -2258,7 +2258,7 @@
               id="withdrawDescriptionInput" 
               required 
               value="Cash withdrawn from Ahmad1330x" 
-              class="w-full border border-gray-300 rounded px-3 py-2 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#DD4B39] bg-white transition-colors"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#DD4B39] bg-white transition-colors"
             />
           </div>
 
@@ -2268,7 +2268,7 @@
               Amount
             </label>
             <div class="flex items-center w-full">
-              <span class="bg-[#EAEFF2] border border-r-0 border-gray-300 rounded-l px-3 py-2 text-xs sm:text-sm text-gray-600 font-medium select-none">
+              <span class="bg-[#EAEFF2] border border-r-0 border-gray-300 rounded-l px-3 py-1.5 text-xs sm:text-sm text-gray-600 font-medium select-none">
                 Rs.
               </span>
               <input 
@@ -2278,13 +2278,13 @@
                 min="1" 
                 step="any"
                 placeholder="0" 
-                class="w-full border border-gray-300 rounded-r px-3 py-2 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#DD4B39] bg-white transition-colors font-mono"
+                class="w-full border border-gray-300 rounded-r px-3 py-1.5 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#DD4B39] bg-white transition-colors font-mono"
               />
             </div>
           </div>
 
-          <!-- Row 3: Submit Button (Specifically requested: "or last ma submit bhi likha hu") -->
-          <div class="pt-1">
+          <!-- Row 3: Submit Button -->
+          <div class="pt-0.5">
             <button type="submit" class="bg-[#00A65A] hover:bg-[#00884F] text-white font-bold text-xs sm:text-sm px-6 py-2 rounded shadow-sm transition-all cursor-pointer">
               Submit
             </button>
