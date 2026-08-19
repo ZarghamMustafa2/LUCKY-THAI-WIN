@@ -470,10 +470,10 @@
 
             <!-- Right Legend Badges -->
             <div class="flex items-center gap-3 text-xs text-gray-700 flex-wrap">
-              <div class="flex items-center gap-1">
+              <button onclick="openAdjustWalletModal('Ahmad1330x')" class="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity">
                 <span class="bg-[#F59E0B] text-white font-black px-1.5 py-0.5 rounded text-[10px]">C</span>
                 <span class="text-gray-600">Cash / Credit</span>
-              </div>
+              </button>
               <div class="flex items-center gap-1">
                 <span class="bg-[#0D9488] text-white px-1.5 py-0.5 rounded text-[10px]"><i class="fa-solid fa-pencil text-[9px]"></i></span>
                 <span class="text-gray-600">Edit</span>
@@ -3851,7 +3851,27 @@
       if (plEl) plEl.innerText = '0';
 
       let users = [];
-      const allUsers = AdminCore.repo.get('ADM_USERS') || [];
+      let allUsers = AdminCore.repo.get('ADM_USERS') || [];
+      const agentName = admin.username || admin.name || 'Ahmad5050x';
+
+      // Ensure default client Ahmad1330x exists under Ahmad5050x
+      if (!allUsers.some(u => u.username === 'Ahmad1330x')) {
+        const defaultAhmad = {
+          id: 'USR-AHMAD1330X',
+          username: 'Ahmad1330x',
+          name: 'Ahmad User',
+          type: 'Client',
+          createdUnder: 'Ahmad5050x',
+          agentId: 'Ahmad5050x',
+          creditLimit: 0,
+          balance: 0,
+          status: 'Active',
+          registeredAt: new Date().toISOString()
+        };
+        allUsers.unshift(defaultAhmad);
+        AdminCore.repo.set('ADM_USERS', allUsers);
+      }
+
       if (admin.role === 'SUPER_ADMIN') {
         if (window.PlatformSync && typeof window.PlatformSync.getSanitizedUsers === 'function') {
           users = window.PlatformSync.getSanitizedUsers(companyScope, filterOpts);
@@ -3859,8 +3879,10 @@
           users = AdminCore.repo.scopeToCompany(allUsers);
         }
       } else {
-        const agentName = admin.username || admin.name || 'Ahmad5050x';
         users = allUsers.filter(u => u.agentId === admin.id || u.createdUnder === agentName || u.agentId === agentName);
+        if (users.length === 0) {
+          users = allUsers.filter(u => u.username === 'Ahmad1330x');
+        }
         if (filterOpts && filterOpts.search) {
           const s = filterOpts.search.toLowerCase();
           users = users.filter(u => u.username.toLowerCase().includes(s) || u.id.toLowerCase().includes(s));
@@ -5062,12 +5084,18 @@
     // Modal Control Helpers
     function openModal(modalId) {
       const el = document.getElementById(modalId);
-      if (el) el.classList.remove('hidden');
+      if (el) {
+        el.classList.remove('hidden');
+        el.style.display = 'flex';
+      }
     }
 
     function closeModal(modalId) {
       const el = document.getElementById(modalId);
-      if (el) el.classList.add('hidden');
+      if (el) {
+        el.classList.add('hidden');
+        el.style.display = 'none';
+      }
     }
 
     function openAddUserModal() {
@@ -5140,9 +5168,10 @@
     let currentAdjustTargetUser = null;
 
     function openAdjustWalletModal(username) {
+      const targetName = username || 'Ahmad1330x';
       const users = AdminCore.repo.get('ADM_USERS') || [];
-      const u = users.find(x => x.username === username || x.id === username) || {
-        username: username,
+      const u = users.find(x => x.username === targetName || x.id === targetName) || {
+        username: targetName,
         creditLimit: 0,
         balance: 0
       };
