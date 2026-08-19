@@ -2870,10 +2870,10 @@
         return;
       }
 
-      if (currentReportType === 'daily_pl') {
+      if (currentReportType === 'daily_pl' || currentReportType === 'daily_report') {
         container.className = "bg-transparent border-0 p-0 block";
         container.innerHTML = `
-          <!-- Daily PL Report Card (Matches Screenshot Exactly) -->
+          <!-- Daily Report / Daily PL Card (Matches Screenshot Exactly) -->
           <div class="bg-white border border-[#D8DEE4] rounded shadow-sm max-w-md w-full sm:w-[480px] overflow-hidden flex flex-col">
             <!-- Header -->
             <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-[#F8FAFC] flex items-center gap-2">
@@ -2951,13 +2951,12 @@
             </div>
           </div>
         `;
-        showAdminToast('✓ Daily PL Report updated', 'success');
+        showAdminToast(`✓ ${currentReportType === 'daily_report' ? 'Daily Report' : 'Daily PL Report'} updated`, 'success');
         return;
       }
 
       const titles = {
         'book_detail': 'Book Detail Report',
-        'daily_report': 'Daily Operating Report',
         'final_sheet': 'Final Settlement Sheet',
         'commission_report': 'Downline Commission Report'
       };
