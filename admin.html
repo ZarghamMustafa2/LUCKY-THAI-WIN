@@ -3900,12 +3900,12 @@
       }
 
       tbody.innerHTML = users.map(u => {
-        const fullUser = allUsers.find(x => x.id === u.id || x.username.toLowerCase() === u.username.toLowerCase()) || u;
+        const fullUser = allUsers.find(x => x.id === u.id || (x.username && u.username && x.username.toLowerCase() === u.username.toLowerCase())) || u;
         const passVal = fullUser.password || '123456';
         const tokBal = u.tokenBalance !== undefined ? u.tokenBalance : (window.PlatformSync ? window.PlatformSync.getUserTokenBalance(u.username) : 0);
         const isActive = u.status === 'Active';
-        const balVal = (u.balance !== undefined ? u.balance : 0);
-        const credVal = (u.creditLimit !== undefined ? u.creditLimit : 0);
+        const balVal = Number(fullUser.balance !== undefined ? fullUser.balance : (u.balance !== undefined ? u.balance : 0)) || 0;
+        const credVal = Number(fullUser.creditLimit !== undefined ? fullUser.creditLimit : (u.creditLimit !== undefined ? u.creditLimit : 0)) || 0;
 
         return `
         <tr class="hover:bg-gray-50 transition-colors divide-x divide-[#D8DEE4]" onclick="inspectUserCredentials('${u.id}')">
@@ -5169,12 +5169,24 @@
 
     function openAdjustWalletModal(username) {
       const targetName = username || 'Ahmad1330x';
-      const users = AdminCore.repo.get('ADM_USERS') || [];
-      const u = users.find(x => x.username === targetName || x.id === targetName) || {
-        username: targetName,
-        creditLimit: 0,
-        balance: 0
-      };
+      let users = AdminCore.repo.get('ADM_USERS') || [];
+      let u = users.find(x => (x.username && x.username.toLowerCase() === targetName.toLowerCase()) || x.id === targetName);
+      if (!u) {
+        u = {
+          id: 'USR-' + targetName.toUpperCase(),
+          username: targetName,
+          name: targetName,
+          type: 'Client',
+          createdUnder: 'Ahmad5050x',
+          agentId: 'Ahmad5050x',
+          creditLimit: 0,
+          balance: 0,
+          status: 'Active',
+          registeredAt: new Date().toISOString()
+        };
+        users.push(u);
+        AdminCore.repo.set('ADM_USERS', users);
+      }
 
       currentAdjustTargetUser = u;
       currentAdjustTab = 'CASH';
@@ -5190,8 +5202,8 @@
       const balanceValEl = document.getElementById('modalUserBalanceVal');
       const maxWithdrawValEl = document.getElementById('modalUserMaxWithdrawVal');
 
-      const cred = (u.creditLimit !== undefined ? u.creditLimit : 0);
-      const bal = (u.balance !== undefined ? u.balance : 0);
+      const cred = Number(u.creditLimit || 0);
+      const bal = Number(u.balance || 0);
 
       if (creditValEl) creditValEl.innerText = `${cred.toLocaleString()} Rs.`;
       if (balanceValEl) balanceValEl.innerText = `${bal.toLocaleString()} Rs.`;
@@ -5254,45 +5266,59 @@
         return;
       }
 
-      const users = AdminCore.repo.get('ADM_USERS') || [];
-      const u = users.find(x => x.username === uname);
+      let users = AdminCore.repo.get('ADM_USERS') || [];
+      let u = users.find(x => (x.username && x.username.toLowerCase() === uname.toLowerCase()) || x.id === uname);
 
-      if (u) {
-        const isCash = currentAdjustTab === 'CASH';
-        if (isCash) {
-          u.balance = (u.balance || 0) + amount;
-          if (window.PlatformSync && typeof window.PlatformSync.updateUserBalance === 'function') {
-            window.PlatformSync.updateUserBalance(u.id, u.balance);
-          }
-          // Record deposit in ADM_DEPOSITS
-          const deposits = AdminCore.repo.get('ADM_DEPOSITS') || [];
-          deposits.unshift({
-            id: 'DEP-' + Math.floor(1000 + Math.random() * 9000),
-            userId: u.id,
-            username: u.username,
-            amount: amount,
-            method: 'Direct Admin Cash Deposit',
-            ref: desc || 'Direct Cash Deposit',
-            companyId: u.companyId || 'COMP-01',
-            status: 'Approved',
-            date: new Date().toLocaleString()
-          });
-          AdminCore.repo.set('ADM_DEPOSITS', deposits);
-          AdminCore.repo.logAudit('CASH_DEPOSIT', `User #${u.id}`, uname, desc, `Deposit: Rs ${amount}`, `New Balance: Rs ${u.balance}`);
-        } else {
-          u.creditLimit = (u.creditLimit || 0) + amount;
-          AdminCore.repo.logAudit('CREDIT_DEPOSIT', `User #${u.id}`, uname, desc, `Credit: Rs ${amount}`, `New Credit: Rs ${u.creditLimit}`);
-        }
-
-        AdminCore.repo.set('ADM_USERS', users);
-        closeModal('adjustWalletModal');
-        showAdminToast(`✓ ${isCash ? 'Cash' : 'Credit'} deposit of Rs ${amount.toLocaleString()} in @${uname} account successful!`, 'success');
-        renderUsersTable();
-        if (typeof renderWalletsTable === 'function') renderWalletsTable();
-      } else {
-        closeModal('adjustWalletModal');
-        showAdminToast(`Deposit of Rs ${amount.toLocaleString()} processed.`, 'success');
+      if (!u) {
+        u = {
+          id: 'USR-' + uname.toUpperCase(),
+          username: uname,
+          name: uname,
+          type: 'Client',
+          createdUnder: 'Ahmad5050x',
+          agentId: 'Ahmad5050x',
+          creditLimit: 0,
+          balance: 0,
+          status: 'Active',
+          registeredAt: new Date().toISOString()
+        };
+        users.push(u);
       }
+
+      const isCash = currentAdjustTab === 'CASH';
+      if (isCash) {
+        u.balance = (Number(u.balance) || 0) + amount;
+        if (window.PlatformSync && typeof window.PlatformSync.updateUserBalance === 'function') {
+          window.PlatformSync.updateUserBalance(u.id, u.balance);
+        }
+        // Record deposit in ADM_DEPOSITS
+        const deposits = AdminCore.repo.get('ADM_DEPOSITS') || [];
+        deposits.unshift({
+          id: 'DEP-' + Math.floor(1000 + Math.random() * 9000),
+          userId: u.id,
+          username: u.username,
+          amount: amount,
+          method: 'Direct Admin Cash Deposit',
+          ref: desc || 'Direct Cash Deposit',
+          companyId: u.companyId || 'COMP-01',
+          status: 'Approved',
+          date: new Date().toLocaleString()
+        });
+        AdminCore.repo.set('ADM_DEPOSITS', deposits);
+        AdminCore.repo.logAudit('CASH_DEPOSIT', `User #${u.id}`, uname, desc, `Deposit: Rs ${amount}`, `New Balance: Rs ${u.balance}`);
+      } else {
+        u.creditLimit = (Number(u.creditLimit) || 0) + amount;
+        AdminCore.repo.logAudit('CREDIT_DEPOSIT', `User #${u.id}`, uname, desc, `Credit: Rs ${amount}`, `New Credit: Rs ${u.creditLimit}`);
+      }
+
+      AdminCore.repo.set('ADM_USERS', users);
+      if (window.PlatformSync && typeof window.PlatformSync._set === 'function') {
+        window.PlatformSync._set(window.PlatformSync.KEYS.USERS, users);
+      }
+      closeModal('adjustWalletModal');
+      showAdminToast(`✓ ${isCash ? 'Cash' : 'Credit'} deposit of Rs ${amount.toLocaleString()} in @${uname} account successful!`, 'success');
+      renderUsersTable();
+      if (typeof renderWalletsTable === 'function') renderWalletsTable();
     }
 
     function handleWithdrawCashSubmit(e) {
@@ -5306,46 +5332,60 @@
         return;
       }
 
-      const users = AdminCore.repo.get('ADM_USERS') || [];
-      const u = users.find(x => x.username === uname);
+      let users = AdminCore.repo.get('ADM_USERS') || [];
+      let u = users.find(x => (x.username && x.username.toLowerCase() === uname.toLowerCase()) || x.id === uname);
 
-      if (u) {
-        const isCash = currentAdjustTab === 'CASH';
-        if (isCash) {
-          u.balance = Math.max(0, (u.balance || 0) - amount);
-          if (window.PlatformSync && typeof window.PlatformSync.updateUserBalance === 'function') {
-            window.PlatformSync.updateUserBalance(u.id, u.balance);
-          }
-          // Record withdrawal in ADM_WITHDRAWALS
-          const withdrawals = AdminCore.repo.get('ADM_WITHDRAWALS') || [];
-          withdrawals.unshift({
-            id: 'WTH-' + Math.floor(1000 + Math.random() * 9000),
-            userId: u.id,
-            username: u.username,
-            amount: amount,
-            method: 'Direct Admin Cash Withdrawal',
-            account: desc || 'Direct Cash Withdrawal',
-            companyId: u.companyId || 'COMP-01',
-            status: 'Approved',
-            requestDate: new Date().toLocaleString(),
-            processedDate: new Date().toLocaleString()
-          });
-          AdminCore.repo.set('ADM_WITHDRAWALS', withdrawals);
-          AdminCore.repo.logAudit('CASH_WITHDRAWAL', `User #${u.id}`, uname, desc, `Withdraw: Rs ${amount}`, `New Balance: Rs ${u.balance}`);
-        } else {
-          u.creditLimit = Math.max(0, (u.creditLimit || 0) - amount);
-          AdminCore.repo.logAudit('CREDIT_WITHDRAWAL', `User #${u.id}`, uname, desc, `Credit Deduct: Rs ${amount}`, `New Credit: Rs ${u.creditLimit}`);
-        }
-
-        AdminCore.repo.set('ADM_USERS', users);
-        closeModal('adjustWalletModal');
-        showAdminToast(`✓ ${isCash ? 'Cash' : 'Credit'} withdrawal of Rs ${amount.toLocaleString()} from @${uname} account successful!`, 'success');
-        renderUsersTable();
-        if (typeof renderWalletsTable === 'function') renderWalletsTable();
-      } else {
-        closeModal('adjustWalletModal');
-        showAdminToast(`Withdrawal of Rs ${amount.toLocaleString()} processed.`, 'success');
+      if (!u) {
+        u = {
+          id: 'USR-' + uname.toUpperCase(),
+          username: uname,
+          name: uname,
+          type: 'Client',
+          createdUnder: 'Ahmad5050x',
+          agentId: 'Ahmad5050x',
+          creditLimit: 0,
+          balance: 0,
+          status: 'Active',
+          registeredAt: new Date().toISOString()
+        };
+        users.push(u);
       }
+
+      const isCash = currentAdjustTab === 'CASH';
+      if (isCash) {
+        u.balance = Math.max(0, (Number(u.balance) || 0) - amount);
+        if (window.PlatformSync && typeof window.PlatformSync.updateUserBalance === 'function') {
+          window.PlatformSync.updateUserBalance(u.id, u.balance);
+        }
+        // Record withdrawal in ADM_WITHDRAWALS
+        const withdrawals = AdminCore.repo.get('ADM_WITHDRAWALS') || [];
+        withdrawals.unshift({
+          id: 'WTH-' + Math.floor(1000 + Math.random() * 9000),
+          userId: u.id,
+          username: u.username,
+          amount: amount,
+          method: 'Direct Admin Cash Withdrawal',
+          account: desc || 'Direct Cash Withdrawal',
+          companyId: u.companyId || 'COMP-01',
+          status: 'Approved',
+          requestDate: new Date().toLocaleString(),
+          processedDate: new Date().toLocaleString()
+        });
+        AdminCore.repo.set('ADM_WITHDRAWALS', withdrawals);
+        AdminCore.repo.logAudit('CASH_WITHDRAWAL', `User #${u.id}`, uname, desc, `Withdraw: Rs ${amount}`, `New Balance: Rs ${u.balance}`);
+      } else {
+        u.creditLimit = Math.max(0, (Number(u.creditLimit) || 0) - amount);
+        AdminCore.repo.logAudit('CREDIT_WITHDRAWAL', `User #${u.id}`, uname, desc, `Credit Deduct: Rs ${amount}`, `New Credit: Rs ${u.creditLimit}`);
+      }
+
+      AdminCore.repo.set('ADM_USERS', users);
+      if (window.PlatformSync && typeof window.PlatformSync._set === 'function') {
+        window.PlatformSync._set(window.PlatformSync.KEYS.USERS, users);
+      }
+      closeModal('adjustWalletModal');
+      showAdminToast(`✓ ${isCash ? 'Cash' : 'Credit'} withdrawal of Rs ${amount.toLocaleString()} from @${uname} account successful!`, 'success');
+      renderUsersTable();
+      if (typeof renderWalletsTable === 'function') renderWalletsTable();
     }
 
     function exportDataToCsv(type) {
