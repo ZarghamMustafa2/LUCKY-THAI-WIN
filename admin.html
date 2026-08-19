@@ -1796,24 +1796,117 @@
 
   <!-- 6. MODALS FOR WORKFLOWS (Add User, Add Game, Adjust Wallet, Action Reason Dialog) -->
 
-  <!-- Add User Modal -->
-  <div id="addUserModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-    <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-md w-full flex flex-col gap-4 text-xs">
-      <div class="flex items-center justify-between border-b border-borderSubtle pb-2">
-        <h3 class="font-display font-black text-white text-base">Create New Player Account</h3>
-        <button onclick="closeModal('addUserModal')" class="text-textMuted hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+  <!-- CREATE NEW USER MODAL (Matches User Reference Screenshot Exact Layout) -->
+  <div id="addUserModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-white border border-[#D8DEE4] rounded-lg shadow-2xl max-w-2xl w-full flex flex-col overflow-hidden text-xs">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-3 bg-[#F3F4F6] border-b border-[#E5E7EB] flex items-center justify-between">
+        <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">
+          Create New User under <span id="createUnderAgentName" class="font-bold italic text-black">Ahmad5050x</span>
+        </h3>
+        <button type="button" onclick="closeModal('addUserModal')" class="text-gray-400 hover:text-gray-700 transition-colors cursor-pointer text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
-      <form onsubmit="handleAddUserSubmit(event)" class="flex flex-col gap-3">
-        <input type="text" id="newUsername" required placeholder="Username (e.g. Alex_Pro)" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white outline-none" />
-        <input type="text" id="newName" required placeholder="Full Name" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white outline-none" />
-        <input type="password" id="newPassword" required placeholder="Password" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white outline-none" />
-        <input type="number" id="newBalance" placeholder="Initial Balance (Default: 10,000)" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white outline-none" />
-        <select id="newCompany" class="bg-sidebarDark border border-borderSubtle rounded-xl px-3.5 py-2.5 text-white font-bold outline-none">
-          <option value="COMP-01">ThaiNXT Global HQ</option>
-          <option value="COMP-02">Apex Sports Asia</option>
-          <option value="COMP-03">Royal Bangkok Club</option>
-        </select>
-        <button type="submit" class="w-full py-3 rounded-xl bg-brandBlue text-white font-bold uppercase tracking-wider mt-2">Create User Account</button>
+
+      <!-- Form Body -->
+      <form onsubmit="handleAddUserSubmit(event)" class="p-6 flex flex-col gap-4 bg-white text-gray-800">
+        
+        <!-- Field 1: Username -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Username</label>
+          <input 
+            type="text" 
+            id="newUsername" 
+            required 
+            placeholder="" 
+            class="flex-1 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
+          />
+        </div>
+
+        <!-- Field 2: Password -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Password</label>
+          <input 
+            type="password" 
+            id="newPassword" 
+            required 
+            placeholder="" 
+            class="flex-1 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
+          />
+        </div>
+
+        <!-- Field 3: Type (Radio Buttons: Master / Bettor) -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Type</label>
+          <div class="flex items-center gap-6">
+            <label class="flex items-center gap-1.5 cursor-pointer text-gray-800 text-xs">
+              <input type="radio" name="newUserType" value="Master" class="accent-[#00884F] cursor-pointer" />
+              <span>Master</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer text-gray-800 text-xs">
+              <input type="radio" name="newUserType" value="Bettor" checked class="accent-[#00884F] cursor-pointer" />
+              <span>Bettor</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Field 4: IsActive (Checkbox) -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">IsActive</label>
+          <div class="flex items-center">
+            <input 
+              type="checkbox" 
+              id="newUserIsActive" 
+              checked 
+              class="w-4 h-4 rounded border-[#D1D5DB] text-[#00884F] accent-[#00884F] cursor-pointer" 
+            />
+          </div>
+        </div>
+
+        <!-- Field 5: Phone -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Phone</label>
+          <input 
+            type="text" 
+            id="newUserPhone" 
+            placeholder="" 
+            class="flex-1 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
+          />
+        </div>
+
+        <!-- Field 6: Reference -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Reference</label>
+          <input 
+            type="text" 
+            id="newUserReference" 
+            placeholder="" 
+            class="flex-1 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
+          />
+        </div>
+
+        <!-- Field 7: Notes -->
+        <div class="flex flex-col sm:flex-row sm:items-start gap-2">
+          <label class="w-full sm:w-32 text-gray-700 font-medium text-xs pt-1">Notes</label>
+          <textarea 
+            id="newUserNotes" 
+            rows="3" 
+            placeholder="" 
+            class="flex-1 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors resize-y"
+          ></textarea>
+        </div>
+
+        <!-- Footer / Submit Action -->
+        <div class="pt-4 border-t border-[#E5E7EB] flex items-center justify-start -mx-6 -mb-6 p-4 bg-[#F9FAFB]">
+          <button 
+            type="submit" 
+            class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-5 py-2 rounded shadow-sm transition-colors cursor-pointer">
+            Submit
+          </button>
+        </div>
+
       </form>
     </div>
   </div>
@@ -4266,29 +4359,54 @@
         showAdminToast('Access Denied: users.create permission required.', 'error');
         return;
       }
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const underEl = document.getElementById('createUnderAgentName');
+      if (underEl) underEl.innerText = admin.username || admin.name || 'Ahmad5050x';
+      
+      // Reset inputs
+      if (document.getElementById('newUsername')) document.getElementById('newUsername').value = '';
+      if (document.getElementById('newPassword')) document.getElementById('newPassword').value = '';
+      if (document.getElementById('newUserPhone')) document.getElementById('newUserPhone').value = '';
+      if (document.getElementById('newUserReference')) document.getElementById('newUserReference').value = '';
+      if (document.getElementById('newUserNotes')) document.getElementById('newUserNotes').value = '';
+      if (document.getElementById('newUserIsActive')) document.getElementById('newUserIsActive').checked = true;
+
       openModal('addUserModal');
     }
 
     function handleAddUserSubmit(e) {
       e.preventDefault();
       const username = document.getElementById('newUsername').value.trim();
-      const name = document.getElementById('newName').value.trim();
-      const balance = parseFloat(document.getElementById('newBalance').value) || 10000;
-      const companyId = document.getElementById('newCompany').value;
+      const password = document.getElementById('newPassword').value.trim();
+      const typeRadio = document.querySelector('input[name="newUserType"]:checked');
+      const userType = typeRadio ? typeRadio.value : 'Bettor';
+      const isActive = document.getElementById('newUserIsActive') ? document.getElementById('newUserIsActive').checked : true;
+      const phone = document.getElementById('newUserPhone') ? document.getElementById('newUserPhone').value.trim() : '';
+      const reference = document.getElementById('newUserReference') ? document.getElementById('newUserReference').value.trim() : '';
+      const notes = document.getElementById('newUserNotes') ? document.getElementById('newUserNotes').value.trim() : '';
+
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const companyId = admin.role === 'SUPER_ADMIN' ? 'COMP-01' : (admin.companyId || 'COMP-01');
 
       const users = AdminCore.repo.get('ADM_USERS');
       const newUser = {
         id: 'USR-' + (1090 + users.length),
         username,
-        name,
-        phone: '+92 300 ' + Math.floor(1000000 + Math.random() * 9000000),
+        password,
+        name: username,
+        phone: phone || ('+92 300 ' + Math.floor(1000000 + Math.random() * 9000000)),
         email: username.toLowerCase() + '@gmail.com',
-        balance,
+        userType,
+        reference,
+        notes,
+        balance: 0,
         locked: 0,
-        totalDeposit: balance,
+        creditLimit: 0,
+        totalDeposit: 0,
         totalWithdraw: 0,
         companyId,
-        status: 'Active',
+        agentId: admin.id || 'Ahmad5050x',
+        status: isActive ? 'Active' : 'Suspended',
         kycStatus: 'Approved',
         source: 'Admin Created',
         regDate: new Date().toISOString().split('T')[0],
@@ -4296,9 +4414,9 @@
       };
       users.unshift(newUser);
       AdminCore.repo.set('ADM_USERS', users);
-      AdminCore.repo.logAudit('USER_CREATED', `User #${newUser.id}`, username, `Admin created user account with Rs ${balance} balance`);
+      AdminCore.repo.logAudit('USER_CREATED', `User #${newUser.id}`, username, `Created new ${userType} under ${admin.username || 'Admin'}`);
       closeModal('addUserModal');
-      showAdminToast(`User ${username} created successfully!`, 'success');
+      showAdminToast(`✓ User ${username} created successfully!`, 'success');
       renderUsersTable();
     }
 
