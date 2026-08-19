@@ -3063,9 +3063,60 @@
         return;
       }
 
+      if (currentReportType === 'commission_report') {
+        container.className = "bg-transparent border-0 p-0 block";
+        container.innerHTML = `
+          <!-- Commission Report Card (Matches Screenshot Exactly) -->
+          <div class="bg-white border border-[#D8DEE4] rounded shadow-sm max-w-md w-full sm:w-[480px] overflow-hidden flex flex-col gap-3">
+            <!-- Header -->
+            <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-[#F8FAFC] flex items-center gap-2">
+              <i class="fa-solid fa-bars text-[#1F2937] text-xs"></i>
+              <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Commission Report</h3>
+            </div>
+
+            <div class="p-4 flex flex-col gap-3">
+              <!-- Info Notice -->
+              <p class="text-xs text-gray-700 font-sans">
+                All Commission goes to As per share (Auto Commission)
+              </p>
+
+              <!-- Table: User Name, Amount -->
+              <div class="overflow-x-auto border border-[#D8DEE4] rounded shadow-sm bg-white">
+                <table class="w-full text-left text-xs whitespace-nowrap">
+                  <thead class="bg-white text-[#1F2937] text-xs font-bold border-b border-[#D8DEE4]">
+                    <tr class="divide-x divide-[#D8DEE4]">
+                      <th class="p-2.5 w-1/2">
+                        <div class="flex items-center justify-between gap-1 cursor-pointer">
+                          <span>User Name</span>
+                          <i class="fa-solid fa-sort text-[10px] text-gray-400"></i>
+                        </div>
+                      </th>
+                      <th class="p-2.5 w-1/2">
+                        <div class="flex items-center justify-between gap-1 cursor-pointer">
+                          <span>Amount</span>
+                          <i class="fa-solid fa-sort text-[10px] text-gray-400"></i>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-xs">
+                    <!-- Total Green Summary Row -->
+                    <tr class="bg-[#00884F] text-white font-bold divide-x divide-[#007443]">
+                      <td class="p-2.5">Total</td>
+                      <td class="p-2.5 font-mono">0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+        showAdminToast('✓ Commission Report updated', 'success');
+        return;
+      }
+
       const titles = {
-        'book_detail': 'Book Detail Report',
-        'commission_report': 'Downline Commission Report'
+        'book_detail': 'Book Detail Report'
       };
 
       const deps = AdminCore.repo.get('ADM_DEPOSITS') || [];
