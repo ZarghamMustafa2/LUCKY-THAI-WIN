@@ -2955,9 +2955,116 @@
         return;
       }
 
+      if (currentReportType === 'final_sheet') {
+        const admin = AdminCore.repo.getCurrentAdmin();
+        const agentName = admin.username || admin.name || 'Ahmad5050x';
+
+        container.className = "bg-transparent border-0 p-0 block";
+        container.innerHTML = `
+          <!-- Final Sheet Report Card (Matches Screenshot Exactly) -->
+          <div class="bg-white border border-[#D8DEE4] rounded shadow-sm max-w-xl w-full sm:w-[560px] overflow-hidden flex flex-col">
+            <!-- Header -->
+            <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-[#F8FAFC] flex items-center gap-2">
+              <i class="fa-solid fa-bars text-[#1F2937] text-xs"></i>
+              <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">${agentName} - Final Sheet</h3>
+            </div>
+
+            <div class="p-4 flex flex-col gap-3">
+              <!-- Hide Zero Amounts Checkbox -->
+              <label class="flex items-center gap-2 text-xs text-gray-700 cursor-pointer select-none">
+                <input type="checkbox" id="hideZeroAmountsCheck" class="rounded border-[#D1D5DB] text-[#00884F] accent-[#00884F] cursor-pointer" />
+                <span>Hide Zero Amounts</span>
+              </label>
+
+              <!-- Dual Side-by-Side Tables -->
+              <div class="grid grid-cols-2 gap-3">
+                
+                <!-- Table 1 (Left Table) -->
+                <div class="overflow-x-auto border border-[#D8DEE4] rounded shadow-2xs bg-white">
+                  <table class="w-full text-left text-xs whitespace-nowrap">
+                    <thead class="bg-white text-[#1F2937] text-xs font-bold border-b border-[#D8DEE4]">
+                      <tr class="divide-x divide-[#D8DEE4]">
+                        <th class="p-2 w-1/2">
+                          <div class="flex items-center justify-between gap-1 cursor-pointer">
+                            <span>Name</span>
+                            <i class="fa-solid fa-caret-up text-[10px] text-[#00884F]"></i>
+                          </div>
+                        </th>
+                        <th class="p-2 w-1/2">
+                          <div class="flex items-center justify-between gap-1 cursor-pointer">
+                            <span>Amount</span>
+                            <i class="fa-solid fa-sort text-[10px] text-gray-400"></i>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-xs divide-y divide-[#E5E7EB]">
+                      <!-- Row 1: Agent Name (Highlighted) -->
+                      <tr class="bg-[#E2E8F0] divide-x divide-[#CBD5E1]">
+                        <td class="p-2 text-[#0D9488] font-semibold">${agentName}</td>
+                        <td class="p-2 font-mono text-gray-800">0</td>
+                      </tr>
+                      <!-- Row 2: Cash -->
+                      <tr class="divide-x divide-[#E5E7EB] hover:bg-gray-50">
+                        <td class="p-2 text-[#0D9488] font-semibold">Cash</td>
+                        <td class="p-2 font-mono text-gray-800">0</td>
+                      </tr>
+                      <!-- Row 3: RA.BOOK76 -->
+                      <tr class="divide-x divide-[#E5E7EB] hover:bg-gray-50">
+                        <td class="p-2 text-[#0D9488] font-semibold">RA.BOOK76</td>
+                        <td class="p-2 font-mono text-gray-800">0</td>
+                      </tr>
+                      <!-- Total Red Summary Row -->
+                      <tr class="bg-[#F87171] text-white font-bold divide-x divide-[#EF4444]">
+                        <td class="p-2">Total</td>
+                        <td class="p-2 font-mono text-center">0</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Table 2 (Right Table) -->
+                <div class="overflow-x-auto border border-[#D8DEE4] rounded shadow-2xs bg-white">
+                  <table class="w-full text-left text-xs whitespace-nowrap">
+                    <thead class="bg-white text-[#1F2937] text-xs font-bold border-b border-[#D8DEE4]">
+                      <tr class="divide-x divide-[#D8DEE4]">
+                        <th class="p-2 w-1/2">
+                          <div class="flex items-center justify-between gap-1 cursor-pointer">
+                            <span>Name</span>
+                            <i class="fa-solid fa-caret-up text-[10px] text-[#00884F]"></i>
+                          </div>
+                        </th>
+                        <th class="p-2 w-1/2">
+                          <div class="flex items-center justify-between gap-1 cursor-pointer">
+                            <span>Amount</span>
+                            <i class="fa-solid fa-sort text-[10px] text-gray-400"></i>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-xs">
+                      <tr>
+                        <td colspan="2" class="p-4 text-center text-gray-500 font-sans text-xs">No data available in table</td>
+                      </tr>
+                      <!-- Total Red Summary Row -->
+                      <tr class="bg-[#F87171] text-white font-bold divide-x divide-[#EF4444]">
+                        <td class="p-2">Total</td>
+                        <td class="p-2 font-mono text-center">0</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        `;
+        showAdminToast('✓ Final Sheet updated', 'success');
+        return;
+      }
+
       const titles = {
         'book_detail': 'Book Detail Report',
-        'final_sheet': 'Final Settlement Sheet',
         'commission_report': 'Downline Commission Report'
       };
 
