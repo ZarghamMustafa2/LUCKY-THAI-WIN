@@ -2870,9 +2870,93 @@
         return;
       }
 
+      if (currentReportType === 'daily_pl') {
+        container.className = "bg-transparent border-0 p-0 block";
+        container.innerHTML = `
+          <!-- Daily PL Report Card (Matches Screenshot Exactly) -->
+          <div class="bg-white border border-[#D8DEE4] rounded shadow-sm max-w-md w-full sm:w-[480px] overflow-hidden flex flex-col">
+            <!-- Header -->
+            <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-[#F8FAFC] flex items-center gap-2">
+              <i class="fa-solid fa-bars text-[#1F2937] text-xs"></i>
+              <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Report</h3>
+            </div>
+
+            <!-- Body / Dual Side-by-Side Tables -->
+            <div class="p-4 grid grid-cols-2 gap-3">
+              
+              <!-- Table 1 (Left): Green Summary Table -->
+              <div class="overflow-x-auto border border-[#D8DEE4] rounded shadow-2xs bg-white">
+                <table class="w-full text-left text-xs whitespace-nowrap">
+                  <thead class="bg-white text-[#1F2937] text-xs font-bold border-b border-[#D8DEE4]">
+                    <tr class="divide-x divide-[#D8DEE4]">
+                      <th class="p-2 w-1/2">
+                        <div class="flex items-center justify-between gap-1 cursor-pointer">
+                          <span>Name</span>
+                          <i class="fa-solid fa-caret-up text-[10px] text-[#00884F]"></i>
+                        </div>
+                      </th>
+                      <th class="p-2 w-1/2">
+                        <div class="flex items-center justify-between gap-1 cursor-pointer">
+                          <span>Amount</span>
+                          <i class="fa-solid fa-sort text-[10px] text-gray-400"></i>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-xs">
+                    <tr>
+                      <td colspan="2" class="p-4 text-center text-gray-500 font-sans text-xs">No data available in table</td>
+                    </tr>
+                    <!-- Total Green Summary Row -->
+                    <tr class="bg-[#00884F] text-white font-bold divide-x divide-[#007443]">
+                      <td class="p-2">Total</td>
+                      <td class="p-2 font-mono text-center">0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Table 2 (Right): Red Summary Table -->
+              <div class="overflow-x-auto border border-[#D8DEE4] rounded shadow-2xs bg-white">
+                <table class="w-full text-left text-xs whitespace-nowrap">
+                  <thead class="bg-white text-[#1F2937] text-xs font-bold border-b border-[#D8DEE4]">
+                    <tr class="divide-x divide-[#D8DEE4]">
+                      <th class="p-2 w-1/2">
+                        <div class="flex items-center justify-between gap-1 cursor-pointer">
+                          <span>Name</span>
+                          <i class="fa-solid fa-caret-up text-[10px] text-[#00884F]"></i>
+                        </div>
+                      </th>
+                      <th class="p-2 w-1/2">
+                        <div class="flex items-center justify-between gap-1 cursor-pointer">
+                          <span>Amount</span>
+                          <i class="fa-solid fa-sort text-[10px] text-gray-400"></i>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-xs">
+                    <tr>
+                      <td colspan="2" class="p-4 text-center text-gray-500 font-sans text-xs">No data available in table</td>
+                    </tr>
+                    <!-- Total Red Summary Row -->
+                    <tr class="bg-[#EF4444] text-white font-bold divide-x divide-[#DC2626]">
+                      <td class="p-2">Total</td>
+                      <td class="p-2 font-mono text-center">0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        `;
+        showAdminToast('✓ Daily PL Report updated', 'success');
+        return;
+      }
+
       const titles = {
         'book_detail': 'Book Detail Report',
-        'daily_pl': 'Daily Profit & Loss Ledger',
         'daily_report': 'Daily Operating Report',
         'final_sheet': 'Final Settlement Sheet',
         'commission_report': 'Downline Commission Report'
