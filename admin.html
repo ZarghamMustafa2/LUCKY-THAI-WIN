@@ -504,6 +504,10 @@
                 <span class="border border-[#EF4444] text-[#EF4444] font-black px-1.5 py-0.5 rounded text-[10px]">D</span>
                 <span class="text-gray-600">InActive</span>
               </div>
+              <div class="flex items-center gap-1">
+                <span class="bg-[#F43F5E] text-white font-black px-1.5 py-0.5 rounded text-[10px]">S</span>
+                <span class="text-gray-600">Settle Account</span>
+              </div>
             </div>
           </div>
 
@@ -518,24 +522,38 @@
             />
           </div>
 
-          <!-- Clients Table -->
-          <div class="overflow-x-auto border border-[#E5E7EB] rounded">
+          <!-- Green Table Header Banner with Load Balance Button -->
+          <div class="bg-[#00884F] px-3 py-2 rounded-t flex items-center justify-between shadow-sm">
+            <button onclick="handleLoadBalanceClick()" class="bg-[#FBBF24] hover:bg-[#F59E0B] text-black font-bold text-xs px-3.5 py-1.5 rounded shadow transition-colors cursor-pointer">
+              Load Balance
+            </button>
+          </div>
+
+          <!-- Clients Table (Exact 9 Columns from Screenshot) -->
+          <div class="overflow-x-auto border border-[#D8DEE4] border-t-0 rounded-b shadow-sm -mt-4 bg-white">
             <table class="w-full text-left text-xs whitespace-nowrap">
-              <thead class="bg-[#FAFAFA] text-[#1F2937] text-xs font-bold border-b border-[#E5E7EB]">
-                <tr>
-                  <th class="p-3">User Account</th>
-                  <th class="p-3">Contact</th>
-                  <th class="p-3">Wallet / Tokens</th>
-                  <th class="p-3">Credit Limit</th>
-                  <th class="p-3">KYC Status</th>
-                  <th class="p-3 text-center">Status</th>
-                  <th class="p-3 text-right">Actions</th>
+              <thead class="bg-white text-[#1F2937] text-xs font-bold border-b border-[#D8DEE4]">
+                <tr class="divide-x divide-[#D8DEE4]">
+                  <th class="p-2.5">Username</th>
+                  <th class="p-2.5">Type</th>
+                  <th class="p-2.5">Credit</th>
+                  <th class="p-2.5">Balance</th>
+                  <th class="p-2.5">Client (P/L)</th>
+                  <th class="p-2.5">Share</th>
+                  <th class="p-2.5">Exposure</th>
+                  <th class="p-2.5">Available Balance</th>
+                  <th class="p-2.5 text-center">Options</th>
                 </tr>
               </thead>
-              <tbody id="usersTableList" class="divide-y divide-[#F3F4F6] text-xs text-gray-800">
+              <tbody id="usersTableList" class="divide-y divide-[#D8DEE4] text-xs text-gray-800 bg-white">
                 <!-- Populated by JS -->
               </tbody>
             </table>
+          </div>
+
+          <!-- Table Pagination Entries Text -->
+          <div class="text-xs text-gray-600 pt-1 font-sans" id="usersEntriesCount">
+            Showing 1 to 6 of 6 entries
           </div>
 
           <!-- Preserved Active Player Credentials Quick Inspector -->
@@ -559,6 +577,11 @@
             </div>
           </div>
 
+        </div>
+
+        <!-- Section Bottom Footer -->
+        <div class="py-2 text-left text-xs font-bold text-[#1F2937]">
+          Welcome to Exchange.
         </div>
 
       </div>
@@ -2997,6 +3020,15 @@
       showAdminToast(`User @${target.username} status set to: ${target.status}`, 'info');
     }
 
+    function handleLoadBalanceClick() {
+      renderUsersTable();
+      showAdminToast('✓ Balances loaded and refreshed', 'success');
+    }
+
+    function handleSettleAccount(username) {
+      showAdminToast(`Account settlement initiated for ${username}`, 'info');
+    }
+
     function renderUsersTable(filterOpts = {}) {
       const tbody = document.getElementById('usersTableList');
       if (!tbody) return;
@@ -3010,6 +3042,7 @@
       const cashEl = document.getElementById('clientsCash');
       const plEl = document.getElementById('clientsPlDownline');
       const usersCountEl = document.getElementById('clientsUsersCount');
+      const entriesCountEl = document.getElementById('usersEntriesCount');
 
       if (titleEl) titleEl.innerText = `${admin.username || admin.name || 'Ahmad5050x'} - Clients List | Default`;
       if (credRemEl) credRemEl.innerText = (admin.creditLimit !== undefined ? admin.creditLimit : 0).toLocaleString();
@@ -3024,9 +3057,12 @@
       }
 
       if (usersCountEl) usersCountEl.innerText = users.length;
+      if (entriesCountEl) {
+        entriesCountEl.innerText = `Showing ${users.length > 0 ? '1' : '0'} to ${users.length} of ${users.length} entries`;
+      }
 
       if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-500 font-mono">No registered users found matching the filter criteria.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-500 font-sans text-xs">No data available in table</td></tr>`;
         return;
       }
 
@@ -3037,59 +3073,56 @@
         const passVal = fullUser.password || '123456';
         const tokBal = u.tokenBalance !== undefined ? u.tokenBalance : (window.PlatformSync ? window.PlatformSync.getUserTokenBalance(u.username) : 0);
         const isActive = u.status === 'Active';
+        const balVal = (u.balance !== undefined ? u.balance : 0);
+        const credVal = (u.creditLimit !== undefined ? u.creditLimit : 0);
 
         return `
-        <tr class="hover:bg-gray-50 transition-colors cursor-pointer" onclick="inspectUserCredentials('${u.id}')">
-          <td class="p-3">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">
-                ${(u.username || 'US').substring(0,2).toUpperCase()}
-              </div>
-              <div class="flex flex-col">
-                <span class="text-[#00884F] font-mono font-bold hover:underline">${u.username}</span>
-                <span class="text-[10px] text-gray-400 font-mono">#${u.id}</span>
-              </div>
-            </div>
+        <tr class="hover:bg-gray-50 transition-colors divide-x divide-[#D8DEE4]" onclick="inspectUserCredentials('${u.id}')">
+          <td class="p-2.5 font-bold">
+            <span class="text-[#00884F] hover:underline cursor-pointer font-mono">${u.username}</span>
           </td>
-          <td class="p-3 font-mono text-gray-600 text-xs">
-            ${u.phone || '—'}
+          <td class="p-2.5 text-gray-700 text-xs">
+            Client
           </td>
-          <td class="p-3">
-            <div class="flex flex-col">
-              <span class="font-mono text-emerald-700 font-bold text-xs">Rs ${(u.balance || 0).toLocaleString()}</span>
-              <span class="font-mono text-amber-600 font-semibold text-[11px]">${(tokBal || 0).toLocaleString()} VTK</span>
-            </div>
+          <td class="p-2.5 font-mono text-gray-800 text-xs">
+            ${credVal.toFixed(2)}
           </td>
-          <td class="p-3 font-mono text-gray-700 text-xs">
-            Rs ${(u.creditLimit || 0).toLocaleString()}
+          <td class="p-2.5 font-mono font-semibold text-[#00884F] text-xs">
+            ${balVal.toFixed(2)}
           </td>
-          <td class="p-3">
-            <span class="badge ${u.kycStatus === 'Approved' ? 'badge-success' : (u.kycStatus === 'Pending' ? 'badge-warning' : 'badge-danger')} text-[9px] font-bold">
-              ${u.kycStatus || 'Pending'}
-            </span>
+          <td class="p-2.5 font-mono text-gray-800 text-xs">
+            0.00
           </td>
-          <td class="p-3 text-center">
-            <span class="badge ${isActive ? 'badge-success' : 'badge-danger'} text-[9px] font-bold">
-              ${u.status || 'Active'}
-            </span>
+          <td class="p-2.5 font-mono text-gray-800 text-xs">
+            100 %
           </td>
-          <td class="p-3 text-right" onclick="event.stopPropagation()">
-            <div class="flex items-center justify-end gap-1.5">
+          <td class="p-2.5 font-mono text-gray-800 text-xs">
+            0.00
+          </td>
+          <td class="p-2.5 font-mono font-semibold text-[#00884F] text-xs">
+            ${balVal.toFixed(2)}
+          </td>
+          <td class="p-2.5 text-center" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-center gap-1">
               <!-- C: Cash / Credit -->
-              <button onclick="openAdjustWalletModal('${u.username}')" title="Cash / Credit Adjustment" class="w-6 h-6 rounded bg-[#F59E0B] hover:bg-amber-600 text-white font-black text-[10px] flex items-center justify-center transition-colors cursor-pointer">
+              <button onclick="openAdjustWalletModal('${u.username}')" title="Cash / Credit Adjustment" class="w-5 h-5 rounded bg-[#F59E0B] hover:bg-amber-600 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
                 C
               </button>
               <!-- Edit: Profile Drawer -->
-              <button onclick="openUserProfileDrawer('${u.id}')" title="Edit / View Profile" class="w-6 h-6 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-[10px] flex items-center justify-center transition-colors cursor-pointer">
-                <i class="fa-solid fa-pencil"></i>
+              <button onclick="openUserProfileDrawer('${u.id}')" title="Edit / View Profile" class="w-5 h-5 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-[9px] flex items-center justify-center transition-colors cursor-pointer">
+                <i class="fa-solid fa-pencil text-[8px]"></i>
               </button>
               <!-- L: Ledger -->
-              <button onclick="switchAdminModule('tokens')" title="View Account Ledger" class="w-6 h-6 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-[10px] flex items-center justify-center transition-colors cursor-pointer">
+              <button onclick="switchAdminModule('tokens')" title="View Account Ledger" class="w-5 h-5 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
                 L
               </button>
               <!-- A / D: Active / InActive Toggle -->
-              <button onclick="toggleUserStatus('${u.id}')" title="${isActive ? 'Deactivate User' : 'Activate User'}" class="w-6 h-6 rounded font-black text-[10px] flex items-center justify-center transition-colors cursor-pointer ${isActive ? 'bg-[#10B981] hover:bg-emerald-600 text-white' : 'border border-[#EF4444] text-[#EF4444] hover:bg-red-50'}">
+              <button onclick="toggleUserStatus('${u.id}')" title="${isActive ? 'Deactivate User' : 'Activate User'}" class="w-5 h-5 rounded font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer ${isActive ? 'bg-[#10B981] hover:bg-emerald-600 text-white' : 'border border-[#EF4444] text-[#EF4444] hover:bg-red-50'}">
                 ${isActive ? 'A' : 'D'}
+              </button>
+              <!-- S: Settle Account -->
+              <button onclick="handleSettleAccount('${u.username}')" title="Settle Account" class="w-5 h-5 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
+                S
               </button>
             </div>
           </td>
