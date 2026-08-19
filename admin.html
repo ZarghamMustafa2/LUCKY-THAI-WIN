@@ -2802,67 +2802,133 @@
 
     function submitReportFilter() {
       const container = document.getElementById('reportOutputContainer');
-      const titleEl = document.getElementById('reportOutputTitle');
-      const bodyEl = document.getElementById('reportOutputBody');
-      const startVal = document.getElementById('reportStartDateInput') ? document.getElementById('reportStartDateInput').value : 'Today';
-      const endVal = document.getElementById('reportEndDateInput') ? document.getElementById('reportEndDateInput').value : 'Now';
+      const startVal = document.getElementById('reportStartDateInput') ? document.getElementById('reportStartDateInput').value : '08/18/2026 12:00 AM';
+      const endVal = document.getElementById('reportEndDateInput') ? document.getElementById('reportEndDateInput').value : '08/18/2026 11:59 PM';
 
-      if (!container || !titleEl || !bodyEl) return;
+      if (!container) return;
+
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const agentName = admin.username || admin.name || 'Ahmad5050x';
+
+      if (currentReportType === 'book_detail_2') {
+        container.className = "bg-transparent border-0 p-0 block";
+        container.innerHTML = `
+          <!-- Book Detail 2 Agent Card (Matches Screenshot Exactly) -->
+          <div class="bg-white border border-[#D8DEE4] rounded shadow-sm max-w-md w-full sm:w-[480px] overflow-hidden flex flex-col gap-3">
+            <!-- Header -->
+            <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-[#F8FAFC] flex items-center gap-2">
+              <i class="fa-solid fa-bars text-[#1F2937] text-xs"></i>
+              <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">${agentName}</h3>
+            </div>
+
+            <div class="p-4 flex flex-col gap-3">
+              <!-- Export Buttons: Print, Excel, PDF -->
+              <div class="flex items-center gap-2">
+                <button onclick="window.print()" class="px-3 py-1 bg-white border border-[#D1D5DB] rounded text-gray-800 text-xs italic font-medium hover:bg-gray-50 transition-colors cursor-pointer shadow-xs">
+                  Print
+                </button>
+                <button onclick="exportDataToCsv('finance')" class="px-3 py-1 bg-white border border-[#D1D5DB] rounded text-gray-800 text-xs italic font-medium hover:bg-gray-50 transition-colors cursor-pointer shadow-xs">
+                  Excel
+                </button>
+                <button onclick="exportDataToCsv('finance')" class="px-3 py-1 bg-white border border-[#D1D5DB] rounded text-gray-800 text-xs italic font-medium hover:bg-gray-50 transition-colors cursor-pointer shadow-xs">
+                  PDF
+                </button>
+              </div>
+
+              <!-- Table: Event, Amount -->
+              <div class="overflow-x-auto border border-[#D8DEE4] rounded shadow-sm bg-white">
+                <table class="w-full text-left text-xs whitespace-nowrap">
+                  <thead class="bg-white text-[#1F2937] text-xs font-bold border-b border-[#D8DEE4]">
+                    <tr class="divide-x divide-[#D8DEE4]">
+                      <th class="p-2.5 w-1/2">
+                        <div class="flex items-center justify-between gap-1 cursor-pointer">
+                          <span>Event</span>
+                          <i class="fa-solid fa-caret-up text-[10px] text-[#00884F]"></i>
+                        </div>
+                      </th>
+                      <th class="p-2.5 w-1/2">
+                        <div class="flex items-center justify-between gap-1 cursor-pointer">
+                          <span>Amount</span>
+                          <i class="fa-solid fa-sort text-[10px] text-gray-400"></i>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-xs">
+                    <!-- Total Green Summary Row -->
+                    <tr class="bg-[#00884F] text-white font-bold divide-x divide-[#007443]">
+                      <td class="p-2.5">Total</td>
+                      <td class="p-2.5 font-mono">0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+        showAdminToast('✓ Book Detail 2 (Aggregated) updated', 'success');
+        return;
+      }
 
       const titles = {
         'book_detail': 'Book Detail Report',
-        'book_detail_2': 'Book Detail 2 (Aggregated)',
         'daily_pl': 'Daily Profit & Loss Ledger',
         'daily_report': 'Daily Operating Report',
         'final_sheet': 'Final Settlement Sheet',
         'commission_report': 'Downline Commission Report'
       };
 
-      titleEl.innerText = `${titles[currentReportType] || 'Financial Report'} (${startVal} - ${endVal})`;
-      
       const deps = AdminCore.repo.get('ADM_DEPOSITS') || [];
       const wths = AdminCore.repo.get('ADM_WITHDRAWALS') || [];
       const totalIn = deps.filter(d => d.status === 'Approved').reduce((a, b) => a + (b.amount || 0), 0);
       const totalOut = wths.filter(w => w.status === 'Approved').reduce((a, b) => a + (b.amount || 0), 0);
 
-      bodyEl.innerHTML = `
-        <table class="w-full text-left border-collapse border border-gray-200">
-          <thead class="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th class="p-2.5 font-bold">Category / Metric</th>
-              <th class="p-2.5 font-bold">Entries</th>
-              <th class="p-2.5 font-bold">Volume (Rs)</th>
-              <th class="p-2.5 font-bold">Net P/L</th>
-              <th class="p-2.5 font-bold text-center">Status</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100">
-            <tr>
-              <td class="p-2.5 font-medium">Inflow / Total Deposits</td>
-              <td class="p-2.5 font-mono">${deps.length}</td>
-              <td class="p-2.5 font-mono text-emerald-700 font-bold">Rs ${totalIn.toLocaleString()}</td>
-              <td class="p-2.5 font-mono text-emerald-600">+Rs ${totalIn.toLocaleString()}</td>
-              <td class="p-2.5 text-center"><span class="badge badge-success text-[9px]">SETTLED</span></td>
-            </tr>
-            <tr>
-              <td class="p-2.5 font-medium">Outflow / Total Withdrawals</td>
-              <td class="p-2.5 font-mono">${wths.length}</td>
-              <td class="p-2.5 font-mono text-red-700 font-bold">Rs ${totalOut.toLocaleString()}</td>
-              <td class="p-2.5 font-mono text-red-600">-Rs ${totalOut.toLocaleString()}</td>
-              <td class="p-2.5 text-center"><span class="badge badge-warning text-[9px]">PROCESSED</span></td>
-            </tr>
-            <tr class="bg-gray-50 font-bold">
-              <td class="p-2.5">Net Position / Platform Margin</td>
-              <td class="p-2.5 font-mono">${deps.length + wths.length}</td>
-              <td class="p-2.5 font-mono">Rs ${(totalIn - totalOut).toLocaleString()}</td>
-              <td class="p-2.5 font-mono text-emerald-700">+Rs ${(totalIn - totalOut).toLocaleString()}</td>
-              <td class="p-2.5 text-center"><span class="badge badge-success text-[9px]">BALANCED</span></td>
-            </tr>
-          </tbody>
-        </table>
+      container.className = "bg-white border border-[#D8DEE4] rounded shadow-sm p-4 block";
+      container.innerHTML = `
+        <div class="flex items-center justify-between border-b border-gray-200 pb-2 mb-3">
+          <h4 class="font-bold text-gray-800 text-sm">${titles[currentReportType] || 'Financial Report'} (${startVal} - ${endVal})</h4>
+          <button onclick="exportDataToCsv('finance')" class="text-xs bg-[#00884F] text-white px-2.5 py-1 rounded font-bold flex items-center gap-1">
+            <i class="fa-solid fa-download"></i> Export CSV
+          </button>
+        </div>
+        <div class="overflow-x-auto text-xs text-gray-700">
+          <table class="w-full text-left border-collapse border border-gray-200">
+            <thead class="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th class="p-2.5 font-bold">Category / Metric</th>
+                <th class="p-2.5 font-bold">Entries</th>
+                <th class="p-2.5 font-bold">Volume (Rs)</th>
+                <th class="p-2.5 font-bold">Net P/L</th>
+                <th class="p-2.5 font-bold text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr>
+                <td class="p-2.5 font-medium">Inflow / Total Deposits</td>
+                <td class="p-2.5 font-mono">${deps.length}</td>
+                <td class="p-2.5 font-mono text-emerald-700 font-bold">Rs ${totalIn.toLocaleString()}</td>
+                <td class="p-2.5 font-mono text-emerald-600">+Rs ${totalIn.toLocaleString()}</td>
+                <td class="p-2.5 text-center"><span class="badge badge-success text-[9px]">SETTLED</span></td>
+              </tr>
+              <tr>
+                <td class="p-2.5 font-medium">Outflow / Total Withdrawals</td>
+                <td class="p-2.5 font-mono">${wths.length}</td>
+                <td class="p-2.5 font-mono text-red-700 font-bold">Rs ${totalOut.toLocaleString()}</td>
+                <td class="p-2.5 font-mono text-red-600">-Rs ${totalOut.toLocaleString()}</td>
+                <td class="p-2.5 text-center"><span class="badge badge-warning text-[9px]">PROCESSED</span></td>
+              </tr>
+              <tr class="bg-gray-50 font-bold">
+                <td class="p-2.5">Net Position / Platform Margin</td>
+                <td class="p-2.5 font-mono">${deps.length + wths.length}</td>
+                <td class="p-2.5 font-mono">Rs ${(totalIn - totalOut).toLocaleString()}</td>
+                <td class="p-2.5 font-mono text-emerald-700">+Rs ${(totalIn - totalOut).toLocaleString()}</td>
+                <td class="p-2.5 text-center"><span class="badge badge-success text-[9px]">BALANCED</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       `;
 
-      container.classList.remove('hidden');
       showAdminToast(`✓ ${titles[currentReportType] || 'Report'} updated`, 'success');
     }
 
