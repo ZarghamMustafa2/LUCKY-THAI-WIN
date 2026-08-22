@@ -120,6 +120,7 @@
   ];
 
   const DEFAULT_ADMINS = [
+    { id: 'COMP-ROOT-01', name: 'Company HQ (Top Level)', username: 'company', email: 'company@thainxt.com', role: 'COMPANY', level: 'COMPANY', companyId: 'COMP-01', uplineId: null, uplineUsername: null, parentId: null, createdBy: null, commissionRate: 100.0, creditLimit: 100000000, tokenLimit: 50000000, status: 'Active', lastLogin: 'Just now', pass: 'Company123!', password: 'Company123!' },
     { id: 'ADM-001', name: 'Amir Khan (Super Admin)', username: 'admin', email: 'admin@thainxt.com', role: 'SUPER_ADMIN', companyId: 'COMP-01', status: 'Active', lastLogin: 'Just now', pass: 'admin123' },
     { id: 'ADM-002', name: 'Zargham Mustafa', username: 'zargham_ops', email: 'zargham@thainxt.com', role: 'OPERATIONS_ADMIN', companyId: 'COMP-01', status: 'Active', lastLogin: '10 mins ago', pass: 'Qwer1234' },
     { id: 'ADM-003', name: 'Siddiq Finance Officer', username: 'finance_lead', email: 'finance@thainxt.com', role: 'FINANCE_ADMIN', companyId: 'COMP-01', status: 'Active', lastLogin: '1 hour ago', pass: '123456' },

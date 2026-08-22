@@ -71,6 +71,7 @@
   };
 
   const ROLE_PERMISSIONS = {
+    'COMPANY': Object.keys(PERMISSIONS), // Highest Top-Level Role
     'SUPER_ADMIN': Object.keys(PERMISSIONS), // Full Global Access
     'COMPANY_ADMIN': [
       'users.view', 'users.create', 'users.edit', 'users.suspend', 'users.notes', 'users.restrictions',
@@ -161,6 +162,7 @@
   ];
 
   const DEFAULT_ADMINS = [
+    { id: 'COMP-ROOT-01', name: 'Company HQ (Top Level)', username: 'company', email: 'company@thainxt.com', role: 'COMPANY', level: 'COMPANY', companyId: 'COMP-01', uplineId: null, uplineUsername: null, parentId: null, createdBy: null, commissionRate: 100.0, creditLimit: 100000000, tokenLimit: 50000000, status: 'Active', lastLogin: 'Just now', pass: 'Company123!', password: 'Company123!' },
     { id: 'ADM-001', name: 'Amir Khan (Super Admin)', username: 'admin', email: 'admin@thainxt.com', role: 'SUPER_ADMIN', level: 'SUPER_ADMIN', companyId: 'COMP-01', uplineId: null, uplineUsername: null, commissionRate: 10.0, creditLimit: 10000000, tokenLimit: 5000000, status: 'Active', lastLogin: 'Just now', pass: 'admin123' },
     { id: 'ADM-004', name: 'Priya Sharma (Company Partner)', username: 'priya_apex', email: 'priya@apex-sports.com', role: 'COMPANY_ADMIN', level: 'COMPANY_ADMIN', companyId: 'COMP-02', uplineId: 'ADM-001', uplineUsername: 'admin', commissionRate: 8.0, creditLimit: 5000000, tokenLimit: 2000000, status: 'Active', lastLogin: 'Yesterday', pass: '123456' },
     
@@ -255,7 +257,17 @@
 
     _initStore() {
       if (!localStorage.getItem('ADM_COMPANIES')) localStorage.setItem('ADM_COMPANIES', JSON.stringify(DEFAULT_COMPANIES));
-      if (!localStorage.getItem('ADM_ADMINS')) localStorage.setItem('ADM_ADMINS', JSON.stringify(DEFAULT_ADMINS));
+      if (!localStorage.getItem('ADM_ADMINS')) {
+        localStorage.setItem('ADM_ADMINS', JSON.stringify(DEFAULT_ADMINS));
+      } else {
+        try {
+          const stored = JSON.parse(localStorage.getItem('ADM_ADMINS')) || [];
+          if (!stored.some(a => a.username && a.username.toLowerCase() === 'company')) {
+            stored.unshift(DEFAULT_ADMINS[0]);
+            localStorage.setItem('ADM_ADMINS', JSON.stringify(stored));
+          }
+        } catch(e) {}
+      }
       if (!localStorage.getItem('ADM_CATEGORIES')) localStorage.setItem('ADM_CATEGORIES', JSON.stringify(DEFAULT_CATEGORIES));
       if (!localStorage.getItem('ADM_GAMES')) localStorage.setItem('ADM_GAMES', JSON.stringify(DEFAULT_GAMES));
       if (!localStorage.getItem('ADM_USERS')) localStorage.setItem('ADM_USERS', JSON.stringify(DEFAULT_USERS));

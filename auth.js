@@ -212,14 +212,53 @@
       return false;
     }
 
-    // Admin login — redirect to admin panel
-    if (_isAdminPassword(password)) {
-      _setLoggedIn(username || 'Super Admin');
+    // Check for Admin / Company account in ADM_ADMINS or special credentials
+    var adminsList = [];
+    try { adminsList = JSON.parse(localStorage.getItem('ADM_ADMINS') || '[]'); } catch(e) {}
+
+    var matchedAdmin = adminsList.find(function(a) {
+      return a.username && a.username.toLowerCase() === username.toLowerCase() && (a.pass === password || a.password === password);
+    });
+
+    if (!matchedAdmin && username.toLowerCase() === 'company' && password === 'Company123!') {
+      matchedAdmin = {
+        id: 'COMP-ROOT-01',
+        name: 'Company HQ (Top Level)',
+        username: 'company',
+        email: 'company@thainxt.com',
+        role: 'COMPANY',
+        level: 'COMPANY',
+        companyId: 'COMP-01',
+        uplineId: null,
+        uplineUsername: null,
+        parentId: null,
+        createdBy: null,
+        status: 'Active',
+        pass: 'Company123!',
+        password: 'Company123!'
+      };
+      adminsList.unshift(matchedAdmin);
+      try { localStorage.setItem('ADM_ADMINS', JSON.stringify(adminsList)); } catch(e) {}
+    }
+
+    if (matchedAdmin || _isAdminPassword(password)) {
+      var activeSession = matchedAdmin || {
+        id: 'ADM-001',
+        name: username || 'Super Admin',
+        username: username || 'admin',
+        role: 'SUPER_ADMIN',
+        pass: password
+      };
+
       try {
+        localStorage.setItem('ACTIVE_ADMIN_SESSION', JSON.stringify(activeSession));
         localStorage.setItem('isAdminAuth', 'true');
       } catch (e) {}
+
+      _setLoggedIn(activeSession.username);
+
       if (typeof window.showToast === 'function') {
-        window.showToast('Admin Verified! Opening Admin Panel...', 'success');
+        window.showToast('Verified as ' + (activeSession.role || 'Admin') + '! Opening Admin Panel...', 'success');
       }
       window.location.href = 'admin.html';
       return false;
