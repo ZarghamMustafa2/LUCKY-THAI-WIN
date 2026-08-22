@@ -4066,15 +4066,44 @@
     }
 
     let isUsersBalanceLoaded = false;
+    let isUsersBalanceLoading = false;
 
     function handleLoadBalanceClick() {
-      isUsersBalanceLoaded = !isUsersBalanceLoaded;
+      if (isUsersBalanceLoading) return;
+
       const btn = document.getElementById('loadBalanceBtn');
-      if (btn) {
-        btn.innerText = isUsersBalanceLoaded ? 'Hide Balance' : 'Load Balance';
+
+      if (!isUsersBalanceLoaded) {
+        isUsersBalanceLoading = true;
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Loading...';
+          btn.classList.add('opacity-80', 'cursor-not-allowed');
+        }
+
+        renderUsersTable();
+
+        setTimeout(() => {
+          isUsersBalanceLoading = false;
+          isUsersBalanceLoaded = true;
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = 'Hide Balance';
+            btn.classList.remove('opacity-80', 'cursor-not-allowed');
+          }
+          renderUsersTable();
+          showAdminToast('✓ Balances loaded successfully', 'success');
+        }, 1200);
+      } else {
+        isUsersBalanceLoaded = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = 'Load Balance';
+          btn.classList.remove('opacity-80', 'cursor-not-allowed');
+        }
+        renderUsersTable();
+        showAdminToast('✓ Balances masked', 'info');
       }
-      renderUsersTable();
-      showAdminToast(isUsersBalanceLoaded ? '✓ Balances loaded successfully' : '✓ Balances masked', isUsersBalanceLoaded ? 'success' : 'info');
     }
 
     function handleSettleAccount(username) {
@@ -4159,13 +4188,36 @@
         const credVal = Number(fullUser.creditLimit !== undefined ? fullUser.creditLimit : (u.creditLimit !== undefined ? u.creditLimit : 0)) || 0;
 
         const showDetails = isUsersBalanceLoaded;
-        const typeStr = showDetails ? (u.type || 'Client') : '...';
-        const credStr = showDetails ? credVal.toFixed(2) : '...';
-        const balStr = showDetails ? balVal.toFixed(2) : '...';
-        const plStr = showDetails ? '0.00' : '...';
-        const shareStr = showDetails ? '100 %' : '...';
-        const expStr = showDetails ? '0.00' : '...';
-        const availStr = showDetails ? balVal.toFixed(2) : '...';
+        const isLoading = isUsersBalanceLoading;
+
+        let typeStr, credStr, balStr, plStr, shareStr, expStr, availStr;
+
+        if (isLoading) {
+          const spinner = '<i class="fa-solid fa-circle-notch fa-spin text-amber-500 text-[10px]"></i>';
+          typeStr = spinner;
+          credStr = spinner;
+          balStr = spinner;
+          plStr = spinner;
+          shareStr = spinner;
+          expStr = spinner;
+          availStr = spinner;
+        } else if (showDetails) {
+          typeStr = u.type || 'Client';
+          credStr = credVal.toFixed(2);
+          balStr = balVal.toFixed(2);
+          plStr = '0.00';
+          shareStr = '100 %';
+          expStr = '0.00';
+          availStr = balVal.toFixed(2);
+        } else {
+          typeStr = '...';
+          credStr = '...';
+          balStr = '...';
+          plStr = '...';
+          shareStr = '...';
+          expStr = '...';
+          availStr = '...';
+        }
 
         return `
         <tr class="hover:bg-gray-50 transition-colors divide-x divide-[#D8DEE4]" onclick="inspectUserCredentials('${u.id}')">
