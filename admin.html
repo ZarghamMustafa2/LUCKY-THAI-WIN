@@ -5361,52 +5361,90 @@
       }
     }
 
-    // ─── ROLE HIERARCHY ENGINE ───
-    const HIERARCHY_ROLES = {
-      'COMPANY': ['Super Admin', 'Admin', 'Super Master', 'Master', 'User'],
-      'SUPER ADMIN': ['Admin', 'Super Master', 'Master', 'User'],
-      'ADMIN': ['Super Master', 'Master', 'User'],
-      'SUPER MASTER': ['Master', 'User'],
-      'MASTER': ['User'],
+    // ─── CENTRALIZED ROLE PERMISSIONS CONFIGURATION ───
+    const ROLE_CREATION_PERMISSIONS = {
+      'COMPANY': ['SUPER_ADMIN', 'ADMIN', 'SUPER_MASTER', 'MASTER', 'USER'],
+      'SUPER_ADMIN': ['ADMIN', 'SUPER_MASTER', 'MASTER', 'USER'],
+      'ADMIN': ['SUPER_MASTER', 'MASTER', 'USER'],
+      'SUPER_MASTER': ['MASTER', 'USER'],
+      'MASTER': ['USER'],
       'USER': []
     };
 
+    const ROLE_DISPLAY_LABELS = {
+      'SUPER_ADMIN': 'Super Admin',
+      'ADMIN': 'Admin',
+      'SUPER_MASTER': 'Super Master',
+      'MASTER': 'Master',
+      'USER': 'User'
+    };
+
     function getNormalizedRole(user) {
-      if (!user) return 'ADMIN';
-      const r = (user.role || user.userType || user.type || 'ADMIN').toString().toUpperCase().replace(/_/g, ' ');
-      if (r.includes('COMPANY')) return 'COMPANY';
-      if (r.includes('SUPER ADMIN')) return 'SUPER ADMIN';
-      if (r.includes('ADMIN')) return 'ADMIN';
-      if (r.includes('SUPER MASTER')) return 'SUPER MASTER';
-      if (r.includes('MASTER')) return 'MASTER';
-      if (r.includes('USER') || r.includes('BETTOR') || r.includes('CLIENT')) return 'USER';
-      return 'ADMIN';
+      if (!user) return null; // No silent fallback to ADMIN!
+
+      const raw = (user.role || user.userType || user.type || user.level || '').toString().trim().toUpperCase().replace(/[\s\-]+/g, '_');
+      
+      if (raw === 'COMPANY' || raw === 'COMPANY_ADMIN' || raw.includes('COMPANY')) {
+        return 'COMPANY';
+      }
+      if (raw === 'SUPER_ADMIN' || raw === 'SUPERADMIN' || raw.includes('SUPER_ADMIN')) {
+        return 'SUPER_ADMIN';
+      }
+      if (raw === 'SUPER_MASTER' || raw === 'SUPERMASTER' || raw.includes('SUPER_MASTER')) {
+        return 'SUPER_MASTER';
+      }
+      if (raw === 'MASTER' || raw === 'MASTER_AGENT' || raw === 'MASTERAGENT' || (raw.includes('MASTER') && !raw.includes('SUPER'))) {
+        return 'MASTER';
+      }
+      if (raw === 'ADMIN' || raw.endsWith('_ADMIN') || raw.includes('ADMIN')) {
+        return 'ADMIN';
+      }
+      if (raw === 'USER' || raw === 'BETTOR' || raw === 'CLIENT' || raw.includes('USER')) {
+        return 'USER';
+      }
+
+      return raw || null;
     }
 
     function openAddUserModal() {
       const admin = AdminCore.repo.getCurrentAdmin();
       const parentRole = getNormalizedRole(admin);
 
+      if (!parentRole) {
+        showAdminToast('Error: Authenticated account role is undefined or unrecognized.', 'error');
+        return;
+      }
+
       if (parentRole === 'USER') {
         showAdminToast('Access Denied: USER accounts cannot create sub-accounts.', 'error');
         return;
       }
 
-      // Dynamic Title
+      const allowedRoles = ROLE_CREATION_PERMISSIONS[parentRole];
+
+      if (!allowedRoles || allowedRoles.length === 0) {
+        showAdminToast(`Access Denied: Account role "${parentRole}" is not authorized to create sub-accounts.`, 'error');
+        return;
+      }
+
+      // Dynamic Modal Title Check
+      const titleRoleDisplay = parentRole.replace(/_/g, ' ');
       const underEl = document.getElementById('createUnderAgentName');
-      if (underEl) underEl.innerText = parentRole;
+      if (underEl) underEl.innerText = titleRoleDisplay;
 
       // Populate Account Type Options dynamically
       const container = document.getElementById('newUserTypeContainer');
-      const allowedRoles = HIERARCHY_ROLES[parentRole] || ['User'];
 
       if (container) {
-        container.innerHTML = allowedRoles.map((roleName, idx) => `
-          <label class="flex items-center gap-1.5 cursor-pointer text-gray-800 text-xs font-medium">
-            <input type="radio" name="newUserType" value="${roleName}" ${idx === 0 ? 'checked' : ''} class="accent-[#00884F] cursor-pointer" />
-            <span>${roleName}</span>
-          </label>
-        `).join('');
+        container.innerHTML = allowedRoles.map((roleKey, idx) => {
+          const labelText = ROLE_DISPLAY_LABELS[roleKey] || roleKey;
+          return `
+            <label class="flex items-center gap-1.5 cursor-pointer text-gray-800 text-xs font-medium">
+              <input type="radio" name="newUserType" value="${roleKey}" ${idx === 0 ? 'checked' : ''} class="accent-[#00884F] cursor-pointer" />
+              <span>${labelText}</span>
+            </label>
+          `;
+        }).join('');
       }
 
       // Reset inputs
@@ -5425,19 +5463,26 @@
       const username = document.getElementById('newUsername').value.trim();
       const password = document.getElementById('newPassword').value.trim();
       const typeRadio = document.querySelector('input[name="newUserType"]:checked');
-      const selectedType = typeRadio ? typeRadio.value : 'User';
+      const selectedRoleKey = typeRadio ? typeRadio.value : 'USER';
       const isActive = document.getElementById('newUserIsActive') ? document.getElementById('newUserIsActive').checked : true;
       const phone = document.getElementById('newUserPhone') ? document.getElementById('newUserPhone').value.trim() : '';
       const reference = document.getElementById('newUserReference') ? document.getElementById('newUserReference').value.trim() : '';
       const notes = document.getElementById('newUserNotes') ? document.getElementById('newUserNotes').value.trim() : '';
 
       const admin = AdminCore.repo.getCurrentAdmin();
-      const currentRole = getNormalizedRole(admin);
+      const currentRoleKey = getNormalizedRole(admin);
+
+      if (!currentRoleKey) {
+        showAdminToast('Error: Unable to identify authenticated account role.', 'error');
+        return;
+      }
 
       // STRICT BACKEND / PERMISSION VALIDATION
-      const allowedRoles = HIERARCHY_ROLES[currentRole] || [];
-      if (!allowedRoles.includes(selectedType)) {
-        showAdminToast(`Access Denied: ${currentRole} is not authorized to create ${selectedType} accounts.`, 'error');
+      const allowedRoles = ROLE_CREATION_PERMISSIONS[currentRoleKey] || [];
+      if (!allowedRoles.includes(selectedRoleKey)) {
+        const attemptedLabel = ROLE_DISPLAY_LABELS[selectedRoleKey] || selectedRoleKey;
+        const currentLabel = currentRoleKey.replace(/_/g, ' ');
+        showAdminToast(`Access Denied: ${currentLabel} is not authorized to create ${attemptedLabel} accounts.`, 'error');
         return;
       }
 
@@ -5450,8 +5495,9 @@
         return;
       }
 
-      const parentName = admin.username || admin.name || 'Ahmad5050x';
+      const parentName = admin.username || admin.name || 'Admin';
       const parentId = admin.id || parentName;
+      const selectedLabel = ROLE_DISPLAY_LABELS[selectedRoleKey] || selectedRoleKey;
 
       const newUser = {
         id: 'USR-' + (1090 + users.length),
@@ -5460,8 +5506,8 @@
         name: username,
         phone: phone || ('+92 300 ' + Math.floor(1000000 + Math.random() * 9000000)),
         email: username.toLowerCase() + '@gmail.com',
-        userType: selectedType,
-        role: selectedType.toUpperCase().replace(/\s+/g, '_'),
+        userType: selectedLabel,
+        role: selectedRoleKey,
         reference,
         notes,
         balance: 0,
@@ -5483,9 +5529,32 @@
 
       users.unshift(newUser);
       AdminCore.repo.set('ADM_USERS', users);
-      AdminCore.repo.logAudit('USER_CREATED', `User #${newUser.id}`, username, `Created ${selectedType} under ${parentName} (${currentRole})`);
+
+      if (selectedRoleKey !== 'USER') {
+        const admins = AdminCore.repo.get('ADM_ADMINS') || [];
+        const newAdminRecord = {
+          id: 'ADM-' + (100 + admins.length),
+          name: username,
+          username: username,
+          email: newUser.email,
+          role: selectedRoleKey,
+          level: selectedRoleKey,
+          companyId: companyId,
+          uplineId: parentId,
+          uplineUsername: parentName,
+          parentId: parentId,
+          createdBy: parentName,
+          status: isActive ? 'Active' : 'Suspended',
+          pass: password,
+          password: password
+        };
+        admins.unshift(newAdminRecord);
+        AdminCore.repo.set('ADM_ADMINS', admins);
+      }
+
+      AdminCore.repo.logAudit('USER_CREATED', `User #${newUser.id}`, username, `Created ${selectedLabel} under ${parentName} (${currentRoleKey})`);
       closeModal('addUserModal');
-      showAdminToast(`✓ ${selectedType} account "${username}" created successfully!`, 'success');
+      showAdminToast(`✓ ${selectedLabel} account "${username}" created successfully!`, 'success');
       renderUsersTable();
     }
 
