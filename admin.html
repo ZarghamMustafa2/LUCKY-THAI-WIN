@@ -4275,7 +4275,8 @@
           expStr = spinner;
           availStr = spinner;
         } else if (showDetails) {
-          typeStr = u.type || 'Client';
+          const userRoleKey = getNormalizedRole(fullUser) || getNormalizedRole(u);
+          typeStr = (userRoleKey && ROLE_DISPLAY_LABELS[userRoleKey]) ? ROLE_DISPLAY_LABELS[userRoleKey] : (fullUser.userType || fullUser.type || u.userType || u.type || 'User');
           credStr = credVal.toFixed(2);
           balStr = balVal.toFixed(2);
           plStr = '0.00';
@@ -5586,6 +5587,7 @@
         phone: phone || ('+92 300 ' + Math.floor(1000000 + Math.random() * 9000000)),
         email: username.toLowerCase() + '@gmail.com',
         userType: selectedLabel,
+        type: selectedLabel,
         role: selectedRoleKey,
         reference,
         notes,
@@ -5703,7 +5705,8 @@
 
       if (idEl) idEl.innerText = u.numericId || (u.id === 'USR-AHMAD1330X' || u.username === 'Ahmad1330x' ? '8626170' : (u.id.replace(/\D/g, '') || '8626170'));
       if (usernameEl) usernameEl.innerText = u.username;
-      if (typeEl) typeEl.innerText = u.type || 'Bettor';
+      const userRoleKey = getNormalizedRole(u);
+      if (typeEl) typeEl.innerText = (userRoleKey && ROLE_DISPLAY_LABELS[userRoleKey]) ? ROLE_DISPLAY_LABELS[userRoleKey] : (u.userType || u.type || 'User');
       if (currEl) currEl.innerText = u.currency || 'Rs.';
       if (passEl) passEl.value = '';
       if (activeEl) activeEl.checked = (u.status !== 'InActive');
