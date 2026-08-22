@@ -25,7 +25,8 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
 };
 
 export const isAdmin = (req: AuthRequest, res: Response, next: NextFunction): void => {
-  if (req.user && req.user.role === 'admin') {
+  const role = req.user ? (req.user.role || '').toUpperCase() : '';
+  if (req.user && (role === 'ADMIN' || role === 'COMPANY' || role === 'SUPER_ADMIN')) {
     next();
   } else {
     res.status(403).json({ message: 'Access Denied: Requires Admin Role' });

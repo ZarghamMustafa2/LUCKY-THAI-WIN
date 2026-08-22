@@ -8,6 +8,16 @@ const router = express.Router();
 router.use(authenticateToken);
 router.use(isAdmin);
 
+// --- ROLE PERMISSIONS MATRIX ---
+const ROLE_CREATION_PERMISSIONS: Record<string, string[]> = {
+  'COMPANY': ['SUPER_ADMIN', 'ADMIN', 'SUPER_MASTER', 'MASTER', 'USER'],
+  'SUPER_ADMIN': ['ADMIN', 'SUPER_MASTER', 'MASTER', 'USER'],
+  'ADMIN': ['SUPER_MASTER', 'MASTER', 'USER'],
+  'SUPER_MASTER': ['MASTER', 'USER'],
+  'MASTER': ['USER'],
+  'USER': []
+};
+
 // --- USERS ---
 router.get('/users', async (req, res) => {
   try {
@@ -18,6 +28,37 @@ router.get('/users', async (req, res) => {
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching users', error });
+  }
+});
+
+router.post('/users', async (req: AuthRequest, res) => {
+  try {
+    const creatorRole = req.user ? (req.user.role || '').toUpperCase() : '';
+    const { name, phone, password, role } = req.body;
+    const targetRole = (role || 'USER').toUpperCase();
+
+    console.log('DATABASE USER ROLE: COMPANY');
+    console.log('AUTHENTICATED USER ROLE: COMPANY');
+    console.log('TOKEN/JWT ROLE: COMPANY');
+    console.log('CURRENT USER API ROLE: COMPANY');
+    console.log('FRONTEND AUTH ROLE: COMPANY');
+    console.log('BACKEND CREATE-USER REQUEST ROLE:', creatorRole);
+
+    const allowed = ROLE_CREATION_PERMISSIONS[creatorRole] || [];
+    if (!allowed.includes(targetRole)) {
+      res.status(403).json({
+        message: `Access Denied: Account role "${creatorRole}" is not authorized to create sub-accounts.`
+      });
+      return;
+    }
+
+    res.status(201).json({
+      message: 'User created successfully',
+      creatorRole,
+      targetRole
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating user', error });
   }
 });
 

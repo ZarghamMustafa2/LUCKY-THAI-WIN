@@ -82,6 +82,7 @@
       localStorage.setItem('isUserLoggedIn', 'false');
       localStorage.removeItem('userLoginName');
       localStorage.removeItem('isAdminAuth');
+      localStorage.removeItem('ACTIVE_ADMIN_SESSION');
       localStorage.removeItem('userLoginPassword');
       localStorage.removeItem('userLoginToken');
     } catch (e) {}
