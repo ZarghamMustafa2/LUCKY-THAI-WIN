@@ -510,7 +510,7 @@
 
           <!-- Green Table Header Banner with Load Balance Button -->
           <div class="bg-[#00884F] px-3 py-2 rounded-t flex items-center justify-between shadow-sm">
-            <button onclick="handleLoadBalanceClick()" class="bg-[#FBBF24] hover:bg-[#F59E0B] text-black font-bold text-xs px-3.5 py-1.5 rounded shadow transition-colors cursor-pointer">
+            <button id="loadBalanceBtn" onclick="handleLoadBalanceClick()" class="bg-[#FBBF24] hover:bg-[#F59E0B] text-black font-bold text-xs px-3.5 py-1.5 rounded shadow transition-colors cursor-pointer">
               Load Balance
             </button>
           </div>
@@ -4065,9 +4065,16 @@
       showAdminToast(`User @${target.username} status set to: ${target.status}`, 'info');
     }
 
+    let isUsersBalanceLoaded = false;
+
     function handleLoadBalanceClick() {
+      isUsersBalanceLoaded = !isUsersBalanceLoaded;
+      const btn = document.getElementById('loadBalanceBtn');
+      if (btn) {
+        btn.innerText = isUsersBalanceLoaded ? 'Hide Balance' : 'Load Balance';
+      }
       renderUsersTable();
-      showAdminToast('✓ Balances loaded and refreshed', 'success');
+      showAdminToast(isUsersBalanceLoaded ? '✓ Balances loaded successfully' : '✓ Balances masked', isUsersBalanceLoaded ? 'success' : 'info');
     }
 
     function handleSettleAccount(username) {
@@ -4151,31 +4158,40 @@
         const balVal = Number(fullUser.balance !== undefined ? fullUser.balance : (u.balance !== undefined ? u.balance : 0)) || 0;
         const credVal = Number(fullUser.creditLimit !== undefined ? fullUser.creditLimit : (u.creditLimit !== undefined ? u.creditLimit : 0)) || 0;
 
+        const showDetails = isUsersBalanceLoaded;
+        const typeStr = showDetails ? (u.type || 'Client') : '...';
+        const credStr = showDetails ? credVal.toFixed(2) : '...';
+        const balStr = showDetails ? balVal.toFixed(2) : '...';
+        const plStr = showDetails ? '0.00' : '...';
+        const shareStr = showDetails ? '100 %' : '...';
+        const expStr = showDetails ? '0.00' : '...';
+        const availStr = showDetails ? balVal.toFixed(2) : '...';
+
         return `
         <tr class="hover:bg-gray-50 transition-colors divide-x divide-[#D8DEE4]" onclick="inspectUserCredentials('${u.id}')">
           <td class="p-2.5 font-bold">
             <span class="text-[#00884F] hover:underline cursor-pointer font-mono">${u.username}</span>
           </td>
           <td class="p-2.5 text-gray-700 text-xs">
-            Client
+            ${typeStr}
           </td>
-          <td class="p-2.5 font-mono text-gray-800 text-xs">
-            ${credVal.toFixed(2)}
-          </td>
-          <td class="p-2.5 font-mono font-semibold text-[#00884F] text-xs">
-            ${balVal.toFixed(2)}
-          </td>
-          <td class="p-2.5 font-mono text-gray-800 text-xs">
-            0.00
-          </td>
-          <td class="p-2.5 font-mono text-gray-800 text-xs">
-            100 %
-          </td>
-          <td class="p-2.5 font-mono text-gray-800 text-xs">
-            0.00
+          <td class="p-2.5 font-mono text-gray-800 text-xs font-semibold">
+            ${credStr}
           </td>
           <td class="p-2.5 font-mono font-semibold text-[#00884F] text-xs">
-            ${balVal.toFixed(2)}
+            ${balStr}
+          </td>
+          <td class="p-2.5 font-mono text-gray-800 text-xs">
+            ${plStr}
+          </td>
+          <td class="p-2.5 font-mono text-gray-800 text-xs">
+            ${shareStr}
+          </td>
+          <td class="p-2.5 font-mono text-gray-800 text-xs">
+            ${expStr}
+          </td>
+          <td class="p-2.5 font-mono font-semibold text-[#00884F] text-xs">
+            ${availStr}
           </td>
           <td class="p-2.5 text-center" onclick="event.stopPropagation()">
             <div class="flex items-center justify-center gap-1">
