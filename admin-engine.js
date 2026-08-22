@@ -306,9 +306,113 @@
     hasPermission(permissionKey) {
       const current = this.getCurrentAdmin();
       if (!current) return false;
-      if (current.role === 'SUPER_ADMIN') return true;
+      if (current.role === 'COMPANY' || current.role === 'SUPER_ADMIN') return true;
       const allowed = ROLE_PERMISSIONS[current.role] || [];
       return allowed.includes(permissionKey);
+    }
+
+    // Recursive Hierarchy Descendants Resolution
+    getRecursiveDescendants(parentAccount) {
+      if (!parentAccount) return [];
+
+      const roleStr = (parentAccount.role || parentAccount.userType || parentAccount.type || '').toString().toUpperCase().replace(/_/g, ' ');
+      if (roleStr.includes('USER') || roleStr.includes('BETTOR') || roleStr.includes('CLIENT')) {
+        return [];
+      }
+
+      const allUsers = this.get('ADM_USERS') || [];
+      const allAdmins = this.get('ADM_ADMINS') || [];
+
+      // Combine and deduplicate pool of accounts
+      const poolMap = new Map();
+      [...allAdmins, ...allUsers].forEach(item => {
+        if (!item) return;
+        const key = (item.id || item.username || '').toString().toLowerCase();
+        if (key && !poolMap.has(key)) {
+          poolMap.set(key, item);
+        }
+      });
+
+      const allPool = Array.from(poolMap.values());
+      const descendantMap = new Map();
+      let currentParents = [parentAccount];
+
+      const isChildOf = (item, parentIdentifiers) => {
+        const pIds = parentIdentifiers.map(x => String(x).toLowerCase());
+        const checkFields = [
+          item.parentId,
+          item.createdBy,
+          item.createdUnder,
+          item.agentId,
+          item.uplineId,
+          item.uplineUsername,
+          item.agentUsername,
+          item.masterUsername,
+          item.superMasterUsername,
+          item.source
+        ];
+        return checkFields.some(val => val && pIds.includes(String(val).toLowerCase()));
+      };
+
+      while (currentParents.length > 0) {
+        const nextParents = [];
+
+        for (const parent of currentParents) {
+          const parentKeys = [parent.id, parent.username, parent.name].filter(Boolean);
+
+          for (const item of allPool) {
+            const itemKey = (item.id || item.username || '').toString().toLowerCase();
+            
+            // Skip self or already processed items
+            if (parentKeys.some(pk => String(pk).toLowerCase() === itemKey) || descendantMap.has(itemKey)) {
+              continue;
+            }
+
+            if (isChildOf(item, parentKeys)) {
+              descendantMap.set(itemKey, item);
+              nextParents.push(item);
+            }
+          }
+        }
+
+        currentParents = nextParents;
+      }
+
+      return Array.from(descendantMap.values());
+    }
+
+    // Backend Security Scoped Resolver for Authorized Users Listing
+    getHierarchyUsers(authenticatedUser) {
+      if (!authenticatedUser) return [];
+
+      const roleStr = (authenticatedUser.role || authenticatedUser.userType || authenticatedUser.type || '').toString().toUpperCase().replace(/_/g, ' ');
+
+      if (roleStr.includes('USER') || roleStr.includes('BETTOR') || roleStr.includes('CLIENT')) {
+        return [];
+      }
+
+      const descendants = this.getRecursiveDescendants(authenticatedUser);
+
+      // If COMPANY, include all descendants across the company hierarchy
+      if (roleStr.includes('COMPANY')) {
+        const allUsers = this.get('ADM_USERS') || [];
+        const allAdmins = this.get('ADM_ADMINS') || [];
+        const combined = new Map();
+        
+        descendants.forEach(d => combined.set((d.id || d.username).toLowerCase(), d));
+        
+        [...allAdmins, ...allUsers].forEach(item => {
+          if (!item) return;
+          const k = (item.id || item.username).toLowerCase();
+          if (k !== (authenticatedUser.id || '').toLowerCase() && k !== (authenticatedUser.username || '').toLowerCase()) {
+            combined.set(k, item);
+          }
+        });
+        
+        return Array.from(combined.values());
+      }
+
+      return descendants;
     }
 
     // Downline Agent Resolution (Recursive Subtree)

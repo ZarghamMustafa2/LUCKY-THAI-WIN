@@ -4107,21 +4107,17 @@
         AdminCore.repo.set('ADM_USERS', allUsers);
       }
 
-      if (admin.role === 'SUPER_ADMIN') {
-        if (window.PlatformSync && typeof window.PlatformSync.getSanitizedUsers === 'function') {
-          users = window.PlatformSync.getSanitizedUsers(companyScope, filterOpts);
-        } else {
-          users = AdminCore.repo.scopeToCompany(allUsers);
-        }
-      } else {
-        users = allUsers.filter(u => u.agentId === admin.id || u.createdUnder === agentName || u.agentId === agentName);
-        if (users.length === 0) {
-          users = allUsers.filter(u => u.username === 'Ahmad1330x');
-        }
-        if (filterOpts && filterOpts.search) {
-          const s = filterOpts.search.toLowerCase();
-          users = users.filter(u => u.username.toLowerCase().includes(s) || u.id.toLowerCase().includes(s));
-        }
+      // Backend Security: Retrieve accounts under authenticated user's hierarchy
+      users = AdminCore.repo.getHierarchyUsers(admin);
+
+      // Apply search filter if provided
+      if (filterOpts && filterOpts.search) {
+        const s = filterOpts.search.toLowerCase();
+        users = users.filter(u => 
+          (u.username && u.username.toLowerCase().includes(s)) || 
+          (u.id && u.id.toLowerCase().includes(s)) ||
+          (u.name && u.name.toLowerCase().includes(s))
+        );
       }
 
       if (usersCountEl) usersCountEl.innerText = users.length;
