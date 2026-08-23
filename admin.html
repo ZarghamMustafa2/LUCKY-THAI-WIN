@@ -116,67 +116,55 @@
   </div>
 
   <!-- 1B. LUCKY THAIWIN APPLICATION ACCOUNT LOGIN MODAL -->
-  <div id="appAccountLoginModal" class="hidden fixed inset-0 z-[999998] bg-[#070B14]/95 backdrop-blur-2xl flex items-center justify-center p-4 transition-all duration-500 overflow-y-auto">
-    <div class="relative w-full max-w-[380px] sm:max-w-[420px] bg-gradient-to-b from-[#1c2942] via-[#0f172a] to-[#090d16] rounded-3xl p-8 shadow-[0_30px_90px_rgba(0,0,0,0.95),0_0_50px_rgba(16,185,129,0.25)] border border-emerald-500/40 flex flex-col items-center gap-6 my-auto">
+  <div id="appAccountLoginModal" class="hidden fixed inset-0 z-[999998] flex items-center justify-center p-4 transition-all duration-500 overflow-y-auto" style="background-color: #16181b; background-image: radial-gradient(circle at 50% 50%, #22262b 0%, #0e1012 100%), url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpolygon points='0,0 40,0 0,40'/%3E%3Cpolygon points='40,0 80,0 80,40'/%3E%3Cpolygon points='80,40 80,80 40,80'/%3E%3Cpolygon points='40,80 0,80 0,40'/%3E%3Cpolygon points='40,0 80,40 40,80 0,40'/%3E%3C/g%3E%3C/svg%3E&quot;);">
+    <div class="relative w-full max-w-[340px] sm:max-w-[380px] bg-gradient-to-b from-[#376185] via-[#244563] to-[#152737] rounded-3xl p-7 sm:p-9 shadow-[0_25px_70px_rgba(0,0,0,0.85),0_0_35px_rgba(30,55,80,0.35)] border border-cyan-300/20 flex flex-col items-center gap-7 my-auto">
       
-      <button onclick="closeModal('appAccountLoginModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 text-xl z-20 cursor-pointer">
+      <button type="button" onclick="closeModal('appAccountLoginModal')" class="absolute top-4 right-4 text-cyan-200/70 hover:text-white p-2 text-xl z-20 cursor-pointer">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <!-- Brand Badge -->
-      <div class="w-20 h-20 rounded-2xl bg-emerald-500/20 border-2 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.5)] flex items-center justify-center text-emerald-400 text-3xl my-1">
-        <i class="fa-solid fa-user-shield"></i>
-      </div>
-
-      <div class="flex flex-col items-center text-center gap-1">
-        <h2 class="text-xl sm:text-2xl font-display font-black text-white tracking-wider">LUCKY THAIWIN ACCOUNT LOGIN</h2>
-        <p class="text-xs text-textMuted font-semibold">Log in as COMPANY, Super Admin, Admin, Super Master, Master, or User</p>
+      <!-- TW Turquoise Brand Logo Circle (Exact Reference Match) -->
+      <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-[#52e8ca] shadow-[0_0_35px_rgba(82,232,202,0.6)] flex items-center justify-center text-[#12283b] my-1 transition-transform hover:scale-105 border-2 border-white/40">
+        <span class="font-serif italic font-black text-5xl sm:text-6xl tracking-tighter drop-shadow-sm select-none" style="font-family: 'Playfair Display', 'Georgia', serif; font-style: italic;">TW</span>
       </div>
 
       <!-- Application Account Login Form -->
-      <form onsubmit="handleAppAccountLoginSubmit(event)" class="w-full flex flex-col gap-4 mt-1">
-        <div class="flex flex-col gap-1">
-          <label class="text-[10px] font-bold text-textMuted uppercase tracking-wider">Account Username</label>
-          <div class="flex items-center gap-3 bg-sidebarDark/80 border border-borderSubtle rounded-xl px-3.5 py-2.5 focus-within:border-emerald-500 transition-colors">
-            <i class="fa-solid fa-user text-emerald-400 text-base"></i>
-            <input 
-              id="appAccountUsernameInput" 
-              type="text" 
-              required
-              placeholder="e.g. company" 
-              value="company"
-              class="w-full bg-transparent text-white font-mono font-bold text-sm outline-none placeholder:text-textMuted tracking-wider" 
-            />
-          </div>
+      <form onsubmit="handleAppAccountLoginSubmit(event)" class="w-full flex flex-col gap-6 mt-1">
+        <!-- Username Underline Field -->
+        <div class="flex items-center gap-3.5 border-b border-gray-400/40 pb-2.5 px-1 focus-within:border-cyan-300 transition-colors">
+          <i class="fa-solid fa-user text-white text-base w-5 text-center"></i>
+          <input 
+            id="appAccountUsernameInput" 
+            type="text" 
+            required
+            placeholder="Username" 
+            value="company"
+            class="w-full bg-transparent text-white font-medium text-base outline-none placeholder:text-gray-200 tracking-wide" 
+          />
         </div>
 
-        <div class="flex flex-col gap-1">
-          <label class="text-[10px] font-bold text-textMuted uppercase tracking-wider">Account Password</label>
-          <div class="flex items-center gap-3 bg-sidebarDark/80 border border-borderSubtle rounded-xl px-3.5 py-2.5 focus-within:border-emerald-500 transition-colors">
-            <i class="fa-solid fa-lock text-emerald-400 text-base"></i>
-            <input 
-              id="appAccountPasswordInput" 
-              type="password" 
-              required
-              placeholder="e.g. Company123!" 
-              value="Company123!"
-              class="w-full bg-transparent text-white font-mono font-bold text-sm outline-none placeholder:text-textMuted tracking-wider" 
-            />
-          </div>
+        <!-- Password Underline Field -->
+        <div class="flex items-center gap-3.5 border-b border-gray-400/40 pb-2.5 px-1 focus-within:border-cyan-300 transition-colors">
+          <i class="fa-solid fa-lock text-white text-base w-5 text-center"></i>
+          <input 
+            id="appAccountPasswordInput" 
+            type="password" 
+            required
+            placeholder="Password" 
+            value="Company123!"
+            class="w-full bg-transparent text-white font-medium text-base outline-none placeholder:text-gray-200 tracking-wide" 
+          />
         </div>
 
-        <button 
-          type="submit" 
-          class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold text-xs uppercase tracking-widest shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 mt-2">
-          <i class="fa-solid fa-right-to-bracket text-xs"></i> Log In to Application Account
-        </button>
+        <!-- 3D Glossy Pill Login Button (Exact Match) -->
+        <div class="flex justify-center mt-3 mb-1">
+          <button 
+            type="submit" 
+            class="w-44 sm:w-48 py-2.5 sm:py-3 rounded-full bg-gradient-to-b from-[#4e8bb7] via-[#2f668f] to-[#1a4463] text-white font-bold text-lg tracking-wide shadow-[0_8px_20px_rgba(0,0,0,0.6),inset_0_1px_2px_rgba(255,255,255,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer border border-cyan-300/30 flex items-center justify-center">
+            Login
+          </button>
+        </div>
       </form>
-
-      <!-- Account Credentials Hint -->
-      <div class="w-full p-3 bg-black/40 rounded-xl border border-white/5 text-[11px] text-textMuted flex flex-col gap-1 text-center">
-        <span class="font-bold text-gray-300">COMPANY Account Credentials:</span>
-        <span class="font-mono text-amber-400">Username: company | Password: Company123!</span>
-      </div>
 
     </div>
   </div>
