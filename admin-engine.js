@@ -300,13 +300,19 @@
           const targetUser = users.find(x => (x.id && saved.id && x.id === saved.id) || (x.username && saved.username && x.username.toLowerCase() === saved.username.toLowerCase()));
           const targetAdmin = admins.find(x => (x.id && saved.id && x.id === saved.id) || (x.username && saved.username && x.username.toLowerCase() === saved.username.toLowerCase()));
 
-          const latestBal = targetUser && targetUser.balance !== undefined ? targetUser.balance : (targetAdmin && targetAdmin.balance !== undefined ? targetAdmin.balance : saved.balance);
-          const latestCred = targetUser && targetUser.creditLimit !== undefined ? targetUser.creditLimit : (targetAdmin && targetAdmin.creditLimit !== undefined ? targetAdmin.creditLimit : saved.creditLimit);
+          const rawBal = targetUser && targetUser.balance !== undefined ? targetUser.balance : (targetAdmin && targetAdmin.balance !== undefined ? targetAdmin.balance : saved.balance);
+          const rawCred = targetUser && targetUser.creditLimit !== undefined ? targetUser.creditLimit : (targetAdmin && targetAdmin.creditLimit !== undefined ? targetAdmin.creditLimit : saved.creditLimit);
+          const rawLocked = targetUser && targetUser.locked !== undefined ? targetUser.locked : (targetAdmin && targetAdmin.locked !== undefined ? targetAdmin.locked : (saved.locked || 0));
+
+          const totalFunds = Math.max(Number(rawBal || 0), Number(rawCred || 0));
+          const lockedVal = Number(rawLocked || 0);
 
           return {
             ...saved,
-            balance: Number(latestBal || 0),
-            creditLimit: Number(latestCred || 0)
+            balance: totalFunds,
+            creditLimit: totalFunds,
+            locked: lockedVal,
+            creditRemaining: Math.max(0, totalFunds - lockedVal)
           };
         }
       } catch(e) {}

@@ -4036,8 +4036,33 @@
       switchAdminModule('dashboard');
     }
 
+    /**
+     * Single Source of Truth for Account Balance and Credit Data
+     */
+    function getAccountCreditSummary(account) {
+      if (!account) {
+        return { balance: 0, creditLimit: 0, creditsUsed: 0, creditRemaining: 0, cash: 0 };
+      }
+      const rawBal = Number(account.balance !== undefined ? account.balance : 0) || 0;
+      const rawCred = Number(account.creditLimit !== undefined ? account.creditLimit : 0) || 0;
+      const rawLocked = Number(account.locked !== undefined ? account.locked : 0) || 0;
+
+      const totalReceived = Math.max(rawBal, rawCred);
+      const totalUsed = rawLocked;
+      const remaining = Math.max(0, totalReceived - totalUsed);
+
+      return {
+        balance: totalReceived,
+        creditLimit: totalReceived,
+        creditsUsed: totalUsed,
+        creditRemaining: remaining,
+        cash: totalReceived
+      };
+    }
+
     function updateAdminHeaderInfo() {
       const cur = AdminCore.repo.getCurrentAdmin();
+      const summary = getAccountCreditSummary(cur);
       
       // Top BPEXCH Header Elements (Matches Screenshot)
       const topNameEl = document.getElementById('topBarAdminName');
@@ -4047,13 +4072,13 @@
       const topDropFullName = document.getElementById('topBarDropdownAdminFullName');
       const topDropScope = document.getElementById('topBarDropdownAdminScope');
 
-      const uname = cur.username || cur.name || 'company';
-      const normRole = (typeof getNormalizedRole === 'function' ? getNormalizedRole(cur) : cur.role) || 'COMPANY';
+      const uname = cur ? (cur.username || cur.name || 'company') : 'company';
+      const normRole = (cur && typeof getNormalizedRole === 'function' ? getNormalizedRole(cur) : (cur ? cur.role : 'COMPANY')) || 'COMPANY';
       const roleLabel = (typeof ROLE_DISPLAY_LABELS !== 'undefined' && ROLE_DISPLAY_LABELS[normRole]) || (window.ROLE_DISPLAY_LABELS && window.ROLE_DISPLAY_LABELS[normRole]) || normRole.replace(/_/g, ' ');
 
       if (topNameEl) topNameEl.innerText = uname;
       if (topRoleEl) topRoleEl.innerText = `(${roleLabel})`;
-      if (topBalEl) topBalEl.innerText = (cur.balance !== undefined ? cur.balance : 0).toLocaleString();
+      if (topBalEl) topBalEl.innerText = summary.balance.toLocaleString();
       if (topExpEl) topExpEl.innerText = (cur.exposure !== undefined ? cur.exposure : 0).toLocaleString();
       if (topDropFullName) topDropFullName.innerText = `${cur.name || uname} (@${uname})`;
       if (topDropScope) topDropScope.innerText = `${normRole.replace(/_/g, ' ')} LEVEL`;
@@ -4256,9 +4281,15 @@
       const usersCountEl = document.getElementById('clientsUsersCount');
       const entriesCountEl = document.getElementById('usersEntriesCount');
 
+      const summary = typeof getAccountCreditSummary === 'function' ? getAccountCreditSummary(admin) : {
+        balance: Math.max(Number(admin.balance || 0), Number(admin.creditLimit || 0)),
+        creditRemaining: Math.max(Number(admin.balance || 0), Number(admin.creditLimit || 0)) - (Number(admin.locked || 0)),
+        cash: Math.max(Number(admin.balance || 0), Number(admin.creditLimit || 0))
+      };
+
       if (titleEl) titleEl.innerText = `${admin.username || admin.name || 'Ahmad5050x'} - Clients List | Default`;
-      if (credRemEl) credRemEl.innerText = (admin.creditLimit !== undefined ? admin.creditLimit : 0).toLocaleString();
-      if (cashEl) cashEl.innerText = (admin.balance !== undefined ? admin.balance : 0).toLocaleString();
+      if (credRemEl) credRemEl.innerText = summary.creditRemaining.toLocaleString();
+      if (cashEl) cashEl.innerText = summary.cash.toLocaleString();
       if (plEl) plEl.innerText = '0';
 
       let users = [];
