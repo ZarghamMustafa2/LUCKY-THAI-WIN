@@ -6175,6 +6175,15 @@
         return;
       }
 
+      const parentAdmin = AdminCore.repo.getCurrentAdmin();
+      const parentSummary = typeof getAccountCreditSummary === 'function' ? getAccountCreditSummary(parentAdmin) : { balance: parentAdmin ? (parentAdmin.balance || 0) : 0 };
+
+      // Insufficient balance validation for parent/sender
+      if (parentAdmin && parentSummary.balance < amount) {
+        showAdminToast(`Insufficient Balance: Available balance is Rs ${parentSummary.balance.toLocaleString()}, but attempted to transfer Rs ${amount.toLocaleString()}.`, 'error');
+        return;
+      }
+
       let users = AdminCore.repo.get('ADM_USERS') || [];
       let u = users.find(x => (x.username && x.username.toLowerCase() === uname.toLowerCase()) || x.id === uname);
 
@@ -6184,8 +6193,8 @@
           username: uname,
           name: uname,
           type: 'Client',
-          createdUnder: 'Ahmad5050x',
-          agentId: 'Ahmad5050x',
+          createdUnder: parentAdmin ? parentAdmin.username : 'Ahmad5050x',
+          agentId: parentAdmin ? parentAdmin.username : 'Ahmad5050x',
           creditLimit: 0,
           balance: 0,
           status: 'Active',
@@ -6195,34 +6204,45 @@
       }
 
       const isCash = currentAdjustTab === 'CASH';
-      if (isCash) {
-        u.balance = (Number(u.balance) || 0) + amount;
-        if (window.PlatformSync && typeof window.PlatformSync.updateUserBalance === 'function') {
-          window.PlatformSync.updateUserBalance(u.id, u.balance);
-        }
-        // Record deposit in ADM_DEPOSITS
-        const deposits = AdminCore.repo.get('ADM_DEPOSITS') || [];
-        deposits.unshift({
-          id: 'DEP-' + Math.floor(1000 + Math.random() * 9000),
-          userId: u.id,
-          username: u.username,
-          amount: amount,
-          method: 'Direct Admin Cash Deposit',
-          ref: desc || 'Direct Cash Deposit',
-          companyId: u.companyId || 'COMP-01',
-          status: 'Approved',
-          date: new Date().toLocaleString()
-        });
-        AdminCore.repo.set('ADM_DEPOSITS', deposits);
-        AdminCore.repo.logAudit('CASH_DEPOSIT', `User #${u.id}`, uname, desc, `Deposit: Rs ${amount}`, `New Balance: Rs ${u.balance}`);
-      } else {
-        u.creditLimit = (Number(u.creditLimit) || 0) + amount;
-        AdminCore.repo.logAudit('CREDIT_DEPOSIT', `User #${u.id}`, uname, desc, `Credit: Rs ${amount}`, `New Credit: Rs ${u.creditLimit}`);
+
+      // 1. RECIPIENT BALANCE INCREASES BY AMOUNT
+      u.balance = (Number(u.balance) || 0) + amount;
+      u.creditLimit = (Number(u.creditLimit) || 0) + amount;
+
+      if (window.PlatformSync && typeof window.PlatformSync.updateUserBalance === 'function') {
+        window.PlatformSync.updateUserBalance(u.id, u.balance);
       }
 
+      // 2. SENDER / PARENT BALANCE DECREASES BY AMOUNT (ATOMIC TRANSFER)
+      if (parentAdmin) {
+        const newParentBal = Math.max(0, (Number(parentAdmin.balance) || 0) - amount);
+        parentAdmin.balance = newParentBal;
+        parentAdmin.creditLimit = newParentBal;
+
+        // Update sender in ADM_USERS
+        const parentUserIdx = users.findIndex(x => (x.id && parentAdmin.id && x.id === parentAdmin.id) || (x.username && parentAdmin.username && x.username.toLowerCase() === parentAdmin.username.toLowerCase()));
+        if (parentUserIdx !== -1) {
+          users[parentUserIdx].balance = newParentBal;
+          users[parentUserIdx].creditLimit = newParentBal;
+        }
+
+        // Update sender in ADM_ADMINS
+        const admins = AdminCore.repo.get('ADM_ADMINS') || [];
+        const parentAdminIdx = admins.findIndex(x => (x.id && parentAdmin.id && x.id === parentAdmin.id) || (x.username && parentAdmin.username && x.username.toLowerCase() === parentAdmin.username.toLowerCase()));
+        if (parentAdminIdx !== -1) {
+          admins[parentAdminIdx].balance = newParentBal;
+          admins[parentAdminIdx].creditLimit = newParentBal;
+          AdminCore.repo.set('ADM_ADMINS', admins);
+        }
+
+        // Update ACTIVE_ADMIN_SESSION
+        AdminCore.repo.setCurrentAdmin(parentAdmin);
+      }
+
+      // Save recipient updates in ADM_USERS
       AdminCore.repo.set('ADM_USERS', users);
 
-      // Also sync matching record in ADM_ADMINS if target is an admin account
+      // Also sync recipient in ADM_ADMINS if target is an admin account
       const admins = AdminCore.repo.get('ADM_ADMINS') || [];
       const targetAdminIndex = admins.findIndex(x => (x.id && u.id && x.id === u.id) || (x.username && u.username && x.username.toLowerCase() === u.username.toLowerCase()));
       if (targetAdminIndex !== -1) {
@@ -6231,8 +6251,22 @@
         AdminCore.repo.set('ADM_ADMINS', admins);
       }
 
+      // Record deposit in ADM_DEPOSITS
+      const deposits = AdminCore.repo.get('ADM_DEPOSITS') || [];
+      deposits.unshift({
+        id: 'DEP-' + Math.floor(1000 + Math.random() * 9000),
+        userId: u.id,
+        username: u.username,
+        amount: amount,
+        method: 'Direct Credit Transfer',
+        ref: desc || 'Hierarchy Credit Transfer',
+        companyId: u.companyId || 'COMP-01',
+        status: 'Approved',
+        date: new Date().toLocaleString()
+      });
+      AdminCore.repo.set('ADM_DEPOSITS', deposits);
+
       // Persist credit transaction record
-      const parentAdmin = AdminCore.repo.getCurrentAdmin();
       const creditTx = {
         id: 'CTX-' + Math.floor(100000 + Math.random() * 900000),
         fromAccountId: parentAdmin ? (parentAdmin.id || parentAdmin.username) : 'COMP-ROOT-01',
@@ -6242,7 +6276,7 @@
         targetAccountId: u.id,
         amount: amount,
         isCash: isCash,
-        action: isCash ? 'DEPOSIT_CASH' : 'DEPOSIT_CREDIT',
+        action: 'CREDIT_TRANSFER',
         ref: desc,
         createdAt: new Date().toISOString()
       };
@@ -6254,7 +6288,7 @@
         window.PlatformSync._set(window.PlatformSync.KEYS.USERS, users);
       }
       closeModal('adjustWalletModal');
-      showAdminToast(`✓ ${isCash ? 'Cash' : 'Credit'} deposit of Rs ${amount.toLocaleString()} in @${uname} account successful!`, 'success');
+      showAdminToast(`✓ Credit transfer of Rs ${amount.toLocaleString()} to @${uname} successful!`, 'success');
       renderUsersTable();
       updateAdminHeaderInfo();
       if (typeof renderWalletsTable === 'function') renderWalletsTable();
