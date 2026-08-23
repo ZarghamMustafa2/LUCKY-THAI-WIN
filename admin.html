@@ -6094,13 +6094,53 @@
 
     // Security Lock & Application Authentication Functions
     function lockAdminPanel() {
-      localStorage.removeItem('isAdminAuth');
-      localStorage.removeItem('ACTIVE_ADMIN_SESSION');
-      localStorage.removeItem('userLoginName');
-      localStorage.removeItem('userLoginToken');
+      // 1. Clear session from AdminCore repo
+      if (window.AdminCore && window.AdminCore.repo && typeof window.AdminCore.repo.setCurrentAdmin === 'function') {
+        window.AdminCore.repo.setCurrentAdmin(null);
+      }
+
+      // 2. Clear all authentication & session data from localStorage
+      try {
+        localStorage.removeItem('isAdminAuth');
+        localStorage.removeItem('ACTIVE_ADMIN_SESSION');
+        localStorage.removeItem('userLoginName');
+        localStorage.removeItem('userLoginToken');
+        localStorage.removeItem('userLoginPassword');
+        localStorage.removeItem('isUserLoggedIn');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('jwt_token');
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('activeAdmin');
+      } catch (e) {}
+
+      // 3. Clear sessionStorage
+      try { sessionStorage.clear(); } catch (e) {}
+
+      // 4. Expire cookies
+      try {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var eq = cookies[i].indexOf('=');
+          var key = eq > -1 ? cookies[i].substr(0, eq).trim() : cookies[i].trim();
+          if (key) document.cookie = key + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;';
+        }
+      } catch (e) {}
+
+      // 5. Clear inputs in TW login overlay
+      const uInput = document.getElementById('adminUsernameInput');
+      const pInput = document.getElementById('adminPinInput');
+      if (uInput) uInput.value = '';
+      if (pInput) pInput.value = '';
+
+      // 6. Close profile dropdown if open
+      const dropdown = document.getElementById('adminAccountDropdownMenu');
+      if (dropdown) dropdown.classList.add('hidden');
+
+      // 7. Show existing TW Login Screen
       const overlay = document.getElementById('adminAuthOverlay');
       if (overlay) overlay.classList.remove('hidden');
-      showAdminToast('Logged out of Admin Control Hub.', 'warning');
+
+      showAdminToast('Logged out successfully.', 'warning');
     }
 
     function openAppAccountLoginModal() {
@@ -6257,11 +6297,22 @@
 
     // Initialization & Chart Setup on DOM Ready
     document.addEventListener('DOMContentLoaded', () => {
-      // Check auth status
-      if (localStorage.getItem('isAdminAuth') === 'true') {
+      // Check auth status: Must have valid isAdminAuth and active admin session
+      const currentAdmin = AdminCore.repo.getCurrentAdmin();
+      if (localStorage.getItem('isAdminAuth') === 'true' && currentAdmin && currentAdmin.username) {
         const overlay = document.getElementById('adminAuthOverlay');
         if (overlay) overlay.classList.add('hidden');
+      } else {
+        lockAdminPanel();
       }
+
+      // Handle back button / cached page navigation
+      window.addEventListener('pageshow', (event) => {
+        const activeAdmin = AdminCore.repo.getCurrentAdmin();
+        if (event.persisted || localStorage.getItem('isAdminAuth') !== 'true' || !activeAdmin || !activeAdmin.username) {
+          lockAdminPanel();
+        }
+      });
 
       updateAdminHeaderInfo();
       renderSportHighlights();

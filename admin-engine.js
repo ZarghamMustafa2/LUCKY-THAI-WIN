@@ -291,15 +291,20 @@
 
     // Current Session
     getCurrentAdmin() {
+      if (typeof localStorage !== 'undefined' && localStorage.getItem('isAdminAuth') !== 'true') return null;
       try {
         const saved = JSON.parse(localStorage.getItem('ACTIVE_ADMIN_SESSION'));
         if (saved) return saved;
       } catch(e) {}
-      return DEFAULT_ADMINS[0];
+      return null;
     }
 
     setCurrentAdmin(admin) {
-      localStorage.setItem('ACTIVE_ADMIN_SESSION', JSON.stringify(admin));
+      if (!admin) {
+        localStorage.removeItem('ACTIVE_ADMIN_SESSION');
+      } else {
+        localStorage.setItem('ACTIVE_ADMIN_SESSION', JSON.stringify(admin));
+      }
     }
 
     // Role Permissions check
