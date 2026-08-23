@@ -6190,12 +6190,42 @@
       }
 
       AdminCore.repo.set('ADM_USERS', users);
+
+      // Also sync matching record in ADM_ADMINS if target is an admin account
+      const admins = AdminCore.repo.get('ADM_ADMINS') || [];
+      const targetAdminIndex = admins.findIndex(x => (x.id && u.id && x.id === u.id) || (x.username && u.username && x.username.toLowerCase() === u.username.toLowerCase()));
+      if (targetAdminIndex !== -1) {
+        admins[targetAdminIndex].balance = u.balance;
+        admins[targetAdminIndex].creditLimit = u.creditLimit;
+        AdminCore.repo.set('ADM_ADMINS', admins);
+      }
+
+      // Persist credit transaction record
+      const parentAdmin = AdminCore.repo.getCurrentAdmin();
+      const creditTx = {
+        id: 'CTX-' + Math.floor(100000 + Math.random() * 900000),
+        fromAccountId: parentAdmin ? (parentAdmin.id || parentAdmin.username) : 'COMP-ROOT-01',
+        fromUsername: parentAdmin ? parentAdmin.username : 'company',
+        toAccountId: u.id,
+        toUsername: u.username,
+        targetAccountId: u.id,
+        amount: amount,
+        isCash: isCash,
+        action: isCash ? 'DEPOSIT_CASH' : 'DEPOSIT_CREDIT',
+        ref: desc,
+        createdAt: new Date().toISOString()
+      };
+      const creditTxs = AdminCore.repo.get('ADM_CREDIT_TRANSACTIONS') || [];
+      creditTxs.unshift(creditTx);
+      AdminCore.repo.set('ADM_CREDIT_TRANSACTIONS', creditTxs);
+
       if (window.PlatformSync && typeof window.PlatformSync._set === 'function') {
         window.PlatformSync._set(window.PlatformSync.KEYS.USERS, users);
       }
       closeModal('adjustWalletModal');
       showAdminToast(`✓ ${isCash ? 'Cash' : 'Credit'} deposit of Rs ${amount.toLocaleString()} in @${uname} account successful!`, 'success');
       renderUsersTable();
+      updateAdminHeaderInfo();
       if (typeof renderWalletsTable === 'function') renderWalletsTable();
     }
 
@@ -6446,6 +6476,14 @@
       if (matchedAdmin.pass !== password && matchedAdmin.password !== password && password !== 'Company123!' && password !== 'admin123') {
         showAdminToast('Invalid Account Password!', 'error');
         return;
+      }
+
+      // Look up fresh balance & credit limit from ADM_USERS for this exact target account ID
+      const allUsersList = AdminCore.repo.get('ADM_USERS') || [];
+      const freshUserRec = allUsersList.find(x => (x.id && matchedAdmin.id && x.id === matchedAdmin.id) || (x.username && matchedAdmin.username && x.username.toLowerCase() === matchedAdmin.username.toLowerCase()));
+      if (freshUserRec) {
+        matchedAdmin.balance = Number(freshUserRec.balance !== undefined ? freshUserRec.balance : 0);
+        matchedAdmin.creditLimit = Number(freshUserRec.creditLimit !== undefined ? freshUserRec.creditLimit : 0);
       }
 
       // Authenticate active session

@@ -294,7 +294,21 @@
       if (typeof localStorage !== 'undefined' && localStorage.getItem('isAdminAuth') !== 'true') return null;
       try {
         const saved = JSON.parse(localStorage.getItem('ACTIVE_ADMIN_SESSION'));
-        if (saved) return saved;
+        if (saved) {
+          const users = this.get('ADM_USERS') || [];
+          const admins = this.get('ADM_ADMINS') || [];
+          const targetUser = users.find(x => (x.id && saved.id && x.id === saved.id) || (x.username && saved.username && x.username.toLowerCase() === saved.username.toLowerCase()));
+          const targetAdmin = admins.find(x => (x.id && saved.id && x.id === saved.id) || (x.username && saved.username && x.username.toLowerCase() === saved.username.toLowerCase()));
+
+          const latestBal = targetUser && targetUser.balance !== undefined ? targetUser.balance : (targetAdmin && targetAdmin.balance !== undefined ? targetAdmin.balance : saved.balance);
+          const latestCred = targetUser && targetUser.creditLimit !== undefined ? targetUser.creditLimit : (targetAdmin && targetAdmin.creditLimit !== undefined ? targetAdmin.creditLimit : saved.creditLimit);
+
+          return {
+            ...saved,
+            balance: Number(latestBal || 0),
+            creditLimit: Number(latestCred || 0)
+          };
+        }
       } catch(e) {}
       return null;
     }
