@@ -2306,6 +2306,25 @@
           </div>
         </div>
 
+        <!-- Field 3B: Share Percentage -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+          <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Share (%)</label>
+          <div class="flex items-center gap-2 flex-1">
+            <input 
+              type="number" 
+              id="newUserShare" 
+              min="0" 
+              max="100" 
+              step="0.01" 
+              value="100"
+              placeholder="e.g. 90" 
+              class="w-32 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors font-mono font-bold" 
+            />
+            <span class="text-xs text-gray-500 font-bold">%</span>
+            <span id="maxShareCapacityHint" class="text-[11px] text-gray-500 italic ml-2">(Max allowed: 100%)</span>
+          </div>
+        </div>
+
         <!-- Field 4: IsActive (Checkbox) -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-2">
           <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">IsActive</label>
@@ -2361,6 +2380,50 @@
           </button>
         </div>
 
+      </form>
+    </div>
+  </div>
+
+  <!-- ADJUST SHARE PERCENTAGE MODAL -->
+  <div id="adjustShareModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-white border border-[#D8DEE4] rounded-lg shadow-2xl max-w-md w-full flex flex-col overflow-hidden text-xs">
+      <div class="px-5 py-3 bg-[#F3F4F6] border-b border-[#E5E7EB] flex items-center justify-between">
+        <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">
+          Adjust Share Percentage — <span id="shareModalTargetUsername" class="font-mono text-purple-700">username</span>
+        </h3>
+        <button type="button" onclick="closeModal('adjustShareModal')" class="text-gray-400 hover:text-gray-700 transition-colors cursor-pointer text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form onsubmit="handleAdjustShareSubmit(event)" class="p-5 flex flex-col gap-4 bg-white text-gray-800">
+        <div class="flex flex-col gap-1.5 bg-purple-50 p-3 rounded border border-purple-200">
+          <span class="text-gray-600 text-[11px] font-semibold">Upline Parent Capacity: <span id="shareModalParentCapacity" class="font-mono font-bold text-purple-900">100%</span></span>
+          <span class="text-gray-600 text-[11px] font-semibold">Current Assigned Share: <span id="shareModalCurrentShare" class="font-mono font-bold text-emerald-700">90%</span></span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-gray-700 font-medium text-xs">New Share Percentage (%)</label>
+          <div class="flex items-center gap-2">
+            <input 
+              type="number" 
+              id="adjustShareInput" 
+              min="0" 
+              max="100" 
+              step="0.01" 
+              required
+              placeholder="e.g. 90" 
+              class="flex-1 px-3 py-2 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#8B5CF6] transition-colors font-mono font-bold text-sm" 
+            />
+            <span class="text-sm font-bold text-gray-600">%</span>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 mt-2">
+          <button type="button" onclick="closeModal('adjustShareModal')" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded text-xs transition-colors cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 bg-[#8B5CF6] hover:bg-purple-700 text-white font-bold rounded text-xs transition-colors shadow cursor-pointer">
+            Submit Share
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -4271,25 +4334,26 @@
           credStr = credVal.toFixed(2);
           balStr = balVal.toFixed(2);
           plStr = '0.00';
-          shareStr = '100 %';
+          const shareVal = Number(fullUser.sharePercentage !== undefined ? fullUser.sharePercentage : (u.sharePercentage !== undefined ? u.sharePercentage : 100));
+          shareStr = `${shareVal.toFixed(2)} %`;
           expStr = '0.00';
-          availStr = balVal.toFixed(2);
+          availStr = credVal.toFixed(2);
         } else {
-          typeStr = '...';
-          credStr = '...';
-          balStr = '...';
-          plStr = '...';
-          shareStr = '...';
-          expStr = '...';
-          availStr = '...';
+          typeStr = '-';
+          credStr = '-';
+          balStr = '-';
+          plStr = '-';
+          shareStr = '-';
+          expStr = '-';
+          availStr = '-';
         }
 
         return `
-        <tr class="hover:bg-gray-50 transition-colors divide-x divide-[#D8DEE4]" onclick="inspectUserCredentials('${u.id}')">
-          <td class="p-2.5 font-bold">
-            <span class="text-[#00884F] hover:underline cursor-pointer font-mono">${u.username}</span>
+        <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#E5E7EB]" onclick="inspectUserCredentials('${u.id}')">
+          <td class="p-2.5 font-semibold text-gray-900 text-xs">
+            ${u.username}
           </td>
-          <td class="p-2.5 text-gray-700 text-xs">
+          <td class="p-2.5 text-gray-600 text-xs">
             ${typeStr}
           </td>
           <td class="p-2.5 font-mono text-gray-800 text-xs font-semibold">
@@ -4319,6 +4383,10 @@
               <!-- Edit: Edit Client View -->
               <button onclick="openEditUserView('${u.username}')" title="Edit Client - ${u.username}" class="w-5 h-5 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-[9px] flex items-center justify-center transition-colors cursor-pointer">
                 <i class="fa-solid fa-pencil text-[8px]"></i>
+              </button>
+              <!-- %: Adjust Share Percentage -->
+              <button onclick="openAdjustShareModal('${u.username}')" title="Adjust Share Percentage - ${u.username}" class="w-5 h-5 rounded bg-[#8B5CF6] hover:bg-purple-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
+                %
               </button>
               <!-- L: Ledger -->
               <button onclick="switchAdminModule('tokens')" title="View Account Ledger" class="w-5 h-5 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
@@ -5516,6 +5584,18 @@
         }).join('');
       }
 
+      // Populate Share input default/max from parent share capacity
+      const parentShareCapacity = (admin.sharePercentage !== undefined && admin.sharePercentage !== null) ? Number(admin.sharePercentage) : (admin.role === 'COMPANY' ? 100 : 100);
+      const shareInput = document.getElementById('newUserShare');
+      const hintSpan = document.getElementById('maxShareCapacityHint');
+      if (shareInput) {
+        shareInput.value = parentShareCapacity;
+        shareInput.max = parentShareCapacity;
+      }
+      if (hintSpan) {
+        hintSpan.innerText = `(Max allowed: ${parentShareCapacity}%)`;
+      }
+
       // Reset inputs
       if (document.getElementById('newUsername')) document.getElementById('newUsername').value = '';
       if (document.getElementById('newPassword')) document.getElementById('newPassword').value = '';
@@ -5538,13 +5618,26 @@
       const reference = document.getElementById('newUserReference') ? document.getElementById('newUserReference').value.trim() : '';
       const notes = document.getElementById('newUserNotes') ? document.getElementById('newUserNotes').value.trim() : '';
 
+      const shareInputVal = document.getElementById('newUserShare') ? parseFloat(document.getElementById('newUserShare').value) : 100;
+
       const admin = AdminCore.repo.getCurrentAdmin();
       const currentRoleKey = getNormalizedRole(admin);
+      const parentShareCapacity = (admin.sharePercentage !== undefined && admin.sharePercentage !== null) ? Number(admin.sharePercentage) : (admin.role === 'COMPANY' ? 100 : 100);
 
       console.log('BACKEND CREATE-USER REQUEST ROLE:', currentRoleKey);
 
       if (!currentRoleKey) {
         showAdminToast('Error: Unable to identify authenticated account role.', 'error');
+        return;
+      }
+
+      if (isNaN(shareInputVal) || shareInputVal < 0 || shareInputVal > 100) {
+        showAdminToast('Invalid Share Percentage: Must be numeric between 0% and 100%.', 'error');
+        return;
+      }
+
+      if (shareInputVal > parentShareCapacity) {
+        showAdminToast(`Access Denied: Child Share (${shareInputVal}%) cannot exceed parent capacity (${parentShareCapacity}%).`, 'error');
         return;
       }
 
@@ -5580,6 +5673,7 @@
         userType: selectedLabel,
         type: selectedLabel,
         role: selectedRoleKey,
+        sharePercentage: shareInputVal,
         reference,
         notes,
         balance: 0,
@@ -5611,6 +5705,7 @@
           email: newUser.email,
           role: selectedRoleKey,
           level: selectedRoleKey,
+          sharePercentage: shareInputVal,
           companyId: companyId,
           uplineId: parentId,
           uplineUsername: parentName,
@@ -5624,10 +5719,148 @@
         AdminCore.repo.set('ADM_ADMINS', admins);
       }
 
-      AdminCore.repo.logAudit('USER_CREATED', `User #${newUser.id}`, username, `Created ${selectedLabel} under ${parentName} (${currentRoleKey})`);
+      AdminCore.repo.logAudit('USER_CREATED', `User #${newUser.id}`, username, `Created ${selectedLabel} under ${parentName} (${currentRoleKey}) with ${shareInputVal}% Share`);
       closeModal('addUserModal');
-      showAdminToast(`✓ ${selectedLabel} account "${username}" created successfully!`, 'success');
+      showAdminToast(`✓ ${selectedLabel} account "${username}" created with ${shareInputVal}% Share successfully!`, 'success');
       renderUsersTable();
+    }
+
+    // ─── SHARE PERCENTAGE ENGINE & ADJUSTMENT MODAL HANDLERS ───
+    let currentAdjustShareTargetUser = null;
+
+    function openAdjustShareModal(username) {
+      const users = AdminCore.repo.get('ADM_USERS') || [];
+      const u = users.find(x => x.username && x.username.toLowerCase() === username.toLowerCase());
+      if (!u) {
+        showAdminToast(`Account "${username}" not found.`, 'error');
+        return;
+      }
+
+      currentAdjustShareTargetUser = u;
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const parentCap = (admin.sharePercentage !== undefined && admin.sharePercentage !== null) ? Number(admin.sharePercentage) : 100;
+      const currentShare = u.sharePercentage !== undefined ? Number(u.sharePercentage) : 100;
+
+      const targetSpan = document.getElementById('shareModalTargetUsername');
+      const capSpan = document.getElementById('shareModalParentCapacity');
+      const currSpan = document.getElementById('shareModalCurrentShare');
+      const inputEl = document.getElementById('adjustShareInput');
+
+      if (targetSpan) targetSpan.innerText = `${u.username} (${u.role || u.userType || 'Sub-Account'})`;
+      if (capSpan) capSpan.innerText = `${parentCap}%`;
+      if (currSpan) currSpan.innerText = `${currentShare}%`;
+      if (inputEl) {
+        inputEl.value = currentShare;
+        inputEl.max = parentCap;
+      }
+
+      openModal('adjustShareModal');
+    }
+
+    function handleAdjustShareSubmit(e) {
+      if (e) e.preventDefault();
+      if (!currentAdjustShareTargetUser) return;
+
+      const newShareVal = parseFloat(document.getElementById('adjustShareInput') ? document.getElementById('adjustShareInput').value : '');
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const parentCap = (admin.sharePercentage !== undefined && admin.sharePercentage !== null) ? Number(admin.sharePercentage) : 100;
+
+      if (isNaN(newShareVal) || newShareVal < 0 || newShareVal > 100) {
+        showAdminToast('Invalid Share Percentage: Must be numeric between 0% and 100%.', 'error');
+        return;
+      }
+
+      if (newShareVal > parentCap) {
+        showAdminToast(`Access Denied: Child Share (${newShareVal}%) cannot exceed parent capacity (${parentCap}%).`, 'error');
+        return;
+      }
+
+      // Update in ADM_USERS
+      const users = AdminCore.repo.get('ADM_USERS') || [];
+      const userIndex = users.findIndex(x => x.username && x.username.toLowerCase() === currentAdjustShareTargetUser.username.toLowerCase());
+      if (userIndex !== -1) {
+        users[userIndex].sharePercentage = newShareVal;
+        AdminCore.repo.set('ADM_USERS', users);
+      }
+
+      // Update in ADM_ADMINS
+      const admins = AdminCore.repo.get('ADM_ADMINS') || [];
+      const adminIndex = admins.findIndex(x => x.username && x.username.toLowerCase() === currentAdjustShareTargetUser.username.toLowerCase());
+      if (adminIndex !== -1) {
+        admins[adminIndex].sharePercentage = newShareVal;
+        AdminCore.repo.set('ADM_ADMINS', admins);
+      }
+
+      closeModal('adjustShareModal');
+      renderUsersTable();
+      showAdminToast(`✓ Share Percentage for "${currentAdjustShareTargetUser.username}" updated to ${newShareVal}% successfully!`, 'success');
+    }
+
+    /**
+     * Centralized Share Difference Calculation Function
+     */
+    function calculateShareDifference(amount, childSharePercentage) {
+      const numAmount = Number(amount) || 0;
+      const childShare = Number(childSharePercentage) !== undefined ? Number(childSharePercentage) : 100;
+      const differencePercentage = Math.max(0, 100 - childShare);
+      const differenceAmount = Number(((numAmount * differencePercentage) / 100).toFixed(2));
+
+      return {
+        amount: numAmount,
+        childSharePercentage: childShare,
+        uplineDifferencePercentage: differencePercentage,
+        differenceAmount
+      };
+    }
+
+    /**
+     * Records a linked dual-entry Share Transaction for Upline and Downline
+     */
+    function recordShareTransaction(uplineAccount, downlineAccount, amount, originalTxId) {
+      const childShare = Number(downlineAccount.sharePercentage !== undefined ? downlineAccount.sharePercentage : 100);
+      const calc = calculateShareDifference(amount, childShare);
+      const txId = originalTxId || ('STX-' + Math.floor(100000 + Math.random() * 900000));
+      const timestamp = new Date().toISOString();
+
+      // Downline Entry (+Amount in GREEN)
+      const downlineRecord = {
+        transactionId: txId,
+        uplineAccountId: uplineAccount.id || uplineAccount.username || 'COMPANY',
+        downlineAccountId: downlineAccount.id || downlineAccount.username,
+        uplineUsername: uplineAccount.username || 'company',
+        downlineUsername: downlineAccount.username,
+        amount: calc.amount,
+        childSharePercentage: calc.childSharePercentage,
+        uplineDifferencePercentage: calc.uplineDifferencePercentage,
+        calculatedShareAmount: calc.differenceAmount,
+        formattedAmount: `+${calc.differenceAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        direction: 'DOWNLINE_POSITIVE',
+        displayColor: 'GREEN',
+        createdAt: timestamp
+      };
+
+      // Upline Entry (-Amount in RED)
+      const uplineRecord = {
+        transactionId: txId,
+        uplineAccountId: uplineAccount.id || uplineAccount.username || 'COMPANY',
+        downlineAccountId: downlineAccount.id || downlineAccount.username,
+        uplineUsername: uplineAccount.username || 'company',
+        downlineUsername: downlineAccount.username,
+        amount: calc.amount,
+        childSharePercentage: calc.childSharePercentage,
+        uplineDifferencePercentage: calc.uplineDifferencePercentage,
+        calculatedShareAmount: calc.differenceAmount,
+        formattedAmount: `-${calc.differenceAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        direction: 'UPLINE_NEGATIVE',
+        displayColor: 'RED',
+        createdAt: timestamp
+      };
+
+      const shareTxs = AdminCore.repo.get('ADM_SHARE_TRANSACTIONS') || [];
+      shareTxs.unshift(downlineRecord, uplineRecord);
+      AdminCore.repo.set('ADM_SHARE_TRANSACTIONS', shareTxs);
+
+      return { downlineRecord, uplineRecord, calc };
     }
 
     let currentEditingUser = null;
