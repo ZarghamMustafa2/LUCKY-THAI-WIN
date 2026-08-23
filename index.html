@@ -325,25 +325,79 @@
 
     window.updateUserProfileUI = function() {
       try {
-        var name = localStorage.getItem('userLoginName');
-        if (!name) name = 'Player';
-        var parts = name.trim().split(' ');
-        var initials = parts.length > 1 ? (parts[0][0] + parts[1][0]) : (parts[0].slice(0, 2));
-        initials = initials.toUpperCase();
-        
+        var isLoggedIn = (localStorage.getItem('isUserLoggedIn') === 'true');
+        var loginBtn = document.getElementById('headerLoginBtn');
+        var profileContainer = document.getElementById('headerProfileContainer');
+
+        if (!isLoggedIn) {
+          if (loginBtn) loginBtn.classList.remove('hidden');
+          if (profileContainer) profileContainer.classList.add('hidden');
+          return;
+        }
+
+        if (loginBtn) loginBtn.classList.add('hidden');
+        if (profileContainer) profileContainer.classList.remove('hidden');
+
+        var name = localStorage.getItem('userLoginName') || 'User';
+        var userSession = null;
+        try {
+          userSession = JSON.parse(localStorage.getItem('ACTIVE_USER_SESSION') || 'null');
+        } catch(e) {}
+
+        if (!userSession) {
+          var usersList = [];
+          try { usersList = JSON.parse(localStorage.getItem('ADM_USERS') || '[]'); } catch(e) {}
+          userSession = usersList.find(function(u) {
+            return u.username && u.username.toLowerCase() === name.toLowerCase();
+          });
+        }
+
+        var userId = (userSession && userSession.id) ? userSession.id : (name === 'Alex_Winner' ? 'Bp28233' : 'USR-1090');
+        var rawBal = (userSession && userSession.balance !== undefined) ? Number(userSession.balance) : 10450;
+        var balanceFormatted = rawBal.toLocaleString();
+        var passVal = (userSession && (userSession.password || userSession.pass)) ? (userSession.password || userSession.pass) : (localStorage.getItem('userLoginPassword') || '123456');
+
+        // Header elements
+        var headerUserBadge = document.getElementById('headerUserIdBadge');
+        if (headerUserBadge) headerUserBadge.innerText = name;
+
+        var headerBal = document.getElementById('headerBalanceCompact');
+        if (headerBal) headerBal.innerText = balanceFormatted;
+
+        var walletBal = document.getElementById('walletBalance');
+        if (walletBal) walletBal.innerText = balanceFormatted;
+
+        var headerLiable = document.getElementById('headerLiableCompact');
+        if (headerLiable) headerLiable.innerText = (userSession && userSession.locked !== undefined ? userSession.locked : 0).toLocaleString();
+
+        // Dropdown elements
+        var dropId = document.getElementById('dropdownHeaderUserId');
+        if (dropId) dropId.innerText = userId;
+
+        var dropName = document.getElementById('dropdownHeaderUserName');
+        if (dropName) dropName.innerText = name;
+
+        var dropBal = document.getElementById('dropdownHeaderTokenBalance');
+        if (dropBal) dropBal.innerText = balanceFormatted + ' VTK';
+
+        var dropPass = document.getElementById('dropdownHeaderPasswordText');
+        if (dropPass) {
+          dropPass.setAttribute('data-real-pass', passVal);
+          dropPass.innerText = '••••••••';
+        }
+
         var nameEls = document.querySelectorAll('#headerProfileNameText, .user-profile-name');
         nameEls.forEach(function(el) { if (el) el.innerText = name; });
-
-        var avatarEl = document.getElementById('headerUserAvatarCircle');
-        if (avatarEl) avatarEl.innerText = initials;
 
         var inputName = document.getElementById('userLoginNameInput');
         if (inputName) inputName.value = name;
         var inputId = document.getElementById('userProfileIdDisplay');
-        if (inputId) inputId.value = 'Bp28233';
+        if (inputId) inputId.value = userId;
         var inputPass = document.getElementById('userProfilePasswordInput');
-        if (inputPass) inputPass.value = localStorage.getItem('userLoginPassword') || 'Bp28233@pass';
-      } catch(e) {}
+        if (inputPass) inputPass.value = passVal;
+      } catch(e) {
+        console.error('Error updating user profile UI:', e);
+      }
     };
 
     window.openUserLoginModal = function(e) {
@@ -1729,23 +1783,30 @@
         </div>
 
 
-        <!-- RIGHT: Balance Stack & Account ID Dropdown -->
-        <div class="relative select-none" id="headerProfileContainer">
-          <div onclick="toggleProfileDropdown(event)" class="flex flex-col items-end justify-center leading-tight hover:opacity-90 transition-opacity cursor-pointer">
-            
-            <!-- Row 1: B: 7,950 | L: 0 -->
-            <div class="text-xs sm:text-sm font-bold text-white tracking-tight flex items-center gap-1">
-              <span>B: <span id="headerBalanceCompact">7,950</span></span>
-              <span class="text-white">|</span>
-              <span>L: <span id="headerLiableCompact">0</span></span>
-            </div>
+        <!-- RIGHT: Balance Stack / Account ID Dropdown OR Header Login Button -->
+        <div class="flex items-center gap-3">
+          <!-- Header Login Button (Visible when NOT logged in) -->
+          <button id="headerLoginBtn" onclick="showAppLoginOverlay(event)" class="px-3.5 py-1.5 rounded-full bg-gradient-to-b from-[#4e8bb7] via-[#2f668f] to-[#1a4463] text-white font-bold text-xs sm:text-sm tracking-wide shadow-md border border-cyan-300/30 hover:brightness-110 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5">
+            <i class="fa-solid fa-right-to-bracket text-cyan-300"></i> Login
+          </button>
 
-            <!-- Row 2: Bp28233 ▾ -->
-            <div id="headerProfileBtn" class="flex items-center gap-0.5 text-xs sm:text-sm font-bold text-white hover:text-cyan-300 cursor-pointer transition-all">
-              <span id="headerUserIdBadge" class="font-bold text-white">Bp28233</span>
-              <i class="fa-solid fa-caret-down text-white text-[10px]"></i>
+          <!-- Logged In Profile Container (Visible when LOGGED IN) -->
+          <div class="relative select-none hidden" id="headerProfileContainer">
+            <div onclick="toggleProfileDropdown(event)" class="flex flex-col items-end justify-center leading-tight hover:opacity-90 transition-opacity cursor-pointer">
+              
+              <!-- Row 1: B: 7,950 | L: 0 -->
+              <div class="text-xs sm:text-sm font-bold text-white tracking-tight flex items-center gap-1">
+                <span>B: <span id="headerBalanceCompact">7,950</span></span>
+                <span class="text-white">|</span>
+                <span>L: <span id="headerLiableCompact">0</span></span>
+              </div>
+
+              <!-- Row 2: Bp28233 ▾ -->
+              <div id="headerProfileBtn" class="flex items-center gap-0.5 text-xs sm:text-sm font-bold text-white hover:text-cyan-300 cursor-pointer transition-all">
+                <span id="headerUserIdBadge" class="font-bold text-white">Bp28233</span>
+                <i class="fa-solid fa-caret-down text-white text-[10px]"></i>
+              </div>
             </div>
-          </div>
           
           <!-- Profile Dropdown Menu with User ID, User Name & Password -->
           <div id="profileDropdown" class="hidden absolute top-10 right-0 w-64 bg-[#172d47] text-white border border-[#264a70] rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.8)] z-[9999] flex flex-col py-0 overflow-hidden transition-all">
