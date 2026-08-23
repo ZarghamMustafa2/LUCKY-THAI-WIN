@@ -10,9 +10,9 @@ router.use(isAdmin);
 
 // --- ROLE PERMISSIONS MATRIX ---
 const ROLE_CREATION_PERMISSIONS: Record<string, string[]> = {
-  'COMPANY': ['SUPER_ADMIN', 'ADMIN', 'SUPER_MASTER', 'MASTER', 'USER'],
-  'SUPER_ADMIN': ['ADMIN', 'SUPER_MASTER', 'MASTER', 'USER'],
-  'ADMIN': ['SUPER_MASTER', 'MASTER', 'USER'],
+  'COMPANY': ['SUPER_ADMIN', 'USER'],
+  'SUPER_ADMIN': ['ADMIN', 'USER'],
+  'ADMIN': ['SUPER_MASTER', 'USER'],
   'SUPER_MASTER': ['MASTER', 'USER'],
   'MASTER': ['USER'],
   'USER': []
