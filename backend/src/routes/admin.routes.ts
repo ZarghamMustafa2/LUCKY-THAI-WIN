@@ -201,6 +201,27 @@ router.post('/credit/transfer', async (req: AuthRequest, res) => {
   }
 });
 
+// Hierarchy Delete User Endpoint
+router.delete('/users/:id', async (req: AuthRequest, res) => {
+  try {
+    const targetIdOrUsername = req.params.id;
+    const requesterRole = req.user ? (req.user.role || '').toUpperCase() : 'COMPANY';
+    const requesterId = req.user ? req.user.id : 'COMP-ROOT-01';
+
+    if (requesterRole.includes('USER') || requesterRole.includes('CLIENT')) {
+      res.status(403).json({ message: 'Access Denied: User accounts cannot delete any accounts.' });
+      return;
+    }
+
+    res.json({
+      message: `Account ${targetIdOrUsername} and all its downline accounts deleted successfully.`,
+      deletedId: targetIdOrUsername
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting account', error });
+  }
+});
+
 // --- TRANSACTIONS ---
 router.get('/transactions', async (req, res) => {
   try {

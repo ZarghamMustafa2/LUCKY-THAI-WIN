@@ -2428,6 +2428,42 @@
     </div>
   </div>
 
+  <!-- Delete User Confirmation Modal -->
+  <div id="deleteUserModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden border border-red-200">
+      <div class="bg-red-600 px-5 py-3.5 flex items-center justify-between">
+        <h3 class="text-white font-bold text-sm sm:text-base flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-yellow-300"></i>
+          Delete Account Confirmation
+        </h3>
+        <button onclick="closeModal('deleteUserModal')" class="text-white/80 hover:text-white transition-colors cursor-pointer text-lg font-bold">
+          &times;
+        </button>
+      </div>
+      <div class="p-5 flex flex-col gap-4">
+        <div class="flex items-start gap-3 bg-red-50 border border-red-200 rounded p-3 text-red-800 text-xs sm:text-sm">
+          <i class="fa-solid fa-circle-exclamation text-red-600 text-lg mt-0.5"></i>
+          <div id="deleteUserModalMessage">
+            Are you sure you want to delete this account?
+          </div>
+        </div>
+        <div class="bg-gray-50 rounded border border-gray-200 p-3 text-xs flex flex-col gap-1.5 font-mono">
+          <div><span class="text-gray-500 font-sans">Target Username:</span> <strong id="deleteTargetUsername" class="text-gray-900"></strong></div>
+          <div><span class="text-gray-500 font-sans">Account Role:</span> <strong id="deleteTargetRole" class="text-gray-900"></strong></div>
+          <div><span class="text-gray-500 font-sans">Downline Accounts Affected:</span> <strong id="deleteTargetDownlineCount" class="text-red-600">0</strong></div>
+        </div>
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <button onclick="closeModal('deleteUserModal')" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-xs cursor-pointer transition-colors">
+            Cancel
+          </button>
+          <button id="confirmDeleteUserBtn" onclick="confirmDeleteUserSubmit()" class="px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white font-bold text-xs cursor-pointer transition-colors shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-trash-can"></i> Delete Account
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Admin Secure Password Reset Modal -->
   <div id="adminPasswordResetModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
     <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-md w-full flex flex-col gap-4 text-xs shadow-2xl">
@@ -4379,6 +4415,8 @@
           availStr = '-';
         }
 
+        const canDelete = typeof canDeleteUser === 'function' ? canDeleteUser(admin, u) : false;
+
         return `
         <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#E5E7EB]" onclick="inspectUserCredentials('${u.id}')">
           <td class="p-2.5 font-semibold text-gray-900 text-xs">
@@ -4431,6 +4469,12 @@
               <button onclick="handleSettleAccount('${u.username}')" title="Settle Account" class="w-5 h-5 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
                 S
               </button>
+              ${canDelete ? `
+              <!-- Delete Account -->
+              <button onclick="promptDeleteUser('${u.username}')" title="Delete User Account" class="w-5 h-5 rounded bg-[#EF4444] hover:bg-red-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer shadow-sm">
+                <i class="fa-solid fa-trash-can text-[8px]"></i>
+              </button>
+              ` : ''}
             </div>
           </td>
         </tr>
@@ -5694,8 +5738,11 @@
       const parentId = admin.id || parentName;
       const selectedLabel = ROLE_DISPLAY_LABELS[selectedRoleKey] || selectedRoleKey;
 
+      const uniqueNum = Math.floor(100000 + Math.random() * 900000);
+      const uniqueAccountId = 'USR-' + uniqueNum;
+
       const newUser = {
-        id: 'USR-' + (1090 + users.length),
+        id: uniqueAccountId,
         username,
         password,
         name: username,
@@ -5730,7 +5777,7 @@
       if (selectedRoleKey !== 'USER') {
         const admins = AdminCore.repo.get('ADM_ADMINS') || [];
         const newAdminRecord = {
-          id: 'ADM-' + (100 + admins.length),
+          id: uniqueAccountId,
           name: username,
           username: username,
           email: newUser.email,
@@ -5842,6 +5889,157 @@
         uplineDifferencePercentage: differencePercentage,
         differenceAmount
       };
+    }
+
+    /**
+     * Centralized Hierarchy Delete Permission Validation
+     */
+    function canDeleteUser(requester, target) {
+      if (!requester || !target) return false;
+
+      const requesterId = (requester.id || '').toString().toLowerCase();
+      const requesterUname = (requester.username || '').toString().toLowerCase();
+      const targetId = (target.id || '').toString().toLowerCase();
+      const targetUname = (target.username || '').toString().toLowerCase();
+
+      // 1. Cannot delete self
+      if ((requesterId && requesterId === targetId) || (requesterUname && requesterUname === targetUname)) {
+        return false;
+      }
+
+      const getRank = (u) => {
+        if (!u) return 0;
+        const r = (typeof getNormalizedRole === 'function' ? getNormalizedRole(u) : (u.role || u.type || '')).toString().toUpperCase();
+        if (r.includes('COMPANY')) return 6;
+        if (r.includes('SUPER_ADMIN')) return 5;
+        if (r.includes('ADMIN')) return 4;
+        if (r.includes('SUPER_MASTER')) return 3;
+        if (r.includes('MASTER')) return 2;
+        return 1; // USER / CLIENT
+      };
+
+      const requesterRank = getRank(requester);
+      const targetRank = getRank(target);
+
+      // 2. USER accounts (Rank 1) cannot delete anyone
+      if (requesterRank <= 1) return false;
+
+      // 3. Must be strictly higher role rank
+      if (requesterRank <= targetRank) return false;
+
+      // 4. Branch Scoping Check
+      if (requesterRank === 6) { // COMPANY
+        const reqCompId = requester.companyId || 'COMP-01';
+        const targetCompId = target.companyId || 'COMP-01';
+        return targetCompId === reqCompId || true;
+      }
+
+      // Non-COMPANY roles: Target MUST be an actual descendant in requester's downline tree
+      if (window.AdminCore && window.AdminCore.repo) {
+        const descendants = window.AdminCore.repo.getRecursiveDescendants(requester);
+        const isDownline = descendants.some(d => {
+          const dId = (d.id || '').toString().toLowerCase();
+          const dUname = (d.username || '').toString().toLowerCase();
+          return (dId && dId === targetId) || (dUname && dUname === targetUname);
+        });
+        return isDownline;
+      }
+
+      return false;
+    }
+
+    window.pendingDeleteTarget = null;
+
+    function promptDeleteUser(username) {
+      const admin = AdminCore.repo.getCurrentAdmin();
+      if (!admin) {
+        showAdminToast('Access Denied: Authentication required.', 'error');
+        return;
+      }
+
+      const allUsers = AdminCore.repo.get('ADM_USERS') || [];
+      const allAdmins = AdminCore.repo.get('ADM_ADMINS') || [];
+
+      const target = [...allAdmins, ...allUsers].find(x => x && ((x.username && x.username.toLowerCase() === username.toLowerCase()) || (x.id && String(x.id).toLowerCase() === String(username).toLowerCase())));
+
+      if (!target) {
+        showAdminToast(`Account "${username}" not found in database.`, 'error');
+        return;
+      }
+
+      if (!canDeleteUser(admin, target)) {
+        showAdminToast(`Access Denied: You are not authorized to delete ${target.username} (${target.role || target.type || 'User'}).`, 'error');
+        return;
+      }
+
+      const downlines = AdminCore.repo.getRecursiveDescendants(target);
+      const downlineCount = downlines.length;
+
+      window.pendingDeleteTarget = { target, downlines };
+
+      const roleLabel = (typeof getNormalizedRole === 'function' ? getNormalizedRole(target) : target.role || target.type || '').replace(/_/g, ' ');
+      const msgEl = document.getElementById('deleteUserModalMessage');
+      const unameEl = document.getElementById('deleteTargetUsername');
+      const roleEl = document.getElementById('deleteTargetRole');
+      const countEl = document.getElementById('deleteTargetDownlineCount');
+
+      if (unameEl) unameEl.innerText = `@${target.username}`;
+      if (roleEl) roleEl.innerText = roleLabel;
+      if (countEl) countEl.innerText = `${downlineCount} account(s)`;
+
+      if (msgEl) {
+        if (downlineCount > 0) {
+          msgEl.innerHTML = `Are you sure you want to delete ${roleLabel} <strong>"${target.username}"</strong>?<br><span class="font-bold text-red-600 mt-1.5 block">⚠️ Warning: This account has ${downlineCount} downline account(s). Deleting it will also delete all accounts under it.</span>`;
+        } else {
+          msgEl.innerHTML = `Are you sure you want to delete ${roleLabel} <strong>"${target.username}"</strong>?`;
+        }
+      }
+
+      openModal('deleteUserModal');
+    }
+
+    function confirmDeleteUserSubmit() {
+      if (!window.pendingDeleteTarget || !window.pendingDeleteTarget.target) {
+        closeModal('deleteUserModal');
+        return;
+      }
+
+      const admin = AdminCore.repo.getCurrentAdmin();
+      const { target, downlines } = window.pendingDeleteTarget;
+
+      if (!canDeleteUser(admin, target)) {
+        showAdminToast('Access Denied: Unauthorized delete request.', 'error');
+        closeModal('deleteUserModal');
+        return;
+      }
+
+      // Collect all account IDs/usernames to delete (target + all descendants)
+      const keysToDelete = new Set();
+      keysToDelete.add((target.id || '').toString().toLowerCase());
+      keysToDelete.add((target.username || '').toString().toLowerCase());
+
+      downlines.forEach(d => {
+        if (d.id) keysToDelete.add(d.id.toString().toLowerCase());
+        if (d.username) keysToDelete.add(d.username.toString().toLowerCase());
+      });
+
+      let users = AdminCore.repo.get('ADM_USERS') || [];
+      let admins = AdminCore.repo.get('ADM_ADMINS') || [];
+
+      users = users.filter(u => !keysToDelete.has((u.id || '').toString().toLowerCase()) && !keysToDelete.has((u.username || '').toString().toLowerCase()));
+      admins = admins.filter(a => !keysToDelete.has((a.id || '').toString().toLowerCase()) && !keysToDelete.has((a.username || '').toString().toLowerCase()));
+
+      AdminCore.repo.set('ADM_USERS', users);
+      AdminCore.repo.set('ADM_ADMINS', admins);
+
+      AdminCore.repo.logAudit('DELETE_USER_HIERARCHY', `Deleted User #${target.id || target.username}`, target.username, `Deleted account and ${downlines.length} downline descendants`);
+
+      closeModal('deleteUserModal');
+      showAdminToast(`✓ Account "@${target.username}" and ${downlines.length} downline account(s) deleted successfully!`, 'success');
+
+      window.pendingDeleteTarget = null;
+      renderUsersTable();
+      updateAdminHeaderInfo();
     }
 
     /**
