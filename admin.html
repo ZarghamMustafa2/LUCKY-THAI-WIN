@@ -4454,11 +4454,17 @@
         }
 
         const canDelete = typeof canDeleteUser === 'function' ? canDeleteUser(admin, u) : false;
+        const colorClass = typeof getHierarchyAccountColorClass === 'function' ? getHierarchyAccountColorClass(admin, u) : 'text-[#111827] font-semibold';
+        const colorHex = typeof getHierarchyAccountColorHex === 'function' ? getHierarchyAccountColorHex(admin, u) : '#111827';
+        const isDirect = colorHex === '#00884F';
 
         return `
         <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#E5E7EB]" onclick="inspectUserCredentials('${u.id}')">
-          <td class="p-2.5 font-semibold text-gray-900 text-xs">
-            ${u.username}
+          <td class="p-2.5 text-xs ${colorClass}">
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full ${isDirect ? 'bg-[#00884F]' : 'bg-gray-400'}"></span>
+              ${u.username}
+            </span>
           </td>
           <td class="p-2.5 text-gray-600 text-xs">
             ${typeStr}
@@ -5936,6 +5942,55 @@
       closeModal('adjustShareModal');
       renderUsersTable();
       showAdminToast(`✓ Share Percentage for "${currentAdjustShareTargetUser.username}" updated to ${newShareVal}% successfully!`, 'success');
+    }
+
+    /**
+     * Contextual Dynamic Hierarchy Account Color Classifier
+     * Rule:
+     * - Direct Child of Currently Authenticated Account = GREEN (#00884F / text-[#00884F])
+     * - All other accounts (indirect descendants / grandchildren / upline) = BLACK (#111827 / text-[#111827])
+     * (Calculated dynamically at runtime based on viewing context; never saved statically in DB)
+     */
+    function getHierarchyAccountColorClass(authenticatedUser, targetAccount) {
+      if (!authenticatedUser || !targetAccount) return 'text-[#111827] font-semibold';
+
+      const authId = (authenticatedUser.id || '').toString().toLowerCase();
+      const authUname = (authenticatedUser.username || authenticatedUser.name || '').toString().toLowerCase();
+
+      const checkFields = [
+        targetAccount.parentId,
+        targetAccount.uplineId,
+        targetAccount.createdBy,
+        targetAccount.createdUnder,
+        targetAccount.agentId,
+        targetAccount.uplineUsername,
+        targetAccount.agentUsername
+      ].filter(Boolean).map(x => String(x).toLowerCase());
+
+      const isDirectChild = checkFields.some(val => val === authId || val === authUname);
+
+      return isDirectChild ? 'text-[#00884F] font-bold' : 'text-[#111827] font-semibold';
+    }
+
+    function getHierarchyAccountColorHex(authenticatedUser, targetAccount) {
+      if (!authenticatedUser || !targetAccount) return '#111827';
+
+      const authId = (authenticatedUser.id || '').toString().toLowerCase();
+      const authUname = (authenticatedUser.username || authenticatedUser.name || '').toString().toLowerCase();
+
+      const checkFields = [
+        targetAccount.parentId,
+        targetAccount.uplineId,
+        targetAccount.createdBy,
+        targetAccount.createdUnder,
+        targetAccount.agentId,
+        targetAccount.uplineUsername,
+        targetAccount.agentUsername
+      ].filter(Boolean).map(x => String(x).toLowerCase());
+
+      const isDirectChild = checkFields.some(val => val === authId || val === authUname);
+
+      return isDirectChild ? '#00884F' : '#111827';
     }
 
     /**
