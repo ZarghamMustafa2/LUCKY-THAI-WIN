@@ -6930,6 +6930,7 @@
         localStorage.removeItem('isAdminAuth');
         localStorage.removeItem('ACTIVE_ADMIN_SESSION');
         localStorage.removeItem('userLoginName');
+        localStorage.removeItem('userLoginRole');
         localStorage.removeItem('userLoginToken');
         localStorage.removeItem('userLoginPassword');
         localStorage.removeItem('isUserLoggedIn');
@@ -6939,10 +6940,28 @@
         localStorage.removeItem('activeAdmin');
       } catch (e) {}
 
-      // 3. Clear sessionStorage
+      // 3. Reset transient flags
+      window.currentHierarchyViewMode = 'DOWNLINE';
+      if (typeof isUsersBalanceLoaded !== 'undefined') isUsersBalanceLoaded = false;
+      if (typeof isUsersBalanceLoading !== 'undefined') isUsersBalanceLoading = false;
+
+      // 4. Wipe table & header elements to prevent stale parent rendering
+      const tbody = document.getElementById('usersTableList');
+      if (tbody) tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-500 font-sans text-xs">Loading...</td></tr>`;
+
+      const topNameEl = document.getElementById('topBarAdminName');
+      const topRoleEl = document.getElementById('topBarAdminRole');
+      const topBalEl = document.getElementById('topBarBalance');
+      const topExpEl = document.getElementById('topBarExposure');
+      if (topNameEl) topNameEl.innerText = '';
+      if (topRoleEl) topRoleEl.innerText = '';
+      if (topBalEl) topBalEl.innerText = '0';
+      if (topExpEl) topExpEl.innerText = '0';
+
+      // 5. Clear sessionStorage
       try { sessionStorage.clear(); } catch (e) {}
 
-      // 4. Expire cookies
+      // 6. Expire cookies
       try {
         var cookies = document.cookie.split(';');
         for (var i = 0; i < cookies.length; i++) {
@@ -6952,21 +6971,82 @@
         }
       } catch (e) {}
 
-      // 5. Clear inputs in TW login overlay
+      // 7. Clear inputs in TW login overlay
       const uInput = document.getElementById('adminUsernameInput');
       const pInput = document.getElementById('adminPinInput');
       if (uInput) uInput.value = '';
       if (pInput) pInput.value = '';
 
-      // 6. Close profile dropdown if open
+      // 8. Close profile dropdown if open
       const dropdown = document.getElementById('adminAccountDropdownMenu');
       if (dropdown) dropdown.classList.add('hidden');
 
-      // 7. Show existing TW Login Screen
+      // 9. Show existing TW Login Screen
       const overlay = document.getElementById('adminAuthOverlay');
       if (overlay) overlay.classList.remove('hidden');
 
       showAdminToast('Logged out successfully.', 'warning');
+    }
+
+    /**
+     * ONE Centralized Authentication & Session Initialization Flow
+     * Universal across entire account hierarchy:
+     * COMPANY -> SUPER_ADMIN -> ADMIN -> SUPER_MASTER -> MASTER -> USER
+     */
+    function initializeCentralizedSession(matchedAdmin) {
+      if (!matchedAdmin) return;
+
+      // 1. Look up fresh balance & credit limit from ADM_USERS for target account ID
+      const allUsersList = AdminCore.repo.get('ADM_USERS') || [];
+      const freshUserRec = allUsersList.find(x => 
+        (x.id && matchedAdmin.id && String(x.id) === String(matchedAdmin.id)) || 
+        (x.username && matchedAdmin.username && String(x.username).toLowerCase() === String(matchedAdmin.username).toLowerCase())
+      );
+
+      if (freshUserRec) {
+        matchedAdmin.balance = Number(freshUserRec.balance !== undefined ? freshUserRec.balance : (matchedAdmin.balance !== undefined ? matchedAdmin.balance : 0));
+        matchedAdmin.creditLimit = Number(freshUserRec.creditLimit !== undefined ? freshUserRec.creditLimit : (matchedAdmin.creditLimit !== undefined ? matchedAdmin.creditLimit : 0));
+        matchedAdmin.sharePercentage = Number(freshUserRec.sharePercentage !== undefined ? freshUserRec.sharePercentage : (matchedAdmin.sharePercentage !== undefined ? matchedAdmin.sharePercentage : 100));
+      }
+
+      // 2. Set Active Session in Repository & LocalStorage
+      AdminCore.repo.setCurrentAdmin(matchedAdmin);
+      localStorage.setItem('isAdminAuth', 'true');
+      localStorage.setItem('userLoginName', matchedAdmin.username);
+      localStorage.setItem('userLoginRole', matchedAdmin.role || 'USER');
+
+      // 3. Reset transient UI states to defaults
+      window.currentHierarchyViewMode = 'DOWNLINE';
+      if (typeof isUsersBalanceLoaded !== 'undefined') isUsersBalanceLoaded = false;
+      if (typeof isUsersBalanceLoading !== 'undefined') isUsersBalanceLoading = false;
+
+      // 4. Clear any lingering search inputs
+      const searchInput = document.getElementById('userSearchFilter');
+      if (searchInput) searchInput.value = '';
+
+      // 5. Update Header & Profile Info
+      updateAdminHeaderInfo();
+
+      // 6. Apply Sidebar & Component Role Permissions
+      if (typeof applySidebarPermissions === 'function') {
+        applySidebarPermissions();
+      }
+
+      // 7. Refresh Dashboard Metrics
+      if (typeof updateDashboardMetrics === 'function') {
+        updateDashboardMetrics();
+      }
+
+      // 8. Render Hierarchy Users Table for authenticated account
+      if (typeof renderUsersTable === 'function') {
+        renderUsersTable();
+      }
+
+      // 9. Re-initialize active module view
+      const activeMod = window.currentAdminModule || 'dashboard';
+      if (typeof switchAdminModule === 'function') {
+        switchAdminModule(activeMod);
+      }
     }
 
     function openAppAccountLoginModal() {
@@ -7041,23 +7121,12 @@
         return;
       }
 
-      // Look up fresh balance & credit limit from ADM_USERS for this exact target account ID
-      const allUsersList = AdminCore.repo.get('ADM_USERS') || [];
-      const freshUserRec = allUsersList.find(x => (x.id && matchedAdmin.id && x.id === matchedAdmin.id) || (x.username && matchedAdmin.username && x.username.toLowerCase() === matchedAdmin.username.toLowerCase()));
-      if (freshUserRec) {
-        matchedAdmin.balance = Number(freshUserRec.balance !== undefined ? freshUserRec.balance : 0);
-        matchedAdmin.creditLimit = Number(freshUserRec.creditLimit !== undefined ? freshUserRec.creditLimit : 0);
-      }
-
-      // Authenticate active session
-      AdminCore.repo.setCurrentAdmin(matchedAdmin);
-      localStorage.setItem('isAdminAuth', 'true');
-      localStorage.setItem('userLoginName', matchedAdmin.username);
+      // Authenticate active session via Centralized Session Pipeline
+      initializeCentralizedSession(matchedAdmin);
 
       const overlay = document.getElementById('adminAuthOverlay');
       if (overlay) overlay.classList.add('hidden');
 
-      updateAdminHeaderInfo();
       showAdminToast(`Authenticated as ${matchedAdmin.username} (${ROLE_DISPLAY_LABELS[getNormalizedRole(matchedAdmin)] || matchedAdmin.role})!`, 'success');
     }
 
@@ -7110,22 +7179,10 @@
         return;
       }
 
-      // Authenticate active session
-      AdminCore.repo.setCurrentAdmin(matchedAdmin);
-      localStorage.setItem('isAdminAuth', 'true');
-      localStorage.setItem('userLoginName', matchedAdmin.username);
-
-      const activeSession = AdminCore.repo.getCurrentAdmin();
-      const authRole = activeSession ? activeSession.role : null;
-
-      console.log('DATABASE USER ROLE:', matchedAdmin.role);
-      console.log('AUTHENTICATED USER ROLE:', authRole);
-      console.log('TOKEN/JWT ROLE:', authRole);
-      console.log('CURRENT USER API ROLE:', authRole);
-      console.log('FRONTEND AUTH ROLE:', getNormalizedRole(activeSession));
+      // Authenticate active session via Centralized Session Pipeline
+      initializeCentralizedSession(matchedAdmin);
 
       closeModal('appAccountLoginModal');
-      updateAdminHeaderInfo();
       showAdminToast(`Authenticated as ${matchedAdmin.username} (${ROLE_DISPLAY_LABELS[getNormalizedRole(matchedAdmin)] || matchedAdmin.role})!`, 'success');
     }
 
