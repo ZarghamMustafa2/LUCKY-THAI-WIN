@@ -237,11 +237,11 @@
   <!-- 3. MAIN WRAPPER (SIDEBAR + CONTENT) -->
   <div class="flex-1 flex overflow-hidden relative">
 
-    <!-- Mobile Sidebar Backdrop Overlay -->
-    <div id="sidebarBackdrop" onclick="toggleAdminSidebar(true)" class="hidden fixed inset-0 top-[50px] bg-black/50 z-40 md:hidden transition-opacity"></div>
+    <!-- Mobile Sidebar Backdrop Overlay (z-index 9998, below sidebar) -->
+    <div id="sidebarBackdrop" onclick="toggleAdminSidebar(true)" class="hidden fixed inset-0 top-[50px] bg-black/60 backdrop-blur-xs z-[9998] md:hidden transition-opacity cursor-pointer"></div>
 
-    <!-- BPEXCH / LUCKY THAI WIN LEFT SIDEBAR -->
-    <aside id="adminSidebar" class="fixed md:static inset-y-0 left-0 top-[50px] md:top-0 h-[calc(100vh-50px)] md:h-auto w-[230px] sm:w-[215px] bg-[#2E3842] border-r border-[#222B32] flex flex-col z-50 md:z-40 shrink-0 transition-transform duration-200 ease-in-out -translate-x-full md:translate-x-0 text-[#D1D5DB] shadow-2xl md:shadow-none">
+    <!-- BPEXCH / LUCKY THAI WIN LEFT SIDEBAR (z-index 10000, highest layer above backdrop) -->
+    <aside id="adminSidebar" class="fixed md:static inset-y-0 left-0 top-[50px] md:top-0 h-[calc(100vh-50px)] md:h-auto w-[230px] sm:w-[215px] bg-[#2E3842] border-r border-[#222B32] flex flex-col z-[10000] md:z-40 shrink-0 transition-transform duration-200 ease-in-out -translate-x-full md:translate-x-0 text-[#D1D5DB] shadow-2xl md:shadow-none">
       
       <!-- Sidebar Navigation Menu List -->
       <div class="flex-1 py-1 flex flex-col overflow-y-auto custom-scrollbar text-[13px] font-medium">
@@ -6892,35 +6892,32 @@
       document.body.removeChild(link);
     }
 
-    // Toggle Mobile Sidebar Drawer
+    // Toggle Mobile & Desktop Navigation Sidebar Drawer
     function toggleAdminSidebar(forceClose = false) {
       const sidebar = document.getElementById('adminSidebar');
       const backdrop = document.getElementById('sidebarBackdrop');
       if (!sidebar) return;
 
-      const isMobile = window.innerWidth < 768;
-
       if (forceClose === true) {
-        // Explicitly close
         sidebar.classList.add('-translate-x-full');
         sidebar.classList.remove('translate-x-0');
         if (backdrop) backdrop.classList.add('hidden');
         return;
       }
 
-      if (isMobile) {
-        const isClosed = sidebar.classList.contains('-translate-x-full');
-        if (isClosed) {
-          sidebar.classList.remove('-translate-x-full');
-          sidebar.classList.add('translate-x-0');
-          if (backdrop) backdrop.classList.remove('hidden');
-        } else {
-          sidebar.classList.add('-translate-x-full');
-          sidebar.classList.remove('translate-x-0');
-          if (backdrop) backdrop.classList.add('hidden');
-        }
+      // Check if sidebar is currently closed (has -translate-x-full OR hidden)
+      const isClosed = sidebar.classList.contains('-translate-x-full') || sidebar.classList.contains('hidden');
+
+      if (isClosed) {
+        // OPEN SIDEBAR: Remove both -translate-x-full and hidden, add translate-x-0
+        sidebar.classList.remove('-translate-x-full', 'hidden');
+        sidebar.classList.add('translate-x-0');
+        if (backdrop) backdrop.classList.remove('hidden');
       } else {
-        sidebar.classList.toggle('hidden');
+        // CLOSE SIDEBAR
+        sidebar.classList.add('-translate-x-full');
+        sidebar.classList.remove('translate-x-0');
+        if (backdrop) backdrop.classList.add('hidden');
       }
     }
 
