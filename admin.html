@@ -504,23 +504,27 @@
             </div>
           </div>
 
-          <!-- Summary Metrics Quad Table -->
+          <!-- Summary Metrics Table (6 Columns: Credit Received | Credit Remaining | Cash | P/L Downline | Balance UpLine | Users) -->
           <div class="overflow-x-auto">
-            <table class="w-full border border-[#D8DEE4] text-xs text-left">
+            <table class="w-full border border-[#D8DEE4] text-xs text-left whitespace-nowrap">
               <thead>
                 <tr class="bg-[#FAFAFA] border-b border-[#D8DEE4]">
+                  <th class="p-2.5 font-bold text-[#1F2937] border-r border-[#D8DEE4]">Credit Received</th>
                   <th class="p-2.5 font-bold text-[#1F2937] border-r border-[#D8DEE4]">Credit Remaining</th>
                   <th class="p-2.5 font-bold text-[#1F2937] border-r border-[#D8DEE4]">Cash</th>
                   <th class="p-2.5 font-bold text-[#1F2937] border-r border-[#D8DEE4]">P/L Downline</th>
+                  <th class="p-2.5 font-bold text-[#1F2937] border-r border-[#D8DEE4]">Balance UpLine</th>
                   <th class="p-2.5 font-bold text-[#1F2937]">Users</th>
                 </tr>
               </thead>
               <tbody>
                 <tr class="border-b border-[#D8DEE4]">
+                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCreditReceived">0</td>
                   <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCreditRemaining">0</td>
                   <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCash">0</td>
                   <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsPlDownline">0</td>
-                  <td class="p-2.5 font-bold text-[#111827]" id="clientsUsersCount">6</td>
+                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsBalanceUpline">0</td>
+                  <td class="p-2.5 font-bold text-[#111827]" id="clientsUsersCount">0</td>
                 </tr>
               </tbody>
             </table>
@@ -4332,6 +4336,87 @@
       renderUsersTable();
     }
 
+    /**
+     * Dynamic Calculation of Account Summary Metrics for the 6-Column Summary Table:
+     * - Credit Received: total credit received
+     * - Credit Remaining: credit limit - locked amount
+     * - Cash: available cash balance
+     * - P/L Downline: actual calculated Downline Share amount
+     *   Formula: totalAmount * (assignedSharePercentage / 100)
+     * - Balance UpLine: actual calculated Upline Share amount
+     *   Formula: totalAmount - downlineAmount = totalAmount * ((100 - assignedSharePercentage) / 100)
+     * - Users: count of hierarchy accounts
+     */
+    function calculateHierarchySummaryMetrics(authenticatedAdmin) {
+      if (!authenticatedAdmin) {
+        return {
+          creditReceived: 0,
+          creditRemaining: 0,
+          cash: 0,
+          plDownline: 0,
+          balanceUpline: 0,
+          usersCount: 0
+        };
+      }
+
+      const baseSummary = typeof getAccountCreditSummary === 'function' ? getAccountCreditSummary(authenticatedAdmin) : {
+        balance: Math.max(Number(authenticatedAdmin.balance || 0), Number(authenticatedAdmin.creditLimit || 0)),
+        creditRemaining: Math.max(Number(authenticatedAdmin.balance || 0), Number(authenticatedAdmin.creditLimit || 0)) - Number(authenticatedAdmin.locked || 0),
+        cash: Math.max(Number(authenticatedAdmin.balance || 0), Number(authenticatedAdmin.creditLimit || 0))
+      };
+
+      const shareTxs = AdminCore.repo.get('ADM_SHARE_TRANSACTIONS') || [];
+      const authUname = (authenticatedAdmin.username || authenticatedAdmin.name || '').toString().toLowerCase();
+
+      let plDownlineTotal = 0;
+      let balanceUplineTotal = 0;
+
+      shareTxs.forEach(tx => {
+        if (!tx) return;
+        const parentUname = (tx.parentUsername || tx.parentAccountId || '').toString().toLowerCase();
+        const childUname = (tx.childUsername || tx.childAccountId || '').toString().toLowerCase();
+
+        if (parentUname === authUname || (tx.side === 'DOWNLINE' && parentUname === authUname)) {
+          if (tx.downlineAmount !== undefined) {
+            plDownlineTotal += Number(tx.downlineAmount) || 0;
+          } else if (tx.shareAmount !== undefined && (tx.side === 'DOWNLINE' || tx.sign === '+')) {
+            plDownlineTotal += Number(tx.shareAmount) || 0;
+          }
+        }
+
+        if (childUname === authUname || (tx.side === 'UPLINE' && parentUname === authUname)) {
+          if (tx.uplineAmount !== undefined) {
+            balanceUplineTotal += Number(tx.uplineAmount) || 0;
+          } else if (tx.shareAmount !== undefined && (tx.side === 'UPLINE' || tx.sign === '-')) {
+            balanceUplineTotal += Math.abs(Number(tx.shareAmount) || 0);
+          }
+        }
+      });
+
+      // If no stored share transactions exist yet, calculate dynamically from downline accounts' assigned share
+      if (shareTxs.length === 0 && window.AdminCore && window.AdminCore.repo) {
+        const descendants = window.AdminCore.repo.getHierarchyUsers(authenticatedAdmin) || [];
+        descendants.forEach(child => {
+          const childShare = Number(child.sharePercentage !== undefined ? child.sharePercentage : 100);
+          const childBal = Number(child.balance !== undefined ? child.balance : (child.creditLimit !== undefined ? child.creditLimit : 0));
+          if (childBal > 0) {
+            const dist = typeof calculateShareDistribution === 'function' ? calculateShareDistribution(childBal, childShare) : { downlineAmount: childBal * (childShare/100), uplineAmount: childBal * ((100-childShare)/100) };
+            plDownlineTotal += dist.downlineAmount;
+            balanceUplineTotal += dist.uplineAmount;
+          }
+        });
+      }
+
+      return {
+        creditReceived: baseSummary.balance,
+        creditRemaining: baseSummary.creditRemaining,
+        cash: baseSummary.cash,
+        plDownline: Number(plDownlineTotal.toFixed(2)),
+        balanceUpline: Number(balanceUplineTotal.toFixed(2)),
+        usersCount: baseSummary.usersCount || 0
+      };
+    }
+
     function renderUsersTable(filterOpts = {}) {
       const tbody = document.getElementById('usersTableList');
       if (!tbody) return;
@@ -4340,21 +4425,21 @@
       if (!admin) return;
 
       const titleEl = document.getElementById('usersClientsListTitle');
+      const credRecEl = document.getElementById('clientsCreditReceived');
       const credRemEl = document.getElementById('clientsCreditRemaining');
       const cashEl = document.getElementById('clientsCash');
-      const plEl = document.getElementById('clientsPlDownline');
+      const plDownlineEl = document.getElementById('clientsPlDownline');
+      const balUplineEl = document.getElementById('clientsBalanceUpline');
       const usersCountEl = document.getElementById('clientsUsersCount');
       const entriesCountEl = document.getElementById('usersEntriesCount');
 
-      const summary = typeof getAccountCreditSummary === 'function' ? getAccountCreditSummary(admin) : {
-        balance: Math.max(Number(admin.balance || 0), Number(admin.creditLimit || 0)),
-        creditRemaining: Math.max(Number(admin.balance || 0), Number(admin.creditLimit || 0)) - (Number(admin.locked || 0)),
-        cash: Math.max(Number(admin.balance || 0), Number(admin.creditLimit || 0))
-      };
+      const metrics = calculateHierarchySummaryMetrics(admin);
 
-      if (credRemEl) credRemEl.innerText = summary.creditRemaining.toLocaleString();
-      if (cashEl) cashEl.innerText = summary.cash.toLocaleString();
-      if (plEl) plEl.innerText = '0';
+      if (credRecEl) credRecEl.innerText = metrics.creditReceived.toLocaleString();
+      if (credRemEl) credRemEl.innerText = metrics.creditRemaining.toLocaleString();
+      if (cashEl) cashEl.innerText = metrics.cash.toLocaleString();
+      if (plDownlineEl) plDownlineEl.innerText = metrics.plDownline.toLocaleString();
+      if (balUplineEl) balUplineEl.innerText = metrics.balanceUpline.toLocaleString();
 
       const allUsers = AdminCore.repo.get('ADM_USERS') || [];
       const allAdmins = AdminCore.repo.get('ADM_ADMINS') || [];
