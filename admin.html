@@ -489,10 +489,19 @@
         <!-- CARD 3: CLIENTS LIST & SUMMARY (Matches Screenshot) -->
         <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden flex flex-col gap-4 p-4">
           
-          <!-- Card Header Title -->
-          <div class="border-b border-[#E5E7EB] pb-2.5 flex items-center justify-between">
-            <h3 id="usersClientsListTitle" class="font-bold text-[#1F2937] text-sm sm:text-base">Ahmad5050x - Clients List | Default</h3>
-            <span class="text-xs text-gray-400 font-mono">Live Data</span>
+          <!-- Card Header Title & Upline/Downline View Switcher -->
+          <div class="border-b border-[#E5E7EB] pb-2.5 flex flex-wrap items-center justify-between gap-2">
+            <h3 id="usersClientsListTitle" class="font-bold text-[#1F2937] text-sm sm:text-base">Ahmad5050x - Accounts List</h3>
+            
+            <!-- Upline / Downline Hierarchy View Switcher -->
+            <div class="flex items-center gap-1 bg-gray-100 p-1 rounded-lg border border-[#D8DEE4] shadow-inner text-xs font-bold">
+              <button id="viewToggleUplineBtn" onclick="switchHierarchyViewMode('UPLINE')" class="px-3.5 py-1 rounded transition-all cursor-pointer text-gray-600 hover:text-gray-900 flex items-center gap-1">
+                <i class="fa-solid fa-arrow-up text-[10px]"></i> Upline
+              </button>
+              <button id="viewToggleDownlineBtn" onclick="switchHierarchyViewMode('DOWNLINE')" class="px-3.5 py-1 rounded transition-all cursor-pointer bg-[#00884F] text-white shadow-sm flex items-center gap-1">
+                <i class="fa-solid fa-arrow-down text-[10px]"></i> Downline
+              </button>
+            </div>
           </div>
 
           <!-- Summary Metrics Quad Table -->
@@ -4299,14 +4308,37 @@
       showAdminToast(`Account settlement initiated for ${username}`, 'info');
     }
 
+    /**
+     * Upline / Downline Hierarchy View Mode Switcher
+     */
+    function switchHierarchyViewMode(mode) {
+      window.currentHierarchyViewMode = mode;
+
+      const uplineBtn = document.getElementById('viewToggleUplineBtn');
+      const downlineBtn = document.getElementById('viewToggleDownlineBtn');
+      const titleEl = document.getElementById('usersClientsListTitle');
+      const admin = AdminCore.repo.getCurrentAdmin();
+
+      if (mode === 'UPLINE') {
+        if (uplineBtn) uplineBtn.className = 'px-3.5 py-1 rounded transition-all cursor-pointer bg-[#00884F] text-white shadow-sm flex items-center gap-1';
+        if (downlineBtn) downlineBtn.className = 'px-3.5 py-1 rounded transition-all cursor-pointer text-gray-600 hover:text-gray-900 flex items-center gap-1';
+        if (titleEl) titleEl.innerText = `${admin ? admin.username : 'Account'} - Upline Parent Accounts`;
+      } else {
+        if (uplineBtn) uplineBtn.className = 'px-3.5 py-1 rounded transition-all cursor-pointer text-gray-600 hover:text-gray-900 flex items-center gap-1';
+        if (downlineBtn) downlineBtn.className = 'px-3.5 py-1 rounded transition-all cursor-pointer bg-[#00884F] text-white shadow-sm flex items-center gap-1';
+        if (titleEl) titleEl.innerText = `${admin ? admin.username : 'Account'} - Downline Accounts List`;
+      }
+
+      renderUsersTable();
+    }
+
     function renderUsersTable(filterOpts = {}) {
       const tbody = document.getElementById('usersTableList');
       if (!tbody) return;
 
       const admin = AdminCore.repo.getCurrentAdmin();
-      const companyScope = admin.role === 'SUPER_ADMIN' ? 'ALL' : admin.companyId;
+      if (!admin) return;
 
-      // Update Clients List Header and Quad Metrics
       const titleEl = document.getElementById('usersClientsListTitle');
       const credRemEl = document.getElementById('clientsCreditRemaining');
       const cashEl = document.getElementById('clientsCash');
@@ -4320,19 +4352,17 @@
         cash: Math.max(Number(admin.balance || 0), Number(admin.creditLimit || 0))
       };
 
-      if (titleEl) titleEl.innerText = `${admin.username || admin.name || 'Ahmad5050x'} - Clients List | Default`;
       if (credRemEl) credRemEl.innerText = summary.creditRemaining.toLocaleString();
       if (cashEl) cashEl.innerText = summary.cash.toLocaleString();
       if (plEl) plEl.innerText = '0';
 
-      let users = [];
-      let allUsers = AdminCore.repo.get('ADM_USERS') || [];
-      const agentName = admin.username || admin.name || 'Ahmad5050x';
+      const allUsers = AdminCore.repo.get('ADM_USERS') || [];
+      const allAdmins = AdminCore.repo.get('ADM_ADMINS') || [];
 
-      // Ensure default client Ahmad1330x exists under Ahmad5050x
-      if (!allUsers.some(u => u.username === 'Ahmad1330x')) {
+      // Ensure default Ahmad user exists if empty
+      if (allUsers.length === 0) {
         const defaultAhmad = {
-          id: 'USR-AHMAD1330X',
+          id: 'USR-1091',
           username: 'Ahmad1330x',
           name: 'Ahmad User',
           type: 'Client',
@@ -4347,8 +4377,15 @@
         AdminCore.repo.set('ADM_USERS', allUsers);
       }
 
-      // Backend Security: Retrieve accounts under authenticated user's hierarchy
-      users = AdminCore.repo.getHierarchyUsers(admin);
+      // Backend Security: Retrieve accounts under authenticated user's hierarchy mode (DOWNLINE vs UPLINE)
+      const mode = window.currentHierarchyViewMode || 'DOWNLINE';
+      let users = [];
+
+      if (mode === 'UPLINE') {
+        users = typeof AdminCore.repo.getUplineAncestors === 'function' ? AdminCore.repo.getUplineAncestors(admin) : [];
+      } else {
+        users = AdminCore.repo.getHierarchyUsers(admin);
+      }
 
       // Apply search filter if provided
       if (filterOpts && filterOpts.search) {
@@ -4366,7 +4403,11 @@
       }
 
       if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-500 font-sans text-xs">No data available in table</td></tr>`;
+        if (mode === 'UPLINE') {
+          tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-600 font-bold text-xs bg-gray-50 border-b border-[#D8DEE4]"><i class="fa-solid fa-circle-info text-amber-500 text-sm mr-1.5"></i> No Upline Account (Top Level HQ)</td></tr>`;
+        } else {
+          tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-500 font-sans text-xs">No data available in table</td></tr>`;
+        }
         return;
       }
 

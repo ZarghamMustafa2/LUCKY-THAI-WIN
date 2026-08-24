@@ -445,6 +445,63 @@
       return descendants;
     }
 
+    // Upline Ancestor Chain Resolver (Ascending Parent Tree to COMPANY)
+    getUplineAncestors(authenticatedUser) {
+      if (!authenticatedUser) return [];
+
+      const roleStr = (authenticatedUser.role || authenticatedUser.userType || authenticatedUser.type || '').toString().toUpperCase();
+      if (roleStr.includes('COMPANY')) {
+        return []; // COMPANY has no upline
+      }
+
+      const allUsers = this.get('ADM_USERS') || [];
+      const allAdmins = this.get('ADM_ADMINS') || [];
+      const allPool = [...allAdmins, ...allUsers];
+
+      const ancestors = [];
+      let current = authenticatedUser;
+      const visited = new Set();
+
+      while (current) {
+        const currentKey = (current.username || current.id || '').toString().toLowerCase();
+        if (visited.has(currentKey)) break;
+        visited.add(currentKey);
+
+        const parentId = current.parentId || current.uplineId || current.createdUnder || current.createdBy || current.agentId;
+        if (!parentId) break;
+
+        const parentKeyStr = String(parentId).toLowerCase();
+        let parentObj = allPool.find(x => x && (
+          (x.id && String(x.id).toLowerCase() === parentKeyStr) ||
+          (x.username && String(x.username).toLowerCase() === parentKeyStr)
+        ));
+
+        if (!parentObj && (parentKeyStr === 'company' || parentKeyStr === 'comp-root-01' || parentKeyStr === 'ahmad5050x')) {
+          parentObj = allPool.find(x => x && (x.role === 'COMPANY' || x.username === 'company')) || {
+            id: 'COMP-ROOT-01',
+            username: 'company',
+            name: 'Company HQ (Top Level)',
+            role: 'COMPANY',
+            sharePercentage: 100
+          };
+        }
+
+        if (parentObj) {
+          const pKey = (parentObj.username || parentObj.id || '').toString().toLowerCase();
+          if (pKey !== currentKey && !visited.has(pKey)) {
+            ancestors.push(parentObj);
+            current = parentObj;
+          } else {
+            break;
+          }
+        } else {
+          break;
+        }
+      }
+
+      return ancestors;
+    }
+
     // Downline Agent Resolution (Recursive Subtree)
     getDownlineAdmins(agentUsername) {
       const admins = this.get('ADM_ADMINS');
