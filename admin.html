@@ -5898,19 +5898,104 @@
     }
 
     /**
-     * Centralized Share Difference Calculation Function
+     * Centralized Upline-Downline Share Distribution Calculation Engine
+     * (Pure P/L calculation, independent of Credit Transfers)
      */
-    function calculateShareDifference(amount, childSharePercentage) {
-      const numAmount = Number(amount) || 0;
-      const childShare = Number(childSharePercentage) !== undefined ? Number(childSharePercentage) : 100;
-      const differencePercentage = Math.max(0, 100 - childShare);
-      const differenceAmount = Number(((numAmount * differencePercentage) / 100).toFixed(2));
+    function calculateShareDistribution(totalAmount, childSharePercentage) {
+      const amount = Number(totalAmount) || 0;
+      const childShare = Number(childSharePercentage !== undefined && childSharePercentage !== null ? childSharePercentage : 100);
+      const uplineShare = Math.max(0, 100 - childShare);
+
+      const downlineAmount = Number(((amount * childShare) / 100).toFixed(2));
+      const uplineAmount = Number(((amount * uplineShare) / 100).toFixed(2));
 
       return {
-        amount: numAmount,
+        totalAmount: amount,
         childSharePercentage: childShare,
-        uplineDifferencePercentage: differencePercentage,
-        differenceAmount
+        uplinePercentage: uplineShare,
+        downlineAmount: downlineAmount,
+        uplineAmount: uplineAmount,
+        downlineFormatted: '+' + downlineAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        uplineFormatted: '-' + uplineAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        downlineColor: '#10B981', // GREEN
+        uplineColor: '#EF4444'     // RED
+      };
+    }
+
+    function calculateShareDifference(amount, childSharePercentage) {
+      return calculateShareDistribution(amount, childSharePercentage);
+    }
+
+    /**
+     * Stores traceable linked dual-entry records for Upline (-RED) and Downline (+GREEN)
+     */
+    function recordShareTransaction(parentAccount, childAccount, totalAmount, customTxId) {
+      const childShare = Number(childAccount ? (childAccount.sharePercentage !== undefined ? childAccount.sharePercentage : 100) : 100);
+      const dist = calculateShareDistribution(totalAmount, childShare);
+      const txId = customTxId || ('SHARE-' + Math.floor(100000 + Math.random() * 900000));
+      const timestamp = new Date().toISOString();
+
+      const parentId = parentAccount ? (parentAccount.id || parentAccount.username) : 'COMP-ROOT-01';
+      const parentUname = parentAccount ? parentAccount.username : 'company';
+      const childId = childAccount ? (childAccount.id || childAccount.username) : 'USR-UNKNOWN';
+      const childUname = childAccount ? childAccount.username : 'unknown';
+
+      // 1. Downline Entry (+GREEN)
+      const downlineRecord = {
+        id: txId + '-DN',
+        transactionId: txId,
+        parentAccountId: parentId,
+        parentUsername: parentUname,
+        childAccountId: childId,
+        childUsername: childUname,
+        accountId: childId,
+        username: childUname,
+        role: childAccount ? (childAccount.role || childAccount.type || 'USER') : 'USER',
+        side: 'DOWNLINE',
+        direction: 'DOWNLINE_POSITIVE',
+        totalAmount: dist.totalAmount,
+        sharePercentage: dist.childSharePercentage,
+        shareAmount: dist.downlineAmount,
+        formattedAmount: dist.downlineFormatted,
+        displayColor: 'GREEN',
+        color: dist.downlineColor,
+        sign: '+',
+        createdAt: timestamp
+      };
+
+      // 2. Upline Entry (-RED)
+      const uplineRecord = {
+        id: txId + '-UP',
+        transactionId: txId,
+        parentAccountId: parentId,
+        parentUsername: parentUname,
+        childAccountId: childId,
+        childUsername: childUname,
+        accountId: parentId,
+        username: parentUname,
+        role: parentAccount ? (parentAccount.role || parentAccount.type || 'COMPANY') : 'COMPANY',
+        side: 'UPLINE',
+        direction: 'UPLINE_NEGATIVE',
+        totalAmount: dist.totalAmount,
+        sharePercentage: dist.uplinePercentage,
+        shareAmount: dist.uplineAmount,
+        formattedAmount: dist.uplineFormatted,
+        displayColor: 'RED',
+        color: dist.uplineColor,
+        sign: '-',
+        createdAt: timestamp
+      };
+
+      const shareTxs = AdminCore.repo.get('ADM_SHARE_TRANSACTIONS') || [];
+      shareTxs.unshift(downlineRecord);
+      shareTxs.unshift(uplineRecord);
+      AdminCore.repo.set('ADM_SHARE_TRANSACTIONS', shareTxs);
+
+      return {
+        transactionId: txId,
+        distribution: dist,
+        downlineRecord,
+        uplineRecord
       };
     }
 

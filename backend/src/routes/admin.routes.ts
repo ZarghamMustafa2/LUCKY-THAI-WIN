@@ -100,22 +100,25 @@ router.post('/share/calculate', async (req: AuthRequest, res) => {
       return;
     }
 
-    const differencePercentage = Math.max(0, 100 - childShare);
-    const differenceAmount = Number(((numAmount * differencePercentage) / 100).toFixed(2));
-    const txId = 'STX-' + Math.floor(100000 + Math.random() * 900000);
+    const uplinePercentage = Math.max(0, 100 - childShare);
+    const downlineAmount = Number(((numAmount * childShare) / 100).toFixed(2));
+    const uplineAmount = Number(((numAmount * uplinePercentage) / 100).toFixed(2));
+    const txId = 'SHARE-' + Math.floor(100000 + Math.random() * 900000);
     const timestamp = new Date().toISOString();
 
     const downlineRecord = {
       transactionId: txId,
       uplineAccountId: uplineAccountId || 'COMPANY',
       downlineAccountId: downlineAccountId || 'SUB_ACCOUNT',
-      amount: numAmount,
+      totalAmount: numAmount,
       childSharePercentage: childShare,
-      uplineDifferencePercentage: differencePercentage,
-      calculatedShareAmount: differenceAmount,
-      formattedAmount: `+${differenceAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      uplinePercentage: uplinePercentage,
+      downlineAmount: downlineAmount,
+      formattedAmount: `+${downlineAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       direction: 'DOWNLINE_POSITIVE',
       displayColor: 'GREEN',
+      color: '#10B981',
+      sign: '+',
       createdAt: timestamp
     };
 
@@ -123,23 +126,28 @@ router.post('/share/calculate', async (req: AuthRequest, res) => {
       transactionId: txId,
       uplineAccountId: uplineAccountId || 'COMPANY',
       downlineAccountId: downlineAccountId || 'SUB_ACCOUNT',
-      amount: numAmount,
+      totalAmount: numAmount,
       childSharePercentage: childShare,
-      uplineDifferencePercentage: differencePercentage,
-      calculatedShareAmount: differenceAmount,
-      formattedAmount: `-${differenceAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      uplinePercentage: uplinePercentage,
+      uplineAmount: uplineAmount,
+      formattedAmount: `-${uplineAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       direction: 'UPLINE_NEGATIVE',
       displayColor: 'RED',
+      color: '#EF4444',
+      sign: '-',
       createdAt: timestamp
     };
 
     res.json({
-      message: 'Share difference calculated successfully',
+      message: 'Share distribution calculated successfully',
       calculation: {
-        amount: numAmount,
+        totalAmount: numAmount,
         childSharePercentage: childShare,
-        uplineDifferencePercentage: differencePercentage,
-        differenceAmount
+        uplinePercentage: uplinePercentage,
+        downlineAmount: downlineAmount,
+        uplineAmount: uplineAmount,
+        downlineFormatted: downlineRecord.formattedAmount,
+        uplineFormatted: uplineRecord.formattedAmount
       },
       records: {
         downline: downlineRecord,
@@ -147,7 +155,7 @@ router.post('/share/calculate', async (req: AuthRequest, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error calculating share difference', error });
+    res.status(500).json({ message: 'Error calculating share distribution', error });
   }
 });
 
