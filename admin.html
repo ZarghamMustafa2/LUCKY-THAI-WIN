@@ -5680,7 +5680,25 @@
     }
 
     function handleAddUserSubmit(e) {
-      e.preventDefault();
+      if (e && e.preventDefault) e.preventDefault();
+
+      if (window._isCreatingUser) return;
+      window._isCreatingUser = true;
+
+      const submitBtn = document.querySelector('#addUserModal button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Creating...';
+      }
+
+      const resetSubmitState = () => {
+        window._isCreatingUser = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'Submit';
+        }
+      };
+
       const username = document.getElementById('newUsername').value.trim();
       const password = document.getElementById('newPassword').value.trim();
       const typeRadio = document.querySelector('input[name="newUserType"]:checked');
@@ -5694,22 +5712,25 @@
 
       const admin = AdminCore.repo.getCurrentAdmin();
       const currentRoleKey = getNormalizedRole(admin);
-      const parentShareCapacity = (admin.sharePercentage !== undefined && admin.sharePercentage !== null) ? Number(admin.sharePercentage) : (admin.role === 'COMPANY' ? 100 : 100);
+      const parentShareCapacity = (admin && admin.sharePercentage !== undefined && admin.sharePercentage !== null) ? Number(admin.sharePercentage) : 100;
 
       console.log('BACKEND CREATE-USER REQUEST ROLE:', currentRoleKey);
 
       if (!currentRoleKey) {
         showAdminToast('Error: Unable to identify authenticated account role.', 'error');
+        resetSubmitState();
         return;
       }
 
       if (isNaN(shareInputVal) || shareInputVal < 0 || shareInputVal > 100) {
         showAdminToast('Invalid Share Percentage: Must be numeric between 0% and 100%.', 'error');
+        resetSubmitState();
         return;
       }
 
       if (shareInputVal > parentShareCapacity) {
         showAdminToast(`Access Denied: Child Share (${shareInputVal}%) cannot exceed parent capacity (${parentShareCapacity}%).`, 'error');
+        resetSubmitState();
         return;
       }
 
@@ -5719,15 +5740,20 @@
         const attemptedLabel = ROLE_DISPLAY_LABELS[selectedRoleKey] || selectedRoleKey;
         const currentLabel = currentRoleKey.replace(/_/g, ' ');
         showAdminToast(`Access Denied: ${currentLabel} is not authorized to create ${attemptedLabel} accounts.`, 'error');
+        resetSubmitState();
         return;
       }
 
       const companyId = admin.role === 'SUPER_ADMIN' ? 'COMP-01' : (admin.companyId || 'COMP-01');
+      
+      // Comprehensive Duplicate Username Check (ADM_USERS & ADM_ADMINS)
       const users = AdminCore.repo.get('ADM_USERS') || [];
+      const admins = AdminCore.repo.get('ADM_ADMINS') || [];
+      const isDuplicate = [...users, ...admins].some(u => u && u.username && u.username.toLowerCase() === username.toLowerCase());
 
-      // Duplicate Username Check
-      if (users.some(u => u.username && u.username.toLowerCase() === username.toLowerCase())) {
-        showAdminToast(`Username "${username}" is already taken. Please choose another username.`, 'error');
+      if (isDuplicate) {
+        showAdminToast(`Username "${username}" already exists. Please choose another username.`, 'error');
+        resetSubmitState();
         return;
       }
 
@@ -5772,7 +5798,6 @@
       AdminCore.repo.set('ADM_USERS', users);
 
       if (selectedRoleKey !== 'USER') {
-        const admins = AdminCore.repo.get('ADM_ADMINS') || [];
         const newAdminRecord = {
           id: uniqueAccountId,
           name: username,
@@ -5795,6 +5820,7 @@
       }
 
       AdminCore.repo.logAudit('USER_CREATED', `User #${newUser.id}`, username, `Created ${selectedLabel} under ${parentName} (${currentRoleKey}) with ${shareInputVal}% Share`);
+      resetSubmitState();
       closeModal('addUserModal');
       showAdminToast(`✓ ${selectedLabel} account "${username}" created with ${shareInputVal}% Share successfully!`, 'success');
       renderUsersTable();

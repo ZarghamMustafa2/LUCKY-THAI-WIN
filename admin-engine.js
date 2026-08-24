@@ -348,11 +348,11 @@
       const allUsers = this.get('ADM_USERS') || [];
       const allAdmins = this.get('ADM_ADMINS') || [];
 
-      // Combine and deduplicate pool of accounts
+      // Combine and deduplicate pool of accounts by primary username identity
       const poolMap = new Map();
       [...allAdmins, ...allUsers].forEach(item => {
         if (!item) return;
-        const key = (item.id || item.username || '').toString().toLowerCase();
+        const key = (item.username || item.id || '').toString().toLowerCase();
         if (key && !poolMap.has(key)) {
           poolMap.set(key, item);
         }
@@ -386,7 +386,7 @@
           const parentKeys = [parent.id, parent.username, parent.name].filter(Boolean);
 
           for (const item of allPool) {
-            const itemKey = (item.id || item.username || '').toString().toLowerCase();
+            const itemKey = (item.username || item.id || '').toString().toLowerCase();
             
             // Skip self or already processed items
             if (parentKeys.some(pk => String(pk).toLowerCase() === itemKey) || descendantMap.has(itemKey)) {
@@ -424,13 +424,18 @@
         const allAdmins = this.get('ADM_ADMINS') || [];
         const combined = new Map();
         
-        descendants.forEach(d => combined.set((d.id || d.username).toLowerCase(), d));
+        descendants.forEach(d => {
+          const k = (d.username || d.id || '').toString().toLowerCase();
+          if (k) combined.set(k, d);
+        });
         
         [...allAdmins, ...allUsers].forEach(item => {
           if (!item) return;
-          const k = (item.id || item.username).toLowerCase();
-          if (k !== (authenticatedUser.id || '').toLowerCase() && k !== (authenticatedUser.username || '').toLowerCase()) {
-            combined.set(k, item);
+          const k = (item.username || item.id || '').toString().toLowerCase();
+          if (k && k !== (authenticatedUser.id || '').toString().toLowerCase() && k !== (authenticatedUser.username || '').toString().toLowerCase()) {
+            if (!combined.has(k)) {
+              combined.set(k, item);
+            }
           }
         });
         
