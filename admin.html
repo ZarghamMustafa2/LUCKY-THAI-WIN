@@ -4412,117 +4412,120 @@
       }
 
       tbody.innerHTML = users.map(u => {
-        const fullUser = allUsers.find(x => x.id === u.id || (x.username && u.username && x.username.toLowerCase() === u.username.toLowerCase())) || u;
-        const passVal = fullUser.password || '123456';
-        const tokBal = u.tokenBalance !== undefined ? u.tokenBalance : (window.PlatformSync ? window.PlatformSync.getUserTokenBalance(u.username) : 0);
-        const isActive = u.status === 'Active';
-        const balVal = Number(fullUser.balance !== undefined ? fullUser.balance : (u.balance !== undefined ? u.balance : 0)) || 0;
-        const credVal = Number(fullUser.creditLimit !== undefined ? fullUser.creditLimit : (u.creditLimit !== undefined ? u.creditLimit : 0)) || 0;
+        if (!u) return '';
+        try {
+          const uname = (u.username || u.name || u.id || 'User').toString();
+          const uId = (u.id || uname).toString();
+          const fullUser = allUsers.find(x => x && ((x.id && String(x.id) === uId) || (x.username && String(x.username).toLowerCase() === uname.toLowerCase()))) || u;
 
-        const showDetails = isUsersBalanceLoaded;
-        const isLoading = isUsersBalanceLoading;
+          const isActive = u.status === 'Active';
+          const balVal = Number(fullUser.balance !== undefined ? fullUser.balance : (u.balance !== undefined ? u.balance : 0)) || 0;
+          const credVal = Number(fullUser.creditLimit !== undefined ? fullUser.creditLimit : (u.creditLimit !== undefined ? u.creditLimit : 0)) || 0;
 
-        let typeStr, credStr, balStr, plStr, shareStr, expStr, availStr;
-
-        if (isLoading) {
-          const spinner = '<i class="fa-solid fa-circle-notch fa-spin text-amber-500 text-[10px]"></i>';
-          typeStr = spinner;
-          credStr = spinner;
-          balStr = spinner;
-          plStr = spinner;
-          shareStr = spinner;
-          expStr = spinner;
-          availStr = spinner;
-        } else if (showDetails) {
+          // Account Type / Role & Share % are core account metadata (ALWAYS displayed)
           const userRoleKey = getNormalizedRole(fullUser) || getNormalizedRole(u);
-          typeStr = (userRoleKey && ROLE_DISPLAY_LABELS[userRoleKey]) ? ROLE_DISPLAY_LABELS[userRoleKey] : (fullUser.userType || fullUser.type || u.userType || u.type || 'User');
-          credStr = credVal.toFixed(2);
-          balStr = balVal.toFixed(2);
-          plStr = '0.00';
+          const typeStr = (userRoleKey && ROLE_DISPLAY_LABELS[userRoleKey]) ? ROLE_DISPLAY_LABELS[userRoleKey] : (fullUser.userType || fullUser.type || u.userType || u.type || 'User');
           const shareVal = Number(fullUser.sharePercentage !== undefined ? fullUser.sharePercentage : (u.sharePercentage !== undefined ? u.sharePercentage : 100));
-          shareStr = `${shareVal.toFixed(2)} %`;
-          expStr = '0.00';
-          availStr = credVal.toFixed(2);
-        } else {
-          typeStr = '-';
-          credStr = '-';
-          balStr = '-';
-          plStr = '-';
-          shareStr = '-';
-          expStr = '-';
-          availStr = '-';
+          const shareStr = `${shareVal.toFixed(2)} %`;
+
+          let credStr, balStr, plStr, expStr, availStr;
+
+          if (isUsersBalanceLoading) {
+            const spinner = '<i class="fa-solid fa-circle-notch fa-spin text-amber-500 text-[10px]"></i>';
+            credStr = spinner;
+            balStr = spinner;
+            plStr = spinner;
+            expStr = spinner;
+            availStr = spinner;
+          } else if (isUsersBalanceLoaded) {
+            credStr = credVal.toFixed(2);
+            balStr = balVal.toFixed(2);
+            plStr = '0.00';
+            expStr = '0.00';
+            availStr = credVal.toFixed(2);
+          } else {
+            credStr = '••••••';
+            balStr = '••••••';
+            plStr = '0.00';
+            expStr = '0.00';
+            availStr = '••••••';
+          }
+
+          const canDelete = typeof canDeleteUser === 'function' ? canDeleteUser(admin, u) : false;
+          const colorClass = typeof getHierarchyAccountColorClass === 'function' ? getHierarchyAccountColorClass(admin, u) : 'text-[#111827] font-semibold';
+          const colorHex = typeof getHierarchyAccountColorHex === 'function' ? getHierarchyAccountColorHex(admin, u) : '#111827';
+          const isDirect = colorHex === '#00884F';
+
+          return `
+          <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#E5E7EB]" onclick="inspectUserCredentials('${uId}')">
+            <td class="p-2.5 text-xs ${colorClass}">
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full ${isDirect ? 'bg-[#00884F]' : 'bg-gray-400'}"></span>
+                ${uname}
+              </span>
+            </td>
+            <td class="p-2.5 text-gray-600 text-xs">
+              ${typeStr}
+            </td>
+            <td class="p-2.5 font-mono text-gray-800 text-xs font-semibold">
+              ${credStr}
+            </td>
+            <td class="p-2.5 font-mono font-semibold text-[#00884F] text-xs">
+              ${balStr}
+            </td>
+            <td class="p-2.5 font-mono text-gray-800 text-xs">
+              ${plStr}
+            </td>
+            <td class="p-2.5 font-mono text-gray-800 text-xs font-semibold text-[#00884F]">
+              ${shareStr}
+            </td>
+            <td class="p-2.5 font-mono text-gray-800 text-xs">
+              ${expStr}
+            </td>
+            <td class="p-2.5 font-mono font-semibold text-[#00884F] text-xs">
+              ${availStr}
+            </td>
+            <td class="p-2.5 text-center" onclick="event.stopPropagation()">
+              <div class="flex items-center justify-center gap-1">
+                <!-- C: Cash / Credit -->
+                <button onclick="openAdjustWalletModal('${uname}')" title="Cash / Credit Adjustment" class="w-5 h-5 rounded bg-[#F59E0B] hover:bg-amber-600 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
+                  C
+                </button>
+                <!-- Edit: Edit Client View -->
+                <button onclick="openEditUserView('${uname}')" title="Edit Client - ${uname}" class="w-5 h-5 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-[9px] flex items-center justify-center transition-colors cursor-pointer">
+                  <i class="fa-solid fa-pencil text-[8px]"></i>
+                </button>
+                <!-- %: Adjust Share Percentage -->
+                <button onclick="openAdjustShareModal('${uname}')" title="Adjust Share Percentage - ${uname}" class="w-5 h-5 rounded bg-[#8B5CF6] hover:bg-purple-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
+                  %
+                </button>
+                <!-- L: Ledger -->
+                <button onclick="switchAdminModule('tokens')" title="View Account Ledger" class="w-5 h-5 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
+                  L
+                </button>
+                <!-- A / D: Active / InActive Toggle -->
+                <button onclick="toggleUserStatus('${uId}')" title="${isActive ? 'Deactivate User' : 'Activate User'}" class="w-5 h-5 rounded font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer ${isActive ? 'bg-[#10B981] hover:bg-emerald-600 text-white' : 'border border-[#EF4444] text-[#EF4444] hover:bg-red-50'}">
+                  ${isActive ? 'A' : 'D'}
+                </button>
+                <!-- S: Settle Account -->
+                <button onclick="handleSettleAccount('${uname}')" title="Settle Account" class="w-5 h-5 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
+                  S
+                </button>
+                ${canDelete ? `
+                <!-- Delete Account -->
+                <button onclick="promptDeleteUser('${uname}')" title="Delete User Account" class="w-5 h-5 rounded bg-[#EF4444] hover:bg-red-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer shadow-sm">
+                  <i class="fa-solid fa-trash-can text-[8px]"></i>
+                </button>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+        } catch (err) {
+          console.error('Error rendering user row:', u, err);
+          return '';
         }
-
-        const canDelete = typeof canDeleteUser === 'function' ? canDeleteUser(admin, u) : false;
-        const colorClass = typeof getHierarchyAccountColorClass === 'function' ? getHierarchyAccountColorClass(admin, u) : 'text-[#111827] font-semibold';
-        const colorHex = typeof getHierarchyAccountColorHex === 'function' ? getHierarchyAccountColorHex(admin, u) : '#111827';
-        const isDirect = colorHex === '#00884F';
-
-        return `
-        <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#E5E7EB]" onclick="inspectUserCredentials('${u.id}')">
-          <td class="p-2.5 text-xs ${colorClass}">
-            <span class="inline-flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full ${isDirect ? 'bg-[#00884F]' : 'bg-gray-400'}"></span>
-              ${u.username}
-            </span>
-          </td>
-          <td class="p-2.5 text-gray-600 text-xs">
-            ${typeStr}
-          </td>
-          <td class="p-2.5 font-mono text-gray-800 text-xs font-semibold">
-            ${credStr}
-          </td>
-          <td class="p-2.5 font-mono font-semibold text-[#00884F] text-xs">
-            ${balStr}
-          </td>
-          <td class="p-2.5 font-mono text-gray-800 text-xs">
-            ${plStr}
-          </td>
-          <td class="p-2.5 font-mono text-gray-800 text-xs">
-            ${shareStr}
-          </td>
-          <td class="p-2.5 font-mono text-gray-800 text-xs">
-            ${expStr}
-          </td>
-          <td class="p-2.5 font-mono font-semibold text-[#00884F] text-xs">
-            ${availStr}
-          </td>
-          <td class="p-2.5 text-center" onclick="event.stopPropagation()">
-            <div class="flex items-center justify-center gap-1">
-              <!-- C: Cash / Credit -->
-              <button onclick="openAdjustWalletModal('${u.username}')" title="Cash / Credit Adjustment" class="w-5 h-5 rounded bg-[#F59E0B] hover:bg-amber-600 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
-                C
-              </button>
-              <!-- Edit: Edit Client View -->
-              <button onclick="openEditUserView('${u.username}')" title="Edit Client - ${u.username}" class="w-5 h-5 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-[9px] flex items-center justify-center transition-colors cursor-pointer">
-                <i class="fa-solid fa-pencil text-[8px]"></i>
-              </button>
-              <!-- %: Adjust Share Percentage -->
-              <button onclick="openAdjustShareModal('${u.username}')" title="Adjust Share Percentage - ${u.username}" class="w-5 h-5 rounded bg-[#8B5CF6] hover:bg-purple-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
-                %
-              </button>
-              <!-- L: Ledger -->
-              <button onclick="switchAdminModule('tokens')" title="View Account Ledger" class="w-5 h-5 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
-                L
-              </button>
-              <!-- A / D: Active / InActive Toggle -->
-              <button onclick="toggleUserStatus('${u.id}')" title="${isActive ? 'Deactivate User' : 'Activate User'}" class="w-5 h-5 rounded font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer ${isActive ? 'bg-[#10B981] hover:bg-emerald-600 text-white' : 'border border-[#EF4444] text-[#EF4444] hover:bg-red-50'}">
-                ${isActive ? 'A' : 'D'}
-              </button>
-              <!-- S: Settle Account -->
-              <button onclick="handleSettleAccount('${u.username}')" title="Settle Account" class="w-5 h-5 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
-                S
-              </button>
-              ${canDelete ? `
-              <!-- Delete Account -->
-              <button onclick="promptDeleteUser('${u.username}')" title="Delete User Account" class="w-5 h-5 rounded bg-[#EF4444] hover:bg-red-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer shadow-sm">
-                <i class="fa-solid fa-trash-can text-[8px]"></i>
-              </button>
-              ` : ''}
-            </div>
-          </td>
-        </tr>
-      `}).join('');
+      }).join('');
     }
 
     function filterUsers() {
@@ -5954,6 +5957,7 @@
     function getHierarchyAccountColorClass(authenticatedUser, targetAccount) {
       if (!authenticatedUser || !targetAccount) return 'text-[#111827] font-semibold';
 
+      const authRole = (authenticatedUser.role || authenticatedUser.userType || authenticatedUser.type || '').toString().toUpperCase();
       const authId = (authenticatedUser.id || '').toString().toLowerCase();
       const authUname = (authenticatedUser.username || authenticatedUser.name || '').toString().toLowerCase();
 
@@ -5967,7 +5971,15 @@
         targetAccount.agentUsername
       ].filter(Boolean).map(x => String(x).toLowerCase());
 
-      const isDirectChild = checkFields.some(val => val === authId || val === authUname);
+      const isCompanyAuth = authRole.includes('COMPANY') || authUname === 'company' || authUname === 'ahmad5050x';
+
+      const isDirectChild = checkFields.some(val => {
+        if (!val) return false;
+        if (authId && val === authId) return true;
+        if (authUname && val === authUname) return true;
+        if (isCompanyAuth && (val === 'company' || val === 'comp-root-01' || val === 'ahmad5050x')) return true;
+        return false;
+      });
 
       return isDirectChild ? 'text-[#00884F] font-bold' : 'text-[#111827] font-semibold';
     }
@@ -5975,6 +5987,7 @@
     function getHierarchyAccountColorHex(authenticatedUser, targetAccount) {
       if (!authenticatedUser || !targetAccount) return '#111827';
 
+      const authRole = (authenticatedUser.role || authenticatedUser.userType || authenticatedUser.type || '').toString().toUpperCase();
       const authId = (authenticatedUser.id || '').toString().toLowerCase();
       const authUname = (authenticatedUser.username || authenticatedUser.name || '').toString().toLowerCase();
 
@@ -5988,7 +6001,15 @@
         targetAccount.agentUsername
       ].filter(Boolean).map(x => String(x).toLowerCase());
 
-      const isDirectChild = checkFields.some(val => val === authId || val === authUname);
+      const isCompanyAuth = authRole.includes('COMPANY') || authUname === 'company' || authUname === 'ahmad5050x';
+
+      const isDirectChild = checkFields.some(val => {
+        if (!val) return false;
+        if (authId && val === authId) return true;
+        if (authUname && val === authUname) return true;
+        if (isCompanyAuth && (val === 'company' || val === 'comp-root-01' || val === 'ahmad5050x')) return true;
+        return false;
+      });
 
       return isDirectChild ? '#00884F' : '#111827';
     }
