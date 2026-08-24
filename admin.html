@@ -491,7 +491,7 @@
           
           <!-- Card Header Title -->
           <div class="border-b border-[#E5E7EB] pb-2.5 flex flex-wrap items-center justify-between gap-2">
-            <h3 id="usersClientsListTitle" class="font-bold text-[#1F2937] text-sm sm:text-base">Ahmad5050x - Accounts List</h3>
+            <h3 id="usersClientsListTitle" class="font-bold text-[#1F2937] text-sm sm:text-base">Accounts List</h3>
           </div>
 
           <!-- Summary Metrics Table (6 Columns: Credit Received | Credit Remaining | Cash | P/L Downline | Balance UpLine | Users) -->
@@ -4422,6 +4422,12 @@
       const balUplineEl = document.getElementById('clientsBalanceUpline');
       const usersCountEl = document.getElementById('clientsUsersCount');
       const entriesCountEl = document.getElementById('usersEntriesCount');
+
+      const authUsername = admin ? (admin.username || admin.name || 'Account') : 'Account';
+      if (titleEl) {
+        const mode = window.currentHierarchyViewMode || 'DOWNLINE';
+        titleEl.innerText = mode === 'UPLINE' ? `${authUsername} - Upline Parent Accounts` : `${authUsername} - Accounts List`;
+      }
 
       const metrics = calculateHierarchySummaryMetrics(admin);
 
