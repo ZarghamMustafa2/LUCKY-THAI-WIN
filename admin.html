@@ -7190,10 +7190,7 @@
 
     function openLedgerForUser(username) {
       const uname = username || (currentEditingUser ? currentEditingUser.username : 'Ahmad1330x');
-      const searchEl = document.getElementById('tokenLedgerSearchInput');
-      if (searchEl) searchEl.value = uname;
-      switchAdminModule('tokens');
-      if (typeof filterTokenLedger === 'function') filterTokenLedger();
+      openClientLedgerModal(uname);
     }
 
     function openBetsForUser(username) {
