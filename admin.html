@@ -3855,40 +3855,50 @@
       const stored = AdminCore.repo.get('ADM_MARKET_POSITIONS');
       const positionData = (Array.isArray(stored) && stored.length > 0) ? stored : DEFAULT_MARKET_POSITIONS;
 
-      let html = `<div class="flex flex-col gap-5 w-full text-xs">`;
+      let html = `
+        <div class="w-full overflow-x-auto">
+          <table class="w-full text-left text-xs border border-[#D8DEE4] bg-white divide-y divide-[#D8DEE4]">
+            <thead class="bg-[#F8FAFC] text-[#1F2937] font-bold border-b border-[#D8DEE4]">
+              <tr>
+                <th class="p-2 border-r border-[#D8DEE4] w-3/4">Market</th>
+                <th class="p-2 text-right w-1/4">Amount</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#D8DEE4]">
+      `;
 
       positionData.forEach(cat => {
         html += `
-          <div class="flex flex-col gap-2">
-            <h4 class="font-bold text-[#1F2937] text-sm tracking-tight">${cat.sport}</h4>
-            <div class="border-t border-b border-gray-200 divide-y divide-gray-200 bg-white">
+          <tr class="bg-gray-100/90 font-bold text-gray-900">
+            <td colspan="2" class="p-2 border-b border-[#D8DEE4] font-bold text-[#1F2937] bg-gray-100">${cat.sport}</td>
+          </tr>
         `;
 
         cat.markets.forEach(m => {
           const isNeg = m.amount < 0;
           const amtStr = isNeg ? `-${Math.abs(m.amount).toLocaleString()}` : `${m.amount.toLocaleString()}`;
           html += `
-            <div onclick="openMarketDetail('${m.id}')" class="py-2.5 px-1 flex items-start justify-between hover:bg-gray-50 cursor-pointer transition-colors">
-              <span class="font-bold text-[#1F2937] hover:text-[#00884F] transition-colors leading-snug">
-                ${m.name} -<br>
-                <span class="font-normal text-gray-700 text-[11px]">${m.type}</span>
-              </span>
-              <span class="font-mono font-bold ${isNeg ? 'text-red-600' : 'text-[#00884F]'} text-xs sm:text-sm ml-4 shrink-0">
+            <tr class="hover:bg-sky-50/50 transition-colors">
+              <td class="p-2 border-r border-[#D8DEE4] align-top">
+                <a onclick="openMarketDetail('${m.id}')" class="text-[#00884F] hover:text-[#00663b] underline font-bold cursor-pointer leading-tight inline-block">
+                  ${m.name} /<br><span class="font-normal text-gray-600 text-[11px]">${m.type}</span>
+                </a>
+              </td>
+              <td class="p-2 text-right align-top font-mono font-bold ${isNeg ? 'text-red-600' : 'text-[#00884F]'} text-xs sm:text-sm shrink-0">
                 ${amtStr}
-              </span>
-            </div>
+              </td>
+            </tr>
           `;
         });
-
-        html += `
-            </div>
-          </div>
-        `;
       });
 
-      html += `</div>`;
-      container.innerHTML = html;
+      html += `
+            </tbody>
+          </table>
+        </div>
+      `;
 
+      container.innerHTML = html;
       showAdminToast('✓ Market Position refreshed', 'success');
     }
 
