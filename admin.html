@@ -3861,37 +3861,27 @@
       const stored = AdminCore.repo.get('ADM_MARKET_POSITIONS');
       const positionData = (Array.isArray(stored) && stored.length > 0) ? stored : DEFAULT_MARKET_POSITIONS;
 
-      let html = `<div class="flex flex-col gap-4 w-full">`;
+      let html = `<div class="flex flex-col gap-5 w-full text-xs">`;
 
       positionData.forEach(cat => {
         html += `
-          <div class="border border-[#D8DEE4] rounded overflow-hidden shadow-xs">
-            <div class="bg-[#2E3842] text-white font-bold px-4 py-2.5 text-xs uppercase tracking-wider flex items-center justify-between">
-              <span class="flex items-center gap-2">
-                <i class="fa-solid ${cat.icon || 'fa-trophy'} text-amber-400"></i>
-                ${cat.sport}
-              </span>
-              <span class="text-[10px] text-gray-400 font-mono">${cat.markets.length} Markets</span>
-            </div>
-            <div class="divide-y divide-[#E5E7EB] bg-white text-xs">
+          <div class="flex flex-col gap-2">
+            <h4 class="font-bold text-[#1F2937] text-sm tracking-tight">${cat.sport}</h4>
+            <div class="border-t border-b border-gray-200 divide-y divide-gray-200 bg-white">
         `;
 
         cat.markets.forEach(m => {
           const isNeg = m.amount < 0;
           const amtStr = isNeg ? `-${Math.abs(m.amount).toLocaleString()}` : `${m.amount.toLocaleString()}`;
           html += `
-            <div onclick="openMarketDetail('${m.id}')" class="p-3.5 flex items-center justify-between hover:bg-sky-50/50 cursor-pointer transition-colors group">
-              <div class="flex flex-col gap-0.5">
-                <span class="font-bold text-[#1F2937] group-hover:text-[#00884F] transition-colors">${m.name}</span>
-                <span class="text-gray-500 text-[11px] font-medium">${m.type} • ${m.status}</span>
-              </div>
-              <div class="flex items-center gap-4">
-                <div class="flex flex-col text-right">
-                  <span class="text-[10px] text-gray-400 uppercase font-bold">Net Position</span>
-                  <span class="font-mono font-bold ${isNeg ? 'text-red-600' : 'text-[#00884F]'} text-xs">${amtStr}</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-[#00884F] text-xs transition-colors"></i>
-              </div>
+            <div onclick="openMarketDetail('${m.id}')" class="py-2.5 px-1 flex items-start justify-between hover:bg-gray-50 cursor-pointer transition-colors">
+              <span class="font-bold text-[#1F2937] hover:text-[#00884F] transition-colors leading-snug">
+                ${m.name} -<br>
+                <span class="font-normal text-gray-700 text-[11px]">${m.type}</span>
+              </span>
+              <span class="font-mono font-bold ${isNeg ? 'text-red-600' : 'text-[#00884F]'} text-xs sm:text-sm ml-4 shrink-0">
+                ${amtStr}
+              </span>
             </div>
           `;
         });
