@@ -2659,6 +2659,112 @@
     </div>
   </div>
 
+  <!-- Settle P/L Account Modal -->
+  <div id="settleAccountModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="bg-white border border-[#D8DEE4] rounded-lg p-5 sm:p-6 pb-8 max-w-lg w-full max-h-[92vh] flex flex-col gap-5 text-xs overflow-y-auto custom-scrollbar shadow-2xl relative my-auto">
+      
+      <!-- Top Close Button (X) -->
+      <button onclick="closeModal('settleAccountModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition-colors p-1 cursor-pointer" title="Close">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Modal Header -->
+      <div class="border-b border-gray-200 pb-3">
+        <h3 class="text-xl sm:text-2xl font-bold text-[#1F2937] tracking-tight">
+          Settle P/L Account - <span id="settleTargetUsernameDisplay">Client</span>
+        </h3>
+      </div>
+
+      <!-- Max Transfer Card -->
+      <div class="bg-[#F8FAFC] border border-[#E2E8F0] rounded p-4 flex flex-col gap-1">
+        <span class="text-xs text-gray-600 font-medium">Maximum Allowed Transfer:</span>
+        <span id="settleMaxTransferDisplay" class="text-lg font-bold text-[#00884F] font-mono">0.00 Rs.</span>
+      </div>
+
+      <!-- Settle Form -->
+      <form onsubmit="handleSettleAccountSubmit(event)" class="flex flex-col gap-4">
+        <!-- Amount Input -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <label class="w-full sm:w-28 text-gray-800 font-normal text-xs sm:text-sm shrink-0">
+            Amount
+          </label>
+          <div class="flex items-center w-full">
+            <span class="bg-[#EAEFF2] border border-r-0 border-gray-300 rounded-l px-3 py-2 text-xs sm:text-sm text-gray-600 font-medium select-none">
+              Rs.
+            </span>
+            <input 
+              type="number" 
+              id="settleAmountInput" 
+              required 
+              min="0.01" 
+              step="any"
+              value="0.00" 
+              class="w-full border border-gray-300 rounded-r px-3 py-2 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#00A65A] bg-white transition-colors font-mono"
+            />
+          </div>
+        </div>
+
+        <!-- Description Input -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <label class="w-full sm:w-28 text-gray-800 font-normal text-xs sm:text-sm shrink-0">
+            Description
+          </label>
+          <input 
+            type="text" 
+            id="settleDescriptionInput" 
+            required 
+            value="P/L to Cash transfer" 
+            class="w-full border border-gray-300 rounded px-3 py-2 text-xs sm:text-sm text-gray-900 outline-none focus:border-[#00A65A] bg-white transition-colors"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-2">
+          <button type="submit" class="bg-[#00A65A] hover:bg-[#00884F] text-white font-bold text-xs sm:text-sm px-8 py-2.5 rounded shadow-sm inline-flex items-center justify-center min-h-[36px] transition-all cursor-pointer">
+            Submit
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Client Account Ledger Modal -->
+  <div id="clientLedgerModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="bg-white border border-[#D8DEE4] rounded-lg p-5 sm:p-6 pb-8 max-w-3xl w-full max-h-[92vh] flex flex-col gap-5 text-xs overflow-y-auto custom-scrollbar shadow-2xl relative my-auto">
+      
+      <!-- Top Close Button (X) -->
+      <button onclick="closeModal('clientLedgerModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition-colors p-1 cursor-pointer" title="Close">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Modal Header -->
+      <div class="border-b border-gray-200 pb-3 flex items-center justify-between">
+        <h3 class="text-xl sm:text-2xl font-bold text-[#1F2937] tracking-tight">
+          Account Ledger - <span id="ledgerTargetUsernameDisplay">Client</span>
+        </h3>
+      </div>
+
+      <!-- Transaction Ledger Table -->
+      <div class="overflow-x-auto border border-gray-300 rounded bg-white shadow-xs">
+        <table class="w-full text-left text-xs divide-y divide-gray-300">
+          <thead class="bg-[#F8FAFC] text-gray-700 font-bold uppercase text-[11px]">
+            <tr>
+              <th class="p-3">Date</th>
+              <th class="p-3">Description</th>
+              <th class="p-3 text-right">Amount (Rs.)</th>
+              <th class="p-3 text-right">Balance (Rs.)</th>
+            </tr>
+          </thead>
+          <tbody id="clientLedgerTableBody" class="divide-y divide-gray-200 font-medium">
+            <!-- Populated dynamically by JS -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Create Multi-Level Agent / Operator Account Modal -->
   <div id="addAgentAccountModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
     <div class="bg-cardDark border border-borderSubtle rounded-3xl p-6 max-w-lg w-full max-h-[90vh] flex flex-col gap-4 text-xs overflow-y-auto custom-scrollbar shadow-2xl">
@@ -4304,8 +4410,187 @@
       }
     }
 
+    let currentSettleTargetUser = null;
+
     function handleSettleAccount(username) {
-      showAdminToast(`Account settlement initiated for ${username}`, 'info');
+      const users = AdminCore.repo.get('ADM_USERS') || [];
+      let u = users.find(x => (x.username && x.username.toLowerCase() === username.toLowerCase()) || x.id === username);
+      if (!u) {
+        showAdminToast(`Client "${username}" not found.`, 'error');
+        return;
+      }
+      currentSettleTargetUser = u;
+
+      const unameEl = document.getElementById('settleTargetUsernameDisplay');
+      const maxEl = document.getElementById('settleMaxTransferDisplay');
+      const amtInput = document.getElementById('settleAmountInput');
+      const descInput = document.getElementById('settleDescriptionInput');
+
+      const maxPL = Math.max(0, Number(u.balance || 0));
+
+      if (unameEl) unameEl.innerText = u.username;
+      if (maxEl) maxEl.innerText = `${maxPL.toLocaleString()} Rs.`;
+      if (amtInput) amtInput.value = '0.00';
+      if (descInput) descInput.value = 'P/L to Cash transfer';
+
+      openModal('settleAccountModal');
+    }
+
+    function handleSettleAccountSubmit(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      if (!currentSettleTargetUser) return;
+
+      const amount = parseFloat(document.getElementById('settleAmountInput').value);
+      const desc = document.getElementById('settleDescriptionInput').value.trim() || 'P/L to Cash transfer';
+
+      const maxPL = Math.max(0, Number(currentSettleTargetUser.balance || 0));
+
+      if (!amount || amount <= 0) {
+        showAdminToast('Please enter a valid transfer amount.', 'error');
+        return;
+      }
+
+      if (amount > maxPL) {
+        showAdminToast(`Transfer amount (Rs ${amount.toLocaleString()}) exceeds maximum allowed limit (Rs ${maxPL.toLocaleString()}).`, 'error');
+        return;
+      }
+
+      let users = AdminCore.repo.get('ADM_USERS') || [];
+      const targetIdx = users.findIndex(x => x.id === currentSettleTargetUser.id || (x.username && x.username.toLowerCase() === currentSettleTargetUser.username.toLowerCase()));
+
+      if (targetIdx !== -1) {
+        users[targetIdx].balance = Math.max(0, Number(users[targetIdx].balance || 0) - amount);
+        AdminCore.repo.set('ADM_USERS', users);
+      }
+
+      const tx = {
+        id: 'SETTLE-' + Math.floor(100000 + Math.random() * 900000),
+        fromAccountId: currentSettleTargetUser.id,
+        fromUsername: currentSettleTargetUser.username,
+        toAccountId: currentSettleTargetUser.id,
+        toUsername: currentSettleTargetUser.username,
+        targetAccountId: currentSettleTargetUser.id,
+        amount: -amount,
+        isCash: true,
+        action: 'PL_SETTLEMENT',
+        ref: desc,
+        createdAt: new Date().toISOString()
+      };
+
+      const creditTxs = AdminCore.repo.get('ADM_CREDIT_TRANSACTIONS') || [];
+      creditTxs.unshift(tx);
+      AdminCore.repo.set('ADM_CREDIT_TRANSACTIONS', creditTxs);
+
+      closeModal('settleAccountModal');
+      showAdminToast(`✓ P/L Settlement of Rs ${amount.toLocaleString()} for @${currentSettleTargetUser.username} processed!`, 'success');
+      renderUsersTable();
+      if (typeof updateAdminHeaderInfo === 'function') updateAdminHeaderInfo();
+    }
+
+    function openClientLedgerModal(username) {
+      const users = AdminCore.repo.get('ADM_USERS') || [];
+      let u = users.find(x => (x.username && x.username.toLowerCase() === username.toLowerCase()) || x.id === username);
+      if (!u) {
+        showAdminToast(`Client "${username}" not found.`, 'error');
+        return;
+      }
+
+      const unameEl = document.getElementById('ledgerTargetUsernameDisplay');
+      const tbody = document.getElementById('clientLedgerTableBody');
+      if (unameEl) unameEl.innerText = u.username;
+
+      const allCreditTxs = AdminCore.repo.get('ADM_CREDIT_TRANSACTIONS') || [];
+      const allDeposits = AdminCore.repo.get('ADM_DEPOSITS') || [];
+      const allWithdrawals = AdminCore.repo.get('ADM_WITHDRAWALS') || [];
+
+      let clientTxsMap = new Map();
+
+      allCreditTxs.forEach(tx => {
+        if (!tx) return;
+        if (tx.toUsername?.toLowerCase() === u.username.toLowerCase() || tx.targetAccountId === u.id || tx.fromUsername?.toLowerCase() === u.username.toLowerCase()) {
+          clientTxsMap.set(tx.id || ('CTX-' + Math.random()), {
+            id: tx.id,
+            date: tx.createdAt ? new Date(tx.createdAt).toLocaleDateString() : new Date().toLocaleDateString(),
+            desc: tx.ref || tx.action || 'Account Transaction',
+            amount: Number(tx.amount || 0),
+            rawDate: tx.createdAt ? new Date(tx.createdAt).getTime() : 0
+          });
+        }
+      });
+
+      allDeposits.forEach(d => {
+        if (!d) return;
+        if (d.username?.toLowerCase() === u.username.toLowerCase() || d.userId === u.id) {
+          if (!clientTxsMap.has(d.id)) {
+            clientTxsMap.set(d.id || ('DEP-' + Math.random()), {
+              id: d.id,
+              date: d.date || new Date().toLocaleDateString(),
+              desc: d.ref || 'Deposit Credit',
+              amount: Number(d.amount || 0),
+              rawDate: d.date ? new Date(d.date).getTime() : 0
+            });
+          }
+        }
+      });
+
+      allWithdrawals.forEach(w => {
+        if (!w) return;
+        if (w.username?.toLowerCase() === u.username.toLowerCase() || w.userId === u.id) {
+          if (!clientTxsMap.has(w.id)) {
+            clientTxsMap.set(w.id || ('WTH-' + Math.random()), {
+              id: w.id,
+              date: w.requestDate || w.processedDate || new Date().toLocaleDateString(),
+              desc: w.account || 'Withdraw Credit',
+              amount: -Math.abs(Number(w.amount || 0)),
+              rawDate: w.requestDate ? new Date(w.requestDate).getTime() : 0
+            });
+          }
+        }
+      });
+
+      let clientTxs = Array.from(clientTxsMap.values());
+      clientTxs.sort((a, b) => (a.rawDate || 0) - (b.rawDate || 0));
+
+      let currentRunning = Number(u.initialBalance || 0);
+
+      let txsWithBalance = [];
+      txsWithBalance.push({
+        date: 'Opening',
+        desc: 'Opening Balance',
+        amount: 0,
+        balance: currentRunning
+      });
+
+      clientTxs.forEach(tx => {
+        currentRunning += tx.amount;
+        txsWithBalance.push({
+          date: tx.date,
+          desc: tx.desc,
+          amount: tx.amount,
+          balance: currentRunning
+        });
+      });
+
+      if (tbody) {
+        tbody.innerHTML = txsWithBalance.map(row => {
+          const isNegative = row.amount < 0;
+          const amtDisplay = row.amount === 0 ? '0' : (isNegative ? `-${Math.abs(row.amount).toLocaleString()}` : `${row.amount.toLocaleString()}`);
+          return `
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="p-3 text-gray-600 font-mono">${row.date}</td>
+              <td class="p-3 text-gray-900 font-semibold">${row.desc}</td>
+              <td class="p-3 text-right font-bold ${isNegative ? 'text-red-600' : (row.amount > 0 ? 'text-[#00884F]' : 'text-gray-600')} font-mono">
+                ${amtDisplay}
+              </td>
+              <td class="p-3 text-right font-bold text-gray-900 font-mono">
+                ${row.balance.toLocaleString()}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      openModal('clientLedgerModal');
     }
 
     /**
@@ -4587,7 +4872,7 @@
                   %
                 </button>
                 <!-- L: Ledger -->
-                <button onclick="switchAdminModule('tokens')" title="View Account Ledger" class="w-5 h-5 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
+                <button onclick="openClientLedgerModal('${uname}')" title="View Account Ledger" class="w-5 h-5 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
                   L
                 </button>
                 <!-- A / D: Active / InActive Toggle -->
@@ -6840,26 +7125,31 @@
         if (window.PlatformSync && typeof window.PlatformSync.updateUserBalance === 'function') {
           window.PlatformSync.updateUserBalance(u.id, u.balance);
         }
-        // Record withdrawal in ADM_WITHDRAWALS
-        const withdrawals = AdminCore.repo.get('ADM_WITHDRAWALS') || [];
-        withdrawals.unshift({
-          id: 'WTH-' + Math.floor(1000 + Math.random() * 9000),
-          userId: u.id,
-          username: u.username,
-          amount: amount,
-          method: 'Direct Admin Cash Withdrawal',
-          account: desc || 'Direct Cash Withdrawal',
-          companyId: u.companyId || 'COMP-01',
-          status: 'Approved',
-          requestDate: new Date().toLocaleString(),
-          processedDate: new Date().toLocaleString()
-        });
-        AdminCore.repo.set('ADM_WITHDRAWALS', withdrawals);
-        AdminCore.repo.logAudit('CASH_WITHDRAWAL', `User #${u.id}`, uname, desc, `Withdraw: Rs ${amount}`, `New Balance: Rs ${u.balance}`);
       } else {
-        u.creditLimit = Math.max(0, (Number(u.creditLimit) || 0) - amount);
-        AdminCore.repo.logAudit('CREDIT_WITHDRAWAL', `User #${u.id}`, uname, desc, `Credit Deduct: Rs ${amount}`, `New Credit: Rs ${u.creditLimit}`);
+        const availableCredit = Number(u.creditLimit || 0);
+        if (amount > availableCredit) {
+          showAdminToast(`Insufficient Credit: Available credit is Rs ${availableCredit.toLocaleString()}, but attempted to withdraw Rs ${amount.toLocaleString()}.`, 'error');
+          return;
+        }
+        u.creditLimit = Math.max(0, availableCredit - amount);
       }
+
+      // Record withdrawal in ADM_WITHDRAWALS for client ledger
+      const withdrawals = AdminCore.repo.get('ADM_WITHDRAWALS') || [];
+      withdrawals.unshift({
+        id: 'WTH-' + Math.floor(1000 + Math.random() * 9000),
+        userId: u.id,
+        username: u.username,
+        amount: amount,
+        method: isCash ? 'Direct Admin Cash Withdrawal' : 'Direct Admin Credit Withdrawal',
+        account: desc || (isCash ? `Cash withdrawn from ${u.username}` : `Credit Withdrawn from ${u.username}`),
+        companyId: u.companyId || 'COMP-01',
+        status: 'Approved',
+        requestDate: new Date().toLocaleString(),
+        processedDate: new Date().toLocaleString()
+      });
+      AdminCore.repo.set('ADM_WITHDRAWALS', withdrawals);
+      AdminCore.repo.logAudit(isCash ? 'CASH_WITHDRAWAL' : 'CREDIT_WITHDRAWAL', `User #${u.id}`, uname, desc, `Withdraw: Rs ${amount}`, `New Value: Rs ${isCash ? u.balance : u.creditLimit}`);
 
       AdminCore.repo.set('ADM_USERS', users);
       if (window.PlatformSync && typeof window.PlatformSync._set === 'function') {
