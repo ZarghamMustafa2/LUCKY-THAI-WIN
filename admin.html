@@ -766,7 +766,7 @@
               <button type="button" onclick="openProfitLossForUser(currentEditingUser?.username || 'Ahmad1330x')" class="bg-[#00A65A] hover:bg-[#00884F] text-white font-bold text-xs px-3.5 py-1.5 rounded shadow-xs transition-colors cursor-pointer">
                 Profit Loss
               </button>
-              <button type="button" onclick="switchAdminModule('current_position')" class="bg-[#00A65A] hover:bg-[#00884F] text-white font-bold text-xs px-3.5 py-1.5 rounded shadow-xs transition-colors cursor-pointer">
+              <button type="button" onclick="refreshMarketPosition(currentEditingUser?.username || 'Ahmad1330x'); switchAdminModule('current_position')" class="bg-[#00A65A] hover:bg-[#00884F] text-white font-bold text-xs px-3.5 py-1.5 rounded shadow-xs transition-colors cursor-pointer">
                 Current Position
               </button>
             </div>
@@ -3785,6 +3785,8 @@
         markets: [
           {
             id: 'SOCCER-01',
+            username: 'Ahmad1330x',
+            userId: 'USR-AHMAD1330X',
             name: 'Besiktas v FK Kauno Zalgiris',
             type: 'Match Odds',
             status: 'InPlay',
@@ -3804,6 +3806,8 @@
           },
           {
             id: 'SOCCER-02',
+            username: 'Ahmad1330x',
+            userId: 'USR-AHMAD1330X',
             name: 'Crvena Zvezda v Plzen',
             type: 'Over/Under 1.5 Goals',
             status: 'InPlay',
@@ -3827,6 +3831,8 @@
         markets: [
           {
             id: 'TENNIS-01',
+            username: 'Mumtaz9300',
+            userId: 'USR-MUMTAZ9300',
             name: 'A Anisimova v J Pegula',
             type: 'Match Odds',
             status: 'InPlay',
@@ -3848,12 +3854,41 @@
 
     let currentActiveMarket = null;
 
-    function refreshMarketPosition() {
+    function refreshMarketPosition(targetUsername) {
       const container = document.getElementById('marketPositionContent');
       if (!container) return;
 
+      const uname = targetUsername || (currentEditingUser ? currentEditingUser.username : null) || (currentAdjustTargetUser ? currentAdjustTargetUser.username : null);
+
       const stored = AdminCore.repo.get('ADM_MARKET_POSITIONS');
       const positionData = (Array.isArray(stored) && stored.length > 0) ? stored : DEFAULT_MARKET_POSITIONS;
+
+      let filteredCategories = [];
+
+      positionData.forEach(cat => {
+        const matchingMarkets = cat.markets.filter(m => {
+          if (!uname) return true;
+          if (!m.username) return true;
+          return m.username.toLowerCase() === uname.toLowerCase() || m.userId === uname;
+        });
+
+        if (matchingMarkets.length > 0) {
+          filteredCategories.push({
+            sport: cat.sport,
+            icon: cat.icon,
+            markets: matchingMarkets
+          });
+        }
+      });
+
+      if (filteredCategories.length === 0 && uname) {
+        container.innerHTML = `
+          <div class="py-6 px-4 text-center text-xs text-gray-500 font-medium bg-white">
+            No open market positions for @${uname}
+          </div>
+        `;
+        return;
+      }
 
       let html = `
         <div class="w-full overflow-x-auto">
@@ -3867,7 +3902,7 @@
             <tbody class="divide-y divide-[#D8DEE4]">
       `;
 
-      positionData.forEach(cat => {
+      filteredCategories.forEach(cat => {
         html += `
           <tr class="bg-gray-100/90 font-bold text-gray-900">
             <td colspan="2" class="p-2 border-b border-[#D8DEE4] font-bold text-[#1F2937] bg-gray-100">${cat.sport}</td>
@@ -3880,7 +3915,7 @@
           html += `
             <tr class="hover:bg-sky-50/50 transition-colors">
               <td class="p-2 border-r border-[#D8DEE4] align-top">
-                <a onclick="openMarketDetail('${m.id}')" class="text-[#00884F] hover:text-[#00663b] underline font-bold cursor-pointer leading-tight inline-block">
+                <a onclick="openMarketDetail('${m.id}', '${uname || ''}')" class="text-[#00884F] hover:text-[#00663b] underline font-bold cursor-pointer leading-tight inline-block">
                   ${m.name} /<br><span class="font-normal text-gray-600 text-[11px]">${m.type}</span>
                 </a>
               </td>
@@ -3899,16 +3934,17 @@
       `;
 
       container.innerHTML = html;
-      showAdminToast('✓ Market Position refreshed', 'success');
+      showAdminToast(`✓ Market Position refreshed${uname ? ' for @' + uname : ''}`, 'success');
     }
 
-    function openMarketDetail(marketId) {
+    function openMarketDetail(marketId, targetUsername) {
+      const uname = targetUsername || (currentEditingUser ? currentEditingUser.username : null);
       const stored = AdminCore.repo.get('ADM_MARKET_POSITIONS');
       const positionData = (Array.isArray(stored) && stored.length > 0) ? stored : DEFAULT_MARKET_POSITIONS;
       let targetMarket = null;
 
       positionData.forEach(cat => {
-        const found = cat.markets.find(m => m.id === marketId);
+        const found = cat.markets.find(m => m.id === marketId && (!uname || !m.username || m.username.toLowerCase() === uname.toLowerCase()));
         if (found) targetMarket = found;
       });
 
