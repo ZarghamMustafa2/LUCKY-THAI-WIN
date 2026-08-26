@@ -447,6 +447,134 @@
       </div>
 
       <!-- ============================================================ -->
+      <!-- MODULE 1.6: LIVE MARKETS & BETTING DETAILS                   -->
+      <!-- ============================================================ -->
+      <div id="module_markets" class="module-view hidden flex flex-col gap-4">
+        
+        <!-- Market Header Card -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm p-4 flex flex-col gap-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200 pb-3">
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2">
+                <span id="marketDetailEventName" class="font-bold text-lg text-[#1F2937]">Besiktas v FK Kauno Zalgiris</span>
+                <span class="bg-[#EF4444] text-white font-bold text-[10px] px-2 py-0.5 rounded uppercase">InPlay</span>
+              </div>
+              <span id="marketDetailMarketName" class="text-xs text-gray-500 font-medium">Soccer • Match Odds</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="switchAdminModule('current_position')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded transition-colors cursor-pointer">
+                ← Back to Position
+              </button>
+            </div>
+          </div>
+
+          <!-- Time & Video Indicator Strip -->
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-4 text-gray-600">
+              <span id="marketDetailMatchTime"><i class="fa-regular fa-clock mr-1"></i> 20 Aug 22:00</span>
+              <span id="marketDetailElapsedTime" class="font-mono font-bold text-[#00884F]">Elapsed: 01:49:42</span>
+            </div>
+            <span class="font-bold text-[#EF4444] tracking-tight flex items-center gap-1">
+              <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> LIVE VIDEO AVAILABLE
+            </span>
+          </div>
+        </div>
+
+        <!-- Controls Strip (Bet Lock | User Book | TV | Score Card) -->
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-white p-3 border border-[#D8DEE4] rounded shadow-xs">
+          <div class="flex items-center gap-2">
+            <button onclick="toggleBetLockModal()" class="px-3 py-1.5 bg-[#2E3842] hover:bg-[#252E37] text-white font-bold text-xs rounded flex items-center gap-1.5 cursor-pointer shadow-xs">
+              <i class="fa-solid fa-lock text-amber-400 text-xs"></i>
+              <span>Bet Lock ▼</span>
+            </button>
+            <button onclick="openUserBookModal()" class="px-3 py-1.5 bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs rounded flex items-center gap-1.5 cursor-pointer shadow-xs">
+              <i class="fa-solid fa-book-bookmark text-xs"></i>
+              <span>User Book</span>
+            </button>
+          </div>
+          <div class="flex items-center gap-1 bg-gray-100 p-1 rounded">
+            <button id="tabTvBtn" onclick="switchMarketMediaTab('TV')" class="px-3 py-1 bg-white shadow-xs text-[#1F2937] font-bold text-xs rounded transition-all cursor-pointer">
+              Tv
+            </button>
+            <button id="tabScoreBtn" onclick="switchMarketMediaTab('SCORE')" class="px-3 py-1 bg-transparent text-gray-600 hover:text-gray-900 font-semibold text-xs rounded transition-all cursor-pointer">
+              Score Card
+            </button>
+          </div>
+        </div>
+
+        <!-- TV / Score Media Display Container -->
+        <div id="marketMediaContainer" class="bg-black/90 rounded-lg border border-gray-800 p-4 text-white flex flex-col gap-2 min-h-[140px] justify-center items-center">
+          <i class="fa-solid fa-tv text-3xl text-gray-500 mb-1"></i>
+          <span class="text-xs font-mono text-gray-300">Live Match Video Feed Active</span>
+        </div>
+
+        <!-- Market Prices Table (Back / Lay Columns) -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
+          <div class="px-4 py-2.5 bg-[#2E3842] text-white font-bold text-xs flex items-center justify-between">
+            <span>Market Prices (Match Odds)</span>
+            <div class="flex items-center gap-12 font-mono pr-2">
+              <span class="w-16 text-center text-sky-300">BACK</span>
+              <span class="w-16 text-center text-rose-300">LAY</span>
+            </div>
+          </div>
+          <div id="marketRunnersList" class="divide-y divide-gray-200">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </div>
+
+        <!-- Open Bets Table (Open Bets (0)) -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
+          <div class="px-4 py-2.5 bg-[#F8FAFC] border-b border-[#E5E7EB] font-bold text-xs text-[#1F2937] flex items-center justify-between">
+            <span id="openBetsTitle">Open Bets (0)</span>
+            <span class="text-[10px] text-gray-500 font-mono">Real-time Connection</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs whitespace-nowrap">
+              <thead class="bg-gray-50 text-gray-600 font-semibold text-[11px] border-b border-gray-200">
+                <tr>
+                  <th class="p-2.5">Runner</th>
+                  <th class="p-2.5 text-center">Price</th>
+                  <th class="p-2.5 text-center">Size</th>
+                  <th class="p-2.5">Better</th>
+                  <th class="p-2.5">Master</th>
+                </tr>
+              </thead>
+              <tbody id="openBetsTableBody" class="divide-y divide-gray-200">
+                <tr><td colspan="5" class="p-3 text-center text-gray-500 text-xs">No open bets found for this market</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Matched Bets Table & Full Bet List Button -->
+        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
+          <div class="px-4 py-2.5 bg-[#F8FAFC] border-b border-[#E5E7EB] font-bold text-xs text-[#1F2937] flex items-center justify-between">
+            <span id="matchedBetsTitle">Matched Bets (2)</span>
+            <button onclick="switchAdminModule('reports')" class="px-2.5 py-1 bg-[#00884F] hover:bg-[#007443] text-white font-bold text-[11px] rounded transition-colors cursor-pointer">
+              Full Bet List
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs whitespace-nowrap">
+              <thead class="bg-gray-50 text-gray-600 font-semibold text-[11px] border-b border-gray-200">
+                <tr>
+                  <th class="p-2.5">Runner</th>
+                  <th class="p-2.5 text-center">Price</th>
+                  <th class="p-2.5 text-center">Size</th>
+                  <th class="p-2.5">Better</th>
+                  <th class="p-2.5">Master</th>
+                </tr>
+              </thead>
+              <tbody id="matchedBetsTableBody" class="divide-y divide-gray-200 font-mono">
+                <!-- Populated dynamically by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================================ -->
       <!-- MODULE 2: USER MANAGEMENT & CLIENTS LIST (Matches Screenshot) -->
       <!-- ============================================================ -->
       <div id="module_users" class="module-view hidden flex flex-col gap-4">
@@ -3200,6 +3328,7 @@
 
       // Re-render relevant data table
       if (moduleId === 'dashboard') renderSportHighlights();
+      if (moduleId === 'current_position') refreshMarketPosition();
       if (moduleId === 'users') renderUsersTable();
       if (moduleId === 'profile') loadProfileStakes();
       if (moduleId === 'games') renderGamesTable();
@@ -3655,8 +3784,223 @@
       showAdminToast(`✓ Allowed market type permissions saved for @${admin.username || 'Ahmad5050x'}`, 'success');
     }
 
+    const DEFAULT_MARKET_POSITIONS = [
+      {
+        sport: 'Soccer',
+        icon: 'fa-futbol',
+        markets: [
+          {
+            id: 'SOCCER-01',
+            name: 'Besiktas v FK Kauno Zalgiris',
+            type: 'Match Odds',
+            status: 'InPlay',
+            matchTime: '20 Aug 22:00',
+            elapsedTime: '01:49:42',
+            amount: -1700,
+            hasVideo: true,
+            runners: [
+              { name: 'Besiktas', backPrice: '1.01', backSize: '10,000', layPrice: '1.02', laySize: '5,000' },
+              { name: 'FK Kauno Zalgiris', backPrice: '1000', backSize: '1,000', layPrice: '1000', laySize: '1,000' },
+              { name: 'The Draw', backPrice: '1000', backSize: '1,000', layPrice: '1000', laySize: '1,000' }
+            ],
+            matchedBets: [
+              { runner: 'Besiktas', price: '1.01', size: '10,000', better: 'Qadeer453x', master: 'RA.BOok76' },
+              { runner: 'Over 1.5 Goals', price: '1.16', size: '5,000', better: 'Anas90x', master: 'RA.BOok76' }
+            ]
+          },
+          {
+            id: 'SOCCER-02',
+            name: 'Crvena Zvezda v Plzen',
+            type: 'Over/Under 1.5 Goals',
+            status: 'InPlay',
+            matchTime: '20 Aug 22:30',
+            elapsedTime: '00:35:10',
+            amount: -42,
+            hasVideo: true,
+            runners: [
+              { name: 'Over 1.5 Goals', backPrice: '1.16', backSize: '5,000', layPrice: '1.18', laySize: '2,500' },
+              { name: 'Under 1.5 Goals', backPrice: '4.80', backSize: '1,200', layPrice: '5.20', laySize: '800' }
+            ],
+            matchedBets: [
+              { runner: 'Over 1.5 Goals', price: '1.16', size: '5,000', better: 'Qadeer453x', master: 'RA.BOok76' }
+            ]
+          }
+        ]
+      },
+      {
+        sport: 'Tennis',
+        icon: 'fa-baseball',
+        markets: [
+          {
+            id: 'TENNIS-01',
+            name: 'A Anisimova v J Pegula',
+            type: 'Match Odds',
+            status: 'InPlay',
+            matchTime: '20 Aug 23:00',
+            elapsedTime: '00:15:22',
+            amount: -2550,
+            hasVideo: true,
+            runners: [
+              { name: 'A Anisimova', backPrice: '1.85', backSize: '3,000', layPrice: '1.90', laySize: '1,500' },
+              { name: 'J Pegula', backPrice: '2.10', backSize: '2,000', layPrice: '2.20', laySize: '1,000' }
+            ],
+            matchedBets: [
+              { runner: 'A Anisimova', price: '1.85', size: '3,000', better: 'Luqman987x', master: 'RA.BOok76' }
+            ]
+          }
+        ]
+      }
+    ];
+
+    let currentActiveMarket = null;
+
     function refreshMarketPosition() {
+      const container = document.getElementById('marketPositionContent');
+      if (!container) return;
+
+      const stored = AdminCore.repo.get('ADM_MARKET_POSITIONS');
+      const positionData = (Array.isArray(stored) && stored.length > 0) ? stored : DEFAULT_MARKET_POSITIONS;
+
+      let html = `<div class="flex flex-col gap-4 w-full">`;
+
+      positionData.forEach(cat => {
+        html += `
+          <div class="border border-[#D8DEE4] rounded overflow-hidden shadow-xs">
+            <div class="bg-[#2E3842] text-white font-bold px-4 py-2.5 text-xs uppercase tracking-wider flex items-center justify-between">
+              <span class="flex items-center gap-2">
+                <i class="fa-solid ${cat.icon || 'fa-trophy'} text-amber-400"></i>
+                ${cat.sport}
+              </span>
+              <span class="text-[10px] text-gray-400 font-mono">${cat.markets.length} Markets</span>
+            </div>
+            <div class="divide-y divide-[#E5E7EB] bg-white text-xs">
+        `;
+
+        cat.markets.forEach(m => {
+          const isNeg = m.amount < 0;
+          const amtStr = isNeg ? `-${Math.abs(m.amount).toLocaleString()}` : `${m.amount.toLocaleString()}`;
+          html += `
+            <div onclick="openMarketDetail('${m.id}')" class="p-3.5 flex items-center justify-between hover:bg-sky-50/50 cursor-pointer transition-colors group">
+              <div class="flex flex-col gap-0.5">
+                <span class="font-bold text-[#1F2937] group-hover:text-[#00884F] transition-colors">${m.name}</span>
+                <span class="text-gray-500 text-[11px] font-medium">${m.type} • ${m.status}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="flex flex-col text-right">
+                  <span class="text-[10px] text-gray-400 uppercase font-bold">Net Position</span>
+                  <span class="font-mono font-bold ${isNeg ? 'text-red-600' : 'text-[#00884F]'} text-xs">${amtStr}</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-[#00884F] text-xs transition-colors"></i>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+
       showAdminToast('✓ Market Position refreshed', 'success');
+    }
+
+    function openMarketDetail(marketId) {
+      const stored = AdminCore.repo.get('ADM_MARKET_POSITIONS');
+      const positionData = (Array.isArray(stored) && stored.length > 0) ? stored : DEFAULT_MARKET_POSITIONS;
+      let targetMarket = null;
+
+      positionData.forEach(cat => {
+        const found = cat.markets.find(m => m.id === marketId);
+        if (found) targetMarket = found;
+      });
+
+      if (!targetMarket) {
+        targetMarket = DEFAULT_MARKET_POSITIONS[0].markets[0];
+      }
+
+      currentActiveMarket = targetMarket;
+
+      const nameEl = document.getElementById('marketDetailEventName');
+      const typeEl = document.getElementById('marketDetailMarketName');
+      const timeEl = document.getElementById('marketDetailMatchTime');
+      const elapsedEl = document.getElementById('marketDetailElapsedTime');
+      const runnersContainer = document.getElementById('marketRunnersList');
+      const matchedBody = document.getElementById('matchedBetsTableBody');
+      const matchedTitle = document.getElementById('matchedBetsTitle');
+
+      if (nameEl) nameEl.innerText = targetMarket.name;
+      if (typeEl) typeEl.innerText = `${targetMarket.sport || 'Sports'} • ${targetMarket.type}`;
+      if (timeEl) timeEl.innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${targetMarket.matchTime}`;
+      if (elapsedEl) elapsedEl.innerText = `Elapsed: ${targetMarket.elapsedTime}`;
+
+      if (runnersContainer) {
+        runnersContainer.innerHTML = targetMarket.runners.map(r => `
+          <div class="p-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
+            <span class="font-bold text-[#1F2937] text-xs sm:text-sm">${r.name}</span>
+            <div class="flex items-center gap-2 font-mono">
+              <div class="w-16 h-10 bg-[#E6F4FF] border border-[#B3E0FF] rounded flex flex-col items-center justify-center cursor-pointer hover:bg-sky-100 transition-colors">
+                <span class="font-bold text-[#007BFF] text-xs">${r.backPrice}</span>
+                <span class="text-[9px] text-gray-500">${r.backSize}</span>
+              </div>
+              <div class="w-16 h-10 bg-[#FCE8E6] border border-[#F8B4B1] rounded flex flex-col items-center justify-center cursor-pointer hover:bg-rose-100 transition-colors">
+                <span class="font-bold text-[#F43F5E] text-xs">${r.layPrice}</span>
+                <span class="text-[9px] text-gray-500">${r.laySize}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (matchedBody) {
+        const mbets = targetMarket.matchedBets || [];
+        if (matchedTitle) matchedTitle.innerText = `Matched Bets (${mbets.length})`;
+        matchedBody.innerHTML = mbets.map(b => `
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="p-2.5 font-bold text-gray-900">${b.runner}</td>
+            <td class="p-2.5 text-center text-[#007BFF] font-bold">${b.price}</td>
+            <td class="p-2.5 text-center text-gray-900 font-bold">${b.size}</td>
+            <td class="p-2.5 text-gray-700">${b.better}</td>
+            <td class="p-2.5 text-gray-700">${b.master}</td>
+          </tr>
+        `).join('');
+      }
+
+      switchAdminModule('markets');
+    }
+
+    function switchMarketMediaTab(tab) {
+      const tvBtn = document.getElementById('tabTvBtn');
+      const scoreBtn = document.getElementById('tabScoreBtn');
+      const container = document.getElementById('marketMediaContainer');
+      if (!container) return;
+
+      if (tab === 'TV') {
+        if (tvBtn) tvBtn.className = 'px-3 py-1 bg-white shadow-xs text-[#1F2937] font-bold text-xs rounded transition-all cursor-pointer';
+        if (scoreBtn) scoreBtn.className = 'px-3 py-1 bg-transparent text-gray-600 hover:text-gray-900 font-semibold text-xs rounded transition-all cursor-pointer';
+        container.innerHTML = `
+          <i class="fa-solid fa-tv text-3xl text-gray-500 mb-1"></i>
+          <span class="text-xs font-mono text-gray-300">Live Match Video Stream Feed Active</span>
+        `;
+      } else {
+        if (tvBtn) tvBtn.className = 'px-3 py-1 bg-transparent text-gray-600 hover:text-gray-900 font-semibold text-xs rounded transition-all cursor-pointer';
+        if (scoreBtn) scoreBtn.className = 'px-3 py-1 bg-white shadow-xs text-[#1F2937] font-bold text-xs rounded transition-all cursor-pointer';
+        container.innerHTML = `
+          <i class="fa-solid fa-chart-line text-3xl text-emerald-400 mb-1"></i>
+          <span class="text-xs font-mono text-gray-300">Live Match Analytics & Score Card Data</span>
+        `;
+      }
+    }
+
+    function toggleBetLockModal() {
+      switchAdminModule('risk');
+    }
+
+    function openUserBookModal() {
+      switchAdminModule('reports');
     }
 
     let currentReportType = 'book_detail';
