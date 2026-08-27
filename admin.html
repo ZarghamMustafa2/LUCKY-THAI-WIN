@@ -6715,11 +6715,26 @@
       let allPool = [...users, ...admins];
 
       let u = allPool.find(x => x && ((x.username && x.username.toLowerCase() === targetName.toLowerCase()) || (x.id && x.id === targetName)));
-      if (u && typeof inspectUserCredentials === 'function' && u.id) {
+      if (!u) {
+        u = {
+          id: 'USR-' + targetName.toUpperCase(),
+          username: targetName,
+          name: targetName,
+          type: 'Bettor',
+          role: 'USER',
+          balance: 0,
+          creditLimit: 0,
+          status: 'Active'
+        };
+      }
+
+      if (typeof inspectUserCredentials === 'function' && u.id) {
         inspectUserCredentials(u.id);
       }
-      if (typeof openEditUserView === 'function') {
-        openEditUserView(targetName);
+
+      // Open Account Details Drawer (DO NOT open Edit Client form)
+      if (typeof openUserProfileDrawer === 'function' && u.id) {
+        openUserProfileDrawer(u.id);
       }
     }
 
