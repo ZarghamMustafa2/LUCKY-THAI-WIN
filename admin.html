@@ -5609,6 +5609,7 @@
           const shareVal = Number(fullUser.sharePercentage !== undefined ? fullUser.sharePercentage : (u.sharePercentage !== undefined ? u.sharePercentage : 100));
           const shareStr = `${shareVal.toFixed(2)} %`;
 
+          const calcAvail = Math.max(0, credVal + balVal - expVal);
           let credStr, balStr, plStr, expStr, availStr;
 
           if (isUsersBalanceLoading) {
@@ -5621,14 +5622,14 @@
           } else if (isUsersBalanceLoaded) {
             credStr = credVal.toFixed(2);
             balStr = balVal.toFixed(2);
-            plStr = '0.00';
-            expStr = '0.00';
-            availStr = credVal.toFixed(2);
+            plStr = rawPl >= 0 ? rawPl.toFixed(2) : '-' + Math.abs(rawPl).toFixed(2);
+            expStr = expVal.toFixed(2);
+            availStr = calcAvail.toFixed(2);
           } else {
             credStr = '••••••';
             balStr = '••••••';
-            plStr = '0.00';
-            expStr = '0.00';
+            plStr = '••••••';
+            expStr = '••••••';
             availStr = '••••••';
           }
 
@@ -5641,7 +5642,6 @@
           const isDirect = colorHex === '#00884F';
 
           const isExpanded = (typeof expandedUserRows !== 'undefined') && (expandedUserRows.has(uname) || expandedUserRows.has(uId));
-          const calcAvail = Math.max(0, credVal + balVal - expVal);
 
           const mainRowHtml = `
           <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#E5E7EB] cursor-pointer ${isExpanded ? 'bg-amber-50/40' : ''}" onclick="openAccountDetails('${uname}')">
@@ -6891,6 +6891,8 @@
 
       window.activeScopedAdmin = targetAccount;
       expandedUserRows.clear();
+      if (typeof isUsersBalanceLoaded !== 'undefined') isUsersBalanceLoaded = false;
+      window.isUsersBalanceLoaded = false;
       if (typeof saveNavState === 'function') {
         saveNavState('users', { scopedAdmin: targetAccount.username, username: targetAccount.username });
       }
@@ -8537,6 +8539,8 @@
     }
 
     function restoreActiveModuleOnRefresh() {
+      if (typeof isUsersBalanceLoaded !== 'undefined') isUsersBalanceLoaded = false;
+      window.isUsersBalanceLoaded = false;
       const admin = AdminCore.repo.getCurrentAdmin();
       if (!admin || !admin.username) return;
 
