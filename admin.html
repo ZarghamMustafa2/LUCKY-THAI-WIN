@@ -3578,6 +3578,7 @@
 
     // Module Switcher Engine
     function switchAdminModule(moduleId, params = {}) {
+      window.currentAdminModule = moduleId;
       if (window.innerWidth < 768) {
         toggleAdminSidebar(true);
       }
@@ -8389,9 +8390,11 @@
       }
 
       // 9. Re-initialize active module view
-      const activeMod = window.currentAdminModule || 'dashboard';
-      if (typeof switchAdminModule === 'function') {
-        switchAdminModule(activeMod);
+      if (typeof restoreActiveModuleOnRefresh === 'function') {
+        restoreActiveModuleOnRefresh();
+      } else {
+        const activeMod = window.currentAdminModule || localStorage.getItem('ACTIVE_ADMIN_MODULE') || sessionStorage.getItem('ACTIVE_ADMIN_MODULE') || 'dashboard';
+        if (typeof switchAdminModule === 'function') switchAdminModule(activeMod);
       }
     }
 
@@ -8933,8 +8936,12 @@
       if (typeof renderUsersTable === 'function') renderUsersTable();
 
       // 8. Re-initialize active module view
-      const activeMod = window.currentAdminModule || 'dashboard';
-      if (typeof switchAdminModule === 'function') switchAdminModule(activeMod);
+      if (typeof restoreActiveModuleOnRefresh === 'function') {
+        restoreActiveModuleOnRefresh();
+      } else {
+        const activeMod = window.currentAdminModule || localStorage.getItem('ACTIVE_ADMIN_MODULE') || sessionStorage.getItem('ACTIVE_ADMIN_MODULE') || 'dashboard';
+        if (typeof switchAdminModule === 'function') switchAdminModule(activeMod);
+      }
     }
   </script>
 </body>
