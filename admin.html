@@ -5605,9 +5605,9 @@
           const isDirect = colorHex === '#00884F';
 
           return `
-          <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#E5E7EB]" onclick="inspectUserCredentials('${uId}')">
+          <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#E5E7EB] cursor-pointer" onclick="openAccountDetails('${uname}')">
             <td class="p-2.5 text-xs ${colorClass}">
-              <span class="inline-flex items-center gap-1.5">
+              <span class="inline-flex items-center gap-1.5 hover:underline font-bold" onclick="event.stopPropagation(); openAccountDetails('${uname}');">
                 <span class="w-2 h-2 rounded-full ${isDirect ? 'bg-[#00884F]' : 'bg-gray-400'}"></span>
                 ${uname}
               </span>
@@ -6705,6 +6705,22 @@
       navigator.clipboard.writeText(pwd).then(() => {
         showAdminToast(`Credentials password copied to clipboard!`, 'success');
       });
+    }
+
+    function openAccountDetails(username) {
+      if (!username) return;
+      const targetName = username.toString();
+      let users = AdminCore.repo.get('ADM_USERS') || [];
+      let admins = AdminCore.repo.get('ADM_ADMINS') || [];
+      let allPool = [...users, ...admins];
+
+      let u = allPool.find(x => x && ((x.username && x.username.toLowerCase() === targetName.toLowerCase()) || (x.id && x.id === targetName)));
+      if (u && typeof inspectUserCredentials === 'function' && u.id) {
+        inspectUserCredentials(u.id);
+      }
+      if (typeof openEditUserView === 'function') {
+        openEditUserView(targetName);
+      }
     }
 
     function inspectUserCredentials(userId) {
