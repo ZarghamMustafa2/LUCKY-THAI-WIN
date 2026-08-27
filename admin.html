@@ -4979,8 +4979,8 @@
 
       if (topNameEl) topNameEl.innerText = uname;
       if (topRoleEl) topRoleEl.innerText = `(${roleLabel})`;
-      if (topBalEl) topBalEl.innerText = summary.balance.toLocaleString();
-      if (topExpEl) topExpEl.innerText = expDetails.calculatedExp.toLocaleString();
+      if (topBalEl) topBalEl.innerText = '0';
+      if (topExpEl) topExpEl.innerText = '0';
       if (topDropFullName) topDropFullName.innerText = `${(cur && cur.name) || uname} (@${uname})`;
       if (topDropScope) topDropScope.innerText = `${normRole.replace(/_/g, ' ')} LEVEL`;
 
