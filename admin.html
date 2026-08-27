@@ -5129,38 +5129,26 @@
       if (isUsersBalanceLoading) return;
 
       const btn = document.getElementById('loadBalanceBtn');
+      isUsersBalanceLoading = true;
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Loading...';
+        btn.classList.add('opacity-80', 'cursor-not-allowed');
+      }
 
-      if (!isUsersBalanceLoaded) {
-        isUsersBalanceLoading = true;
-        if (btn) {
-          btn.disabled = true;
-          btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Loading...';
-          btn.classList.add('opacity-80', 'cursor-not-allowed');
-        }
+      renderUsersTable();
 
-        renderUsersTable();
-
-        setTimeout(() => {
-          isUsersBalanceLoading = false;
-          isUsersBalanceLoaded = true;
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = 'Hide Balance';
-            btn.classList.remove('opacity-80', 'cursor-not-allowed');
-          }
-          renderUsersTable();
-          showAdminToast('✓ Balances loaded successfully', 'success');
-        }, 1200);
-      } else {
-        isUsersBalanceLoaded = false;
+      setTimeout(() => {
+        isUsersBalanceLoading = false;
+        isUsersBalanceLoaded = true;
         if (btn) {
           btn.disabled = false;
           btn.innerHTML = 'Load Balance';
           btn.classList.remove('opacity-80', 'cursor-not-allowed');
         }
         renderUsersTable();
-        showAdminToast('✓ Balances masked', 'info');
-      }
+        showAdminToast('✓ Balances loaded successfully', 'success');
+      }, 1000);
     }
 
     let currentSettleTargetUser = null;
