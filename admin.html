@@ -5604,8 +5604,11 @@
           const colorHex = typeof getHierarchyAccountColorHex === 'function' ? getHierarchyAccountColorHex(admin, u) : '#111827';
           const isDirect = colorHex === '#00884F';
 
-          return `
-          <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#E5E7EB] cursor-pointer" onclick="openAccountDetails('${uname}')">
+          const isExpanded = (typeof expandedUserRows !== 'undefined') && (expandedUserRows.has(uname) || expandedUserRows.has(uId));
+          const calcAvail = Math.max(0, credVal + balVal - expVal);
+
+          const mainRowHtml = `
+          <tr class="hover:bg-[#F9FAFB] transition-colors border-b border-[#E5E7EB] cursor-pointer ${isExpanded ? 'bg-amber-50/40' : ''}" onclick="openAccountDetails('${uname}')">
             <td class="p-2.5 text-xs ${colorClass}">
               <span class="inline-flex items-center gap-1.5 hover:underline font-bold" onclick="event.stopPropagation(); openAccountDetails('${uname}');">
                 <span class="w-2 h-2 rounded-full ${isDirect ? 'bg-[#00884F]' : 'bg-gray-400'}"></span>
@@ -5675,6 +5678,63 @@
             </td>
           </tr>
         `;
+
+          const expandedRowHtml = isExpanded ? `
+          <tr id="expanded_row_${uId}" class="bg-[#F8FAFC] border-b-2 border-amber-300">
+            <td colspan="11" class="p-3 pl-6">
+              <div class="bg-white border border-[#CBD5E1] rounded-xl p-4 text-xs text-gray-800 space-y-2 shadow-md max-w-sm font-sans">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-1.5">
+                  <span class="font-extrabold text-sm text-gray-900">${uname}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">Account Details</span>
+                </div>
+                <ul class="space-y-1.5 pl-1 text-xs text-gray-700">
+                  <li class="flex items-center gap-2">
+                    <span class="text-gray-400">•</span>
+                    <span class="font-bold text-gray-800">Type</span>
+                    <span class="font-semibold text-gray-600 ml-auto">${typeStr}</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <span class="text-gray-400">•</span>
+                    <span class="font-bold text-gray-800">Balance</span>
+                    <span class="font-semibold text-gray-900 ml-auto">${balVal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <span class="text-gray-400">•</span>
+                    <span class="font-bold text-gray-800">Client (P/L)</span>
+                    <span class="font-bold ml-auto ${rawPl >= 0 ? 'text-[#00884F]' : 'text-red-600'}">${rawPl >= 0 ? rawPl.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) : '-' + Math.abs(rawPl).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <span class="text-gray-400">•</span>
+                    <span class="font-bold text-gray-800">Share</span>
+                    <span class="font-semibold text-gray-900 ml-auto">${shareVal}</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <span class="text-gray-400">•</span>
+                    <span class="font-bold text-gray-800">Exposure</span>
+                    <span class="font-semibold text-gray-900 ml-auto">${expVal}</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <span class="text-gray-400">•</span>
+                    <span class="font-bold text-gray-800">Available Balance</span>
+                    <span class="font-semibold text-gray-900 ml-auto">${calcAvail.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                  </li>
+                  <li class="flex items-start gap-2 pt-1.5 border-t border-gray-100">
+                    <span class="text-gray-400 mt-1">•</span>
+                    <span class="font-bold text-gray-800 mt-1">Options</span>
+                    <div class="flex flex-wrap gap-1.5 items-center ml-auto">
+                      <button onclick="event.stopPropagation(); openAdjustWalletModal('${uname}')" title="Cash / Credit" class="w-6 h-6 rounded bg-[#F59E0B] hover:bg-amber-600 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">C</button>
+                      <button onclick="event.stopPropagation(); openEditUserView('${uname}')" title="Edit Client" class="w-6 h-6 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-xs flex items-center justify-center shadow-xs cursor-pointer"><i class="fa-solid fa-pencil text-[9px]"></i></button>
+                      <button onclick="event.stopPropagation(); openClientLedgerModal('${uname}')" title="Ledger" class="w-6 h-6 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">L</button>
+                      <button onclick="event.stopPropagation(); toggleUserStatus('${uId}')" title="Status" class="w-6 h-6 rounded font-black text-xs flex items-center justify-center shadow-xs cursor-pointer ${isActive ? 'bg-[#10B981] text-white' : 'border border-red-500 text-red-500'}">${isActive ? 'A' : 'D'}</button>
+                      <button onclick="event.stopPropagation(); handleSettleAccount('${uname}')" title="Settle" class="w-6 h-6 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">S</button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>` : '';
+
+          return mainRowHtml + expandedRowHtml;
         } catch (err) {
           console.error('Error rendering user row:', u, err);
           return '';
@@ -6730,9 +6790,18 @@
       });
     }
 
+    const expandedUserRows = new Set();
+
     function openAccountDetails(username) {
       if (!username) return;
       const targetName = username.toString();
+
+      if (expandedUserRows.has(targetName)) {
+        expandedUserRows.delete(targetName);
+      } else {
+        expandedUserRows.add(targetName);
+      }
+
       let users = AdminCore.repo.get('ADM_USERS') || [];
       let admins = AdminCore.repo.get('ADM_ADMINS') || [];
       let allPool = [...users, ...admins];
@@ -6759,6 +6828,8 @@
       if (typeof openUserProfileDrawer === 'function' && u.id) {
         openUserProfileDrawer(u.id);
       }
+
+      renderUsersTable();
     }
 
     function inspectUserCredentials(userId) {
