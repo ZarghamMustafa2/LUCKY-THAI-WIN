@@ -5149,6 +5149,7 @@
       setTimeout(() => {
         isUsersBalanceLoading = false;
         isUsersBalanceLoaded = true;
+        window.isUsersBalanceLoaded = true;
         if (btn) {
           btn.disabled = false;
           btn.innerHTML = 'Load Balance';
@@ -5733,12 +5734,12 @@
                   <li class="flex flex-wrap items-center gap-1.5">
                     <span class="text-gray-400">•</span>
                     <span class="font-bold text-gray-800">Balance</span>
-                    <span class="font-semibold text-gray-900">${balVal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                    <span class="font-semibold text-gray-900">${isUsersBalanceLoaded ? balVal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) : '••••••'}</span>
                   </li>
                   <li class="flex flex-wrap items-center gap-1.5">
                     <span class="text-gray-400">•</span>
                     <span class="font-bold text-gray-800">Client (P/L)</span>
-                    <span class="font-bold ${rawPl >= 0 ? 'text-[#00884F]' : 'text-red-600'}">${rawPl >= 0 ? rawPl.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) : '-' + Math.abs(rawPl).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                    <span class="font-bold ${rawPl >= 0 ? 'text-[#00884F]' : 'text-red-600'}">${isUsersBalanceLoaded ? (rawPl >= 0 ? rawPl.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) : '-' + Math.abs(rawPl).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })) : '••••••'}</span>
                   </li>
                   <li class="flex flex-wrap items-center gap-1.5">
                     <span class="text-gray-400">•</span>
@@ -5748,12 +5749,12 @@
                   <li class="flex flex-wrap items-center gap-1.5">
                     <span class="text-gray-400">•</span>
                     <span class="font-bold text-gray-800">Exposure</span>
-                    <span class="font-semibold text-gray-900">${expVal}</span>
+                    <span class="font-semibold text-gray-900">${isUsersBalanceLoaded ? expVal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) : '••••••'}</span>
                   </li>
                   <li class="flex flex-wrap items-center gap-1.5">
                     <span class="text-gray-400">•</span>
                     <span class="font-bold text-gray-800">Available Balance</span>
-                    <span class="font-semibold text-gray-900">${calcAvail.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                    <span class="font-semibold text-gray-900">${isUsersBalanceLoaded ? calcAvail.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) : '••••••'}</span>
                   </li>
                   <li class="flex flex-col gap-1.5 pt-2 border-t border-gray-100">
                     <div class="flex items-center gap-1.5">
