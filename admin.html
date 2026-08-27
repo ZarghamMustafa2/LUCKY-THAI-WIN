@@ -5511,6 +5511,7 @@
         authUname.toLowerCase() === 'ahmad5050x' ||
         (authUser && (authUser.id === 'COMP-ROOT-01' || authUser.username === 'Ahmad5050x'))
       );
+      const isAuthCompany = isRootCompany;
 
       // Security Check: If scoped account is outside authenticated downline, reject and return to authUser
       if (window.activeScopedAdmin && typeof AdminCore.repo.isUserInDownline === 'function') {
@@ -5698,7 +5699,7 @@
                 <button onclick="openEditUserView('${uname}')" title="Edit Client - ${uname}" class="w-5 h-5 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-[9px] flex items-center justify-center transition-colors cursor-pointer">
                   <i class="fa-solid fa-pencil text-[8px]"></i>
                 </button>
-                ${userRoleKey !== 'USER' ? `
+                ${isRootCompany ? `
                 <!-- %: Adjust Share Percentage -->
                 <button onclick="openAdjustShareModal('${uname}')" title="Adjust Share Percentage - ${uname}" class="w-5 h-5 rounded bg-[#8B5CF6] hover:bg-purple-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
                   %
@@ -5718,7 +5719,7 @@
                   S
                 </button>
                 ` : ''}
-                ${canDelete ? `
+                ${isRootCompany && canDelete ? `
                 <!-- Delete Account -->
                 <button onclick="promptDeleteUser('${uname}')" title="Delete User Account" class="w-5 h-5 rounded bg-[#EF4444] hover:bg-red-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer shadow-sm">
                   <i class="fa-solid fa-trash-can text-[8px]"></i>
@@ -5778,7 +5779,7 @@
                     <div class="flex flex-wrap gap-2 items-center pl-3">
                       <button onclick="event.stopPropagation(); openAdjustWalletModal('${uname}')" title="Cash / Credit Adjustment" class="w-7 h-7 rounded bg-[#F59E0B] hover:bg-amber-600 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">C</button>
                       <button onclick="event.stopPropagation(); openEditUserView('${uname}')" title="Edit Client" class="w-7 h-7 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-xs flex items-center justify-center shadow-xs cursor-pointer"><i class="fa-solid fa-pencil text-[10px]"></i></button>
-                      ${userRoleKey !== 'USER' ? `<button onclick="event.stopPropagation(); openAdjustShareModal('${uname}')" title="Adjust Share Percentage - ${uname}" class="w-7 h-7 rounded bg-[#8B5CF6] hover:bg-purple-700 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">%</button>` : ''}
+                      ${isAuthCompany ? `<button onclick="event.stopPropagation(); openAdjustShareModal('${uname}')" title="Adjust Share Percentage - ${uname}" class="w-7 h-7 rounded bg-[#8B5CF6] hover:bg-purple-700 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">%</button>` : ''}
                       <button onclick="event.stopPropagation(); openClientLedgerModal('${uname}')" title="View Account Ledger" class="w-7 h-7 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">L</button>
                       <button onclick="event.stopPropagation(); toggleUserStatus('${uId}')" title="Status Toggle" class="w-7 h-7 rounded font-black text-xs flex items-center justify-center shadow-xs cursor-pointer ${isActive ? 'bg-[#10B981] text-white' : 'border border-red-500 text-red-500'}">${isActive ? 'A' : 'D'}</button>
                       ${userRoleKey !== 'USER' ? `<button onclick="event.stopPropagation(); handleSettleAccount('${uname}')" title="Settle Account" class="w-7 h-7 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">S</button>` : ''}
@@ -7322,6 +7323,12 @@
     let currentAdjustShareTargetUser = null;
 
     function openAdjustShareModal(username) {
+      const curAdmin = AdminCore.repo.getCurrentAdmin();
+      if (!curAdmin || (typeof getNormalizedRole === 'function' ? getNormalizedRole(curAdmin) : curAdmin.role) !== 'COMPANY') {
+        showAdminToast(`Access Denied: Only COMPANY can adjust share percentages.`, 'error');
+        return;
+      }
+
       const users = AdminCore.repo.get('ADM_USERS') || [];
       const u = users.find(x => x.username && x.username.toLowerCase() === username.toLowerCase());
       if (!u) {
@@ -7606,6 +7613,10 @@
      */
     function canDeleteUser(requester, target) {
       if (!requester || !target) return false;
+
+      // Restrict Account Deletion ONLY to COMPANY role
+      const reqRole = typeof getNormalizedRole === 'function' ? getNormalizedRole(requester) : (requester.role || '');
+      if (reqRole !== 'COMPANY') return false;
 
       const requesterId = (requester.id || '').toString().toLowerCase();
       const requesterUname = (requester.username || '').toString().toLowerCase();
