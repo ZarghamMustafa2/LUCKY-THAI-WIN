@@ -5125,6 +5125,12 @@
     let currentSettleTargetUser = null;
 
     function handleSettleAccount(username) {
+      const currentAuth = AdminCore.repo.getCurrentAdmin();
+      if (!currentAuth || (typeof getNormalizedRole === 'function' ? getNormalizedRole(currentAuth) : currentAuth.role) !== 'COMPANY') {
+        showAdminToast('Access Denied: Only COMPANY can settle accounts.', 'error');
+        return;
+      }
+
       const users = AdminCore.repo.get('ADM_USERS') || [];
       let u = users.find(x => (x.username && x.username.toLowerCase() === username.toLowerCase()) || x.id === username);
       if (!u) {
@@ -5150,6 +5156,11 @@
 
     function handleSettleAccountSubmit(e) {
       if (e && e.preventDefault) e.preventDefault();
+      const currentAuth = AdminCore.repo.getCurrentAdmin();
+      if (!currentAuth || (typeof getNormalizedRole === 'function' ? getNormalizedRole(currentAuth) : currentAuth.role) !== 'COMPANY') {
+        showAdminToast('Access Denied: Only COMPANY can settle accounts.', 'error');
+        return;
+      }
       if (!currentSettleTargetUser) return;
 
       const amount = parseFloat(document.getElementById('settleAmountInput').value);
@@ -5713,13 +5724,13 @@
                 <button onclick="toggleUserStatus('${uId}')" title="${isActive ? 'Deactivate User' : 'Activate User'}" class="w-5 h-5 rounded font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer ${isActive ? 'bg-[#10B981] hover:bg-emerald-600 text-white' : 'border border-[#EF4444] text-[#EF4444] hover:bg-red-50'}">
                   ${isActive ? 'A' : 'D'}
                 </button>
-                ${userRoleKey !== 'USER' ? `
+                ${isAuthCompany ? `
                 <!-- S: Settle Account -->
                 <button onclick="handleSettleAccount('${uname}')" title="Settle Account" class="w-5 h-5 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer">
                   S
                 </button>
                 ` : ''}
-                ${isRootCompany && canDelete ? `
+                ${isAuthCompany && canDelete ? `
                 <!-- Delete Account -->
                 <button onclick="promptDeleteUser('${uname}')" title="Delete User Account" class="w-5 h-5 rounded bg-[#EF4444] hover:bg-red-700 text-white font-black text-[9px] flex items-center justify-center transition-colors cursor-pointer shadow-sm">
                   <i class="fa-solid fa-trash-can text-[8px]"></i>
@@ -5782,7 +5793,7 @@
                       ${isAuthCompany ? `<button onclick="event.stopPropagation(); openAdjustShareModal('${uname}')" title="Adjust Share Percentage - ${uname}" class="w-7 h-7 rounded bg-[#8B5CF6] hover:bg-purple-700 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">%</button>` : ''}
                       <button onclick="event.stopPropagation(); openClientLedgerModal('${uname}')" title="View Account Ledger" class="w-7 h-7 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">L</button>
                       <button onclick="event.stopPropagation(); toggleUserStatus('${uId}')" title="Status Toggle" class="w-7 h-7 rounded font-black text-xs flex items-center justify-center shadow-xs cursor-pointer ${isActive ? 'bg-[#10B981] text-white' : 'border border-red-500 text-red-500'}">${isActive ? 'A' : 'D'}</button>
-                      ${userRoleKey !== 'USER' ? `<button onclick="event.stopPropagation(); handleSettleAccount('${uname}')" title="Settle Account" class="w-7 h-7 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">S</button>` : ''}
+                      ${isAuthCompany ? `<button onclick="event.stopPropagation(); handleSettleAccount('${uname}')" title="Settle Account" class="w-7 h-7 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">S</button>` : ''}
                     </div>
                   </li>
                 </ul>
