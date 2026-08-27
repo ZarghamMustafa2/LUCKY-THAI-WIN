@@ -407,42 +407,75 @@
     }
 
     // Backend Security Scoped Resolver for Authorized Users Listing
-    getHierarchyUsers(authenticatedUser) {
+    // DIRECT ACCOUNT LIST: Returns ONLY accounts directly created by authenticatedUser
+    getDirectChildren(authenticatedUser) {
       if (!authenticatedUser) return [];
 
-      const roleStr = (authenticatedUser.role || authenticatedUser.userType || authenticatedUser.type || '').toString().toUpperCase().replace(/_/g, ' ');
+      const authId = (authenticatedUser.id || '').toString().toLowerCase();
+      const authUname = (authenticatedUser.username || authenticatedUser.name || '').toString().toLowerCase();
+      const authRoleKey = (authenticatedUser.role || authenticatedUser.userType || authenticatedUser.type || '').toString().toUpperCase();
 
-      if (roleStr.includes('USER') || roleStr.includes('BETTOR') || roleStr.includes('CLIENT')) {
+      if (authRoleKey.includes('USER') || authRoleKey.includes('BETTOR') || authRoleKey.includes('CLIENT')) {
         return [];
       }
 
-      const descendants = this.getRecursiveDescendants(authenticatedUser);
+      const isCompanyAuth = authRoleKey.includes('COMPANY') || authUname === 'company' || authUname === 'ahmad5050x';
 
-      // If COMPANY, include all descendants across the company hierarchy
-      if (roleStr.includes('COMPANY')) {
-        const allUsers = this.get('ADM_USERS') || [];
-        const allAdmins = this.get('ADM_ADMINS') || [];
-        const combined = new Map();
-        
-        descendants.forEach(d => {
-          const k = (d.username || d.id || '').toString().toLowerCase();
-          if (k) combined.set(k, d);
+      const allUsers = this.get('ADM_USERS') || [];
+      const allAdmins = this.get('ADM_ADMINS') || [];
+      const all = [...allAdmins, ...allUsers];
+
+      const directMap = new Map();
+
+      all.forEach(u => {
+        if (!u) return;
+        const uId = (u.id || '').toString().toLowerCase();
+        const uUname = (u.username || u.name || '').toString().toLowerCase();
+
+        // Skip authenticated user itself
+        if (uUname === authUname || uId === authId) return;
+
+        const checkFields = [
+          u.parentId,
+          u.uplineId,
+          u.createdBy,
+          u.createdUnder,
+          u.agentId,
+          u.uplineUsername,
+          u.agentUsername,
+          u.upline,
+          u.parentAdminId
+        ].filter(Boolean).map(x => String(x).toLowerCase());
+
+        const isDirect = checkFields.some(val => {
+          if (!val) return false;
+          if (authId && val === authId) return true;
+          if (authUname && val === authUname) return true;
+          if (isCompanyAuth && (val === 'company' || val === 'comp-root-01' || val === 'ahmad5050x')) return true;
+          return false;
         });
-        
-        [...allAdmins, ...allUsers].forEach(item => {
-          if (!item) return;
-          const k = (item.username || item.id || '').toString().toLowerCase();
-          if (k && k !== (authenticatedUser.id || '').toString().toLowerCase() && k !== (authenticatedUser.username || '').toString().toLowerCase()) {
-            if (!combined.has(k)) {
-              combined.set(k, item);
-            }
+
+        if (isDirect) {
+          const key = uUname || uId;
+          if (key && !directMap.has(key)) {
+            directMap.set(key, u);
           }
-        });
-        
-        return Array.from(combined.values());
+        }
+      });
+
+      return Array.from(directMap.values());
+    }
+
+    getHierarchyUsers(authenticatedUser, mode) {
+      if (!authenticatedUser) return [];
+
+      // If mode is DOWNLINE (explicitly opened View Downline), return complete recursive downline tree
+      if (mode === 'DOWNLINE') {
+        return this.getRecursiveDescendants(authenticatedUser);
       }
 
-      return descendants;
+      // Default Direct List Mode: Return ONLY direct children
+      return this.getDirectChildren(authenticatedUser);
     }
 
     // Upline Ancestor Chain Resolver (Ascending Parent Tree to COMPANY)

@@ -7083,6 +7083,13 @@
     function getHierarchyAccountColorClass(authenticatedUser, targetAccount) {
       if (!authenticatedUser || !targetAccount) return 'text-[#111827] font-semibold';
 
+      const targetRoleKey = typeof getNormalizedRole === 'function' ? getNormalizedRole(targetAccount) : null;
+
+      // CORE COLOR RULE: A DIRECT USER (END BETTOR) ACCOUNT MUST BE BLACK (#111827)
+      if (targetRoleKey === 'USER') {
+        return 'text-[#111827] font-semibold';
+      }
+
       const authRole = (authenticatedUser.role || authenticatedUser.userType || authenticatedUser.type || '').toString().toUpperCase();
       const authId = (authenticatedUser.id || '').toString().toLowerCase();
       const authUname = (authenticatedUser.username || authenticatedUser.name || '').toString().toLowerCase();
@@ -7094,7 +7101,9 @@
         targetAccount.createdUnder,
         targetAccount.agentId,
         targetAccount.uplineUsername,
-        targetAccount.agentUsername
+        targetAccount.agentUsername,
+        targetAccount.upline,
+        targetAccount.parentAdminId
       ].filter(Boolean).map(x => String(x).toLowerCase());
 
       const isCompanyAuth = authRole.includes('COMPANY') || authUname === 'company' || authUname === 'ahmad5050x';
@@ -7107,37 +7116,13 @@
         return false;
       });
 
-      return isDirectChild ? 'text-[#00884F] font-bold' : 'text-[#111827] font-semibold';
+      // DIRECT CHILD ACCOUNT AT THE NEXT HIERARCHY LEVEL MUST BE GREEN (#00884F)
+      return (isDirectChild && targetRoleKey !== 'USER') ? 'text-[#00884F] font-bold' : 'text-[#111827] font-semibold';
     }
 
     function getHierarchyAccountColorHex(authenticatedUser, targetAccount) {
-      if (!authenticatedUser || !targetAccount) return '#111827';
-
-      const authRole = (authenticatedUser.role || authenticatedUser.userType || authenticatedUser.type || '').toString().toUpperCase();
-      const authId = (authenticatedUser.id || '').toString().toLowerCase();
-      const authUname = (authenticatedUser.username || authenticatedUser.name || '').toString().toLowerCase();
-
-      const checkFields = [
-        targetAccount.parentId,
-        targetAccount.uplineId,
-        targetAccount.createdBy,
-        targetAccount.createdUnder,
-        targetAccount.agentId,
-        targetAccount.uplineUsername,
-        targetAccount.agentUsername
-      ].filter(Boolean).map(x => String(x).toLowerCase());
-
-      const isCompanyAuth = authRole.includes('COMPANY') || authUname === 'company' || authUname === 'ahmad5050x';
-
-      const isDirectChild = checkFields.some(val => {
-        if (!val) return false;
-        if (authId && val === authId) return true;
-        if (authUname && val === authUname) return true;
-        if (isCompanyAuth && (val === 'company' || val === 'comp-root-01' || val === 'ahmad5050x')) return true;
-        return false;
-      });
-
-      return isDirectChild ? '#00884F' : '#111827';
+      const cls = getHierarchyAccountColorClass(authenticatedUser, targetAccount);
+      return cls.includes('text-[#00884F]') ? '#00884F' : '#111827';
     }
 
     /**
