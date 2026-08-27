@@ -659,11 +659,11 @@
               </thead>
               <tbody>
                 <tr class="border-b border-[#D8DEE4]">
-                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCreditReceived">0</td>
-                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCreditRemaining">0</td>
-                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCash">0</td>
-                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsPlDownline">0</td>
-                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsBalanceUpline">0</td>
+                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCreditReceived">• • • • • •</td>
+                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCreditRemaining">• • • • • •</td>
+                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsCash">• • • • • •</td>
+                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsPlDownline">• • • • • •</td>
+                  <td class="p-2.5 font-bold text-[#00884F] border-r border-[#D8DEE4]" id="clientsBalanceUpline">• • • • • •</td>
                   <td class="p-2.5 font-bold text-[#111827]" id="clientsUsersCount">0</td>
                 </tr>
               </tbody>
@@ -5475,11 +5475,19 @@
 
       const metrics = typeof calculateHierarchySummaryMetrics === 'function' ? calculateHierarchySummaryMetrics(admin) : { creditReceived: 0, creditRemaining: 0, cash: 0, plDownline: 0, balanceUpline: 0 };
 
-      if (credRecEl) credRecEl.innerText = (metrics.creditReceived || 0).toLocaleString();
-      if (credRemEl) credRemEl.innerText = (metrics.creditRemaining || 0).toLocaleString();
-      if (cashEl) cashEl.innerText = (metrics.cash || 0).toLocaleString();
-      if (plDownlineEl) plDownlineEl.innerText = (metrics.plDownline || 0).toLocaleString();
-      if (balUplineEl) balUplineEl.innerText = (metrics.balanceUpline || 0).toLocaleString();
+      if (isUsersBalanceLoaded) {
+        if (credRecEl) credRecEl.innerText = (metrics.creditReceived || 0).toLocaleString();
+        if (credRemEl) credRemEl.innerText = (metrics.creditRemaining || 0).toLocaleString();
+        if (cashEl) cashEl.innerText = (metrics.cash || 0).toLocaleString();
+        if (plDownlineEl) plDownlineEl.innerText = (metrics.plDownline || 0).toLocaleString();
+        if (balUplineEl) balUplineEl.innerText = (metrics.balanceUpline || 0).toLocaleString();
+      } else {
+        if (credRecEl) credRecEl.innerText = '••••••';
+        if (credRemEl) credRemEl.innerText = '••••••';
+        if (cashEl) cashEl.innerText = '••••••';
+        if (plDownlineEl) plDownlineEl.innerText = '••••••';
+        if (balUplineEl) balUplineEl.innerText = '••••••';
+      }
 
       let allUsers = AdminCore.repo.get('ADM_USERS') || [];
       const allAdmins = AdminCore.repo.get('ADM_ADMINS') || [];
