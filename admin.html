@@ -354,67 +354,69 @@
       </div>
 
       <!-- ============================================================ -->
-      <!-- MODULE 1: BPEXCH EXECUTIVE DASHBOARD (Matches Screenshot)   -->
-      <!-- ============================================================ -->
-      <div id="module_dashboard" class="module-view flex flex-col gap-4">
+      <!-- MODULE 1: BPEXCH EXECUTIVE DASHBOARD (Matches Screenshot) -->
+      <div id="module_dashboard" class="module-view flex flex-col justify-between min-h-[calc(100vh-90px)] gap-4">
         
-
-
-        <!-- SECTION 1: SEARCH-USERS CARD (Matches Screenshot) -->
-        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
-          <!-- Card Header Strip -->
-          <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-2.5">
-            <i class="fa-solid fa-filter text-[#1F2937] text-xs"></i>
-            <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Search-Users</h3>
+        <div class="flex flex-col gap-4">
+          <!-- SECTION 1: SEARCH-USERS CARD (Matches Screenshot) -->
+          <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden">
+            <!-- Card Header Strip -->
+            <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-2.5">
+              <i class="fa-solid fa-filter text-[#1F2937] text-xs"></i>
+              <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Search-Users</h3>
+            </div>
+            <!-- Card Body -->
+            <div class="p-4 sm:p-5 flex items-center">
+              <div class="flex items-center w-full max-w-md">
+                <input 
+                  id="dashSearchUserInput" 
+                  type="text" 
+                  placeholder="Username" 
+                  class="w-full sm:w-80 px-3.5 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded-l outline-none focus:border-[#00884F] transition-colors"
+                  onkeydown="if(event.key==='Enter') handleDashboardUserSearch()"
+                />
+                <button 
+                  onclick="handleDashboardUserSearch()" 
+                  class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-4 py-1.5 rounded-r flex items-center gap-1.5 transition-colors cursor-pointer shrink-0">
+                  <i class="fa-solid fa-magnifying-glass text-[11px]"></i> Search
+                </button>
+              </div>
+            </div>
           </div>
-          <!-- Card Body -->
-          <div class="p-4 sm:p-5 flex items-center">
-            <div class="flex items-center w-full max-w-md">
-              <input 
-                id="dashSearchUserInput" 
-                type="text" 
-                placeholder="Username" 
-                class="w-full sm:w-80 px-3.5 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded-l outline-none focus:border-[#00884F] transition-colors"
-                onkeydown="if(event.key==='Enter') handleDashboardUserSearch()"
-              />
+
+          <!-- SECTION 2: SPORT HIGHLIGHTS CARD (Matches Screenshot) -->
+          <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden flex flex-col">
+            <!-- Card Header Strip -->
+            <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-3">
+              <h3 id="highlightsTitle" class="font-bold text-[#1F2937] text-sm sm:text-base">Sport Highlights</h3>
               <button 
-                onclick="handleDashboardUserSearch()" 
-                class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-4 py-1.5 rounded-r flex items-center gap-1.5 transition-colors cursor-pointer shrink-0">
-                <i class="fa-solid fa-magnifying-glass text-[11px]"></i> Search
+                onclick="refreshSportHighlights()" 
+                class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-2.5 py-0.5 rounded cursor-pointer transition-colors">
+                Refresh
               </button>
+            </div>
+
+            <!-- Highlights Data Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-[#E5E7EB] bg-[#FAFAFA]">
+                    <th id="highlightsCategoryHeader" class="px-4 py-2.5 font-bold text-[#1F2937] text-xs">Soccer</th>
+                    <th class="px-4 py-2.5 font-bold text-[#1F2937] text-xs text-right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="sportHighlightsTableBody" class="divide-y divide-[#F3F4F6] text-xs">
+                  <!-- Populated dynamically / with screenshot reference items -->
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
 
-        <!-- SECTION 2: SPORT HIGHLIGHTS CARD (Matches Screenshot) -->
-        <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden flex flex-col">
-          <!-- Card Header Strip -->
-          <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-white flex items-center gap-3">
-            <h3 id="highlightsTitle" class="font-bold text-[#1F2937] text-sm sm:text-base">Sport Highlights</h3>
-            <button 
-              onclick="refreshSportHighlights()" 
-              class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-2.5 py-0.5 rounded cursor-pointer transition-colors">
-              Refresh
-            </button>
-          </div>
-
-          <!-- Highlights Data Table -->
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr class="border-b border-[#E5E7EB] bg-[#FAFAFA]">
-                  <th id="highlightsCategoryHeader" class="px-4 py-2.5 font-bold text-[#1F2937] text-xs">Soccer</th>
-                  <th class="px-4 py-2.5 font-bold text-[#1F2937] text-xs text-right">Amount</th>
-                </tr>
-              </thead>
-              <tbody id="sportHighlightsTableBody" class="divide-y divide-[#F3F4F6] text-xs">
-                <!-- Populated dynamically / with screenshot reference items -->
-              </tbody>
-            </table>
-          </div>
+        <!-- BOTTOM STRIP: Welcome to Exchange. (Matches Reference Screenshot) -->
+        <div class="mt-auto py-2.5 px-4 text-center text-xs font-bold text-[#1F2937] bg-[#EFEFEF] border-t border-[#D8DEE4] -mx-4 -mb-4 sm:-mx-5 sm:-mb-5">
+          Welcome to Exchange.
         </div>
-
-
 
       </div>
 
