@@ -2632,48 +2632,48 @@
   </div>
 
   <!-- CREATE NEW USER MODAL (Matches User Reference Screenshot Exact Layout) -->
-  <div id="addUserModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-    <div class="bg-white border border-[#D8DEE4] rounded-lg shadow-2xl max-w-2xl w-full flex flex-col overflow-hidden text-xs">
+  <div id="addUserModal" class="hidden fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4">
+    <div class="bg-white border border-[#D8DEE4] rounded-lg shadow-2xl max-w-lg sm:max-w-xl w-full flex flex-col max-h-[90vh] overflow-y-auto text-xs font-sans">
       
       <!-- Modal Header -->
-      <div class="px-5 py-3 bg-[#F3F4F6] border-b border-[#E5E7EB] flex items-center justify-between">
-        <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">
+      <div class="px-4 py-2.5 bg-[#F3F4F6] border-b border-[#E5E7EB] flex items-center justify-between sticky top-0 z-10">
+        <h3 class="font-bold text-[#1F2937] text-xs sm:text-sm tracking-tight pr-2 truncate">
           Create New User under <span id="createUnderAgentName" class="font-bold italic text-black">Ahmad5050x</span>
         </h3>
-        <button type="button" onclick="closeModal('addUserModal')" class="text-gray-400 hover:text-gray-700 transition-colors cursor-pointer text-base">
+        <button type="button" onclick="closeModal('addUserModal')" class="text-gray-400 hover:text-gray-700 p-1 rounded transition-colors cursor-pointer text-base flex items-center justify-center shrink-0" title="Close">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
       <!-- Form Body -->
-      <form onsubmit="handleAddUserSubmit(event)" class="p-6 flex flex-col gap-4 bg-white text-gray-800">
+      <form onsubmit="handleAddUserSubmit(event)" class="p-3.5 sm:p-4 flex flex-col gap-2.5 bg-white text-gray-800">
         
         <!-- Field 1: Username -->
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
           <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Username</label>
           <input 
             type="text" 
             id="newUsername" 
             required 
             placeholder="" 
-            class="flex-1 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
+            class="flex-1 px-2.5 py-1 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
           />
         </div>
 
         <!-- Field 2: Password -->
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
           <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Password</label>
           <input 
             type="password" 
             id="newPassword" 
             required 
             placeholder="" 
-            class="flex-1 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
+            class="flex-1 px-2.5 py-1 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
           />
         </div>
 
         <!-- Field 3: Account Type / Role -->
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
           <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Account Type / Role</label>
           <div id="newUserTypeContainer" class="flex flex-wrap items-center gap-4 sm:gap-6">
             <!-- Dynamically populated based on logged-in role -->
@@ -2681,26 +2681,28 @@
         </div>
 
         <!-- Field 3B: Share Percentage -->
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-          <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Share (%)</label>
-          <div class="flex items-center gap-2 flex-1">
-            <input 
-              type="number" 
-              id="newUserShare" 
-              min="0" 
-              max="100" 
-              step="0.01" 
-              value="100"
-              placeholder="e.g. 90" 
-              class="w-32 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors font-mono font-bold" 
-            />
-            <span class="text-xs text-gray-500 font-bold">%</span>
-            <span id="maxShareCapacityHint" class="text-[11px] text-gray-500 italic ml-2">(Max allowed: 100%)</span>
+        <div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
+          <label class="w-full sm:w-32 text-gray-700 font-medium text-xs sm:pt-1">Share (%)</label>
+          <div class="flex flex-col flex-1">
+            <div class="flex items-center gap-1.5">
+              <input 
+                type="number" 
+                id="newUserShare" 
+                min="0" 
+                max="100" 
+                step="0.01" 
+                value="100"
+                placeholder="e.g. 90" 
+                class="w-28 px-2.5 py-1 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors font-mono font-bold" 
+              />
+              <span class="text-xs text-gray-500 font-bold">%</span>
+            </div>
+            <div id="maxShareCapacityHint" class="text-[11px] text-gray-500 italic mt-0.5">Max allowed: 100%</div>
           </div>
         </div>
 
         <!-- Field 4: IsActive (Checkbox) -->
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
           <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">IsActive</label>
           <div class="flex items-center">
             <input 
@@ -2713,43 +2715,43 @@
         </div>
 
         <!-- Field 5: Phone -->
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
           <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Phone</label>
           <input 
             type="text" 
             id="newUserPhone" 
             placeholder="" 
-            class="flex-1 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
+            class="flex-1 px-2.5 py-1 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
           />
         </div>
 
         <!-- Field 6: Reference -->
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
           <label class="w-full sm:w-32 text-gray-700 font-medium text-xs">Reference</label>
           <input 
             type="text" 
             id="newUserReference" 
             placeholder="" 
-            class="flex-1 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
+            class="flex-1 px-2.5 py-1 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors" 
           />
         </div>
 
         <!-- Field 7: Notes -->
-        <div class="flex flex-col sm:flex-row sm:items-start gap-2">
+        <div class="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
           <label class="w-full sm:w-32 text-gray-700 font-medium text-xs pt-1">Notes</label>
           <textarea 
             id="newUserNotes" 
-            rows="3" 
+            rows="2" 
             placeholder="" 
-            class="flex-1 px-3 py-1.5 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors resize-y"
+            class="flex-1 px-2.5 py-1 text-xs bg-white text-gray-900 border border-[#D1D5DB] rounded outline-none focus:border-[#00884F] transition-colors resize-y"
           ></textarea>
         </div>
 
         <!-- Footer / Submit Action -->
-        <div class="pt-4 border-t border-[#E5E7EB] flex items-center justify-start -mx-6 -mb-6 p-4 bg-[#F9FAFB]">
+        <div class="pt-3 border-t border-[#E5E7EB] flex items-center justify-start -mx-3.5 -mb-3.5 sm:-mx-4 sm:-mb-4 p-3 bg-[#F9FAFB] sticky bottom-0 z-10">
           <button 
             type="submit" 
-            class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-5 py-2 rounded shadow-sm transition-colors cursor-pointer">
+            class="bg-[#00884F] hover:bg-[#007443] text-white font-bold text-xs px-4 py-1.5 rounded shadow-sm transition-colors cursor-pointer">
             Submit
           </button>
         </div>
@@ -7100,7 +7102,7 @@
         shareInput.max = parentShareCapacity;
       }
       if (hintSpan) {
-        hintSpan.innerText = `(Max allowed: ${parentShareCapacity}%)`;
+        hintSpan.innerText = `Max allowed: ${parentShareCapacity}%`;
       }
 
       // Reset inputs
