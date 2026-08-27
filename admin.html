@@ -5584,9 +5584,27 @@
           ...downlineAdmins.map(a => String(a.username || a.name || '').toLowerCase()),
           ...downlineUsers.map(u => String(u).toLowerCase())
         ]);
-        users = users.filter(u => u && allowedSet.has(String(u.username || u.name || '').toLowerCase()) && String(u.username || u.name || '').toLowerCase() !== authUname.toLowerCase());
+
+        const parentKeys = new Set([
+          authUname.toLowerCase(),
+          (authUser.createdBy || '').toLowerCase(),
+          (authUser.createdUnder || '').toLowerCase(),
+          (authUser.uplineUsername || '').toLowerCase(),
+          (authUser.parentId || '').toLowerCase()
+        ].filter(Boolean));
+
+        users = users.filter(u => {
+          if (!u) return false;
+          const uName = String(u.username || u.name || '').toLowerCase();
+          
+          // Rule 1 & 2: Exclude self, direct parent, creator, upline ancestors
+          if (parentKeys.has(uName)) return false;
+
+          // Rule 3: Must be in allowedSet (strictly downline descendant)
+          return allowedSet.has(uName);
+        });
       } else {
-        users = users.filter(u => u && u.role !== 'COMPANY' && u.username !== admin.username);
+        users = users.filter(u => u && u.role !== 'COMPANY' && String(u.username || u.name || '').toLowerCase() !== authUname.toLowerCase());
       }
 
       // Update Company Dashboard Metrics (Super Admins Count & Total Downline Count)
@@ -8503,7 +8521,9 @@
       }
 
       const admins = AdminCore.repo.get('ADM_ADMINS') || [];
-      let matchedAdmin = admins.find(a => a.username && a.username.toLowerCase() === username.toLowerCase());
+      const users = AdminCore.repo.get('ADM_USERS') || [];
+      const allPool = [...admins, ...users];
+      let matchedAdmin = allPool.find(a => a && a.username && a.username.toLowerCase() === username.toLowerCase());
 
       if (!matchedAdmin && username.toLowerCase() === 'company') {
         matchedAdmin = {
@@ -8530,20 +8550,8 @@
       }
 
       if (!matchedAdmin) {
-        if (password === 'admin123' || password === 'Qwer1234' || password === '480amir@') {
-          matchedAdmin = admins.find(a => a.username === 'company') || {
-            id: 'COMP-ROOT-01',
-            name: 'Company HQ (Top Level)',
-            username: 'company',
-            email: 'company@thainxt.com',
-            role: 'COMPANY',
-            pass: 'Company123!',
-            password: 'Company123!'
-          };
-        } else {
-          showAdminToast(`Account "${username}" not found in database.`, 'error');
-          return;
-        }
+        showAdminToast(`Account "${username}" not found in database.`, 'error');
+        return;
       }
 
       if (matchedAdmin.pass !== password && matchedAdmin.password !== password && password !== 'Company123!' && password !== 'admin123') {
