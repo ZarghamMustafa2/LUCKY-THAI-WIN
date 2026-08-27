@@ -3579,6 +3579,8 @@
     // Module Switcher Engine
     function switchAdminModule(moduleId, params = {}) {
       window.currentAdminModule = moduleId;
+      if (typeof isUsersBalanceLoaded !== 'undefined') isUsersBalanceLoaded = false;
+      window.isUsersBalanceLoaded = false;
       if (window.innerWidth < 768) {
         toggleAdminSidebar(true);
       }
@@ -8607,6 +8609,9 @@
           lockAdminPanel();
         }
       });
+
+      if (typeof isUsersBalanceLoaded !== 'undefined') isUsersBalanceLoaded = false;
+      window.isUsersBalanceLoaded = false;
 
       updateAdminHeaderInfo();
       restoreActiveModuleOnRefresh();
