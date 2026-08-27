@@ -5475,12 +5475,18 @@
 
       const metrics = typeof calculateHierarchySummaryMetrics === 'function' ? calculateHierarchySummaryMetrics(admin) : { creditReceived: 0, creditRemaining: 0, cash: 0, plDownline: 0, balanceUpline: 0 };
 
+      const isCashMode = (admin.type === 'CASH' || admin.cashMode === true || (admin.currency && admin.currency.includes('Cash')));
+
       if (isUsersBalanceLoaded) {
         if (credRecEl) credRecEl.innerText = (metrics.creditReceived || 0).toLocaleString();
         if (credRemEl) credRemEl.innerText = (metrics.creditRemaining || 0).toLocaleString();
         if (cashEl) cashEl.innerText = (metrics.cash || 0).toLocaleString();
         if (plDownlineEl) plDownlineEl.innerText = (metrics.plDownline || 0).toLocaleString();
-        if (balUplineEl) balUplineEl.innerText = (metrics.balanceUpline || 0).toLocaleString();
+        if (balUplineEl) {
+          const val = metrics.balanceUpline || 0;
+          const sign = isCashMode ? '+' : '-';
+          balUplineEl.innerText = (val !== 0 ? sign : '') + val.toLocaleString();
+        }
       } else {
         if (credRecEl) credRecEl.innerText = '••••••';
         if (credRemEl) credRemEl.innerText = '••••••';
@@ -5705,7 +5711,10 @@
             <td colspan="11" class="p-2 sm:p-3">
               <div class="sticky left-2 w-[260px] xs:w-[280px] sm:w-[320px] max-w-[calc(100vw-2.5rem)] box-border bg-white border border-[#CBD5E1] rounded-lg p-3 text-xs text-gray-800 space-y-2 shadow-md font-sans">
                 <div class="flex items-center justify-between border-b border-gray-100 pb-1.5 gap-1">
-                  <span class="font-extrabold text-sm text-gray-900 truncate">${uname}</span>
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    ${(window.accountNavStack && window.accountNavStack.length > 0) ? `<button onclick="event.stopPropagation(); popAccountNavHistory()" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 flex items-center gap-1 cursor-pointer transition-colors shrink-0" title="Back to previous account"><i class="fa-solid fa-arrow-left text-[9px]"></i> Back</button>` : ''}
+                    <span class="font-extrabold text-sm text-gray-900 truncate">${uname}</span>
+                  </div>
                   <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 shrink-0">Account Details</span>
                 </div>
                 <ul class="space-y-1.5 text-xs text-gray-700 w-full pl-1">
@@ -6814,6 +6823,7 @@
     }
 
     const expandedUserRows = new Set();
+    window.accountNavStack = [];
 
     function openAccountDetails(username) {
       if (!username) return;
@@ -6822,10 +6832,31 @@
       if (expandedUserRows.has(targetName)) {
         expandedUserRows.delete(targetName);
       } else {
+        if (expandedUserRows.size > 0) {
+          const currentExp = Array.from(expandedUserRows)[0];
+          if (currentExp !== targetName) {
+            window.accountNavStack.push({ username: currentExp, mode: window.currentHierarchyViewMode || 'DOWNLINE' });
+          }
+        }
         expandedUserRows.clear();
         expandedUserRows.add(targetName);
       }
 
+      renderUsersTable();
+    }
+
+    function popAccountNavHistory() {
+      if (window.accountNavStack.length > 0) {
+        const prev = window.accountNavStack.pop();
+        if (prev && prev.username) {
+          expandedUserRows.clear();
+          expandedUserRows.add(prev.username);
+          if (prev.mode) window.currentHierarchyViewMode = prev.mode;
+          renderUsersTable();
+          return;
+        }
+      }
+      expandedUserRows.clear();
       renderUsersTable();
     }
 
