@@ -3549,8 +3549,28 @@
       }, 3000);
     }
 
+    function saveNavState(moduleId, extra = {}) {
+      try {
+        localStorage.setItem('ACTIVE_ADMIN_MODULE', moduleId);
+        sessionStorage.setItem('ACTIVE_ADMIN_MODULE', moduleId);
+        if (extra && Object.keys(extra).length > 0) {
+          localStorage.setItem('ACTIVE_NAV_PARAMS', JSON.stringify(extra));
+          sessionStorage.setItem('ACTIVE_NAV_PARAMS', JSON.stringify(extra));
+        } else {
+          localStorage.removeItem('ACTIVE_NAV_PARAMS');
+          sessionStorage.removeItem('ACTIVE_NAV_PARAMS');
+        }
+
+        let hashStr = '#' + moduleId;
+        if (extra.username) hashStr += ':' + extra.username;
+        if (window.location.hash !== hashStr) {
+          window.history.replaceState(null, '', hashStr);
+        }
+      } catch (e) {}
+    }
+
     // Module Switcher Engine
-    function switchAdminModule(moduleId) {
+    function switchAdminModule(moduleId, params = {}) {
       if (window.innerWidth < 768) {
         toggleAdminSidebar(true);
       }
@@ -3560,6 +3580,9 @@
         el.classList.remove('bg-[#1F2832]', 'border-l-4', 'border-l-[#00D2FF]', 'text-white');
         el.classList.add('text-[#D1D5DB]');
       });
+
+      // Save navigation state for browser refresh persistence
+      saveNavState(moduleId, params);
 
       // Reset Top Nav Links
       ['dashboard', 'users', 'reports'].forEach(k => {
@@ -7735,7 +7758,7 @@
       if (bkmEl) bkmEl.value = (u.maxBetBookMaker !== undefined ? u.maxBetBookMaker : '2000000.00');
       if (tpinEl) tpinEl.value = '';
 
-      switchAdminModule('edit_client');
+      switchAdminModule('edit_client', { username: targetName });
     }
 
     function handleSaveEditClient(e) {
@@ -8428,6 +8451,52 @@
       showAdminToast(`Authenticated as ${matchedAdmin.username} (${ROLE_DISPLAY_LABELS[getNormalizedRole(matchedAdmin)] || matchedAdmin.role})!`, 'success');
     }
 
+    function restoreActiveModuleOnRefresh() {
+      const admin = AdminCore.repo.getCurrentAdmin();
+      if (!admin || !admin.username) return;
+
+      let targetModule = '';
+      let params = {};
+
+      // 1. Check Hash URL first
+      const hash = (window.location.hash || '').replace('#', '').trim();
+      if (hash) {
+        const parts = hash.split(':');
+        targetModule = parts[0];
+        if (parts[1]) params.username = parts[1];
+      }
+
+      // 2. Fallback to localStorage / sessionStorage
+      if (!targetModule) {
+        targetModule = localStorage.getItem('ACTIVE_ADMIN_MODULE') || sessionStorage.getItem('ACTIVE_ADMIN_MODULE') || '';
+        const savedParamsStr = localStorage.getItem('ACTIVE_NAV_PARAMS') || sessionStorage.getItem('ACTIVE_NAV_PARAMS');
+        if (savedParamsStr) {
+          try { params = JSON.parse(savedParamsStr); } catch (e) {}
+        }
+      }
+
+      if (!targetModule) return;
+
+      // Security check: Validate allowed modules
+      const allowedModules = [
+        'dashboard', 'users', 'current_position', 'reports', 'games', 'thai4d',
+        'deposits', 'withdrawals', 'wallets', 'tokens', 'kyc', 'risk', 'bonuses',
+        'profile', 'edit_client', 'admins', 'audit', 'settings', 'inactive_accounts',
+        'api_services', 'security', 'archive'
+      ];
+
+      if (!allowedModules.includes(targetModule)) {
+        targetModule = 'dashboard';
+      }
+
+      // Restore active view & params
+      if (targetModule === 'edit_client' && params.username) {
+        openEditUserView(params.username);
+      } else {
+        switchAdminModule(targetModule, params);
+      }
+    }
+
     // Initialization & Chart Setup on DOM Ready
     document.addEventListener('DOMContentLoaded', () => {
       // Check auth status: Must have valid isAdminAuth and active admin session
@@ -8448,6 +8517,7 @@
       });
 
       updateAdminHeaderInfo();
+      restoreActiveModuleOnRefresh();
       renderSportHighlights();
       renderUsersTable();
       renderGamesTable();
