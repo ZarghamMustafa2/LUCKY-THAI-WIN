@@ -4874,9 +4874,71 @@
       };
     }
 
+    function getAccountExposureAndSharing(cur) {
+      if (!cur) {
+        return { actualAmount: 0, sharePercentage: 100, calculatedExp: 0 };
+      }
+
+      // 1. Determine Assigned Sharing Percentage for the connected account
+      let sharePercentage = 100;
+      if (cur.sharePercentage !== undefined && cur.sharePercentage !== null) {
+        sharePercentage = Number(cur.sharePercentage);
+      } else if (cur.commissionRate !== undefined && cur.commissionRate !== null && Number(cur.commissionRate) > 10) {
+        sharePercentage = Number(cur.commissionRate);
+      } else {
+        const normRole = (typeof getNormalizedRole === 'function' ? getNormalizedRole(cur) : cur.role) || 'COMPANY';
+        if (normRole === 'COMPANY') sharePercentage = 100;
+        else if (normRole === 'SUPER_ADMIN') sharePercentage = 90;
+        else if (normRole === 'ADMIN') sharePercentage = 80;
+        else if (normRole === 'SUPER_MASTER') sharePercentage = 70;
+        else if (normRole === 'MASTER') sharePercentage = 60;
+        else sharePercentage = 100;
+      }
+
+      // 2. Determine Relevant Actual Exposure Amount from real system data
+      let actualAmount = 0;
+      if (cur.exposureAmount !== undefined && cur.exposureAmount !== null && Number(cur.exposureAmount) > 0) {
+        actualAmount = Number(cur.exposureAmount);
+      } else {
+        const storedPositions = AdminCore.repo.get('ADM_MARKET_POSITIONS');
+        const posPool = (Array.isArray(storedPositions) && storedPositions.length > 0) ? storedPositions : (typeof DEFAULT_MARKET_POSITIONS !== 'undefined' ? DEFAULT_MARKET_POSITIONS : []);
+        
+        let sumExp = 0;
+        posPool.forEach(sp => {
+          if (sp && sp.markets) {
+            sp.markets.forEach(m => {
+              if (m && m.amount) {
+                sumExp += Math.abs(Number(m.amount) || 0);
+              }
+            });
+          }
+        });
+
+        if (sumExp === 0) {
+          const allUsers = AdminCore.repo.get('ADM_USERS') || [];
+          allUsers.forEach(u => {
+            if (u && u.exposure) {
+              sumExp += Math.abs(Number(u.exposure) || 0);
+            }
+          });
+        }
+
+        actualAmount = sumExp > 0 ? sumExp : (cur.exposure !== undefined ? Math.abs(Number(cur.exposure)) : 500);
+      }
+
+      const calculatedExp = Math.round(actualAmount * (sharePercentage / 100));
+
+      return {
+        actualAmount,
+        sharePercentage,
+        calculatedExp
+      };
+    }
+
     function updateAdminHeaderInfo() {
       const cur = AdminCore.repo.getCurrentAdmin();
       const summary = getAccountCreditSummary(cur);
+      const expDetails = getAccountExposureAndSharing(cur);
       
       // Top BPEXCH Header Elements (Matches Screenshot)
       const topNameEl = document.getElementById('topBarAdminName');
@@ -4893,8 +4955,8 @@
       if (topNameEl) topNameEl.innerText = uname;
       if (topRoleEl) topRoleEl.innerText = `(${roleLabel})`;
       if (topBalEl) topBalEl.innerText = summary.balance.toLocaleString();
-      if (topExpEl) topExpEl.innerText = (cur.exposure !== undefined ? cur.exposure : 0).toLocaleString();
-      if (topDropFullName) topDropFullName.innerText = `${cur.name || uname} (@${uname})`;
+      if (topExpEl) topExpEl.innerText = expDetails.calculatedExp.toLocaleString();
+      if (topDropFullName) topDropFullName.innerText = `${(cur && cur.name) || uname} (@${uname})`;
       if (topDropScope) topDropScope.innerText = `${normRole.replace(/_/g, ' ')} LEVEL`;
 
       const betLockTitle = document.getElementById('betLockTitle');
@@ -4910,19 +4972,15 @@
       const selectEl = document.getElementById('roleSwitcherSelect');
       const scopeBadge = document.getElementById('moduleScopeBadge');
 
-      if (nameEl) nameEl.innerText = cur.name;
-      if (avatarEl) avatarEl.innerText = (cur.name || 'AD').substring(0, 2).toUpperCase();
-      if (roleBadge) {
-        roleBadge.innerText = cur.role.replace('_ADMIN', '').replace(/_/g, ' ');
-      }
-      if (compBadge) {
-        compBadge.innerText = cur.companyId === 'COMP-01' ? 'ThaiNXT Global HQ' : (cur.companyId === 'COMP-02' ? 'Apex Sports Asia' : 'Royal Bangkok Club');
-      }
-      if (selectEl) selectEl.value = cur.role;
+      if (nameEl) nameEl.innerText = cur ? (cur.name || uname) : uname;
+      if (avatarEl) avatarEl.innerText = cur ? (cur.name || uname || 'AD').substring(0, 2).toUpperCase() : 'AD';
+      if (roleBadge) roleBadge.innerText = normRole.replace('_ADMIN', '').replace(/_/g, ' ');
+      if (compBadge) compBadge.innerText = cur && cur.companyId === 'COMP-02' ? 'Apex Sports Asia' : (cur && cur.companyId === 'COMP-03' ? 'Royal Bangkok Club' : 'ThaiNXT Global HQ');
+      if (selectEl && cur) selectEl.value = cur.role;
 
       // Update Dynamic Level Details Card on Dashboard
       const levelCard = document.getElementById('levelDetailsCard');
-      if (levelCard) {
+      if (levelCard && cur) {
         if (cur.role === 'SUPER_ADMIN') {
           levelCard.classList.remove('hidden');
           const rBadge = document.getElementById('levelCardRoleBadge');
