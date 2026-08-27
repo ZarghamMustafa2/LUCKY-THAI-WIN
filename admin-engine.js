@@ -555,30 +555,55 @@
     // Downline Players / Users Resolution
     getDownlineUsernames(agentUsername) {
       const targetUser = String(agentUsername || '').toLowerCase();
-      const admins = this.get('ADM_ADMINS');
-      const curAdmin = admins.find(a => a.username.toLowerCase() === targetUser);
+      const admins = this.get('ADM_ADMINS') || [];
+      const curAdmin = admins.find(a => a && a.username && a.username.toLowerCase() === targetUser);
 
-      // If Super Admin, return all
-      if (curAdmin && curAdmin.role === 'SUPER_ADMIN') {
-        const users = this.get('ADM_USERS');
+      // Only ROOT COMPANY returns all users in system
+      if (curAdmin && (curAdmin.role === 'COMPANY' || targetUser === 'company' || targetUser === 'ahmad5050x')) {
+        const users = this.get('ADM_USERS') || [];
         return users.map(u => u.username);
       }
 
       // Collect all agent usernames in this tree including self
       const downlineAgents = this.getDownlineAdmins(targetUser);
-      const allAgentUsernames = [targetUser, ...downlineAgents.map(a => a.username.toLowerCase())];
+      const allAgentUsernames = [targetUser, ...downlineAgents.map(a => String(a.username || '').toLowerCase())];
 
-      const users = this.get('ADM_USERS');
+      const users = this.get('ADM_USERS') || [];
       return users.filter(u => {
+        if (!u) return false;
         const agU = (u.agentUsername || u.source || '').toLowerCase();
         const maU = (u.masterUsername || '').toLowerCase();
         const smU = (u.superMasterUsername || '').toLowerCase();
-        const s = (u.source || '').toLowerCase();
-        return allAgentUsernames.includes(agU) || 
-               allAgentUsernames.includes(maU) || 
-               allAgentUsernames.includes(smU) ||
-               allAgentUsernames.includes(s);
+        const createdU = (u.createdBy || u.createdUnder || '').toLowerCase();
+        const agentIdU = (u.agentId || u.parentId || '').toLowerCase();
+        return allAgentUsernames.includes(agU) || allAgentUsernames.includes(maU) || allAgentUsernames.includes(smU) || allAgentUsernames.includes(createdU) || allAgentUsernames.includes(agentIdU);
       }).map(u => u.username);
+    }
+
+    // Downline Hierarchy Security Check
+    isUserInDownline(authAdmin, targetAccount) {
+      if (!authAdmin || !targetAccount) return false;
+
+      const authUname = String(authAdmin.username || authAdmin.name || '').toLowerCase();
+      const targetUname = String(targetAccount.username || targetAccount.name || '').toLowerCase();
+
+      if (authUname === targetUname) return true;
+
+      const normRole = String(authAdmin.role || '').toUpperCase();
+      if (normRole === 'COMPANY' || authUname === 'company' || authUname === 'ahmad5050x') return true;
+
+      if (normRole === 'USER') return false;
+
+      const downlineAdmins = this.getDownlineAdmins(authUname) || [];
+      const downlineUsers = this.getDownlineUsernames(authUname) || [];
+
+      const allAuthorized = new Set([
+        authUname,
+        ...downlineAdmins.map(a => String(a.username || a.name || '').toLowerCase()),
+        ...downlineUsers.map(u => String(u).toLowerCase())
+      ]);
+
+      return allAuthorized.has(targetUname);
     }
 
     // Agent Level-Scoped Data Filter

@@ -5542,7 +5542,20 @@
         AdminCore.repo.set('ADM_USERS', allUsers);
       }
 
-      // Backend Security: Retrieve accounts under authenticated user's hierarchy mode (DOWNLINE vs UPLINE)
+      // Backend Security: Retrieve accounts under authenticated user's hierarchy mode
+      const authUser = AdminCore.repo.getCurrentAdmin();
+      const authRole = authUser ? getNormalizedRole(authUser) : 'COMPANY';
+      const authUsername = authUser ? (authUser.username || authUser.name) : 'company';
+
+      // Security Check: If scoped account is outside authenticated downline, reject and return to authUser
+      if (window.activeScopedAdmin && typeof AdminCore.repo.isUserInDownline === 'function') {
+        if (!AdminCore.repo.isUserInDownline(authUser, window.activeScopedAdmin)) {
+          showAdminToast(`Access Denied: You do not have permission to view @${window.activeScopedAdmin.username}.`, 'error');
+          window.activeScopedAdmin = null;
+          admin = authUser;
+        }
+      }
+
       const mode = window.currentHierarchyViewMode || 'DOWNLINE';
       let users = [];
 
@@ -5555,8 +5568,19 @@
       if (!users || users.length === 0) {
         users = typeof AdminCore.repo.getDirectChildren === 'function' ? AdminCore.repo.getDirectChildren(admin) : [];
       }
-      if (!users || users.length === 0) {
-        users = allUsers.filter(u => u && u.role !== 'COMPANY' && u.username !== admin.username);
+
+      // Security Isolation: Except for ROOT COMPANY, strictly filter users to authenticated account's authorized downline
+      if (authRole !== 'COMPANY' && authUsername !== 'company' && authUsername !== 'ahmad5050x') {
+        const downlineAdmins = AdminCore.repo.getDownlineAdmins(authUsername) || [];
+        const downlineUsers = AdminCore.repo.getDownlineUsernames(authUsername) || [];
+        const allowedSet = new Set([
+          authUsername.toLowerCase(),
+          ...downlineAdmins.map(a => String(a.username || a.name || '').toLowerCase()),
+          ...downlineUsers.map(u => String(u).toLowerCase())
+        ]);
+        users = users.filter(u => u && allowedSet.has(String(u.username || u.name || '').toLowerCase()) && String(u.username || u.name || '').toLowerCase() !== authUsername.toLowerCase());
+      } else {
+        users = users.filter(u => u && u.role !== 'COMPANY' && u.username !== admin.username);
       }
 
       // Update Company Dashboard Metrics (Super Admins Count & Total Downline Count)
@@ -6840,6 +6864,18 @@
     function openAccountDetails(username) {
       if (!username) return;
       const targetName = username.toString();
+      const currentAuth = AdminCore.repo.getCurrentAdmin();
+
+      const allAdmins = AdminCore.repo.get('ADM_ADMINS') || [];
+      const allUsers = AdminCore.repo.get('ADM_USERS') || [];
+      const targetAccount = [...allAdmins, ...allUsers].find(x => x && (x.username.toLowerCase() === targetName.toLowerCase() || x.id === targetName));
+
+      if (targetAccount && AdminCore.repo && typeof AdminCore.repo.isUserInDownline === 'function') {
+        if (!AdminCore.repo.isUserInDownline(currentAuth, targetAccount)) {
+          showAdminToast(`Access Denied: You do not have permission to view @${targetName}.`, 'error');
+          return;
+        }
+      }
 
       if (expandedUserRows.has(targetName)) {
         expandedUserRows.delete(targetName);
@@ -6876,7 +6912,7 @@
       const isAuthorized = currentAuth && (
         currentAuth.role === 'COMPANY' ||
         currentAuth.username === targetAccount.username ||
-        (typeof isUserInDownline === 'function' ? isUserInDownline(currentAuth, targetAccount) : true)
+        (AdminCore.repo && typeof AdminCore.repo.isUserInDownline === 'function' ? AdminCore.repo.isUserInDownline(currentAuth, targetAccount) : false)
       );
 
       if (!isAuthorized) {
