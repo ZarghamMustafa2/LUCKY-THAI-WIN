@@ -221,10 +221,10 @@
         </div>
       </div>
 
-      <!-- B: 0 Exp: 0 Status (Hidden from UI per user request) -->
-      <div class="hidden" aria-hidden="true" style="display: none !important;">
-        <span>B: <span id="topBarBalance" class="font-bold text-[#4B5563]">0</span></span>
-        <span>Exp: <span id="topBarExposure" class="font-bold text-[#4B5563]">0</span></span>
+      <!-- B: 0 Exp: 0 Status (Matches Reference Screenshot Exactly) -->
+      <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-normal text-[#1F2937] select-none shrink-0">
+        <span class="font-bold text-[#1F2937]">B: <span id="topBarBalance" class="font-bold text-[#1F2937]">0</span></span>
+        <span class="font-bold text-[#1F2937]">Exp: <span id="topBarExposure" class="font-bold text-[#1F2937]">0</span></span>
       </div>
 
     </div>
@@ -4711,6 +4711,17 @@
 
     // Sport Highlights Dataset & Handlers (Matches Reference Screenshot)
     const SPORT_HIGHLIGHTS_DATA = {
+      'Cricket': [
+        { match: 'Bangladesh W v Indonesia W / Match Odds', amount: 8676 },
+        { match: 'Belfast Wolves v Dublin Guardians / Match Odds', amount: 86346 },
+        { match: 'Edinburgh Castle Rockers v Glasgow Cosmic / Match Odds', amount: 21 },
+        { match: 'England v Pakistan / Match Odds', amount: 3105916 },
+        { match: 'India W v Thailand W / Match Odds', amount: 9145 },
+        { match: 'Madurai Panthers v Lyca Kovai Kings / Match Odds', amount: 0 },
+        { match: 'Sri Lanka v India / Match Odds 🟢', amount: 756992992 },
+        { match: 'St. Kitts and Nevis Patriots v Jamaica Kingsmen / Match Odds', amount: 2513 },
+        { match: 'Trinbago Knight Riders v Barbados Tridents / Match Odds', amount: 0 }
+      ],
       'Soccer': [
         { match: 'Almeria v Eldense / Match Odds', amount: 71009 },
         { match: 'Batman Petrolspor v Boluspor / Match Odds', amount: 24113 },
@@ -4728,16 +4739,10 @@
         { match: 'Djokovic v Medvedev / Match Odds', amount: 2110800 },
         { match: 'Swiatek v Sabalenka / Match Odds', amount: 650200 },
         { match: 'Zverev v Rune / Match Odds', amount: 380400 }
-      ],
-      'Cricket': [
-        { match: 'Pakistan v India / Match Odds', amount: 3850000 },
-        { match: 'England v Australia / Match Odds', amount: 2450000 },
-        { match: 'South Africa v New Zealand / Match Odds', amount: 890000 },
-        { match: 'Peshawar Zalmi v Lahore Qalandars / Match Odds', amount: 1670000 }
       ]
     };
 
-    let currentHighlightsSport = 'Soccer';
+    let currentHighlightsSport = 'Cricket';
 
     function renderSportHighlights(sport = currentHighlightsSport) {
       currentHighlightsSport = sport;
