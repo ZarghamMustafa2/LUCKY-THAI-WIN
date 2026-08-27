@@ -5703,7 +5703,7 @@
           const expandedRowHtml = isExpanded ? `
           <tr id="expanded_row_${uId}" class="bg-[#F8FAFC] border-b-2 border-amber-300">
             <td colspan="11" class="p-2 sm:p-3">
-              <div class="w-full max-w-full box-border bg-white border border-[#CBD5E1] rounded-lg p-3 sm:p-4 text-xs text-gray-800 space-y-2 shadow-sm font-sans">
+              <div class="sticky left-2 w-full max-w-[calc(100vw-3rem)] sm:max-w-md box-border bg-white border border-[#CBD5E1] rounded-lg p-3 sm:p-4 text-xs text-gray-800 space-y-2 shadow-md font-sans">
                 <div class="flex items-center justify-between border-b border-gray-100 pb-1.5">
                   <span class="font-extrabold text-sm text-gray-900 truncate">${uname}</span>
                   <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 shrink-0">Account Details</span>
@@ -5723,7 +5723,7 @@
                   </li>
                   <li class="flex items-center justify-between w-full gap-2 border-b border-gray-50 pb-1">
                     <span class="font-bold text-gray-800 shrink-0">• Share</span>
-                    <span class="font-semibold text-gray-900 text-right">${shareVal} %</span>
+                    <span class="font-semibold text-gray-900 text-right">${shareVal}</span>
                   </li>
                   <li class="flex items-center justify-between w-full gap-2 border-b border-gray-50 pb-1">
                     <span class="font-bold text-gray-800 shrink-0">• Exposure</span>
@@ -5733,14 +5733,14 @@
                     <span class="font-bold text-gray-800 shrink-0">• Available Balance</span>
                     <span class="font-semibold text-gray-900 text-right">${calcAvail.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
                   </li>
-                  <li class="flex flex-wrap items-center justify-between w-full gap-2 pt-1.5 border-t border-gray-100">
-                    <span class="font-bold text-gray-800 shrink-0">• Options</span>
-                    <div class="flex flex-wrap gap-1.5 items-center">
-                      <button onclick="event.stopPropagation(); openAdjustWalletModal('${uname}')" title="Cash / Credit Adjustment" class="w-6 h-6 rounded bg-[#F59E0B] hover:bg-amber-600 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">C</button>
-                      <button onclick="event.stopPropagation(); openEditUserView('${uname}')" title="Edit Client" class="w-6 h-6 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-xs flex items-center justify-center shadow-xs cursor-pointer"><i class="fa-solid fa-pencil text-[9px]"></i></button>
-                      <button onclick="event.stopPropagation(); openClientLedgerModal('${uname}')" title="View Account Ledger" class="w-6 h-6 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">L</button>
-                      <button onclick="event.stopPropagation(); toggleUserStatus('${uId}')" title="Status Toggle" class="w-6 h-6 rounded font-black text-xs flex items-center justify-center shadow-xs cursor-pointer ${isActive ? 'bg-[#10B981] text-white' : 'border border-red-500 text-red-500'}">${isActive ? 'A' : 'D'}</button>
-                      <button onclick="event.stopPropagation(); handleSettleAccount('${uname}')" title="Settle Account" class="w-6 h-6 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">S</button>
+                  <li class="flex flex-col gap-1.5 pt-2 border-t border-gray-100">
+                    <span class="font-bold text-gray-800">• Options</span>
+                    <div class="flex flex-wrap gap-2 items-center">
+                      <button onclick="event.stopPropagation(); openAdjustWalletModal('${uname}')" title="Cash / Credit Adjustment" class="w-7 h-7 rounded bg-[#F59E0B] hover:bg-amber-600 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">C</button>
+                      <button onclick="event.stopPropagation(); openEditUserView('${uname}')" title="Edit Client" class="w-7 h-7 rounded bg-[#0D9488] hover:bg-teal-700 text-white text-xs flex items-center justify-center shadow-xs cursor-pointer"><i class="fa-solid fa-pencil text-[10px]"></i></button>
+                      <button onclick="event.stopPropagation(); openClientLedgerModal('${uname}')" title="View Account Ledger" class="w-7 h-7 rounded bg-[#0284C7] hover:bg-sky-700 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">L</button>
+                      <button onclick="event.stopPropagation(); toggleUserStatus('${uId}')" title="Status Toggle" class="w-7 h-7 rounded font-black text-xs flex items-center justify-center shadow-xs cursor-pointer ${isActive ? 'bg-[#10B981] text-white' : 'border border-red-500 text-red-500'}">${isActive ? 'A' : 'D'}</button>
+                      <button onclick="event.stopPropagation(); handleSettleAccount('${uname}')" title="Settle Account" class="w-7 h-7 rounded bg-[#F43F5E] hover:bg-rose-600 text-white font-black text-xs flex items-center justify-center shadow-xs cursor-pointer">S</button>
                     </div>
                   </li>
                 </ul>
