@@ -5443,7 +5443,7 @@
       const tbody = document.getElementById('usersTableList');
       if (!tbody) return;
 
-      let admin = AdminCore.repo.getCurrentAdmin();
+      let admin = window.activeScopedAdmin || AdminCore.repo.getCurrentAdmin();
       if (!admin) {
         const allUsersList = AdminCore.repo.get('ADM_USERS') || [];
         admin = allUsersList.find(x => x && (x.role === 'COMPANY' || x.username === 'Ahmad5050x')) || {
@@ -5712,10 +5712,10 @@
               <div class="sticky left-2 w-[260px] xs:w-[280px] sm:w-[320px] max-w-[calc(100vw-2.5rem)] box-border bg-white border border-[#CBD5E1] rounded-lg p-3 text-xs text-gray-800 space-y-2 shadow-md font-sans">
                 <div class="flex items-center justify-between border-b border-gray-100 pb-1.5 gap-1">
                   <div class="flex items-center gap-1.5 min-w-0">
-                    ${(window.accountNavStack && window.accountNavStack.length > 0) ? `<button onclick="event.stopPropagation(); popAccountNavHistory()" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 flex items-center gap-1 cursor-pointer transition-colors shrink-0" title="Back to previous account"><i class="fa-solid fa-arrow-left text-[9px]"></i> Back</button>` : ''}
-                    <span class="font-extrabold text-sm text-gray-900 truncate">${uname}</span>
+                    ${(window.accountNavStack && window.accountNavStack.length > 0) ? `<button onclick="event.stopPropagation(); popAccountNavHistory()" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 flex items-center gap-1 cursor-pointer transition-colors shrink-0" title="Back to previous list"><i class="fa-solid fa-arrow-left text-[9px]"></i> Back</button>` : ''}
+                    <span onclick="event.stopPropagation(); viewScopedAccountClients('${uname}')" class="font-extrabold text-sm text-[#00884F] hover:underline cursor-pointer truncate" title="Click to open ${uname}'s Client List">${uname}</span>
                   </div>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 shrink-0">Account Details</span>
+                  <button onclick="event.stopPropagation(); viewScopedAccountClients('${uname}')" class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#00884F] hover:bg-[#007443] text-white transition-colors cursor-pointer shrink-0">Client List</button>
                 </div>
                 <ul class="space-y-1.5 text-xs text-gray-700 w-full pl-1">
                   <li class="flex flex-wrap items-center gap-1.5">
@@ -6835,7 +6835,7 @@
         if (expandedUserRows.size > 0) {
           const currentExp = Array.from(expandedUserRows)[0];
           if (currentExp !== targetName) {
-            window.accountNavStack.push({ username: currentExp, mode: window.currentHierarchyViewMode || 'DOWNLINE' });
+            window.accountNavStack.push({ username: currentExp, expanded: currentExp, mode: window.currentHierarchyViewMode || 'DOWNLINE' });
           }
         }
         expandedUserRows.clear();
@@ -6845,17 +6845,62 @@
       renderUsersTable();
     }
 
+    function viewScopedAccountClients(targetUsername) {
+      if (!targetUsername) return;
+      const targetName = targetUsername.toString();
+      const currentAuth = AdminCore.repo.getCurrentAdmin();
+      
+      const allAdmins = AdminCore.repo.get('ADM_ADMINS') || [];
+      const allUsers = AdminCore.repo.get('ADM_USERS') || [];
+      const combined = [...allAdmins, ...allUsers];
+
+      const targetAccount = combined.find(x => x && (x.username === targetName || x.id === targetName));
+      if (!targetAccount) {
+        showAdminToast(`Account @${targetName} not found.`, 'error');
+        return;
+      }
+
+      // Security / Hierarchy Authorization check
+      const isAuthorized = currentAuth && (
+        currentAuth.role === 'COMPANY' ||
+        currentAuth.username === targetAccount.username ||
+        (typeof isUserInDownline === 'function' ? isUserInDownline(currentAuth, targetAccount) : true)
+      );
+
+      if (!isAuthorized) {
+        showAdminToast(`Access Denied: You do not have permission to view @${targetName}'s client list.`, 'error');
+        return;
+      }
+
+      // Push current navigation state to stack for Back button support
+      if (typeof window.accountNavStack !== 'undefined') {
+        window.accountNavStack.push({
+          scopedAdmin: window.activeScopedAdmin || null,
+          expanded: Array.from(expandedUserRows)[0] || null,
+          mode: window.currentHierarchyViewMode || 'DOWNLINE'
+        });
+      }
+
+      window.activeScopedAdmin = targetAccount;
+      expandedUserRows.clear();
+      renderUsersTable();
+      showAdminToast(`✓ Viewing @${targetName}'s Client List`, 'info');
+    }
+
     function popAccountNavHistory() {
-      if (window.accountNavStack.length > 0) {
+      if (window.accountNavStack && window.accountNavStack.length > 0) {
         const prev = window.accountNavStack.pop();
-        if (prev && prev.username) {
+        if (prev) {
+          window.activeScopedAdmin = prev.scopedAdmin || null;
           expandedUserRows.clear();
-          expandedUserRows.add(prev.username);
+          if (prev.expanded) expandedUserRows.add(prev.expanded);
+          if (prev.username) expandedUserRows.add(prev.username);
           if (prev.mode) window.currentHierarchyViewMode = prev.mode;
           renderUsersTable();
           return;
         }
       }
+      window.activeScopedAdmin = null;
       expandedUserRows.clear();
       renderUsersTable();
     }
