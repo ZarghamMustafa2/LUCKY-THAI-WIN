@@ -5545,7 +5545,14 @@
       // Backend Security: Retrieve accounts under authenticated user's hierarchy mode
       const authUser = AdminCore.repo.getCurrentAdmin();
       const authRole = authUser ? getNormalizedRole(authUser) : 'COMPANY';
-      const authUsername = authUser ? (authUser.username || authUser.name) : 'company';
+      const authUname = authUser ? (authUser.username || authUser.name) : 'company';
+
+      const isRootCompany = authRole === 'COMPANY' && (
+        authUname.toLowerCase() === 'company' ||
+        authUname.toLowerCase() === 'comp-root-01' ||
+        authUname.toLowerCase() === 'ahmad5050x' ||
+        (authUser && (authUser.id === 'COMP-ROOT-01' || authUser.username === 'Ahmad5050x'))
+      );
 
       // Security Check: If scoped account is outside authenticated downline, reject and return to authUser
       if (window.activeScopedAdmin && typeof AdminCore.repo.isUserInDownline === 'function') {
@@ -5569,16 +5576,15 @@
         users = typeof AdminCore.repo.getDirectChildren === 'function' ? AdminCore.repo.getDirectChildren(admin) : [];
       }
 
-      // Security Isolation: Except for ROOT COMPANY, strictly filter users to authenticated account's authorized downline
-      if (authRole !== 'COMPANY' && authUsername !== 'company' && authUsername !== 'ahmad5050x') {
-        const downlineAdmins = AdminCore.repo.getDownlineAdmins(authUsername) || [];
-        const downlineUsers = AdminCore.repo.getDownlineUsernames(authUsername) || [];
+      // Security Isolation: Subordinate roles (Super Admin, Admin, Super Master, Master, User) MUST ONLY see their authorized downline
+      if (!isRootCompany) {
+        const downlineAdmins = AdminCore.repo.getDownlineAdmins(authUname) || [];
+        const downlineUsers = AdminCore.repo.getDownlineUsernames(authUname) || [];
         const allowedSet = new Set([
-          authUsername.toLowerCase(),
           ...downlineAdmins.map(a => String(a.username || a.name || '').toLowerCase()),
           ...downlineUsers.map(u => String(u).toLowerCase())
         ]);
-        users = users.filter(u => u && allowedSet.has(String(u.username || u.name || '').toLowerCase()) && String(u.username || u.name || '').toLowerCase() !== authUsername.toLowerCase());
+        users = users.filter(u => u && allowedSet.has(String(u.username || u.name || '').toLowerCase()) && String(u.username || u.name || '').toLowerCase() !== authUname.toLowerCase());
       } else {
         users = users.filter(u => u && u.role !== 'COMPANY' && u.username !== admin.username);
       }
