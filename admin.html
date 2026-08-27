@@ -3551,6 +3551,9 @@
 
     function saveNavState(moduleId, extra = {}) {
       try {
+        if (window.activeScopedAdmin && window.activeScopedAdmin.username) {
+          extra.scopedAdmin = window.activeScopedAdmin.username;
+        }
         localStorage.setItem('ACTIVE_ADMIN_MODULE', moduleId);
         sessionStorage.setItem('ACTIVE_ADMIN_MODULE', moduleId);
         if (extra && Object.keys(extra).length > 0) {
@@ -3562,7 +3565,11 @@
         }
 
         let hashStr = '#' + moduleId;
-        if (extra.username) hashStr += ':' + extra.username;
+        if (extra.scopedAdmin) {
+          hashStr += ':' + extra.scopedAdmin;
+        } else if (extra.username) {
+          hashStr += ':' + extra.username;
+        }
         if (window.location.hash !== hashStr) {
           window.history.replaceState(null, '', hashStr);
         }
@@ -6882,6 +6889,9 @@
 
       window.activeScopedAdmin = targetAccount;
       expandedUserRows.clear();
+      if (typeof saveNavState === 'function') {
+        saveNavState('users', { scopedAdmin: targetAccount.username, username: targetAccount.username });
+      }
       renderUsersTable();
       showAdminToast(`✓ Viewing @${targetName}'s Client List`, 'info');
     }
@@ -8563,6 +8573,9 @@
       // Restore active view & params
       if (targetModule === 'edit_client' && params.username) {
         openEditUserView(params.username);
+      } else if (targetModule === 'users' && (params.scopedAdmin || (params.username && params.username !== admin.username))) {
+        const scopedName = params.scopedAdmin || params.username;
+        viewScopedAccountClients(scopedName);
       } else {
         switchAdminModule(targetModule, params);
       }
