@@ -8581,11 +8581,18 @@
       }
 
       // Restore active view & params
-      if (targetModule === 'edit_client' && params.username) {
+      // If refreshing while viewing OTHER ACCOUNT (details or client list), return to MY LOGGED-IN ACCOUNT
+      const targetUser = params.scopedAdmin || params.username || '';
+      const isOtherAccount = targetUser && targetUser.toLowerCase() !== admin.username.toLowerCase();
+
+      if (isOtherAccount) {
+        window.activeScopedAdmin = null;
+        if (typeof window.accountNavStack !== 'undefined') window.accountNavStack = [];
+        if (typeof expandedUserRows !== 'undefined') expandedUserRows.clear();
+        saveNavState('users');
+        switchAdminModule('users');
+      } else if (targetModule === 'edit_client' && params.username) {
         openEditUserView(params.username);
-      } else if (targetModule === 'users' && (params.scopedAdmin || (params.username && params.username !== admin.username))) {
-        const scopedName = params.scopedAdmin || params.username;
-        viewScopedAccountClients(scopedName);
       } else {
         switchAdminModule(targetModule, params);
       }
