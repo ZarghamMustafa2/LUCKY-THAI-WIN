@@ -6498,20 +6498,41 @@
     let isModulePasswordVisible = true;
 
     function openUserProfileDrawer(userId) {
-      const users = AdminCore.repo.get('ADM_USERS');
-      const u = users.find(x => x.id === userId || x.username.toLowerCase() === String(userId || '').toLowerCase());
-      if (!u) return;
+      let users = AdminCore.repo.get('ADM_USERS') || [];
+      let admins = AdminCore.repo.get('ADM_ADMINS') || [];
+      let allPool = [...users, ...admins];
+      let targetStr = String(userId || '').toLowerCase();
+
+      let u = allPool.find(x => x && (
+        (x.id && String(x.id).toLowerCase() === targetStr) ||
+        (x.username && String(x.username).toLowerCase() === targetStr)
+      ));
+
+      if (!u) {
+        u = {
+          id: 'USR-' + String(userId || 'USER').toUpperCase(),
+          username: String(userId || 'User'),
+          name: String(userId || 'User'),
+          type: 'Bettor',
+          role: 'USER',
+          balance: 0,
+          status: 'Active'
+        };
+      }
+
       currentDrawerUser = u;
 
-      document.getElementById('drawerUsername').innerText = u.username;
-      document.getElementById('drawerAvatarCircle').innerText = (u.username || 'US').substring(0, 2).toUpperCase();
-      document.getElementById('drawerUserSubtitle').innerText = `ID: #${u.id} · Registered ${u.regDate || '2026-06-12'}`;
-      document.getElementById('drawerStatusBadge').innerText = u.status || 'Active';
-      document.getElementById('drawerStatusBadge').className = `badge ${u.status === 'Active' ? 'badge-success' : (u.status === 'Suspended' ? 'badge-danger' : 'badge-warning')} text-[10px]`;
+      if (document.getElementById('drawerUsername')) document.getElementById('drawerUsername').innerText = u.username || 'User';
+      if (document.getElementById('drawerAvatarCircle')) document.getElementById('drawerAvatarCircle').innerText = (u.username || 'US').substring(0, 2).toUpperCase();
+      if (document.getElementById('drawerUserSubtitle')) document.getElementById('drawerUserSubtitle').innerText = `ID: #${u.id || 'N/A'} · Registered ${u.regDate || '2026-06-12'}`;
+      if (document.getElementById('drawerStatusBadge')) {
+        document.getElementById('drawerStatusBadge').innerText = u.status || 'Active';
+        document.getElementById('drawerStatusBadge').className = `badge ${u.status === 'Active' ? 'badge-success' : (u.status === 'Suspended' ? 'badge-danger' : 'badge-warning')} text-[10px]`;
+      }
 
-      // Populate Exact User Credentials Widget in Drawer (Matching Screenshot)
-      if (document.getElementById('drawerCredUserId')) document.getElementById('drawerCredUserId').innerText = u.id;
-      if (document.getElementById('drawerCredName')) document.getElementById('drawerCredName').innerText = u.username;
+      // Populate Exact User Credentials Widget in Drawer
+      if (document.getElementById('drawerCredUserId')) document.getElementById('drawerCredUserId').innerText = u.id || 'N/A';
+      if (document.getElementById('drawerCredName')) document.getElementById('drawerCredName').innerText = u.username || 'User';
       if (document.getElementById('drawerCredPassword')) {
         document.getElementById('drawerCredPassword').innerText = isDrawerPasswordVisible ? (u.password || 'Bp28233@pass') : '••••••••••••';
       }
@@ -6519,17 +6540,19 @@
       if (drawerEye) drawerEye.className = isDrawerPasswordVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
 
       // Also sync the module-level credentials inspector
-      inspectUserCredentials(u.id);
+      if (typeof inspectUserCredentials === 'function' && u.id) {
+        inspectUserCredentials(u.id);
+      }
 
-      document.getElementById('pfield_name').innerText = u.name || u.username;
-      document.getElementById('pfield_phone').innerText = u.phone || '—';
-      document.getElementById('pfield_email').innerText = u.email || '—';
-      document.getElementById('pfield_source').innerText = u.source || 'Direct Sign-Up';
+      if (document.getElementById('pfield_name')) document.getElementById('pfield_name').innerText = u.name || u.username || '—';
+      if (document.getElementById('pfield_phone')) document.getElementById('pfield_phone').innerText = u.phone || '—';
+      if (document.getElementById('pfield_email')) document.getElementById('pfield_email').innerText = u.email || '—';
+      if (document.getElementById('pfield_source')) document.getElementById('pfield_source').innerText = u.source || 'Direct Sign-Up';
       if (document.getElementById('pfield_regDate')) document.getElementById('pfield_regDate').innerText = u.regDate || '2026-06-12';
       if (document.getElementById('pfield_lastLogin')) document.getElementById('pfield_lastLogin').innerText = u.lastLogin || 'Today';
-      document.getElementById('pfield_balance').innerText = `Rs ${(u.balance || 0).toLocaleString()}.00`;
-      document.getElementById('pfield_locked').innerText = `Rs ${(u.locked || 0).toLocaleString()}.00`;
-      document.getElementById('drawerNotesInput').value = u.notes || '';
+      if (document.getElementById('pfield_balance')) document.getElementById('pfield_balance').innerText = `Rs ${(u.balance || 0).toLocaleString()}.00`;
+      if (document.getElementById('pfield_locked')) document.getElementById('pfield_locked').innerText = `Rs ${(u.locked || 0).toLocaleString()}.00`;
+      if (document.getElementById('drawerNotesInput')) document.getElementById('drawerNotesInput').value = u.notes || '';
 
       const compSelect = document.getElementById('drawerUserCompanySelect');
       if (compSelect) compSelect.value = u.companyId || 'COMP-01';
