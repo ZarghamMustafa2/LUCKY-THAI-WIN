@@ -309,6 +309,12 @@
           <span>World Casino</span>
         </button>
 
+        <!-- 7.1 Paper Casino -->
+        <button id="navBtn_paper_casino" onclick="switchAdminModule('games')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-note-sticky text-gray-400 text-sm w-4 text-center"></i>
+          <span>Paper Casino</span>
+        </button>
+
         <!-- 8. BetFair Games -->
         <button id="navBtn_betfair_games" onclick="switchAdminModule('games')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
           <i class="fa-solid fa-dice text-gray-400 text-sm w-4 text-center"></i>
@@ -331,6 +337,18 @@
         <button id="navBtn_cricket" onclick="filterHighlightsSport('Cricket')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
           <i class="fa-solid fa-baseball-bat-ball text-gray-400 text-sm w-4 text-center"></i>
           <span>Cricket</span>
+        </button>
+
+        <!-- 12. Horse Racing -->
+        <button id="navBtn_racing" onclick="filterHighlightsSport('Horse Racing')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-horse text-gray-400 text-sm w-4 text-center"></i>
+          <span>Horse Racing</span>
+        </button>
+
+        <!-- 13. Play On -->
+        <button id="navBtn_playon" onclick="filterHighlightsSport('Play On')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
+          <i class="fa-solid fa-gamepad text-gray-400 text-sm w-4 text-center"></i>
+          <span>Play On</span>
         </button>
 
       </div>
@@ -4741,6 +4759,13 @@
         { match: 'Djokovic v Medvedev / Match Odds', amount: 2110800 },
         { match: 'Swiatek v Sabalenka / Match Odds', amount: 650200 },
         { match: 'Zverev v Rune / Match Odds', amount: 380400 }
+      ],
+      'Horse Racing': [
+        { match: 'Cheltenham 14:30 / Winner', amount: 45000 },
+        { match: 'Ascot 15:15 / Winner', amount: 82000 }
+      ],
+      'Play On': [
+        { match: 'Virtual Championship League / Match Odds', amount: 12500 }
       ]
     };
 
