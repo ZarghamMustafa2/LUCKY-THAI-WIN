@@ -1,0 +1,25 @@
+{
+  "name": "bpexch-lucky-thai-win",
+  "version": "2.0.0",
+  "description": "BPEXCH / Lucky Thai Win - Cyber-Luxury Betting & Exchange Platform",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve .",
+    "build": "echo 'Static build complete. No compilation needed.'",
+    "test": "node scratch/test_company_only_share_and_delete_buttons.js && node scratch/test_settle_account_company_only.js"
+  },
+  "keywords": [
+    "bpexch",
+    "casino",
+    "betting",
+    "exchange",
+    "thai-win"
+  ],
+  "author": "Antigravity Dev Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}
