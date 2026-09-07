@@ -444,6 +444,55 @@ export default function Home() {
             {/* RIGHT SIDEBAR (Bet Panel + Mini Leaderboard) (4 cols) */}
             <div className="xl:col-span-4 flex flex-col gap-8 animate-slide-up">
               
+              {/* OFFICIAL THAI 4D LIVE DRAW RESULTS SECTION */}
+              <div className="glass-panel p-4 sm:p-6 flex flex-col gap-4 border-2 border-[#FFD700]/40 shadow-[0_10px_30px_rgba(255,215,0,0.15)] rounded-2xl mb-6">
+                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-[#FFD700]" />
+                    <h3 className="text-sm sm:text-base font-black text-white uppercase tracking-wider font-display">
+                      Official Thai 4D Live Draw Results
+                    </h3>
+                  </div>
+                  <span className="text-[10px] sm:text-xs font-mono font-bold text-[#FFD700] bg-[#FFD700]/10 px-2.5 py-0.5 rounded-full border border-[#FFD700]/30">
+                    Live Draw Feed
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {/* Box 1: 1st DRAW */}
+                  <div className="bg-[#0B1220] border-2 border-[#FFD700] rounded-xl p-3 flex flex-col items-center justify-center shadow-[0_0_20px_rgba(255,215,0,0.2)]">
+                    <span className="text-[10px] font-black text-[#FFD700] uppercase tracking-widest flex items-center gap-1 mb-1">
+                      <Trophy className="w-3 h-3 text-[#FFD700]" /> 1st DRAW
+                    </span>
+                    <span className="text-xl sm:text-2xl font-mono font-black text-[#FFD700] tracking-widest">8492</span>
+                    <span className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">Grand Prize</span>
+                  </div>
+                  {/* Box 2: 2nd DRAW */}
+                  <div className="bg-[#0B1220] border-2 border-[#00D4FF] rounded-xl p-3 flex flex-col items-center justify-center shadow-[0_0_20px_rgba(0,212,255,0.2)]">
+                    <span className="text-[10px] font-black text-[#00D4FF] uppercase tracking-widest flex items-center gap-1 mb-1">
+                      <Star className="w-3 h-3 text-[#00D4FF]" /> 2nd DRAW
+                    </span>
+                    <span className="text-xl sm:text-2xl font-mono font-black text-[#00D4FF] tracking-widest">3150</span>
+                    <span className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">Runner Up</span>
+                  </div>
+                  {/* Box 3: 2nd DRAW */}
+                  <div className="bg-[#0B1220] border-2 border-[#00D4FF] rounded-xl p-3 flex flex-col items-center justify-center shadow-[0_0_20px_rgba(0,212,255,0.2)]">
+                    <span className="text-[10px] font-black text-[#00D4FF] uppercase tracking-widest flex items-center gap-1 mb-1">
+                      <Star className="w-3 h-3 text-[#00D4FF]" /> 2nd DRAW
+                    </span>
+                    <span className="text-xl sm:text-2xl font-mono font-black text-[#00D4FF] tracking-widest">9274</span>
+                    <span className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">Runner Up</span>
+                  </div>
+                  {/* Box 4: 2nd DRAW */}
+                  <div className="bg-[#0B1220] border-2 border-[#00D4FF] rounded-xl p-3 flex flex-col items-center justify-center shadow-[0_0_20px_rgba(0,212,255,0.2)]">
+                    <span className="text-[10px] font-black text-[#00D4FF] uppercase tracking-widest flex items-center gap-1 mb-1">
+                      <Star className="w-3 h-3 text-[#00D4FF]" /> 2nd DRAW
+                    </span>
+                    <span className="text-xl sm:text-2xl font-mono font-black text-[#00D4FF] tracking-widest">6108</span>
+                    <span className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">Runner Up</span>
+                  </div>
+                </div>
+              </div>
+
               {/* THE ADVANCED BET PANEL (NUMBER GRID) */}
               <div className="glass-panel p-6 lg:p-8 flex flex-col relative overflow-hidden border-t-2 border-t-[#FFD700] shadow-[0_30px_60px_rgba(0,0,0,0.6)] xl:sticky xl:top-24 z-20">
                 <h3 className="text-2xl font-display font-black text-white text-center mb-8"><i className="fa-solid fa-gem text-[#FFD700] mr-2"></i> Select Number</h3>
