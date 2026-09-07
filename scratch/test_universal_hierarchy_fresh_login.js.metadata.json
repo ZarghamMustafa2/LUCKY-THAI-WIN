@@ -1,0 +1,4 @@
+{
+  "summary": "Automated test suite verifying fresh login session isolation across the entire account hierarchy (COMPANY -> SUPER_ADMIN -> ADMIN -> SUPER_MASTER -> MASTER -> USER)",
+  "updatedAt": "2026-08-24T19:10:42.267193Z"
+}

@@ -218,6 +218,76 @@
       </div>
     </section>
 
+    <!-- 1.5 OFFICIAL THAI WIN LIVE DRAW RESULTS SECTION -->
+    <section class="w-full">
+      <div class="glass-panel p-4 sm:p-5 border border-gold/30 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+        <!-- Header Strip -->
+        <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+            <h3 class="text-xs sm:text-sm font-black text-gold uppercase tracking-wider font-display flex items-center gap-1.5">
+              <i class="fa-solid fa-trophy text-gold"></i> Official Thai 4D Live Draw Results
+            </h3>
+          </div>
+          <span class="text-[10px] sm:text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/30">
+            <i class="fa-solid fa-tower-broadcast"></i> Live Feed
+          </span>
+        </div>
+
+        <!-- 4 Result Cards Grid (1st DRAW, 2nd DRAW, 2nd DRAW, 2nd DRAW) -->
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          
+          <!-- Box 1: 1st DRAW -->
+          <div class="bg-gradient-to-b from-[#162544] to-[#0d1629] border border-gold/50 rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center gap-1 shadow-lg relative overflow-hidden group hover:border-gold transition-all">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold via-amber-400 to-gold"></div>
+            <span class="text-[10px] sm:text-xs font-extrabold text-gold tracking-widest uppercase flex items-center gap-1">
+              <i class="fa-solid fa-crown text-[10px]"></i> 1st DRAW
+            </span>
+            <span id="drawResultBox1" class="text-2xl sm:text-3xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_10px_rgba(255,215,0,0.5)]">
+              ----
+            </span>
+            <span class="text-[9px] font-mono text-gray-400">Grand Prize</span>
+          </div>
+
+          <!-- Box 2: 2nd DRAW -->
+          <div class="bg-gradient-to-b from-[#162544] to-[#0d1629] border border-cyan-400/40 rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center gap-1 shadow-lg relative overflow-hidden group hover:border-cyan-400 transition-all">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400"></div>
+            <span class="text-[10px] sm:text-xs font-extrabold text-cyan-300 tracking-widest uppercase flex items-center gap-1">
+              <i class="fa-solid fa-star text-[10px]"></i> 2nd DRAW
+            </span>
+            <span id="drawResultBox2" class="text-2xl sm:text-3xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_10px_rgba(0,212,255,0.4)]">
+              ----
+            </span>
+            <span class="text-[9px] font-mono text-gray-400">Runner Up</span>
+          </div>
+
+          <!-- Box 3: 2nd DRAW -->
+          <div class="bg-gradient-to-b from-[#162544] to-[#0d1629] border border-cyan-400/40 rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center gap-1 shadow-lg relative overflow-hidden group hover:border-cyan-400 transition-all">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400"></div>
+            <span class="text-[10px] sm:text-xs font-extrabold text-cyan-300 tracking-widest uppercase flex items-center gap-1">
+              <i class="fa-solid fa-star text-[10px]"></i> 2nd DRAW
+            </span>
+            <span id="drawResultBox3" class="text-2xl sm:text-3xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_10px_rgba(0,212,255,0.4)]">
+              ----
+            </span>
+            <span class="text-[9px] font-mono text-gray-400">Runner Up</span>
+          </div>
+
+          <!-- Box 4: 2nd DRAW -->
+          <div class="bg-gradient-to-b from-[#162544] to-[#0d1629] border border-cyan-400/40 rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center gap-1 shadow-lg relative overflow-hidden group hover:border-cyan-400 transition-all">
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400"></div>
+            <span class="text-[10px] sm:text-xs font-extrabold text-cyan-300 tracking-widest uppercase flex items-center gap-1">
+              <i class="fa-solid fa-star text-[10px]"></i> 2nd DRAW
+            </span>
+            <span id="drawResultBox4" class="text-2xl sm:text-3xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_10px_rgba(0,212,255,0.4)]">
+              ----
+            </span>
+            <span class="text-[9px] font-mono text-gray-400">Runner Up</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
 
     <!-- 2. PLACE YOUR BET BOARD FORM -->
     <section class="w-full glass-panel p-4 sm:p-8 flex flex-col gap-5 sm:gap-6 border-2 border-gold/40 shadow-[0_15px_40px_rgba(255,212,0,0.12)]">
@@ -1407,6 +1477,54 @@
       } catch(cErr) {}
       window.location.replace('index.html');
     };
+
+    // --- OFFICIAL THAI WIN DRAW RESULTS SYNC & DISPLAY ENGINE ---
+    window.loadAndSyncDrawResults = function() {
+      var results = ['----', '----', '----', '----'];
+      try {
+        var stored = localStorage.getItem('THAINXT_DRAW_RESULTS');
+        if (stored) {
+          var parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length >= 4) {
+            results = parsed;
+          }
+        }
+      } catch(e) {}
+
+      var box1 = document.getElementById('drawResultBox1');
+      var box2 = document.getElementById('drawResultBox2');
+      var box3 = document.getElementById('drawResultBox3');
+      var box4 = document.getElementById('drawResultBox4');
+
+      if (box1) box1.innerText = results[0] || '----';
+      if (box2) box2.innerText = results[1] || '----';
+      if (box3) box3.innerText = results[2] || '----';
+      if (box4) box4.innerText = results[3] || '----';
+    };
+
+    // Cross-tab BroadcastChannel & Event Bus Listener
+    try {
+      if (typeof window.BroadcastChannel === 'function') {
+        var drawBc = new window.BroadcastChannel('THAINXT_PLATFORM_EVENT_BUS');
+        drawBc.onmessage = function(ev) {
+          if (ev && ev.data && ev.data.type === 'THAINXT_DRAW_RESULTS_UPDATED') {
+            window.loadAndSyncDrawResults();
+          }
+        };
+      }
+    } catch(e) {}
+
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'THAINXT_DRAW_RESULTS' || e.key === 'THAINXT_LAST_EVENT') {
+        window.loadAndSyncDrawResults();
+      }
+    });
+
+    window.addEventListener('THAINXT_DRAW_RESULTS_UPDATED', function() {
+      window.loadAndSyncDrawResults();
+    });
+
+    window.loadAndSyncDrawResults();
   </script>
   <!-- Universal Touch Pull-To-Refresh Engine -->
   <script src="pull-to-refresh.js"></script>

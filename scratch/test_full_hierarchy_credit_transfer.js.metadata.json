@@ -1,0 +1,4 @@
+{
+  "summary": "Automated test suite for atomic credit transfers across the full account hierarchy (Company -> Super Admin -> Admin -> Super Master -> Master -> User)",
+  "updatedAt": "2026-08-23T17:25:35.482570800Z"
+}
