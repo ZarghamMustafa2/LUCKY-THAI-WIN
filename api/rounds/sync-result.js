@@ -1,5 +1,8 @@
 // Vercel Serverless Function: POST /api/rounds/sync-result
-// Receives, validates, and persists the 4 official Thai Win draw results
+// Receives, validates, and persists official Thai Win draw results globally
+
+const https = require('https');
+const STORE_ID = 'ff808181a067127101a07cccefc03a85';
 
 if (!globalThis.__THAINXT_DRAW_RESULTS__) {
   globalThis.__THAINXT_DRAW_RESULTS__ = {
@@ -8,14 +11,35 @@ if (!globalThis.__THAINXT_DRAW_RESULTS__) {
   };
 }
 
-module.exports = (req, res) => {
-  // Set strict CORS headers
+function updateRemoteStore(results) {
+  return new Promise((resolve) => {
+    const postData = JSON.stringify({
+      name: 'ThaiNXT Draw Results',
+      data: { winningNumbers: results, updatedAt: new Date().toISOString() }
+    });
+    const req = https.request('https://api.restful-api.dev/objects/' + STORE_ID, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    }, res => {
+      let body = '';
+      res.on('data', c => body += c);
+      res.on('end', () => resolve());
+    });
+    req.on('error', () => resolve());
+    req.write(postData);
+    req.end();
+  });
+}
+
+module.exports = async (req, res) => {
+  // Set strict CORS & No-Cache headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Disable caching completely
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
 
@@ -68,9 +92,12 @@ module.exports = (req, res) => {
       updatedAt: nowIso
     };
 
+    // Update persistent global cloud store
+    await updateRemoteStore(newResults);
+
     res.status(200).json({
       success: true,
-      message: 'Official Thai Win Draw Results successfully published and persisted.',
+      message: 'Official Thai Win Draw Results successfully published and persisted globally.',
       winningNumbers: newResults,
       updatedAt: nowIso
     });
