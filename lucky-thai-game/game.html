@@ -1488,21 +1488,55 @@
           if (Array.isArray(parsed) && parsed.length >= 4) {
             results = parsed;
           }
-        } else {
-          localStorage.setItem('THAINXT_DRAW_RESULTS', JSON.stringify(results));
         }
       } catch(e) {}
 
-      var box1 = document.getElementById('drawResultBox1');
-      var box2 = document.getElementById('drawResultBox2');
-      var box3 = document.getElementById('drawResultBox3');
-      var box4 = document.getElementById('drawResultBox4');
+      function updateDomCards(nums) {
+        var box1 = document.getElementById('drawResultBox1');
+        var box2 = document.getElementById('drawResultBox2');
+        var box3 = document.getElementById('drawResultBox3');
+        var box4 = document.getElementById('drawResultBox4');
 
-      if (box1) box1.innerText = results[0] || '8492';
-      if (box2) box2.innerText = results[1] || '3150';
-      if (box3) box3.innerText = results[2] || '9274';
-      if (box4) box4.innerText = results[3] || '6108';
+        if (box1) box1.innerText = nums[0] || '8492';
+        if (box2) box2.innerText = nums[1] || '3150';
+        if (box3) box3.innerText = nums[2] || '9274';
+        if (box4) box4.innerText = nums[3] || '6108';
+      }
+
+      // 1. Immediate local DOM render for zero lag
+      updateDomCards(results);
+
+      // 2. Fetch authoritative live results from serverless API with no-cache
+      var apiUrl = '/api/rounds/results?t=' + Date.now();
+      fetch(apiUrl, { cache: 'no-store', headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache' } })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.success && Array.isArray(data.winningNumbers) && data.winningNumbers.length >= 4) {
+            var serverNums = [
+              String(data.winningNumbers[0]).trim(),
+              String(data.winningNumbers[1]).trim(),
+              String(data.winningNumbers[2]).trim(),
+              String(data.winningNumbers[3]).trim()
+            ];
+            var isValid = serverNums.every(function(n) { return /^\d{4}$/.test(n); });
+            if (isValid) {
+              try { localStorage.setItem('THAINXT_DRAW_RESULTS', JSON.stringify(serverNums)); } catch(e) {}
+              updateDomCards(serverNums);
+            }
+          }
+        })
+        .catch(function() {});
     };
+
+    // Background poller every 4 seconds for real-time cross-device / cross-browser updates
+    if (!window.__THAINXT_DRAW_POLLER_STARTED__) {
+      window.__THAINXT_DRAW_POLLER_STARTED__ = true;
+      setInterval(function() {
+        if (typeof window.loadAndSyncDrawResults === 'function') {
+          window.loadAndSyncDrawResults();
+        }
+      }, 4000);
+    }
 
     // Cross-tab BroadcastChannel & Event Bus Listener
     try {

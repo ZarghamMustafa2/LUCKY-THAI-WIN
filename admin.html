@@ -5157,24 +5157,33 @@
         window.dispatchEvent(new CustomEvent('THAINXT_DRAW_RESULTS_UPDATED', { detail: results }));
       } catch(e) {}
 
-      // 3. Post to backend REST API endpoint if server is online
-      try {
+      // 3. Post to backend REST API endpoints (authoritative server sync across devices)
+      const payload = JSON.stringify({
+        drawId: 'DRAW-' + Date.now(),
+        winningNumbers: results
+      });
+
+      Promise.allSettled([
         fetch('/api/rounds/sync-result', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            drawId: 'DRAW-' + Date.now(),
-            winningNumbers: results
-          })
-        }).catch(() => {});
-      } catch(e) {}
-
-      showAdminToast('✓ Official Thai Win Draw Results published successfully!', 'success');
-      const statusEl = document.getElementById('adminDrawResultSaveStatus');
-      if (statusEl) {
-        statusEl.classList.remove('hidden');
-        setTimeout(() => statusEl.classList.add('hidden'), 3000);
-      }
+          body: payload,
+          cache: 'no-store'
+        }),
+        fetch('/api/round/sync-result', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          cache: 'no-store'
+        })
+      ]).then(() => {
+        showAdminToast('✓ Official Thai Win Draw Results published successfully!', 'success');
+        const statusEl = document.getElementById('adminDrawResultSaveStatus');
+        if (statusEl) {
+          statusEl.classList.remove('hidden');
+          setTimeout(() => statusEl.classList.add('hidden'), 3000);
+        }
+      });
     }
 
     function applyDrawResultsCardRolePermissions() {

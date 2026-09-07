@@ -17,6 +17,22 @@
     {
       "source": "/ritmu-tv-live",
       "destination": "/api/ritmu"
+    },
+    {
+      "source": "/api/rounds/sync-result",
+      "destination": "/api/rounds/sync-result"
+    },
+    {
+      "source": "/api/rounds/results",
+      "destination": "/api/rounds/results"
+    },
+    {
+      "source": "/api/round/sync-result",
+      "destination": "/api/round/sync-result"
+    },
+    {
+      "source": "/api/round/results",
+      "destination": "/api/round/results"
     }
   ]
 }
