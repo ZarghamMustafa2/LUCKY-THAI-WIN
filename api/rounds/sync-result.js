@@ -59,7 +59,19 @@ module.exports = async (req, res) => {
       try { body = JSON.parse(body); } catch(e) {}
     }
 
-    const { winningNumbers, drawResults } = body || {};
+    const reqRoleHeader = req.headers['x-admin-role'] || req.headers['x-role'] || '';
+    const { winningNumbers, drawResults, role, adminRole } = body || {};
+    const candidateRole = (reqRoleHeader || role || adminRole || '').toString().trim().toUpperCase();
+
+    // SECURITY AUTHORIZATION: Only COMPANY role accounts are authorized to publish official draw results
+    if (candidateRole !== 'COMPANY' && !candidateRole.includes('COMPANY')) {
+      res.status(403).json({
+        success: false,
+        message: 'Forbidden: Only COMPANY role accounts are authorized to publish draw results.'
+      });
+      return;
+    }
+
     const candidate = winningNumbers || drawResults;
 
     if (!Array.isArray(candidate) || candidate.length < 4) {

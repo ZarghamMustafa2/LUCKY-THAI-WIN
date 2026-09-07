@@ -269,8 +269,14 @@
 
         <!-- 4.1 API / Services -->
         <button id="navBtn_api_services" onclick="switchAdminModule('api_services')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors">
-          <i class="fa-solid fa-[#fa-plug] fa-plug text-gray-400 text-sm w-4 text-center"></i>
+          <i class="fa-solid fa-plug text-gray-400 text-sm w-4 text-center"></i>
           <span>API / Services</span>
+        </button>
+
+        <!-- 4.2 Thai Win Results (COMPANY ONLY Standalone Sidebar Item) -->
+        <button id="navBtn_thai_win_results" onclick="switchAdminModule('thai_win_results')" class="nav-item w-full px-4 py-2.5 text-left text-[#D1D5DB] hover:text-white hover:bg-[#252E37] flex items-center gap-3 cursor-pointer transition-colors hidden">
+          <i class="fa-solid fa-trophy text-amber-400 text-sm w-4 text-center"></i>
+          <span>Thai Win Results</span>
         </button>
 
         <!-- 8. BetFair Games -->
@@ -360,70 +366,6 @@
             </div>
           </div>
 
-          <!-- SECTION 1.5: THAI WIN DRAW RESULTS MANAGEMENT CARD -->
-          <div id="adminDrawResultsCard" class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden flex flex-col">
-            <!-- Card Header Strip -->
-            <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-[#F8FAFC] flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-trophy text-[#00884F] text-xs"></i>
-                <h3 class="font-bold text-[#1F2937] text-sm tracking-tight">Thai Win Draw Results Management</h3>
-              </div>
-              <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                Official Live Stage
-              </span>
-            </div>
-
-            <!-- Card Body Form -->
-            <div class="p-4 sm:p-5 flex flex-col gap-4 text-xs">
-              <p class="text-gray-600 text-xs">
-                Enter or update the official 4-digit draw winning numbers (1st DRAW and 2nd DRAWs). Published results update the live Thai Win game page instantly across all connected users.
-              </p>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                <!-- 1st DRAW -->
-                <div class="flex flex-col gap-1">
-                  <label class="font-bold text-gray-700 text-xs flex items-center gap-1">
-                    <i class="fa-solid fa-crown text-amber-500 text-[10px]"></i> 1st DRAW Result
-                  </label>
-                  <input type="text" id="adminDrawInput1" maxlength="4" placeholder="8492" class="px-3 py-1.5 border border-[#D1D5DB] rounded text-gray-900 font-mono font-bold text-sm outline-none focus:border-[#00884F] transition-colors" />
-                </div>
-
-                <!-- 2nd DRAW -->
-                <div class="flex flex-col gap-1">
-                  <label class="font-bold text-gray-700 text-xs flex items-center gap-1">
-                    <i class="fa-solid fa-star text-cyan-600 text-[10px]"></i> 2nd DRAW Result
-                  </label>
-                  <input type="text" id="adminDrawInput2" maxlength="4" placeholder="3150" class="px-3 py-1.5 border border-[#D1D5DB] rounded text-gray-900 font-mono font-bold text-sm outline-none focus:border-[#00884F] transition-colors" />
-                </div>
-
-                <!-- 2nd DRAW -->
-                <div class="flex flex-col gap-1">
-                  <label class="font-bold text-gray-700 text-xs flex items-center gap-1">
-                    <i class="fa-solid fa-star text-cyan-600 text-[10px]"></i> 2nd DRAW Result
-                  </label>
-                  <input type="text" id="adminDrawInput3" maxlength="4" placeholder="9274" class="px-3 py-1.5 border border-[#D1D5DB] rounded text-gray-900 font-mono font-bold text-sm outline-none focus:border-[#00884F] transition-colors" />
-                </div>
-
-                <!-- 2nd DRAW -->
-                <div class="flex flex-col gap-1">
-                  <label class="font-bold text-gray-700 text-xs flex items-center gap-1">
-                    <i class="fa-solid fa-star text-cyan-600 text-[10px]"></i> 2nd DRAW Result
-                  </label>
-                  <input type="text" id="adminDrawInput4" maxlength="4" placeholder="6108" class="px-3 py-1.5 border border-[#D1D5DB] rounded text-gray-900 font-mono font-bold text-sm outline-none focus:border-[#00884F] transition-colors" />
-                </div>
-              </div>
-
-              <div class="flex items-center gap-3 pt-2">
-                <button type="button" onclick="saveAdminDrawResults()" class="bg-[#00884F] hover:bg-[#007443] text-white font-bold px-5 py-2 rounded text-xs transition-colors cursor-pointer shadow-sm flex items-center gap-1.5">
-                  <i class="fa-solid fa-floppy-disk"></i> Publish Official Results
-                </button>
-                <span id="adminDrawResultSaveStatus" class="text-xs font-semibold text-emerald-700 hidden">
-                  ✓ Saved & Published
-                </span>
-              </div>
-            </div>
-          </div>
-
           <!-- SECTION 2: SPORT HIGHLIGHTS CARD (Matches Screenshot) -->
           <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden flex flex-col">
             <!-- Card Header Strip -->
@@ -461,8 +403,182 @@
       </div>
 
       <!-- ============================================================ -->
-      <!-- MODULE 1.5: CURRENT POSITION (Matches Screenshot)            -->
+      <!-- MODULE 1.2: THAI WIN RESULTS (COMPANY ONLY DEDICATED PAGE)  -->
       <!-- ============================================================ -->
+      <div id="module_thai_win_results" class="module-view hidden flex flex-col gap-6">
+
+        <!-- Page Header Container -->
+        <div class="bg-gradient-to-r from-[#162038] via-[#1F2A4A] to-[#162038] border border-cyan-500/30 rounded-xl p-5 sm:p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden">
+          <!-- Ambient Background Glow -->
+          <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="absolute -left-10 -top-10 w-48 h-48 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div class="flex items-center gap-4 relative z-10">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400/20 to-yellow-600/20 border border-amber-400/40 flex items-center justify-center text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+              <i class="fa-solid fa-trophy text-2xl"></i>
+            </div>
+            <div>
+              <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight font-display flex items-center gap-2">
+                Thai Win Results
+                <span class="text-[10px] font-mono font-bold tracking-wider text-amber-300 bg-amber-500/20 border border-amber-400/30 px-2.5 py-0.5 rounded-full uppercase">
+                  COMPANY Exclusive
+                </span>
+              </h1>
+              <p class="text-xs sm:text-sm text-cyan-200/70 font-medium mt-0.5">
+                Manage Official 4D Draw Results
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 relative z-10">
+            <div class="bg-black/40 border border-white/10 backdrop-blur-md px-4 py-2 rounded-lg flex items-center gap-3">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="text-xs font-mono font-bold text-gray-300">Live Stage Engine: Active</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dedicated Results Management Form Card -->
+        <div class="bg-[#162038] border border-cyan-500/20 rounded-xl p-5 sm:p-7 shadow-2xl flex flex-col gap-6 relative">
+          
+          <!-- Section Title Strip -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-4">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-bullhorn text-cyan-400 text-sm"></i>
+                Official Live Draw Results Broadcast
+              </h2>
+              <p class="text-xs text-gray-400 mt-1">
+                Enter 4-digit winning numbers for each draw. Submitting publishes results instantly across all live player sessions and persistent database records.
+              </p>
+            </div>
+            <div class="shrink-0">
+              <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 px-3 py-1 rounded-md">
+                Role: COMPANY Authorized
+              </span>
+            </div>
+          </div>
+
+          <!-- 4 Result Inputs Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- 1st DRAW — Grand Prize (Gold Cyber Theme) -->
+            <div class="bg-gradient-to-b from-[#1F2937] to-[#111827] border-2 border-amber-500/50 rounded-xl p-4 flex flex-col gap-3 shadow-[0_0_15px_rgba(245,158,11,0.15)] relative overflow-hidden">
+              <div class="flex items-center justify-between border-b border-amber-500/20 pb-2">
+                <span class="text-xs font-black text-amber-400 tracking-wider flex items-center gap-1.5 uppercase">
+                  <i class="fa-solid fa-crown text-amber-400"></i> 1st DRAW
+                </span>
+                <span class="text-[9px] font-bold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-400/30">
+                  Grand Prize
+                </span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[11px] font-semibold text-gray-300">Winning Number (4 Digits)</label>
+                <input 
+                  type="text" 
+                  id="adminDedicatedDrawInput1" 
+                  maxlength="4" 
+                  placeholder="8492" 
+                  class="w-full bg-black/60 border border-amber-500/40 rounded-lg px-4 py-2.5 text-center font-mono font-black text-2xl text-amber-400 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 transition-all placeholder:text-amber-700/40 tracking-widest" 
+                />
+              </div>
+            </div>
+
+            <!-- 2nd DRAW — Runner Up #1 (Cyan Cyber Theme) -->
+            <div class="bg-gradient-to-b from-[#1F2937] to-[#111827] border-2 border-cyan-500/50 rounded-xl p-4 flex flex-col gap-3 shadow-[0_0_15px_rgba(6,182,212,0.15)] relative overflow-hidden">
+              <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+                <span class="text-xs font-black text-cyan-400 tracking-wider flex items-center gap-1.5 uppercase">
+                  <i class="fa-solid fa-star text-cyan-400"></i> 2nd DRAW
+                </span>
+                <span class="text-[9px] font-bold text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-400/30">
+                  Runner Up
+                </span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[11px] font-semibold text-gray-300">Winning Number (4 Digits)</label>
+                <input 
+                  type="text" 
+                  id="adminDedicatedDrawInput2" 
+                  maxlength="4" 
+                  placeholder="3150" 
+                  class="w-full bg-black/60 border border-cyan-500/40 rounded-lg px-4 py-2.5 text-center font-mono font-black text-2xl text-cyan-400 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all placeholder:text-cyan-700/40 tracking-widest" 
+                />
+              </div>
+            </div>
+
+            <!-- 2nd DRAW — Runner Up #2 (Cyan Cyber Theme) -->
+            <div class="bg-gradient-to-b from-[#1F2937] to-[#111827] border-2 border-cyan-500/50 rounded-xl p-4 flex flex-col gap-3 shadow-[0_0_15px_rgba(6,182,212,0.15)] relative overflow-hidden">
+              <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+                <span class="text-xs font-black text-cyan-400 tracking-wider flex items-center gap-1.5 uppercase">
+                  <i class="fa-solid fa-star text-cyan-400"></i> 2nd DRAW
+                </span>
+                <span class="text-[9px] font-bold text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-400/30">
+                  Runner Up
+                </span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[11px] font-semibold text-gray-300">Winning Number (4 Digits)</label>
+                <input 
+                  type="text" 
+                  id="adminDedicatedDrawInput3" 
+                  maxlength="4" 
+                  placeholder="9274" 
+                  class="w-full bg-black/60 border border-cyan-500/40 rounded-lg px-4 py-2.5 text-center font-mono font-black text-2xl text-cyan-400 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all placeholder:text-cyan-700/40 tracking-widest" 
+                />
+              </div>
+            </div>
+
+            <!-- 2nd DRAW — Runner Up #3 (Cyan Cyber Theme) -->
+            <div class="bg-gradient-to-b from-[#1F2937] to-[#111827] border-2 border-cyan-500/50 rounded-xl p-4 flex flex-col gap-3 shadow-[0_0_15px_rgba(6,182,212,0.15)] relative overflow-hidden">
+              <div class="flex items-center justify-between border-b border-cyan-500/20 pb-2">
+                <span class="text-xs font-black text-cyan-400 tracking-wider flex items-center gap-1.5 uppercase">
+                  <i class="fa-solid fa-star text-cyan-400"></i> 2nd DRAW
+                </span>
+                <span class="text-[9px] font-bold text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded border border-cyan-400/30">
+                  Runner Up
+                </span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[11px] font-semibold text-gray-300">Winning Number (4 Digits)</label>
+                <input 
+                  type="text" 
+                  id="adminDedicatedDrawInput4" 
+                  maxlength="4" 
+                  placeholder="6108" 
+                  class="w-full bg-black/60 border border-cyan-500/40 rounded-lg px-4 py-2.5 text-center font-mono font-black text-2xl text-cyan-400 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all placeholder:text-cyan-700/40 tracking-widest" 
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Bar & Current Live Status Display -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/10">
+            <div class="flex items-center gap-3">
+              <button 
+                type="button" 
+                onclick="saveAdminDedicatedDrawResults()" 
+                class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-6 py-3 rounded-lg text-sm transition-all shadow-[0_4px_15px_rgba(16,185,129,0.3)] hover:shadow-[0_6px_20px_rgba(16,185,129,0.5)] active:scale-95 cursor-pointer flex items-center gap-2 border border-emerald-400/30">
+                <i class="fa-solid fa-paper-plane text-xs"></i> Publish Official Results
+              </button>
+              <span id="adminDedicatedDrawSaveStatus" class="text-xs font-semibold text-emerald-400 hidden flex items-center gap-1">
+                <i class="fa-solid fa-circle-check"></i> Published Successfully!
+              </span>
+            </div>
+
+            <!-- Published Results Live Preview Strip -->
+            <div class="flex items-center gap-3 bg-black/40 border border-white/10 px-4 py-2 rounded-lg">
+              <span class="text-xs font-semibold text-gray-400">Currently Published:</span>
+              <div id="adminDedicatedLivePreview" class="flex items-center gap-2 font-mono font-bold text-xs text-amber-300">
+                <span class="text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/20">8492</span>
+                <span class="text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 rounded border border-cyan-400/20">3150</span>
+                <span class="text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 rounded border border-cyan-400/20">9274</span>
+                <span class="text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 rounded border border-cyan-400/20">6108</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
       <div id="module_current_position" class="module-view hidden flex flex-col justify-between min-h-[calc(100vh-120px)] gap-4">
         
         <!-- CARD 1: MARKET POSITION CARD (Matches Screenshot) -->
@@ -3602,6 +3718,19 @@
 
     // Module Switcher Engine
     function switchAdminModule(moduleId, params = {}) {
+      const curAdmin = AdminCore.repo.getCurrentAdmin();
+      const normRole = (curAdmin && typeof getNormalizedRole === 'function' ? getNormalizedRole(curAdmin) : (curAdmin ? (curAdmin.role || curAdmin.userType || '') : '')) || '';
+
+      // SECURITY AUTHORIZATION: Thai Win Results management module is strictly restricted to COMPANY role
+      if (moduleId === 'thai_win_results') {
+        if (normRole !== 'COMPANY') {
+          showAdminToast('Access Denied: Thai Win Draw Results Management is restricted strictly to COMPANY level accounts.', 'error');
+          moduleId = 'dashboard';
+        } else {
+          loadAdminDedicatedDrawResultInputs();
+        }
+      }
+
       window.currentAdminModule = moduleId;
       if (typeof isUsersBalanceLoaded !== 'undefined') isUsersBalanceLoaded = false;
       window.isUsersBalanceLoaded = false;
@@ -3643,6 +3772,7 @@
       // Format Header Title
       const titles = {
         'dashboard': 'Executive Command Dashboard',
+        'thai_win_results': 'Thai Win Results — Official 4D Draw Results Management',
         'users': 'Player Accounts & User Profiles',
         'current_position': 'Current Position & Open Books',
         'games': 'Game Catalog & Categories',
@@ -5084,10 +5214,10 @@
 
       applySidebarPermissions();
       updateDashboardMetrics();
-      loadAdminDrawResultInputs();
+      loadAdminDedicatedDrawResultInputs();
     }
 
-    function loadAdminDrawResultInputs() {
+    function loadAdminDedicatedDrawResultInputs() {
       var results = ['8492', '3150', '9274', '6108'];
       try {
         var stored = localStorage.getItem('THAINXT_DRAW_RESULTS');
@@ -5099,30 +5229,45 @@
         }
       } catch(e) {}
 
-      var inp1 = document.getElementById('adminDrawInput1');
-      var inp2 = document.getElementById('adminDrawInput2');
-      var inp3 = document.getElementById('adminDrawInput3');
-      var inp4 = document.getElementById('adminDrawInput4');
+      var inp1 = document.getElementById('adminDedicatedDrawInput1');
+      var inp2 = document.getElementById('adminDedicatedDrawInput2');
+      var inp3 = document.getElementById('adminDedicatedDrawInput3');
+      var inp4 = document.getElementById('adminDedicatedDrawInput4');
 
       if (inp1) inp1.value = results[0] || '8492';
       if (inp2) inp2.value = results[1] || '3150';
       if (inp3) inp3.value = results[2] || '9274';
       if (inp4) inp4.value = results[3] || '6108';
+
+      // Update Live Preview Strip
+      var previewEl = document.getElementById('adminDedicatedLivePreview');
+      if (previewEl) {
+        previewEl.innerHTML = `
+          <span class="text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/20">${results[0] || '8492'}</span>
+          <span class="text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 rounded border border-cyan-400/20">${results[1] || '3150'}</span>
+          <span class="text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 rounded border border-cyan-400/20">${results[2] || '9274'}</span>
+          <span class="text-cyan-400 bg-cyan-400/10 px-1.5 py-0.5 rounded border border-cyan-400/20">${results[3] || '6108'}</span>
+        `;
+      }
     }
 
-    function saveAdminDrawResults() {
-      const cur = AdminCore.repo.getCurrentAdmin();
-      const roleKey = typeof getNormalizedRole === 'function' ? getNormalizedRole(cur) : (cur ? cur.role : '');
+    function loadAdminDrawResultInputs() {
+      loadAdminDedicatedDrawResultInputs();
+    }
 
-      if (roleKey !== 'COMPANY' && roleKey !== 'SUPER_ADMIN') {
-        showAdminToast('Access Denied: Only COMPANY or Super Admin can publish draw results.', 'error');
+    function saveAdminDedicatedDrawResults() {
+      const cur = AdminCore.repo.getCurrentAdmin();
+      const roleKey = typeof getNormalizedRole === 'function' ? getNormalizedRole(cur) : (cur ? (cur.role || cur.userType || '') : '');
+
+      if (roleKey !== 'COMPANY') {
+        showAdminToast('Access Denied: Only COMPANY role accounts are authorized to publish draw results.', 'error');
         return;
       }
 
-      const inp1 = document.getElementById('adminDrawInput1');
-      const inp2 = document.getElementById('adminDrawInput2');
-      const inp3 = document.getElementById('adminDrawInput3');
-      const inp4 = document.getElementById('adminDrawInput4');
+      const inp1 = document.getElementById('adminDedicatedDrawInput1');
+      const inp2 = document.getElementById('adminDedicatedDrawInput2');
+      const inp3 = document.getElementById('adminDedicatedDrawInput3');
+      const inp4 = document.getElementById('adminDedicatedDrawInput4');
 
       const r1 = inp1 ? inp1.value.trim() : '';
       const r2 = inp2 ? inp2.value.trim() : '';
@@ -5157,28 +5302,36 @@
         window.dispatchEvent(new CustomEvent('THAINXT_DRAW_RESULTS_UPDATED', { detail: results }));
       } catch(e) {}
 
-      // 3. Post to backend REST API endpoints (authoritative server sync across devices)
+      // 3. Post to backend REST API endpoints with X-Admin-Role header and role parameter
       const payload = JSON.stringify({
+        role: roleKey,
+        adminUsername: cur ? cur.username : 'company',
         drawId: 'DRAW-' + Date.now(),
         winningNumbers: results
       });
 
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-Admin-Role': roleKey
+      };
+
       Promise.allSettled([
         fetch('/api/rounds/sync-result', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: headers,
           body: payload,
           cache: 'no-store'
         }),
         fetch('/api/round/sync-result', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: headers,
           body: payload,
           cache: 'no-store'
         })
       ]).then(() => {
         showAdminToast('✓ Official Thai Win Draw Results published successfully!', 'success');
-        const statusEl = document.getElementById('adminDrawResultSaveStatus');
+        loadAdminDedicatedDrawResultInputs();
+        const statusEl = document.getElementById('adminDedicatedDrawSaveStatus');
         if (statusEl) {
           statusEl.classList.remove('hidden');
           setTimeout(() => statusEl.classList.add('hidden'), 3000);
@@ -5186,25 +5339,25 @@
       });
     }
 
-    function applyDrawResultsCardRolePermissions() {
-      const card = document.getElementById('adminDrawResultsCard');
-      if (!card) return;
-      const cur = AdminCore.repo.getCurrentAdmin();
-      const roleKey = typeof getNormalizedRole === 'function' ? getNormalizedRole(cur) : (cur ? (cur.role || cur.userType || '') : '');
-      const isAllowed = (roleKey === 'COMPANY' || roleKey === 'SUPER_ADMIN');
-      if (isAllowed) {
-        card.classList.remove('hidden');
-        card.style.display = 'flex';
-        loadAdminDrawResultInputs();
-      } else {
-        card.classList.add('hidden');
-        card.style.display = 'none';
-      }
+    function saveAdminDrawResults() {
+      saveAdminDedicatedDrawResults();
     }
 
     function applySidebarPermissions() {
       const cur = AdminCore.repo.getCurrentAdmin();
-      const isLevelAgent = ['SENIOR_SUPER_MASTER', 'SUPER_MASTER', 'MASTER_AGENT', 'AGENT'].includes(cur.role);
+      const normRole = (cur && typeof getNormalizedRole === 'function' ? getNormalizedRole(cur) : (cur ? (cur.role || cur.userType || '') : '')) || '';
+
+      // SECURITY: Thai Win Results sidebar menu item is strictly visible to COMPANY role ONLY
+      const thaiWinSidebarBtn = document.getElementById('navBtn_thai_win_results');
+      if (thaiWinSidebarBtn) {
+        if (normRole === 'COMPANY') {
+          thaiWinSidebarBtn.classList.remove('hidden');
+        } else {
+          thaiWinSidebarBtn.classList.add('hidden');
+        }
+      }
+
+      const isLevelAgent = ['SENIOR_SUPER_MASTER', 'SUPER_MASTER', 'MASTER_AGENT', 'AGENT'].includes(cur ? cur.role : '');
 
       // Elements to hide/show for Level Agents
       const restrictedNavIds = ['navBtn_settings', 'navBtn_risk', 'navBtn_thai4d', 'navBtn_games', 'navBtn_bonuses', 'navBtn_audit'];
@@ -5218,8 +5371,6 @@
           }
         }
       });
-
-      applyDrawResultsCardRolePermissions();
     }
 
     function updateDashboardMetrics() {
@@ -8821,11 +8972,17 @@
 
       // Security check: Validate allowed modules
       const allowedModules = [
-        'dashboard', 'users', 'current_position', 'reports', 'games', 'thai4d',
+        'dashboard', 'thai_win_results', 'users', 'current_position', 'reports', 'games', 'thai4d',
         'deposits', 'withdrawals', 'wallets', 'tokens', 'kyc', 'risk', 'bonuses',
         'profile', 'edit_client', 'admins', 'audit', 'settings', 'inactive_accounts',
         'api_services', 'security', 'archive'
       ];
+
+      const normRole = (admin && typeof getNormalizedRole === 'function' ? getNormalizedRole(admin) : (admin ? (admin.role || admin.userType || '') : '')) || '';
+      if (targetModule === 'thai_win_results' && normRole !== 'COMPANY') {
+        showAdminToast('Access Denied: Thai Win Draw Results Management is restricted strictly to COMPANY level accounts.', 'error');
+        targetModule = 'dashboard';
+      }
 
       if (!allowedModules.includes(targetModule)) {
         targetModule = 'dashboard';

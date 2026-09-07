@@ -15,6 +15,10 @@
   ],
   "rewrites": [
     {
+      "source": "/admin/thai-win-results",
+      "destination": "/admin.html#thai_win_results"
+    },
+    {
       "source": "/ritmu-tv-live",
       "destination": "/api/ritmu"
     },
