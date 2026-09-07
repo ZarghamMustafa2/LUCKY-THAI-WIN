@@ -183,70 +183,70 @@
     </section>
 
     <!-- 1.5 OFFICIAL THAI WIN LIVE DRAW RESULTS SECTION -->
-    <section class="w-full">
-      <div class="glass-panel p-4 sm:p-5 border border-gold/30 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+    <section class="w-full mb-6 sm:mb-8">
+      <div class="glass-panel p-4 sm:p-6 border-2 border-gold/40 shadow-[0_15px_45px_rgba(0,0,0,0.6)] rounded-2xl">
         <!-- Header Strip -->
         <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-            <h3 class="text-xs sm:text-sm font-black text-gold uppercase tracking-wider font-display flex items-center gap-1.5">
-              <i class="fa-solid fa-trophy text-gold"></i> Official Thai 4D Live Draw Results
+            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+            <h3 class="text-xs sm:text-base font-black text-gold uppercase tracking-wider font-display flex items-center gap-2">
+              <i class="fa-solid fa-trophy text-gold text-sm sm:text-base"></i> Official Thai 4D Live Draw Results
             </h3>
           </div>
-          <span class="text-[10px] sm:text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/30">
-            <i class="fa-solid fa-tower-broadcast"></i> Live Feed
+          <span class="text-[10px] sm:text-xs font-mono font-bold text-cyan-300 bg-cyan-500/20 px-3 py-1 rounded-xl border border-cyan-400/40 flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-tower-broadcast text-emerald-400 animate-pulse"></i> LIVE STAGE
           </span>
         </div>
 
         <!-- 4 Result Cards Grid (1st DRAW, 2nd DRAW, 2nd DRAW, 2nd DRAW) -->
-        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-4 w-full">
           
-          <!-- Box 1: 1st DRAW -->
-          <div class="bg-gradient-to-b from-[#162544] to-[#0d1629] border border-gold/50 rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center gap-1 shadow-lg relative overflow-hidden group hover:border-gold transition-all">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold via-amber-400 to-gold"></div>
+          <!-- Box 1: 1st DRAW (Grand Prize - Gold Border & Gold Glow) -->
+          <div class="bg-gradient-to-b from-[#1c2c4d] to-[#0b1324] border-2 border-gold/70 rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center gap-1.5 shadow-[0_0_25px_rgba(255,215,0,0.2)] relative overflow-hidden group hover:border-gold transition-all">
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-gold via-amber-300 to-gold"></div>
             <span class="text-[10px] sm:text-xs font-extrabold text-gold tracking-widest uppercase flex items-center gap-1">
-              <i class="fa-solid fa-crown text-[10px]"></i> 1st DRAW
+              <i class="fa-solid fa-crown text-gold text-[10px]"></i> 1st DRAW
             </span>
-            <span id="drawResultBox1" class="text-2xl sm:text-3xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_10px_rgba(255,215,0,0.5)]">
-              ----
+            <span id="drawResultBox1" class="text-2xl sm:text-4xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_12px_rgba(255,215,0,0.6)] my-0.5">
+              8492
             </span>
-            <span class="text-[9px] font-mono text-gray-400">Grand Prize</span>
+            <span class="text-[9px] sm:text-[10px] font-mono font-bold text-amber-300/80 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Grand Prize</span>
           </div>
 
-          <!-- Box 2: 2nd DRAW -->
-          <div class="bg-gradient-to-b from-[#162544] to-[#0d1629] border border-cyan-400/40 rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center gap-1 shadow-lg relative overflow-hidden group hover:border-cyan-400 transition-all">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400"></div>
+          <!-- Box 2: 2nd DRAW (Runner Up - Cyan Border & Cyan Glow) -->
+          <div class="bg-gradient-to-b from-[#1c2c4d] to-[#0b1324] border-2 border-cyan-400/60 rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center gap-1.5 shadow-[0_0_25px_rgba(0,212,255,0.15)] relative overflow-hidden group hover:border-cyan-400 transition-all">
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400"></div>
             <span class="text-[10px] sm:text-xs font-extrabold text-cyan-300 tracking-widest uppercase flex items-center gap-1">
-              <i class="fa-solid fa-star text-[10px]"></i> 2nd DRAW
+              <i class="fa-solid fa-star text-cyan-300 text-[10px]"></i> 2nd DRAW
             </span>
-            <span id="drawResultBox2" class="text-2xl sm:text-3xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_10px_rgba(0,212,255,0.4)]">
-              ----
+            <span id="drawResultBox2" class="text-2xl sm:text-4xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_12px_rgba(0,212,255,0.5)] my-0.5">
+              3150
             </span>
-            <span class="text-[9px] font-mono text-gray-400">Runner Up</span>
+            <span class="text-[9px] sm:text-[10px] font-mono font-bold text-cyan-300/80 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">Runner Up</span>
           </div>
 
-          <!-- Box 3: 2nd DRAW -->
-          <div class="bg-gradient-to-b from-[#162544] to-[#0d1629] border border-cyan-400/40 rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center gap-1 shadow-lg relative overflow-hidden group hover:border-cyan-400 transition-all">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400"></div>
+          <!-- Box 3: 2nd DRAW (Runner Up - Cyan Border & Cyan Glow) -->
+          <div class="bg-gradient-to-b from-[#1c2c4d] to-[#0b1324] border-2 border-cyan-400/60 rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center gap-1.5 shadow-[0_0_25px_rgba(0,212,255,0.15)] relative overflow-hidden group hover:border-cyan-400 transition-all">
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400"></div>
             <span class="text-[10px] sm:text-xs font-extrabold text-cyan-300 tracking-widest uppercase flex items-center gap-1">
-              <i class="fa-solid fa-star text-[10px]"></i> 2nd DRAW
+              <i class="fa-solid fa-star text-cyan-300 text-[10px]"></i> 2nd DRAW
             </span>
-            <span id="drawResultBox3" class="text-2xl sm:text-3xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_10px_rgba(0,212,255,0.4)]">
-              ----
+            <span id="drawResultBox3" class="text-2xl sm:text-4xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_12px_rgba(0,212,255,0.5)] my-0.5">
+              9274
             </span>
-            <span class="text-[9px] font-mono text-gray-400">Runner Up</span>
+            <span class="text-[9px] sm:text-[10px] font-mono font-bold text-cyan-300/80 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">Runner Up</span>
           </div>
 
-          <!-- Box 4: 2nd DRAW -->
-          <div class="bg-gradient-to-b from-[#162544] to-[#0d1629] border border-cyan-400/40 rounded-xl p-3 sm:p-4 flex flex-col items-center justify-center gap-1 shadow-lg relative overflow-hidden group hover:border-cyan-400 transition-all">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400"></div>
+          <!-- Box 4: 2nd DRAW (Runner Up - Cyan Border & Cyan Glow) -->
+          <div class="bg-gradient-to-b from-[#1c2c4d] to-[#0b1324] border-2 border-cyan-400/60 rounded-2xl p-3.5 sm:p-5 flex flex-col items-center justify-center gap-1.5 shadow-[0_0_25px_rgba(0,212,255,0.15)] relative overflow-hidden group hover:border-cyan-400 transition-all">
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400"></div>
             <span class="text-[10px] sm:text-xs font-extrabold text-cyan-300 tracking-widest uppercase flex items-center gap-1">
-              <i class="fa-solid fa-star text-[10px]"></i> 2nd DRAW
+              <i class="fa-solid fa-star text-cyan-300 text-[10px]"></i> 2nd DRAW
             </span>
-            <span id="drawResultBox4" class="text-2xl sm:text-3xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_10px_rgba(0,212,255,0.4)]">
-              ----
+            <span id="drawResultBox4" class="text-2xl sm:text-4xl font-black font-mono text-white tracking-widest drop-shadow-[0_2px_12px_rgba(0,212,255,0.5)] my-0.5">
+              6108
             </span>
-            <span class="text-[9px] font-mono text-gray-400">Runner Up</span>
+            <span class="text-[9px] sm:text-[10px] font-mono font-bold text-cyan-300/80 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">Runner Up</span>
           </div>
 
         </div>

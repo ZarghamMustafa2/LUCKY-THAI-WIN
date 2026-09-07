@@ -59,6 +59,14 @@ router.post('/place', auth_1.authenticateToken, async (req, res) => {
                 }
             })
         ]);
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('new_bet', {
+                user_name: user.name.length > 3 ? user.name.substring(0, 3) + '***' : user.name + '***',
+                bet_number: bet_number.toString(),
+                amount: Number(amount)
+            });
+        }
         res.status(201).json({ message: 'Bet placed successfully' });
     }
     catch (error) {

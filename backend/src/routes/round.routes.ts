@@ -92,13 +92,13 @@ router.post('/sync-result', async (req, res) => {
     }
 
     // Save Confirmed Result
-    const confirmedRecord = {
+    const confirmedRecord: (typeof validatedDrawStore)[string] = {
       drawId,
       gameId,
-      drawDate: drawDate || new Date().toISOString().split('T')[0],
+      drawDate: drawDate || new Date().toISOString().split('T')[0]!,
       drawTime: drawTime || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       winningNumbers,
-      status: 'CONFIRMED' as const,
+      status: 'CONFIRMED',
       sourceTimestamp: sourceTimestamp || Date.now(),
       confirmedAt: new Date().toISOString()
     };

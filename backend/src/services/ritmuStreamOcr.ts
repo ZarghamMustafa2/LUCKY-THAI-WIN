@@ -1,4 +1,5 @@
-import fetch from 'node-fetch';
+// Native Node 18+ global fetch
+declare const fetch: typeof globalThis.fetch;
 
 export interface StreamSourceStatus {
   STREAM_SOURCE_STATUS: 'AVAILABLE' | 'UNAVAILABLE';

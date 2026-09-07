@@ -8,7 +8,7 @@ const db_1 = __importDefault(require("../utils/db"));
 const socket_io_1 = require("socket.io");
 class GameEngine {
     io;
-    roundTimeMs = 5 * 60 * 1000; // Default 5 minutes
+    roundTimeMs = 30 * 1000; // Default 30 seconds
     currentRoundId = null;
     countdownInterval = null;
     endTime = 0;
@@ -24,7 +24,7 @@ class GameEngine {
         try {
             const settings = await db_1.default.setting.findFirst();
             if (settings && settings.round_time) {
-                this.roundTimeMs = settings.round_time * 60 * 1000;
+                this.roundTimeMs = 30 * 1000; // FORCED 30 SECONDS FOR TESTING
             }
             else {
                 await db_1.default.setting.create({
@@ -75,8 +75,8 @@ class GameEngine {
             return;
         console.log(`[GameEngine] Ending round ${this.currentRoundId}`);
         try {
-            // Generate 6 digit winning number
-            const winningNumber = Math.floor(100000 + Math.random() * 900000).toString();
+            // Generate 4 digit winning number
+            const winningNumber = Math.floor(1000 + Math.random() * 9000).toString();
             await db_1.default.round.update({
                 where: { id: this.currentRoundId },
                 data: {
@@ -86,8 +86,8 @@ class GameEngine {
             });
             this.io.emit('round_ended', { roundId: this.currentRoundId, winningNumber });
             await this.processBets(this.currentRoundId, winningNumber);
-            // Start next round after 5 seconds
-            setTimeout(() => this.startNewRound(), 5000);
+            // Start next round after 25 seconds to show result
+            setTimeout(() => this.startNewRound(), 25000);
         }
         catch (error) {
             console.error('[GameEngine] Error ending round:', error);

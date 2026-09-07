@@ -24,7 +24,8 @@ const authenticateToken = (req, res, next) => {
 };
 exports.authenticateToken = authenticateToken;
 const isAdmin = (req, res, next) => {
-    if (req.user && req.user.role === 'admin') {
+    const role = req.user ? (req.user.role || '').toUpperCase() : '';
+    if (req.user && (role === 'ADMIN' || role === 'COMPANY' || role === 'SUPER_ADMIN')) {
         next();
     }
     else {

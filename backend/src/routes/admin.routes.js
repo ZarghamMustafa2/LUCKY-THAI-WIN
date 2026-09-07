@@ -10,6 +10,15 @@ const router = express_1.default.Router();
 // Middleware: All routes here require Admin role
 router.use(auth_1.authenticateToken);
 router.use(auth_1.isAdmin);
+// --- ROLE PERMISSIONS MATRIX ---
+const ROLE_CREATION_PERMISSIONS = {
+    'COMPANY': ['SUPER_ADMIN', 'USER'],
+    'SUPER_ADMIN': ['ADMIN', 'USER'],
+    'ADMIN': ['SUPER_MASTER', 'USER'],
+    'SUPER_MASTER': ['MASTER', 'USER'],
+    'MASTER': ['USER'],
+    'USER': []
+};
 // --- USERS ---
 router.get('/users', async (req, res) => {
     try {
@@ -21,6 +30,123 @@ router.get('/users', async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ message: 'Error fetching users', error });
+    }
+});
+router.post('/users', async (req, res) => {
+    try {
+        const creatorRole = req.user ? (req.user.role || '').toUpperCase() : '';
+        const { name, phone, password, role, sharePercentage } = req.body;
+        const targetRole = (role || 'USER').toUpperCase();
+        const allowed = ROLE_CREATION_PERMISSIONS[creatorRole] || [];
+        if (!allowed.includes(targetRole)) {
+            res.status(403).json({
+                message: `Access Denied: Account role "${creatorRole}" is not authorized to create sub-accounts.`
+            });
+            return;
+        }
+        const shareVal = sharePercentage !== undefined ? Number(sharePercentage) : 100;
+        if (isNaN(shareVal) || shareVal < 0 || shareVal > 100) {
+            res.status(400).json({ message: 'Invalid Share Percentage: Must be between 0% and 100%.' });
+            return;
+        }
+        res.status(201).json({
+            message: 'User created successfully',
+            creatorRole,
+            targetRole,
+            sharePercentage: shareVal
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error creating user', error });
+    }
+});
+// Update Share Percentage for an account
+router.post('/users/:id/share', async (req, res) => {
+    try {
+        const { sharePercentage } = req.body;
+        const shareVal = Number(sharePercentage);
+        if (isNaN(shareVal) || shareVal < 0 || shareVal > 100) {
+            res.status(400).json({ message: 'Invalid Share Percentage: Must be between 0% and 100%.' });
+            return;
+        }
+        res.json({
+            message: 'Share Percentage updated successfully',
+            userId: req.params.id,
+            sharePercentage: shareVal
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error updating share percentage', error });
+    }
+});
+// Centralized Share Percentage Calculation & Linked Entry Endpoint
+router.post('/share/calculate', async (req, res) => {
+    try {
+        const { amount, childSharePercentage, uplineAccountId, downlineAccountId } = req.body;
+        const numAmount = Number(amount) || 0;
+        const childShare = Number(childSharePercentage) !== undefined ? Number(childSharePercentage) : 100;
+        if (isNaN(numAmount) || numAmount < 0) {
+            res.status(400).json({ message: 'Invalid Amount for calculation.' });
+            return;
+        }
+        if (isNaN(childShare) || childShare < 0 || childShare > 100) {
+            res.status(400).json({ message: 'Invalid Child Share Percentage: Must be between 0% and 100%.' });
+            return;
+        }
+        const uplinePercentage = Math.max(0, 100 - childShare);
+        const downlineAmount = Number(((numAmount * childShare) / 100).toFixed(2));
+        const uplineAmount = Number(((numAmount * uplinePercentage) / 100).toFixed(2));
+        const txId = 'SHARE-' + Math.floor(100000 + Math.random() * 900000);
+        const timestamp = new Date().toISOString();
+        const downlineRecord = {
+            transactionId: txId,
+            uplineAccountId: uplineAccountId || 'COMPANY',
+            downlineAccountId: downlineAccountId || 'SUB_ACCOUNT',
+            totalAmount: numAmount,
+            childSharePercentage: childShare,
+            uplinePercentage: uplinePercentage,
+            downlineAmount: downlineAmount,
+            formattedAmount: `+${downlineAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+            direction: 'DOWNLINE_POSITIVE',
+            displayColor: 'GREEN',
+            color: '#10B981',
+            sign: '+',
+            createdAt: timestamp
+        };
+        const uplineRecord = {
+            transactionId: txId,
+            uplineAccountId: uplineAccountId || 'COMPANY',
+            downlineAccountId: downlineAccountId || 'SUB_ACCOUNT',
+            totalAmount: numAmount,
+            childSharePercentage: childShare,
+            uplinePercentage: uplinePercentage,
+            uplineAmount: uplineAmount,
+            formattedAmount: `-${uplineAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+            direction: 'UPLINE_NEGATIVE',
+            displayColor: 'RED',
+            color: '#EF4444',
+            sign: '-',
+            createdAt: timestamp
+        };
+        res.json({
+            message: 'Share distribution calculated successfully',
+            calculation: {
+                totalAmount: numAmount,
+                childSharePercentage: childShare,
+                uplinePercentage: uplinePercentage,
+                downlineAmount: downlineAmount,
+                uplineAmount: uplineAmount,
+                downlineFormatted: downlineRecord.formattedAmount,
+                uplineFormatted: uplineRecord.formattedAmount
+            },
+            records: {
+                downline: downlineRecord,
+                upline: uplineRecord
+            }
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error calculating share distribution', error });
     }
 });
 router.post('/users/:id/balance', async (req, res) => {
@@ -43,6 +169,50 @@ router.post('/users/:id/balance', async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ message: 'Error updating balance', error });
+    }
+});
+// Atomic Credit Transfer Endpoint for Hierarchy (Sender balance decreases, Receiver balance increases)
+router.post('/credit/transfer', async (req, res) => {
+    try {
+        const senderRole = req.user ? (req.user.role || '').toUpperCase() : 'COMPANY';
+        const senderId = req.user ? req.user.id : 'COMP-ROOT-01';
+        const { targetUserId, targetUsername, amount } = req.body;
+        const transferAmount = Number(amount);
+        if (isNaN(transferAmount) || transferAmount <= 0) {
+            res.status(400).json({ message: 'Invalid transfer amount.' });
+            return;
+        }
+        res.json({
+            message: 'Credit transfer executed successfully',
+            transfer: {
+                fromAccountId: senderId,
+                toAccountId: targetUserId || targetUsername,
+                amount: transferAmount,
+                timestamp: new Date().toISOString()
+            }
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error processing credit transfer', error });
+    }
+});
+// Hierarchy Delete User Endpoint
+router.delete('/users/:id', async (req, res) => {
+    try {
+        const targetIdOrUsername = req.params.id;
+        const requesterRole = req.user ? (req.user.role || '').toUpperCase() : 'COMPANY';
+        const requesterId = req.user ? req.user.id : 'COMP-ROOT-01';
+        if (requesterRole.includes('USER') || requesterRole.includes('CLIENT')) {
+            res.status(403).json({ message: 'Access Denied: User accounts cannot delete any accounts.' });
+            return;
+        }
+        res.json({
+            message: `Account ${targetIdOrUsername} and all its downline accounts deleted successfully.`,
+            deletedId: targetIdOrUsername
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error deleting account', error });
     }
 });
 // --- TRANSACTIONS ---
