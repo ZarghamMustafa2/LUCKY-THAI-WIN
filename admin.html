@@ -361,7 +361,7 @@
           </div>
 
           <!-- SECTION 1.5: THAI WIN DRAW RESULTS MANAGEMENT CARD -->
-          <div class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden flex flex-col">
+          <div id="adminDrawResultsCard" class="bg-white border border-[#D8DEE4] rounded shadow-sm overflow-hidden flex flex-col">
             <!-- Card Header Strip -->
             <div class="px-4 py-2.5 border-b border-[#E5E7EB] bg-[#F8FAFC] flex items-center justify-between">
               <div class="flex items-center gap-2">
@@ -5134,6 +5134,13 @@
         return;
       }
 
+      // Strict 4-digit numeric validation
+      const isValid4Digit = [r1, r2, r3, r4].every(n => /^\d{4}$/.test(n));
+      if (!isValid4Digit) {
+        showAdminToast('Validation Error: Each draw result must be exactly 4 digits (0000-9999).', 'error');
+        return;
+      }
+
       const results = [r1, r2, r3, r4];
 
       // 1. Save to LocalStorage
@@ -5170,6 +5177,22 @@
       }
     }
 
+    function applyDrawResultsCardRolePermissions() {
+      const card = document.getElementById('adminDrawResultsCard');
+      if (!card) return;
+      const cur = AdminCore.repo.getCurrentAdmin();
+      const roleKey = typeof getNormalizedRole === 'function' ? getNormalizedRole(cur) : (cur ? (cur.role || cur.userType || '') : '');
+      const isAllowed = (roleKey === 'COMPANY' || roleKey === 'SUPER_ADMIN');
+      if (isAllowed) {
+        card.classList.remove('hidden');
+        card.style.display = 'flex';
+        loadAdminDrawResultInputs();
+      } else {
+        card.classList.add('hidden');
+        card.style.display = 'none';
+      }
+    }
+
     function applySidebarPermissions() {
       const cur = AdminCore.repo.getCurrentAdmin();
       const isLevelAgent = ['SENIOR_SUPER_MASTER', 'SUPER_MASTER', 'MASTER_AGENT', 'AGENT'].includes(cur.role);
@@ -5186,6 +5209,8 @@
           }
         }
       });
+
+      applyDrawResultsCardRolePermissions();
     }
 
     function updateDashboardMetrics() {
