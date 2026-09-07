@@ -35,6 +35,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="platform-sync.js"></script>
 
   <style>
     body {
@@ -61,63 +62,98 @@
 <body class="bg-[#0b1220] text-white min-h-screen flex flex-col font-sans antialiased selection:bg-gold selection:text-black">
 
   <!-- TOP APP NAVIGATION HEADER -->
-  <header class="bg-[#172d47] border-b border-[#234368] sticky top-0 z-50 text-white shadow-xl">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
+  <header class="bg-[#172d47] border-b border-[#234368] sticky top-0 z-50 text-white shadow-xl w-full">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-1.5 sm:gap-4 w-full">
       
       <!-- LEFT: Back to Dashboard & Game Title -->
-      <div class="flex items-center gap-2 sm:gap-4">
-        <a href="index.html" class="bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 hover:text-white border border-cyan-400/40 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all flex items-center gap-1.5 sm:gap-2 active:scale-95 shadow-md">
-          <i class="fa-solid fa-arrow-left"></i> Dashboard
+      <div class="flex items-center gap-1.5 sm:gap-3 shrink min-w-0">
+        <a href="index.html" class="bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 hover:text-white border border-cyan-400/40 px-2 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-extrabold transition-all flex items-center gap-1 active:scale-95 shadow-md shrink-0">
+          <i class="fa-solid fa-arrow-left text-[10px] sm:text-xs"></i> <span class="hidden xs:inline sm:inline">Dashboard</span>
         </a>
-        <div class="flex flex-col">
-          <h1 class="text-sm sm:text-lg font-black text-white font-display flex items-center gap-1.5 leading-none">
-            <i class="fa-solid fa-gem text-gold text-xs sm:text-base animate-pulse"></i> LUCKY THAI 4D
+        <div class="flex flex-col min-w-0">
+          <h1 class="text-xs sm:text-base font-black text-white font-display flex items-center gap-1 leading-tight whitespace-nowrap">
+            <i class="fa-solid fa-gem text-gold text-[10px] sm:text-sm animate-pulse shrink-0"></i> LUCKY THAI 4D
           </h1>
-          <span class="text-[9px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider leading-tight hidden sm:block">Official Live Hourly Lottery & Betting Stage</span>
+          <span class="text-[9px] text-gray-400 font-bold uppercase tracking-wider leading-none hidden lg:block">Official Live Hourly Lottery</span>
         </div>
       </div>
 
       <!-- RIGHT: Timer & User Balance Badge -->
-      <div class="flex items-center gap-2 sm:gap-4">
-        <div class="bg-black/50 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/10 flex items-center gap-2 text-xs sm:text-sm font-mono">
-          <i class="fa-solid fa-clock text-gold animate-pulse text-xs"></i>
-          <span class="text-gray-300 font-bold hidden sm:inline">Next Spin:</span>
-          <span id="gamePageTimer" class="text-gold font-black">00:60:00</span>
+      <div class="flex items-center gap-1 sm:gap-3 shrink-0">
+        <div class="bg-black/60 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/10 flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs font-mono shrink-0 shadow-inner">
+          <i class="fa-solid fa-clock text-gold animate-pulse text-[10px] sm:text-xs"></i>
+          <span class="text-gray-300 font-bold hidden md:inline">Next Spin:</span>
+          <span id="gamePageTimer" class="text-gold font-black text-[11px] sm:text-xs">00:60:00</span>
         </div>
 
-        <div class="relative cursor-pointer select-none" onclick="toggleGameProfileDropdown(event)">
-          <div class="flex flex-col items-end leading-tight text-xs sm:text-sm font-bold hover:opacity-90 transition-opacity">
-            <span class="text-gold flex items-center gap-1">Bp28233 <i class="fa-solid fa-caret-down text-[10px]"></i></span>
-            <span class="text-emerald-400 font-mono">Rs <span id="userBalanceText">7,950.00</span></span>
+        <a href="#myActiveBetsSection" title="View Active Bets" class="bg-amber-500/15 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl flex items-center gap-1 text-[11px] sm:text-xs font-bold transition-all shadow-sm shrink-0">
+          <i class="fa-solid fa-ticket text-amber-400 text-[10px] sm:text-xs"></i>
+          <span class="hidden md:inline">Bets:</span>
+          <span id="navActiveBetsCount" class="font-mono font-black text-white bg-amber-500/40 px-1.5 py-0.5 rounded-md text-[10px] sm:text-xs leading-none">0</span>
+        </a>
+
+        <div class="relative select-none shrink-0" id="gameProfileContainer">
+          <div onclick="toggleGameProfileDropdown(event)" class="flex flex-col items-end leading-tight text-[11px] sm:text-xs font-bold hover:opacity-90 transition-opacity cursor-pointer pl-0.5 sm:pl-2">
+            <span class="text-gold flex items-center gap-0.5 sm:gap-1 text-[11px] sm:text-xs whitespace-nowrap">Bp28233 <i class="fa-solid fa-caret-down text-[8px] sm:text-[10px]"></i></span>
+            <span class="text-emerald-400 font-mono text-[11px] sm:text-xs whitespace-nowrap">Rs <span id="userBalanceText">7,950.00</span></span>
           </div>
 
           <!-- Profile Dropdown Menu -->
-          <div id="gameProfileDropdown" class="hidden absolute top-10 right-0 w-52 bg-[#121B2F] text-white border border-gold/40 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] z-[9999] flex flex-col py-2 transition-all">
-            <button type="button" onclick="event.stopPropagation(); openProfileStatementModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice text-cyan-400"></i> Statement</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <button type="button" onclick="event.stopPropagation(); openProfileResultModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-square-poll-vertical text-emerald-400"></i> Result</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <button type="button" onclick="event.stopPropagation(); openProfileProfitLossModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-gold"></i> Profit Loss</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </button>
-            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-list-check text-purple-400"></i> Bet History</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </a>
-            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-user-gear text-blue-400"></i> Profile</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-            </a>
-            <div class="h-px bg-white/10 my-1"></div>
-            <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
-              <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
-            </a>
+          <div id="gameProfileDropdown" class="hidden absolute top-10 right-0 w-60 bg-[#121B2F] text-white border border-gold/40 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.9)] z-[9999] flex flex-col py-0 overflow-hidden transition-all">
+            <!-- Top Credentials Summary Card inside Dropdown -->
+            <div class="px-4 py-2.5 bg-[#0A101D] border-b border-white/10 flex flex-col gap-1.5 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-gray-400 text-[10px] uppercase font-bold flex items-center gap-1">
+                  <i class="fa-solid fa-hashtag text-cyan-400 text-[9px]"></i> User ID:
+                </span>
+                <span id="gameDropdownUserId" class="font-mono font-bold text-amber-400 bg-black/40 px-2 py-0.5 rounded border border-white/10 text-xs">Bp28233</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-400 text-[10px] uppercase font-bold flex items-center gap-1">
+                  <i class="fa-solid fa-user text-cyan-400 text-[9px]"></i> Name:
+                </span>
+                <span id="gameDropdownUserName" class="font-mono font-bold text-cyan-300 text-xs">Alex_Winner</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-400 text-[10px] uppercase font-bold flex items-center gap-1">
+                  <i class="fa-solid fa-coins text-amber-400 text-[9px]"></i> Tokens:
+                </span>
+                <span id="gameDropdownTokenBalance" class="font-mono font-bold text-amber-300 bg-black/40 px-2 py-0.5 rounded border border-white/10 text-xs">45,000 VTK</span>
+              </div>
+            </div>
+
+            <!-- Dropdown Navigation Items -->
+            <div class="py-1 flex flex-col">
+              <a href="#myActiveBetsSection" onclick="event.stopPropagation(); toggleGameProfileDropdown(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-ticket-simple text-amber-400"></i> My Active Bets</span>
+                <span id="dropdownActiveBetsCount" class="badge badge-warning text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono font-bold">0</span>
+              </a>
+              <button type="button" onclick="event.stopPropagation(); openProfileStatementModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice text-cyan-400"></i> Statement</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <button type="button" onclick="event.stopPropagation(); openProfileResultModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-square-poll-vertical text-emerald-400"></i> Result</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <button type="button" onclick="event.stopPropagation(); openProfileProfitLossModal(event);" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-gold"></i> Profit Loss</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </button>
+              <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-list-check text-purple-400"></i> Bet History</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </a>
+              <a href="index.html" class="w-full text-left px-5 py-2.5 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-user-gear text-blue-400"></i> Profile</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+              </a>
+              <div class="h-px bg-white/10 my-1"></div>
+              <button type="button" onclick="event.stopPropagation(); performGameUserLogout(event);" class="w-full text-left px-5 py-2.5 hover:bg-rose-500/20 text-rose-400 font-bold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-between mb-1">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-right-from-bracket"></i> Logout</span>
+                <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -129,55 +165,55 @@
   <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 flex flex-col gap-5 sm:gap-8">
 
     <!-- 1. LIVE RITMU TV BROADCAST VIDEO STAGE -->
-    <section class="w-full flex flex-col items-center justify-center relative">
-      <div id="wheelGlow" class="absolute inset-0 bg-[#36d7b7] opacity-[0.12] rounded-3xl blur-[120px] pointer-events-none w-full max-w-4xl h-80 mx-auto"></div>
+    <section class="w-full flex flex-col items-center justify-center relative my-1 sm:my-2">
+      <div id="wheelGlow" class="absolute inset-0 bg-[#36d7b7] opacity-[0.18] rounded-3xl blur-[140px] pointer-events-none w-full max-w-5xl h-96 mx-auto"></div>
 
-      <!-- Ritmu Live Broadcast TV Screen Bezel -->
-      <div id="ritmuTvStageBezel" class="w-full max-w-5xl rounded-3xl border-2 border-cyan-400/40 bg-black shadow-[0_25px_80px_rgba(0,0,0,0.95),0_0_60px_rgba(54,215,183,0.2)] overflow-hidden relative flex flex-col transition-all">
+      <!-- Ritmu Live Broadcast TV Screen Bezel (Expanded Immersive Frame) -->
+      <div id="ritmuTvStageBezel" class="w-full max-w-6xl rounded-3xl border-2 border-cyan-400/50 bg-black shadow-[0_25px_90px_rgba(0,0,0,0.95),0_0_70px_rgba(54,215,183,0.25)] overflow-hidden relative flex flex-col transition-all">
 
         <!-- TV Header Controls Bar -->
-        <div class="bg-[#0b1220] px-4 py-2.5 flex items-center justify-between border-b border-cyan-400/20">
-          <span class="text-xs font-mono font-bold text-cyan-400 flex items-center gap-2">
+        <div class="bg-[#0b1220] px-4 py-3 sm:px-6 sm:py-3.5 flex items-center justify-between border-b border-cyan-400/25">
+          <span class="text-xs sm:text-sm font-mono font-bold text-cyan-400 flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
             📺 RITMU TV — LIVE HOURLY DRAW BROADCAST
           </span>
           <div class="flex items-center gap-2">
-            <button onclick="toggleRitmuTvSound(this)" class="text-xs font-bold text-cyan-300 hover:text-white bg-cyan-500/20 px-2.5 py-1 rounded-lg border border-cyan-500/30 transition-all cursor-pointer flex items-center gap-1">
-              <i class="fa-solid fa-volume-xmark" id="soundIcon"></i> Sound
+            <button onclick="toggleRitmuTvSound(this)" class="text-xs font-bold text-cyan-300 hover:text-white bg-cyan-500/20 hover:bg-cyan-500/30 px-3 py-1.5 rounded-xl border border-cyan-500/30 transition-all cursor-pointer flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-volume-xmark text-xs" id="soundIcon"></i> Sound
             </button>
-            <a href="https://www.ritmu.tv" target="_blank" rel="noopener noreferrer" class="text-[10px] font-bold text-cyan-300 hover:text-white bg-cyan-500/20 px-2.5 py-1 rounded-lg border border-cyan-500/30 transition-all cursor-pointer flex items-center gap-1">
-              <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> ritmu.tv
+            <a href="https://www.ritmu.tv" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-cyan-300 hover:text-white bg-cyan-500/20 hover:bg-cyan-500/30 px-3 py-1.5 rounded-xl border border-cyan-500/30 transition-all cursor-pointer flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> ritmu.tv
             </a>
           </div>
         </div>
 
-        <!-- TV Screen Frame with Live Stream Video Embed -->
-        <div class="relative w-full aspect-video sm:max-h-[500px] bg-black flex items-center justify-center overflow-hidden">
+        <!-- TV Screen Frame with Live Stream Video Embed (Larger Height & Spacious View) -->
+        <div class="relative w-full min-h-[380px] sm:min-h-[520px] md:min-h-[600px] lg:min-h-[680px] bg-black flex items-center justify-center overflow-hidden">
           <iframe 
             id="ritmuLiveVideoPlayer"
             src="https://www.ritmu.tv" 
             title="Ritmu TV Live Stream"
-            class="w-full h-full border-0"
+            class="w-full h-full min-h-[380px] sm:min-h-[520px] md:min-h-[600px] lg:min-h-[680px] border-0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
           </iframe>
 
           <!-- Fallback Telemetry Overlay if iframe is blocked -->
-          <div id="tvFallbackOverlay" class="hidden absolute inset-0 bg-black/90 flex-col items-center justify-center p-6 text-center gap-3">
-            <i class="fa-solid fa-satellite-dish text-4xl text-cyan-400 animate-bounce"></i>
-            <h3 class="text-lg font-black text-white font-display">LUCKY THAI 4D LIVE STREAM BROADCAST</h3>
-            <p class="text-xs text-gray-400 max-w-md">Hourly live draw results stream directly synchronized with Ritmu TV Thailand official servers.</p>
-            <a href="https://www.ritmu.tv" target="_blank" class="mt-2 bg-gradient-to-r from-cyan-500 to-emerald-500 text-black font-extrabold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all">
+          <div id="tvFallbackOverlay" class="hidden absolute inset-0 bg-black/90 flex-col items-center justify-center p-6 sm:p-10 text-center gap-4">
+            <i class="fa-solid fa-satellite-dish text-5xl text-cyan-400 animate-bounce"></i>
+            <h3 class="text-xl sm:text-2xl font-black text-white font-display">LUCKY THAI 4D LIVE STREAM BROADCAST</h3>
+            <p class="text-xs sm:text-sm text-gray-400 max-w-lg">Hourly live draw results stream directly synchronized with Ritmu TV Thailand official servers.</p>
+            <a href="https://www.ritmu.tv" target="_blank" class="mt-2 bg-gradient-to-r from-cyan-500 to-emerald-500 text-black font-black px-6 py-3 rounded-2xl text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all">
               Watch on Ritmu.tv <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
             </a>
           </div>
         </div>
 
         <!-- TV Footer Telemetry Bar -->
-        <div class="bg-[#0b1220] px-4 py-2 flex items-center justify-between text-[10px] sm:text-xs font-mono text-gray-400 border-t border-white/5">
-          <span class="flex items-center gap-1.5"><i class="fa-solid fa-signal text-emerald-400"></i> Signal: 100% HD 1080p</span>
-          <span class="text-gold font-bold">DRAW ROUND #8492</span>
-          <span class="flex items-center gap-1 text-cyan-300"><i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> LIVE SATELLITE FEED</span>
+        <div class="bg-[#0b1220] px-4 py-2.5 sm:px-6 sm:py-3 flex items-center justify-between text-xs font-mono text-gray-400 border-t border-white/10">
+          <span class="flex items-center gap-1.5"><i class="fa-solid fa-signal text-emerald-400 text-xs"></i> Signal: 100% HD 1080p</span>
+          <span class="text-gold font-black text-xs sm:text-sm">DRAW ROUND #8492</span>
+          <span class="flex items-center gap-1.5 text-cyan-300 font-bold text-[11px] sm:text-xs"><i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> LIVE SATELLITE FEED</span>
         </div>
       </div>
     </section>
@@ -426,7 +462,50 @@
 
     </section>
 
-    <!-- 3. RECENT 24H WINNING DRAWS HISTORY TICKER -->
+    <!-- 3. MY ACTIVE BETS & TICKET LEDGER (REAL-TIME LIVE BETTING TRACKER) -->
+    <section id="myActiveBetsSection" class="w-full glass-panel p-4 sm:p-7 flex flex-col gap-5 border-2 border-gold/30 shadow-[0_15px_40px_rgba(0,0,0,0.7)]">
+      
+      <!-- Section Header with Active Count & Tab Switchers -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg sm:text-2xl shadow-inner">
+            <i class="fa-solid fa-ticket-simple animate-pulse"></i>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <h2 class="text-base sm:text-2xl font-display font-black text-white leading-tight">My Active Bets & Tickets</h2>
+              <span id="activeBetsLivePill" class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] sm:text-xs font-mono font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 animate-pulse">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> <span id="activeBetsCountBadge">0 Active</span>
+              </span>
+            </div>
+            <span class="text-[10px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider leading-tight">Live in-play tickets placed for upcoming Thai 4D draws</span>
+          </div>
+        </div>
+
+        <!-- Filter / Tab Controls -->
+        <div class="flex items-center gap-1.5 bg-black/40 p-1 rounded-xl border border-white/10 text-xs">
+          <button type="button" onclick="switchActiveBetsTab('ACTIVE')" id="tabBtn_activeBets" class="px-3 py-1.5 rounded-lg bg-gold text-black font-extrabold cursor-pointer transition-all shadow-sm">
+            Active Bets (<span id="tabCountActive">0</span>)
+          </button>
+          <button type="button" onclick="switchActiveBetsTab('SETTLED')" id="tabBtn_settledBets" class="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold cursor-pointer transition-all">
+            Settled Draws
+          </button>
+          <button type="button" onclick="switchActiveBetsTab('ALL')" id="tabBtn_allBets" class="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold cursor-pointer transition-all">
+            All History
+          </button>
+          <button type="button" onclick="renderMyActiveBets()" title="Refresh Bets" class="p-1.5 text-gray-400 hover:text-gold cursor-pointer transition-colors">
+            <i class="fa-solid fa-arrows-rotate"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bets Container Grid / List -->
+      <div id="activeBetsContainer" class="flex flex-col gap-3 min-h-[140px]">
+        <!-- Dynamically rendered by JS -->
+      </div>
+    </section>
+
+    <!-- 4. RECENT 24H WINNING DRAWS HISTORY TICKER -->
     <section class="w-full glass-panel p-4 sm:p-6 flex flex-col gap-4">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <h3 class="text-sm sm:text-lg font-black text-white font-display flex items-center gap-2">
@@ -909,10 +988,32 @@
       }
     };
     window.toggleGameProfileDropdown = function(e) {
-      if (e && e.stopPropagation) e.stopPropagation();
+      if (e) {
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+      }
       var drop = document.getElementById('gameProfileDropdown');
-      if (drop) drop.classList.toggle('hidden');
+      if (drop) {
+        var isHidden = drop.classList.contains('hidden') || drop.style.display === 'none';
+        if (isHidden) {
+          drop.classList.remove('hidden');
+          drop.style.display = 'flex';
+          drop.style.zIndex = '99999';
+        } else {
+          drop.classList.add('hidden');
+          drop.style.display = 'none';
+        }
+      }
     };
+
+    document.addEventListener('click', function(e) {
+      var drop = document.getElementById('gameProfileDropdown');
+      var container = document.getElementById('gameProfileContainer');
+      if (drop && !drop.contains(e.target) && (!container || !container.contains(e.target))) {
+        drop.classList.add('hidden');
+        drop.style.display = 'none';
+      }
+    });
 
     // State management
     window.currentSelectedDigits = '';
@@ -921,7 +1022,41 @@
     window.currentMultiplier = 8;
     window.selectedBetRounds = [1];
     window.currentMainBetAmount = 10;
-    window.currentBalance = 7950;
+    
+    var curUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
+    if (window.PlatformSync && typeof window.PlatformSync.getUserBalance === 'function') {
+      window.currentBalance = window.PlatformSync.getUserBalance(curUser);
+    } else {
+      window.currentBalance = 10450;
+    }
+
+    window.updateGameWalletUI = function() {
+      var curU = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      if (window.PlatformSync && typeof window.PlatformSync.getUserBalance === 'function') {
+        window.currentBalance = window.PlatformSync.getUserBalance(curU);
+      }
+      var balEl = document.getElementById('userBalanceText');
+      if (balEl) balEl.innerText = window.currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+      if (window.PlatformSync && typeof window.PlatformSync.getUserTokenBalance === 'function') {
+        var tokBal = window.PlatformSync.getUserTokenBalance(curU);
+        var tokFormatted = tokBal.toLocaleString() + ' VTK';
+        var tokEls = document.querySelectorAll('#gameDropdownTokenBalance, #gameTokenBalance, .token-balance-text, [data-token-balance]');
+        tokEls.forEach(function(el) {
+          if (el) el.innerText = tokFormatted;
+        });
+      }
+
+      if (window.PlatformSync && typeof window.PlatformSync.getUserCredentials === 'function') {
+        var creds = window.PlatformSync.getUserCredentials(curU);
+        if (creds) {
+          var idEl = document.getElementById('gameDropdownUserId');
+          if (idEl) idEl.innerText = creds.id;
+          var nameEl = document.getElementById('gameDropdownUserName');
+          if (nameEl) nameEl.innerText = creds.username;
+        }
+      }
+    };
 
     // Toast Notification helper
     window.showToast = function(msg, type) {
@@ -1059,10 +1194,183 @@
       }
       window.currentBalance -= totalCost;
       var balEl = document.getElementById('userBalanceText');
-      if (balEl) balEl.innerText = window.currentBalance.toLocaleString() + '.00';
+      if (balEl) balEl.innerText = window.currentBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-      window.showToast('Bet Placed Successfully! Sequence: ' + window.currentSelectedDigits + ' | Amount: Rs ' + totalCost, 'success');
+      var curUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var betTypeName = window.currentBetType === 'figure' ? '1D Figure' : (window.currentBetType === 'akada' ? '2D Akada' : (window.currentBetType === 'ring' ? '3D Ring' : '4D Packet'));
+      var roundsStr = window.selectedBetRounds.map(function(r){ return r === 1 ? '1st Draw' : '2nd Draw'; });
+      var potentialWin = window.currentMainBetAmount * window.currentMultiplier * window.selectedBetRounds.length;
+
+      // Record in Central Platform Activity Ledger
+      if (window.PlatformSync && typeof window.PlatformSync.recordGameActivity === 'function') {
+        window.PlatformSync.recordGameActivity(
+          curUser,
+          'GM-THAI-4D',
+          'Lucky Thai Win 4D Live',
+          '8492',
+          window.currentSelectedDigits,
+          totalCost,
+          Math.round(totalCost / 10),
+          'PENDING',
+          0,
+          {
+            betType: window.currentBetType,
+            betTypeName: betTypeName,
+            multiplier: window.currentMultiplier,
+            selectedRounds: roundsStr,
+            potentialPayout: potentialWin
+          }
+        );
+      }
+
+      window.showToast('✓ Bet Placed Successfully! Sequence: [' + window.currentSelectedDigits + '] | Stake: Rs ' + totalCost.toLocaleString(), 'success');
       window.clearQuickDigit();
+
+      if (typeof window.renderMyActiveBets === 'function') {
+        window.renderMyActiveBets();
+      }
+    };
+
+    // ─── ACTIVE BETS & TICKETS RENDER ENGINE ──────────────────────────
+
+    window.currentActiveBetsTab = 'ACTIVE';
+
+    window.switchActiveBetsTab = function(tabKey) {
+      window.currentActiveBetsTab = tabKey;
+      ['activeBets', 'settledBets', 'allBets'].forEach(function(k) {
+        var btn = document.getElementById('tabBtn_' + k);
+        if (btn) {
+          var isCurrent = (k === 'activeBets' && tabKey === 'ACTIVE') ||
+                          (k === 'settledBets' && tabKey === 'SETTLED') ||
+                          (k === 'allBets' && tabKey === 'ALL');
+          if (isCurrent) {
+            btn.className = 'px-3 py-1.5 rounded-lg bg-gold text-black font-extrabold cursor-pointer transition-all shadow-sm';
+          } else {
+            btn.className = 'px-3 py-1.5 rounded-lg text-gray-400 hover:text-white font-bold cursor-pointer transition-all';
+          }
+        }
+      });
+      window.renderMyActiveBets();
+    };
+
+    window.renderMyActiveBets = function() {
+      var container = document.getElementById('activeBetsContainer');
+      if (!container) return;
+
+      var curUser = localStorage.getItem('userLoginName') || 'Alex_Winner';
+      var allBets = [];
+      if (window.PlatformSync && typeof window.PlatformSync.getUserBetsHistory === 'function') {
+        allBets = window.PlatformSync.getUserBetsHistory(curUser, 'GM-THAI-4D');
+      }
+
+      var activeBets = allBets.filter(function(b) {
+        return b.result === 'PENDING' || b.result === 'ACTIVE';
+      });
+
+      var settledBets = allBets.filter(function(b) {
+        return b.result !== 'PENDING' && b.result !== 'ACTIVE';
+      });
+
+      // Update Header & Badge Counters
+      var countActive = activeBets.length;
+      var navCountEl = document.getElementById('navActiveBetsCount');
+      var badgeCountEl = document.getElementById('activeBetsCountBadge');
+      var tabCountEl = document.getElementById('tabCountActive');
+      var dropCountEl = document.getElementById('dropdownActiveBetsCount');
+
+      if (navCountEl) navCountEl.innerText = countActive;
+      if (badgeCountEl) badgeCountEl.innerText = countActive + ' Active';
+      if (tabCountEl) tabCountEl.innerText = countActive;
+      if (dropCountEl) dropCountEl.innerText = countActive;
+
+      var listToRender = [];
+      if (window.currentActiveBetsTab === 'ACTIVE') {
+        listToRender = activeBets;
+      } else if (window.currentActiveBetsTab === 'SETTLED') {
+        listToRender = settledBets;
+      } else {
+        listToRender = allBets;
+      }
+
+      if (listToRender.length === 0) {
+        var emptyMsg = window.currentActiveBetsTab === 'ACTIVE'
+          ? 'No active bets placed for the upcoming draw. Select your lucky numbers above and click "Place Bet Now"!'
+          : (window.currentActiveBetsTab === 'SETTLED' ? 'No settled draws recorded yet.' : 'No bet history found.');
+
+        container.innerHTML = 
+          '<div class="bg-black/30 border border-white/10 rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-3 text-gray-400">' +
+            '<div class="w-12 h-12 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-gold text-xl">' +
+              '<i class="fa-solid fa-receipt"></i>' +
+            '</div>' +
+            '<p class="text-sm font-semibold text-gray-300 max-w-md">' + emptyMsg + '</p>' +
+            (window.currentActiveBetsTab === 'ACTIVE' ? '<a href="#bannerNumberInput" class="text-xs font-bold text-gold hover:underline flex items-center gap-1 mt-1"><i class="fa-solid fa-arrow-up"></i> Go to Bet Form</a>' : '') +
+          '</div>';
+        return;
+      }
+
+      var html = '';
+      listToRender.forEach(function(b) {
+        var isPending = b.result === 'PENDING' || b.result === 'ACTIVE';
+        var isWon = b.result === 'WON';
+        
+        var statusBadge = '';
+        if (isPending) {
+          statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold font-sans bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-spinner fa-spin text-[10px]"></i> IN-PLAY (PENDING DRAW)</span>';
+        } else if (isWon) {
+          statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold font-sans bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-trophy text-[10px]"></i> WON (Rs ' + (b.payout || 0).toLocaleString() + ')</span>';
+        } else {
+          statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold font-sans bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-xmark text-[10px]"></i> NOT WON</span>';
+        }
+
+        var betTypeName = b.betTypeName || (b.betNumber ? b.betNumber.length + 'D' : 'Figure');
+        var mult = b.multiplier || (b.betNumber && b.betNumber.length === 1 ? 8 : (b.betNumber.length === 2 ? 80 : (b.betNumber.length === 3 ? 800 : 6000)));
+        var potWin = b.potentialPayout || (Number(b.stake) * mult);
+        var roundInfo = b.selectedRounds ? (Array.isArray(b.selectedRounds) ? b.selectedRounds.join(', ') : b.selectedRounds) : '1st Draw';
+
+        html += 
+          '<div class="bg-black/50 border ' + (isPending ? 'border-gold/40 hover:border-gold shadow-[0_0_15px_rgba(255,212,0,0.08)]' : 'border-white/10') + ' rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all">' +
+            '<div class="flex items-center gap-4 w-full sm:w-auto">' +
+              '<!-- Large Number Box -->' +
+              '<div class="flex flex-col items-center justify-center bg-gold/15 border-2 border-gold/60 rounded-2xl px-4 py-2 min-w-[85px] shrink-0 shadow-inner">' +
+                '<span class="text-[9px] font-bold text-gold/80 uppercase tracking-widest leading-none mb-1">SEQUENCE</span>' +
+                '<span class="font-mono text-2xl sm:text-3xl font-black text-gold tracking-widest leading-none">' + b.betNumber + '</span>' +
+              '</div>' +
+              
+              '<!-- Bet Details -->' +
+              '<div class="flex flex-col gap-1">' +
+                '<div class="flex flex-wrap items-center gap-2">' +
+                  '<span class="font-mono font-bold text-xs text-cyan-300">#' + (b.ticketId || b.id) + '</span>' +
+                  '<span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">' + betTypeName + '</span>' +
+                  '<span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/30">' + mult + 'x Multiplier</span>' +
+                '</div>' +
+                '<div class="text-xs text-gray-300 flex flex-wrap items-center gap-2 font-medium">' +
+                  '<span><i class="fa-solid fa-dice text-gold text-[11px] mr-1"></i>Draw: <b class="text-white">' + roundInfo + ' (Round #' + (b.roundId || '8492') + ')</b></span>' +
+                  '<span class="text-gray-500">•</span>' +
+                  '<span class="text-gray-400"><i class="fa-regular fa-clock text-[11px] mr-1"></i>' + b.date + '</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<!-- Financials & Live Status -->' +
+            '<div class="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-white/10 font-mono">' +
+              '<div class="flex flex-col sm:items-end text-left sm:text-right">' +
+                '<span class="text-[10px] text-gray-400 uppercase font-sans font-bold">Stake</span>' +
+                '<span class="font-bold text-white text-sm">Rs ' + Number(b.stake).toLocaleString() + ' <span class="text-amber-300 text-xs font-normal">(+' + (b.tokens || Math.round(b.stake/10)) + ' VTK)</span></span>' +
+              '</div>' +
+
+              '<div class="flex flex-col sm:items-end text-right">' +
+                '<span class="text-[10px] text-gray-400 uppercase font-sans font-bold">Potential Win</span>' +
+                '<span class="font-black text-emerald-400 text-base sm:text-lg">Rs ' + potWin.toLocaleString() + '</span>' +
+              '</div>' +
+
+              '<div class="flex flex-col items-end shrink-0">' +
+                statusBadge +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      });
+
+      container.innerHTML = html;
     };
 
     // Sound Toggle
@@ -1093,23 +1401,22 @@
     updateHourlyTimer();
 
     // Render 24h Winning Draws History Ticker
+    window.winningDrawsHistoryData = [
+      { time: '04:00 PM', draw: '1st Draw', nums: '3 6 2 9' },
+      { time: '03:00 PM', draw: '2nd Draw', nums: '7 1 8 0' },
+      { time: '02:00 PM', draw: '1st Draw', nums: '9 4 5 1' },
+      { time: '01:00 PM', draw: '2nd Draw', nums: '0 8 3 4' },
+      { time: '12:00 PM', draw: '1st Draw', nums: '5 2 6 7' },
+      { time: '11:00 AM', draw: '2nd Draw', nums: '1 9 0 4' }
+    ];
+
     window.renderWinningDraws = function() {
       var grid = document.getElementById('24hWinningDrawsGrid');
       if (!grid) return;
-
-      var mockDraws = [
-        { time: '10:00 PM', nums: '7 - 4 - 2 - 9', draw: '#8491' },
-        { time: '09:00 PM', nums: '3 - 8 - 1 - 5', draw: '#8490' },
-        { time: '08:00 PM', nums: '0 - 9 - 6 - 2', draw: '#8489' },
-        { time: '07:00 PM', nums: '5 - 1 - 4 - 8', draw: '#8488' },
-        { time: '06:00 PM', nums: '2 - 7 - 3 - 0', draw: '#8487' },
-        { time: '05:00 PM', nums: '8 - 5 - 9 - 1', draw: '#8486' },
-      ];
-
       var html = '';
-      mockDraws.forEach(function(d) {
-        html += '<div class="bg-black/50 p-3 rounded-xl border border-white/10 flex flex-col gap-1 text-center shadow-inner">' +
-          '<div class="flex items-center justify-between text-[10px] text-gray-400 font-mono">' +
+      window.winningDrawsHistoryData.forEach(function(d) {
+        html += '<div class="bg-black/50 border border-white/10 rounded-xl p-3 flex flex-col items-center justify-center text-center hover:border-gold/50 transition-colors shadow-inner">' +
+          '<div class="flex justify-between w-full text-[10px] text-gray-400 font-mono">' +
             '<span>' + d.time + '</span>' +
             '<span class="text-gold font-bold">' + d.draw + '</span>' +
           '</div>' +
@@ -1124,9 +1431,56 @@
     // Initial calculator refresh
     window.updateBannerProfitCalculator();
 
+    // Initial Active Bets render
+    window.renderMyActiveBets();
+
+    // Real-Time Cross-Tab Listener for Admin & Game Actions
+    if (window.PlatformSync && typeof window.PlatformSync.onPlatformEvent === 'function') {
+      window.PlatformSync.onPlatformEvent(function(event) {
+        var curU = localStorage.getItem('userLoginName') || 'Alex_Winner';
+        if (event.type === 'DEPOSIT_APPROVED' || event.type === 'WITHDRAWAL_APPROVED' || event.type === 'WITHDRAWAL_REJECTED' || event.type === 'WALLET_ADJUSTED') {
+          if (typeof window.updateGameWalletUI === 'function') window.updateGameWalletUI();
+        } else if (event.type === 'GAME_ACTIVITY_RECORDED' || event.type === 'BET_PLACED') {
+          if (typeof window.renderMyActiveBets === 'function') window.renderMyActiveBets();
+          if (typeof window.updateGameWalletUI === 'function') window.updateGameWalletUI();
+        } else if (event.type === 'TOKEN_TRANSFER_COMPLETED') {
+          if (typeof window.updateGameWalletUI === 'function') window.updateGameWalletUI();
+          var p = event.payload || {};
+          var isReceiver = (p.receiver && p.receiver.toLowerCase() === curU.toLowerCase()) || 
+                           (p.recipientUserId && (p.recipientUserId.toLowerCase() === curU.toLowerCase() || p.recipientUserId.toLowerCase() === 'bp28233'));
+          if (isReceiver) {
+            if (typeof window.showToast === 'function') {
+              window.showToast('🪙 You received ' + (p.amount ? p.amount.toLocaleString() : 0) + ' Virtual Tokens (VTK)!', 'success');
+            }
+          }
+        }
+      });
+    }
+
+    window.performGameUserLogout = function(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      try {
+        localStorage.clear();
+        localStorage.setItem('isUserLoggedIn', 'false');
+      } catch(err) {}
+      try {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+          var eqPos = cookies[i].indexOf("=");
+          var name = eqPos > -1 ? cookies[i].substr(0, eqPos).trim() : cookies[i].trim();
+          if (name) {
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT;";
+          }
+        }
+        document.cookie = "isUserLoggedIn=false; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      } catch(cErr) {}
+      window.location.replace('index.html');
+    };
+
     // --- OFFICIAL THAI WIN DRAW RESULTS SYNC & DISPLAY ENGINE ---
     window.loadAndSyncDrawResults = function() {
-      var results = ['----', '----', '----', '----'];
+      var results = ['8492', '3150', '9274', '6108'];
       try {
         var stored = localStorage.getItem('THAINXT_DRAW_RESULTS');
         if (stored) {
@@ -1134,6 +1488,8 @@
           if (Array.isArray(parsed) && parsed.length >= 4) {
             results = parsed;
           }
+        } else {
+          localStorage.setItem('THAINXT_DRAW_RESULTS', JSON.stringify(results));
         }
       } catch(e) {}
 
@@ -1142,10 +1498,10 @@
       var box3 = document.getElementById('drawResultBox3');
       var box4 = document.getElementById('drawResultBox4');
 
-      if (box1) box1.innerText = results[0] || '----';
-      if (box2) box2.innerText = results[1] || '----';
-      if (box3) box3.innerText = results[2] || '----';
-      if (box4) box4.innerText = results[3] || '----';
+      if (box1) box1.innerText = results[0] || '8492';
+      if (box2) box2.innerText = results[1] || '3150';
+      if (box3) box3.innerText = results[2] || '9274';
+      if (box4) box4.innerText = results[3] || '6108';
     };
 
     // Cross-tab BroadcastChannel & Event Bus Listener
@@ -1170,7 +1526,11 @@
       window.loadAndSyncDrawResults();
     });
 
-    window.loadAndSyncDrawResults();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', window.loadAndSyncDrawResults);
+    } else {
+      window.loadAndSyncDrawResults();
+    }
   </script>
   <!-- Universal Touch Pull-To-Refresh Engine -->
   <script src="pull-to-refresh.js"></script>

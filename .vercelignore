@@ -1,0 +1,7 @@
+# Vercel Deployment Exclusions
+backend/
+mobile/
+scratch/
+.git
+BPEXCH-FINAL-PROJECT.zip
+*.tmp
